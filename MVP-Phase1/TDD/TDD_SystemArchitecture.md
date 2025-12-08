@@ -408,6 +408,8 @@ private:
 };
 ```
 
+> **Session policy**: 기본값은 계정당 1세션·동일 IP 동시 접속 차단이나, 개발/부하 테스트 시 토글 가능한 서버 플래그(TBD)로 운영 모드를 전환한다. 라이브 시에는 차단 모드로 고정한다.
+
 ```cpp
 // src/modules/game/mining_manager.h
 class MiningManager {
