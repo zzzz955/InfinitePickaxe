@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -9,10 +10,11 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+# Cache source to layer; build with cache mounts
 COPY . .
 
-# Configure & build
-RUN cmake -B build -S . -DCMAKE_BUILD_TYPE=Release \
+RUN --mount=type=cache,target=/root/.cache \
+    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release \
     && cmake --build build --config Release
 
 EXPOSE 10001
