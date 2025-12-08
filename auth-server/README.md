@@ -29,6 +29,7 @@ Postgres/Redis도 함께 올라갑니다. 기본 포트:
 - `JWT_EXPIRES_IN` (optional): default `7d`.
 - `PORT`: default `10000`.
 - `GOOGLE_MOCK_MODE`: default `true` (accept any token); set `false` when real Google validation is added.
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`: Postgres 연결 정보 (compose 기본값: postgres / 5432 / pickaxe / pickaxe / pickaxe_auth).
 
 ## Notes
 - User store is in-memory (`src/store/memoryUsers.js`) for MVP/dev; replace with DB per TDD.

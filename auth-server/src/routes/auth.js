@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { verifyGoogleToken } from '../services/googleAuth.js';
 import { issueJwt, verifyJwt } from '../services/jwtService.js';
-import { upsertUser, findUserByGoogleId } from '../store/memoryUsers.js';
+import { upsertUser, findUserByGoogleId } from '../store/dbUsers.js';
 
 const router = Router();
 
@@ -14,16 +14,16 @@ router.post('/login', async (req, res) => {
     }
 
     const googleId = await verifyGoogleToken(googleToken);
-    const user = upsertUser({ googleId, deviceId });
-    if (user.isBanned) {
+    const user = await upsertUser({ googleId, deviceId });
+    if (user.is_banned) {
       return res.status(403).json({ success: false, error: 'BANNED' });
     }
 
-    const jwt = issueJwt({ user_id: user.userId, google_id: googleId, device_id: deviceId });
+    const jwt = issueJwt({ user_id: user.user_id, google_id: googleId, device_id: deviceId });
     return res.json({
       success: true,
       jwt,
-      user_id: user.userId,
+      user_id: user.user_id,
       is_new_user: false,
       server_time: Date.now()
     });
@@ -34,17 +34,17 @@ router.post('/login', async (req, res) => {
 });
 
 // POST /auth/verify
-router.post('/verify', (req, res) => {
+router.post('/verify', async (req, res) => {
   try {
     const { jwt } = req.body || {};
     if (!jwt) {
       return res.status(400).json({ valid: false, error: 'MISSING_JWT' });
     }
     const payload = verifyJwt(jwt);
-    const user = findUserByGoogleId(payload.google_id);
+    const user = await findUserByGoogleId(payload.google_id);
     if (!user) return res.json({ valid: false, error: 'USER_NOT_FOUND' });
-    if (user.isBanned) return res.json({ valid: false, error: 'USER_BANNED' });
-    return res.json({ valid: true, user_id: user.userId, google_id: user.googleId, expires_at: payload.exp });
+    if (user.is_banned) return res.json({ valid: false, error: 'USER_BANNED' });
+    return res.json({ valid: true, user_id: user.user_id, google_id: user.google_id, expires_at: payload.exp });
   } catch (err) {
     return res.json({ valid: false, error: err.name === 'TokenExpiredError' ? 'TOKEN_EXPIRED' : 'INVALID_JWT' });
   }

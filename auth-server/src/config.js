@@ -7,3 +7,10 @@ export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 export const PORT = process.env.PORT || 10000;
 
 export const GOOGLE_MOCK_MODE = process.env.GOOGLE_MOCK_MODE !== 'false';
+
+// DB config
+export const DB_HOST = process.env.DB_HOST || 'localhost';
+export const DB_PORT = Number(process.env.DB_PORT || 10002);
+export const DB_USER = process.env.DB_USER || 'pickaxe';
+export const DB_PASSWORD = process.env.DB_PASSWORD || 'pickaxe';
+export const DB_NAME = process.env.DB_NAME || 'pickaxe_auth';

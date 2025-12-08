@@ -10,6 +10,11 @@ services:
       - JWT_SECRET=${AUTH_JWT_SECRET:-dev-secret-change-me}
       - GOOGLE_MOCK_MODE=${AUTH_GOOGLE_MOCK_MODE:-true}
       - PORT=10000
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_USER=${DB_USER:-pickaxe}
+      - DB_PASSWORD=${DB_PASSWORD:-pickaxe}
+      - DB_NAME=${DB_NAME:-pickaxe_auth}
     depends_on:
       - postgres
       - redis
