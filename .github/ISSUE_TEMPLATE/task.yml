@@ -1,0 +1,43 @@
+name: 📋 Task
+description: 개발 작업이나 할 일을 기록합니다
+title: "[TASK] "
+labels: ["task"]
+assignees:
+  - zzzz955
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        개발 작업, 리팩토링, 문서화 등 할 일을 기록합니다.
+
+  - type: textarea
+    id: task
+    attributes:
+      label: 작업 내용
+      description: 무엇을 해야 하나요?
+      placeholder: 작업 내용을 간단히 설명해주세요
+    validations:
+      required: true
+
+  - type: textarea
+    id: checklist
+    attributes:
+      label: 체크리스트
+      description: 작업을 세부 단계로 나누어 기록
+      placeholder: |
+        - [ ] 단계 1
+        - [ ] 단계 2
+        - [ ] 단계 3
+      value: "- [ ] "
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 메모
+      description: 참고사항이나 링크 등
+      placeholder: 선택사항
+    validations:
+      required: false

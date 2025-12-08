@@ -1,0 +1,48 @@
+name: ✨ Feature Request
+description: 새로운 기능을 제안합니다
+title: "[FEATURE] "
+labels: ["task"]
+assignees:
+  - zzzz955
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        새로운 기능이나 개선 사항을 제안해주세요.
+
+  - type: textarea
+    id: feature
+    attributes:
+      label: 기능 설명
+      description: 어떤 기능을 추가하고 싶나요?
+      placeholder: 구현하고 싶은 기능을 설명해주세요
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: 필요한 이유
+      description: 왜 이 기능이 필요한가요?
+      placeholder: 이 기능으로 해결하려는 문제나 개선하려는 부분
+    validations:
+      required: false
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 구현 아이디어
+      description: 어떻게 구현할 수 있을까요?
+      placeholder: 기술적인 접근 방법이나 아이디어 (선택사항)
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 추가 정보
+      description: 참고 자료나 스크린샷 등
+      placeholder: 선택사항
+    validations:
+      required: false
