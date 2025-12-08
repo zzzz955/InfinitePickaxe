@@ -1,3 +1,8 @@
+# 프로젝트 루트
+
+.env
+postgres-data/
+
 # 인증 서버 관련
 
 auth-server/node_modules

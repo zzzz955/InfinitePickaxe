@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  auth-server:
+    build: ./auth-server
+    container_name: pickaxe-auth
+    ports:
+      - "${AUTH_PORT:-10000}:10000"
+    environment:
+      - JWT_SECRET=${AUTH_JWT_SECRET:-dev-secret-change-me}
+      - GOOGLE_MOCK_MODE=${AUTH_GOOGLE_MOCK_MODE:-true}
+      - PORT=10000
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:16
+    container_name: pickaxe-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-pickaxe}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-pickaxe}
+      - POSTGRES_DB=${POSTGRES_DB:-pickaxe_auth}
+    ports:
+      - "${POSTGRES_PORT:-10002}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: pickaxe-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-10003}:6379"
+
+volumes:
+  postgres-data:
+    driver: local
