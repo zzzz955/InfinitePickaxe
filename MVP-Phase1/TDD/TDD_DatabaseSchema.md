@@ -151,6 +151,22 @@ WHERE
 
 ---
 
+### 2-4. Redis 캐싱 / 인메모리 운용 (MVP)
+
+- **왜 Redis?** 초당 업데이트/읽기가 많은 상태(채굴 진행, 세션 캐시, 레이트 리미트)는 DB I/O를 피하고자 인메모리/Redis로 관리.
+- **영속 우선 순위**
+  - **즉시 DB 영속**: 재화(`gold`, `crystal`), 슬롯 해금, IAP 등 민감 데이터.
+  - **Redis 우선 + 주기/이벤트 flush**: 채굴 진행도(`mining_snapshots` 실시간 상태), 세션 캐시, 일일 카운터 캐시(접속 시 Lazy reset 후 DB 반영).
+- **인메모리 → Redis**
+  - 주기: 60초마다 dirty 여부 확인 후 변경 시에만 Redis 업서트.
+  - 이벤트: 채굴 완료, 광물 교체, 서버 종료 시그널 시 즉시 업서트.
+  - TTL 부여로 오래된 키 자동 청소.
+- **Redis → DB**
+  - 주기: 5분마다 dirty 집합(예: `dirty_snapshots` set)을 읽어 UPSERT, 성공 시 제거.
+  - 이벤트: 종료 시그널, 채굴 완료, 세션 종료 시에도 즉시 UPSERT.
+  - 종료 시그널 처리: 새 작업 차단 → 인메모리 최신 상태를 Redis에 밀어넣음 → dirty 집합 배치 UPSERT → 실패분 로그 후 재기동 시 복구.
+- **안전 가드**: Redis 장애 시 즉시 DB 쓰기로 폴백.
+
 ## 3. ERD (Entity Relationship Diagram)
 
 ### 3-1. auth_schema
@@ -569,9 +585,9 @@ COMMENT ON COLUMN game_schema.mining_snapshots.snapshot_time IS '마지막 스�
 ```
 
 **사용 방식**:
-- 실시간 채굴은 인메모리
-- 5분마다 UPSERT로 스냅샷 저장
-- 서버 재시작 시 복구
+- 실시간 채굴은 인메모리/Redis
+- Redis → 3~5분 주기 또는 채굴 완료/서버 종료 시 DB UPSERT(내구성)
+- 서버 재시작 시 DB 최신 스냅샷 로드 후 Redis 복원
 
 ---
 
@@ -1419,6 +1435,7 @@ psql game_db < game_schema.sql
 |------|------|----------|
 | 1.0 | 2024-12-08 | 초안 작성 (단일 스키마) |
 | 2.0 | 2024-12-08 | 스키마 분리, 인메모리 세션, Lazy Evaluation 적용 |
+| 3.0 | 2024-12-09 | Redis 운용/플러시 세부 전략 업데이트 |
 
 ---
 
