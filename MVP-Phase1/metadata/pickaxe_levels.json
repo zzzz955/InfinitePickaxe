@@ -1,0 +1,22 @@
+[
+  {"level":0,"tier":"T1","appearance":"나무","dps":10,"cost":0,"cumulative_cost":0},
+  {"level":1,"tier":"T1","appearance":"나무 ▪","dps":17,"cost":5,"cumulative_cost":5},
+  {"level":2,"tier":"T1","appearance":"나무 ▪▪","dps":28,"cost":10,"cumulative_cost":15},
+  {"level":3,"tier":"T1","appearance":"나무 ▪▪▪","dps":45,"cost":20,"cumulative_cost":35},
+  {"level":4,"tier":"T1","appearance":"나무 ▪▪▪▪","dps":71,"cost":35,"cumulative_cost":70},
+  {"level":5,"tier":"T2","appearance":"돌 ⚡","dps":110,"cost":60,"cumulative_cost":130},
+  {"level":6,"tier":"T2","appearance":"돌 ▪","dps":168,"cost":100,"cumulative_cost":230},
+  {"level":7,"tier":"T2","appearance":"돌 ▪▪","dps":253,"cost":170,"cumulative_cost":400},
+  {"level":8,"tier":"T2","appearance":"돌 ▪▪▪","dps":377,"cost":280,"cumulative_cost":680},
+  {"level":9,"tier":"T2","appearance":"돌 ▪▪▪▪","dps":555,"cost":450,"cumulative_cost":1130},
+  {"level":10,"tier":"T3","appearance":"철 ⚡","dps":804,"cost":750,"cumulative_cost":1880},
+  {"level":11,"tier":"T3","appearance":"철 ▪","dps":1152,"cost":1250,"cumulative_cost":3130},
+  {"level":12,"tier":"T3","appearance":"철 ▪▪","dps":1638,"cost":2100,"cumulative_cost":5230},
+  {"level":13,"tier":"T3","appearance":"철 ▪▪▪","dps":2310,"cost":3500,"cumulative_cost":8730},
+  {"level":14,"tier":"T3","appearance":"철 ▪▪▪▪","dps":3235,"cost":5900,"cumulative_cost":14630},
+  {"level":15,"tier":"T4","appearance":"금 ⚡","dps":4497,"cost":10000,"cumulative_cost":24630},
+  {"level":16,"tier":"T4","appearance":"금 ▪","dps":6208,"cost":17000,"cumulative_cost":41630},
+  {"level":17,"tier":"T4","appearance":"금 ▪▪","dps":8524,"cost":29000,"cumulative_cost":70630},
+  {"level":18,"tier":"T4","appearance":"금 ▪▪▪","dps":11653,"cost":50000,"cumulative_cost":120630},
+  {"level":19,"tier":"T4","appearance":"금 ▪▪▪▪","dps":15851,"cost":85000,"cumulative_cost":205630}
+]
