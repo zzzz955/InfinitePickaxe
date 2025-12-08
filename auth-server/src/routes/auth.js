@@ -44,7 +44,15 @@ router.post('/verify', async (req, res) => {
     const user = await findUserByGoogleId(payload.google_id);
     if (!user) return res.json({ valid: false, error: 'USER_NOT_FOUND' });
     if (user.is_banned) return res.json({ valid: false, error: 'USER_BANNED' });
-    return res.json({ valid: true, user_id: user.user_id, google_id: user.google_id, expires_at: payload.exp });
+    return res.json({
+      valid: true,
+      user_id: user.user_id,
+      google_id: user.google_id,
+      device_id: user.device_id,
+      is_banned: user.is_banned,
+      ban_reason: user.ban_reason,
+      expires_at: payload.exp
+    });
   } catch (err) {
     return res.json({ valid: false, error: err.name === 'TokenExpiredError' ? 'TOKEN_EXPIRED' : 'INVALID_JWT' });
   }
