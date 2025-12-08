@@ -1,0 +1,4 @@
+# 인증 서버 관련
+
+auth-server/node_modules
+auth-server/.env
