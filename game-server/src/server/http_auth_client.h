@@ -5,6 +5,8 @@
 struct VerifyResult {
     bool valid{false};
     std::chrono::system_clock::time_point expires_at{};
+    std::string user_id;
+    std::string google_id;
 };
 
 // Minimal HTTP auth client to call /auth/verify

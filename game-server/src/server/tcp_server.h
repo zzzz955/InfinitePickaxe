@@ -19,7 +19,8 @@ private:
     void do_accept();
     void start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
     void start_echo(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
-                    std::chrono::system_clock::time_point expires_at);
+                    std::chrono::system_clock::time_point expires_at,
+                    std::string user_id);
 
     boost::asio::ip::tcp::acceptor acceptor_;
     VerifyFn verify_fn_;

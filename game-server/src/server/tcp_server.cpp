@@ -43,8 +43,12 @@ void TcpServer::start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> so
                     socket->close();
                     return;
                 }
-                std::cout << "JWT verified, session opened." << std::endl;
-                start_echo(socket, vr.expires_at);
+                std::cout << "JWT verified for user " << (vr.user_id.empty() ? "unknown" : vr.user_id);
+                if (!vr.google_id.empty()) {
+                    std::cout << " (google_id=" << vr.google_id << ")";
+                }
+                std::cout << ", session opened." << std::endl;
+                start_echo(socket, vr.expires_at, vr.user_id);
             } else {
                 std::cout << "JWT invalid, closing connection." << std::endl;
                 socket->close();
@@ -53,10 +57,11 @@ void TcpServer::start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> so
 }
 
 void TcpServer::start_echo(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
-                           std::chrono::system_clock::time_point expires_at) {
+                           std::chrono::system_clock::time_point expires_at,
+                           std::string user_id) {
     auto buffer = std::make_shared<boost::asio::streambuf>();
     boost::asio::async_read_until(*socket, *buffer, '\n',
-        [this, socket, buffer, expires_at](boost::system::error_code ec, std::size_t /*len*/) {
+        [this, socket, buffer, expires_at, user_id](boost::system::error_code ec, std::size_t /*len*/) {
             if (ec) {
                 socket->close();
                 return;
@@ -71,17 +76,21 @@ void TcpServer::start_echo(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
             std::string msg;
             std::getline(is, msg);
             if (!msg.empty() && msg.back() == '\r') msg.pop_back();
-            std::cout << "Echo msg: " << msg << std::endl;
+            if (user_id.empty()) {
+                std::cout << "Echo msg: " << msg << std::endl;
+            } else {
+                std::cout << "Echo msg from user " << user_id << ": " << msg << std::endl;
+            }
             // Echo back
             std::string echo_payload = msg + "\n";
             boost::asio::async_write(*socket, boost::asio::buffer(echo_payload),
-                [this, socket, msg, expires_at](boost::system::error_code write_ec, std::size_t /*written*/) {
+                [this, socket, msg, expires_at, user_id](boost::system::error_code write_ec, std::size_t /*written*/) {
                     if (write_ec) {
                         socket->close();
                         return;
                     }
                     // Continue reading
-                    start_echo(socket, expires_at);
+                    start_echo(socket, expires_at, user_id);
                 });
         });
 }

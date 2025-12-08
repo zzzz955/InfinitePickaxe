@@ -3,6 +3,18 @@
 #include <string>
 #include <cctype>
 
+namespace {
+std::string parse_string_field(const std::string& body, const std::string& key) {
+    const std::string pattern = "\"" + key + "\":\"";
+    auto pos = body.find(pattern);
+    if (pos == std::string::npos) return {};
+    pos += pattern.size();
+    auto end = body.find('"', pos);
+    if (end == std::string::npos) return {};
+    return body.substr(pos, end - pos);
+}
+} // namespace
+
 VerifyResult verify_jwt_with_auth(const std::string& auth_host, unsigned short auth_port, const std::string& jwt) {
     VerifyResult result{};
     if (jwt.empty()) return result;
@@ -18,6 +30,8 @@ VerifyResult verify_jwt_with_auth(const std::string& auth_host, unsigned short a
     // Minimal parse: check validity flag
     if (res->body.find("\"valid\":true") == std::string::npos) return result;
     result.valid = true;
+    result.user_id = parse_string_field(res->body, "user_id");
+    result.google_id = parse_string_field(res->body, "google_id");
 
     // Extract expires_at epoch seconds if present
     const std::string key = "\"expires_at\":";
