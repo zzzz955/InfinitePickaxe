@@ -36,7 +36,7 @@ void TcpServer::start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> so
             if (!jwt.empty() && jwt.back() == '\r') jwt.pop_back();
 
             VerifyResult vr = verify_fn_ ? verify_fn_(jwt) : VerifyResult{};
-            if (vr.valid) {
+            if (vr.valid && !vr.is_banned) {
                 auto now = std::chrono::system_clock::now();
                 if (vr.expires_at.time_since_epoch().count() != 0 && now >= vr.expires_at) {
                     std::cout << "JWT expired, closing connection." << std::endl;
@@ -47,10 +47,19 @@ void TcpServer::start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> so
                 if (!vr.google_id.empty()) {
                     std::cout << " (google_id=" << vr.google_id << ")";
                 }
+                if (!vr.device_id.empty()) {
+                    std::cout << " device_id=" << vr.device_id;
+                }
                 std::cout << ", session opened." << std::endl;
                 start_echo(socket, vr.expires_at, vr.user_id);
             } else {
-                std::cout << "JWT invalid, closing connection." << std::endl;
+                if (vr.is_banned) {
+                    std::cout << "User banned";
+                    if (!vr.ban_reason.empty()) std::cout << ": " << vr.ban_reason;
+                    std::cout << ", closing connection." << std::endl;
+                } else {
+                    std::cout << "JWT invalid, closing connection." << std::endl;
+                }
                 socket->close();
             }
         });

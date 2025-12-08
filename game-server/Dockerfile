@@ -13,7 +13,7 @@ WORKDIR /app
 # Cache source to layer; build with cache mounts
 COPY . .
 
-ARG BUILD_JOBS=0
+ARG BUILD_JOBS=8
 ENV CCACHE_DIR=/root/.cache/ccache \
     CMAKE_BUILD_PARALLEL_LEVEL=${BUILD_JOBS}
 
@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/root/.cache \
     cmake -G Ninja -B build -S . -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_C_COMPILER_LAUNCHER=ccache \
         -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-    && cmake --build build --config Release --parallel
+    && cmake --build build --config Release --parallel ${BUILD_JOBS}
 
 EXPOSE 10001
 

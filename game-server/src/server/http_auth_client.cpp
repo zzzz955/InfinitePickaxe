@@ -2,6 +2,7 @@
 #include <httplib.h>
 #include <string>
 #include <cctype>
+#include <cstdlib>
 
 namespace {
 std::string parse_string_field(const std::string& body, const std::string& key) {
@@ -32,6 +33,7 @@ VerifyResult verify_jwt_with_auth(const std::string& auth_host, unsigned short a
     result.valid = true;
     result.user_id = parse_string_field(res->body, "user_id");
     result.google_id = parse_string_field(res->body, "google_id");
+    result.device_id = parse_string_field(res->body, "device_id");
 
     // Extract expires_at epoch seconds if present
     const std::string key = "\"expires_at\":";
@@ -54,6 +56,12 @@ VerifyResult verify_jwt_with_auth(const std::string& auth_host, unsigned short a
             }
         }
     }
+
+    // banned flag and reason (if provided)
+    if (res->body.find("\"is_banned\":true") != std::string::npos) {
+        result.is_banned = true;
+    }
+    result.ban_reason = parse_string_field(res->body, "ban_reason");
 
     return result;
 }
