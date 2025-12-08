@@ -16,6 +16,7 @@ public:
 private:
     void do_accept();
     void start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
+    void start_echo(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
 
     boost::asio::ip::tcp::acceptor acceptor_;
     VerifyFn verify_fn_;

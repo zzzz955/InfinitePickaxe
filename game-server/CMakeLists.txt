@@ -32,13 +32,13 @@ endif()
 # libpqxx: fetch if no package
 find_package(pqxx QUIET)
 if(NOT pqxx_FOUND)
+    set(PQXX_ENABLE_SHARED OFF CACHE BOOL "" FORCE)
+    set(PQXX_BUILD_TEST OFF CACHE BOOL "" FORCE)
     FetchContent_Declare(
         libpqxx
         GIT_REPOSITORY https://github.com/jtv/libpqxx.git
         GIT_TAG 7.9.2
     )
-    set(PQXX_ENABLE_SHARED OFF)
-    set(PQXX_BUILD_TEST OFF)
     FetchContent_MakeAvailable(libpqxx)
     add_library(pqxx::pqxx ALIAS pqxx)
 endif()
@@ -46,13 +46,13 @@ endif()
 # redis-plus-plus: use package if available, otherwise fetch
 find_package(redis++ QUIET)
 if(NOT redis++_FOUND)
+    set(REDIS_PLUS_PLUS_BUILD_TEST OFF CACHE BOOL "" FORCE)
+    set(REDIS_PLUS_PLUS_CXX_STANDARD 17 CACHE STRING "" FORCE)
     FetchContent_Declare(
         redisplusplus
         GIT_REPOSITORY https://github.com/sewenew/redis-plus-plus.git
         GIT_TAG 1.3.9
     )
-    set(REDIS_PLUS_PLUS_BUILD_TEST OFF)
-    set(REDIS_PLUS_PLUS_CXX_STANDARD 17)
     FetchContent_MakeAvailable(redisplusplus)
 endif()
 
