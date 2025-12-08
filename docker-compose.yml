@@ -39,6 +39,17 @@ services:
     ports:
       - "${REDIS_PORT:-10003}:6379"
 
+  game-server:
+    build: ./game-server
+    container_name: pickaxe-game
+    restart: unless-stopped
+    ports:
+      - "10001:10001"
+    depends_on:
+      - auth-server
+      - postgres
+      - redis
+
 volumes:
   postgres-data:
     driver: local
