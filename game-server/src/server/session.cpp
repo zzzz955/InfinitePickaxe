@@ -223,8 +223,8 @@ void Session::handle_mining(const infinitepickaxe::Envelope& env, const std::str
             send_error("2004", "MINE_COMPLETE parse failed");
             return;
         }
-        auto upd = mining_service_.handle_complete(comp.mineral_id());
-        send_envelope("MINE_UPDATE", upd);
+        auto res = mining_service_.handle_complete(user_id_, comp.mineral_id());
+        send_envelope("MINE_COMPLETE", res);
     } else {
         infinitepickaxe::Error err;
         err.set_error_code("NOT_IMPLEMENTED");
@@ -239,7 +239,7 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope& env) {
         send_error("2004", "UPGRADE_PICKAXE parse failed");
         return;
     }
-    auto res = upgrade_service_.handle_upgrade(req.slot_index(), req.target_level());
+    auto res = upgrade_service_.handle_upgrade(user_id_, req.slot_index(), req.target_level());
     send_envelope("UPGRADE_RESULT", res);
 }
 

@@ -29,12 +29,20 @@ infinitepickaxe::MiningUpdate MiningService::handle_sync(uint32_t mineral_id, ui
     return upd;
 }
 
-infinitepickaxe::MiningUpdate MiningService::handle_complete(uint32_t mineral_id) const {
-    infinitepickaxe::MiningUpdate upd;
-    upd.set_mineral_id(mineral_id);
-    upd.set_current_hp(0);
-    upd.set_max_hp(0);
-    upd.set_damage_dealt(0);
-    upd.set_server_timestamp(static_cast<uint64_t>(std::time(nullptr)));
-    return upd;
+infinitepickaxe::MiningComplete MiningService::handle_complete(const std::string& user_id, uint32_t mineral_id) const {
+    uint64_t reward = 0;
+    uint32_t respawn = 5;
+    if (auto m = meta_.mineral(mineral_id)) {
+        reward = m->reward;
+        respawn = m->respawn_time;
+    }
+    auto res = repo_.record_completion(user_id, mineral_id, reward);
+    infinitepickaxe::MiningComplete comp;
+    comp.set_mineral_id(mineral_id);
+    comp.set_gold_earned(reward);
+    comp.set_total_gold(res.total_gold);
+    comp.set_mining_count(res.mining_count);
+    comp.set_respawn_time(respawn);
+    comp.set_server_timestamp(static_cast<uint64_t>(std::time(nullptr)));
+    return comp;
 }
