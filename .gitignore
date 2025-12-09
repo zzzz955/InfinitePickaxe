@@ -55,3 +55,6 @@ keystore/
 # Unity Build
 *.apk
 *.abb
+
+# claude
+*.claude
