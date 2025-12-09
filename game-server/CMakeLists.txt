@@ -13,6 +13,7 @@ add_executable(game-server
     src/server/game_repository.cpp
     src/server/connection_pool.cpp
     src/server/redis_client.cpp
+    src/server/session.cpp
 )
 
 # Force module mode to avoid missing Boost config packages on distro builds
@@ -60,6 +61,23 @@ if(NOT redis++_FOUND)
     FetchContent_MakeAvailable(redisplusplus)
 endif()
 
+# protobuf
+find_package(Protobuf QUIET)
+if(NOT Protobuf_FOUND)
+    FetchContent_Declare(
+        protobuf
+        GIT_REPOSITORY https://github.com/protocolbuffers/protobuf.git
+        GIT_TAG v25.3
+    )
+    set(protobuf_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(protobuf_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(protobuf)
+endif()
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS
+    ${CMAKE_CURRENT_SOURCE_DIR}/protocol/game.proto
+    PROTOC_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated
+)
+
 target_include_directories(game-server PRIVATE src)
 target_link_libraries(game-server PRIVATE
     Boost::boost
@@ -68,4 +86,7 @@ target_link_libraries(game-server PRIVATE
     httplib::httplib
     pqxx::pqxx
     redis++::redis++
+    protobuf::libprotobuf
 )
+target_sources(game-server PRIVATE ${PROTO_SRCS} ${PROTO_HDRS})
+target_include_directories(game-server PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/generated)

@@ -40,7 +40,9 @@ services:
       - "${REDIS_PORT:-10003}:6379"
 
   game-server:
-    build: ./game-server
+    build:
+      context: .
+      dockerfile: game-server/Dockerfile
     container_name: pickaxe-game
     restart: unless-stopped
     ports:

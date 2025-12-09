@@ -6,12 +6,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     build-essential cmake git curl zip unzip tar pkg-config ninja-build ccache \
     libboost-all-dev libspdlog-dev libpqxx-dev libhiredis-dev libssl-dev \
+    protobuf-compiler libprotobuf-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Cache source to layer; build with cache mounts
-COPY . .
+# 소스 복사: game-server 코드와 proto 스키마
+COPY game-server/ .
+COPY protocol/ ./protocol
 
 ARG BUILD_JOBS=8
 ENV CCACHE_DIR=/root/.cache/ccache \
