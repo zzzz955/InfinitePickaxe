@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1086206898056",
+    "project_id": "infinite-pickaxe",
+    "storage_bucket": "infinite-pickaxe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086206898056:android:d7d534708207eae0a1543d",
+        "android_client_info": {
+          "package_name": "com.madalang.infinitepickaxe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1086206898056-vh3q9psr1nqi637pnvc80m849lnq69am.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMkRinGyAPTTIAM8LwlJ9yi3Gde15v4AA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1086206898056-vh3q9psr1nqi637pnvc80m849lnq69am.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

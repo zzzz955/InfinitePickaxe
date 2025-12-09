@@ -45,3 +45,9 @@ Sysinfo.txt
 # Unity asset tools temp
 [Aa]ssets/AssetStoreTools*
 [Aa]ssets/Plugins/Editor/JetBrains*
+
+# Unity Keystore
+keystore/
+
+# Unity Plugin
+/pickaxe-client/Assets/Firebase/Plugins/x86_64/
