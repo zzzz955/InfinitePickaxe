@@ -6,7 +6,9 @@ package infinitepickaxe;
 message Envelope {
   string msg_type = 1;  // HANDSHAKE, HEARTBEAT, MINE_START, ...
   uint32 version = 2;   // 프로토콜 버전
-  bytes payload = 3;    // 직렬화된 구체 메시지
+  uint32 seq = 3;       // 시퀀스 번호 (옵션, 0이면 미사용)
+  uint64 timestamp = 4; // 클라이언트 Unix timestamp (초)
+  bytes payload = 5;    // 직렬화된 구체 메시지
 }
 
 // -------------- 인증 / 세션 --------------

@@ -1,6 +1,7 @@
 #include "session.h"
 #include <iostream>
 #include <cstring>
+#include <cmath>
 
 namespace {
 uint32_t decode_le(const std::array<uint8_t,4>& buf) {
@@ -77,6 +78,36 @@ bool Session::is_expired() const {
 }
 
 void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
+    // 시퀀스 검증 (0이면 검증 생략) - 불일치 시 카운트 증가, 3회면 종료
+    if (env.seq() != 0) {
+        if (env.seq() != expected_seq_) {
+            send_error("INVALID_SEQUENCE", "expected " + std::to_string(expected_seq_) + " got " + std::to_string(env.seq()));
+            violation_count_++;
+            if (violation_count_ >= 3) {
+                close();
+                return;
+            }
+        }
+        expected_seq_ = env.seq() + 1;
+    }
+
+    // 타임스탬프 검증 (0이면 검증 생략) - 허용 범위 초과 시 카운트 증가, 3회면 종료
+    if (env.timestamp() != 0) {
+        uint64_t now = static_cast<uint64_t>(std::time(nullptr));
+        uint64_t ts = env.timestamp();
+        uint64_t diff = (now > ts) ? (now - ts) : (ts - now);
+        const uint64_t MAX_DIFF = 60;
+        if (diff > MAX_DIFF) {
+            send_error("TIMESTAMP_MISMATCH", "diff seconds=" + std::to_string(diff));
+            violation_count_++;
+            if (violation_count_ >= 3) {
+                close();
+                return;
+            }
+            return;
+        }
+    }
+
     if (is_expired()) {
         send_error("TOKEN_EXPIRED", "session expired");
         close();

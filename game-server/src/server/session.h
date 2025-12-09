@@ -43,6 +43,8 @@ private:
     std::string client_ip_;
     std::chrono::system_clock::time_point expires_at_;
     bool authenticated_{false};
+    uint32_t expected_seq_{1};
+    uint32_t violation_count_{0};
 
     std::array<uint8_t, 4> len_buf_{};
     std::vector<uint8_t> payload_buf_;
