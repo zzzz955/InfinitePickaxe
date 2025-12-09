@@ -24,7 +24,9 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  GameRepository& game_repo)
     : socket_(std::move(socket)),
       auth_service_(auth_service),
-      game_repo_(game_repo) {}
+      game_repo_(game_repo) {
+    init_router();
+}
 
 void Session::start() {
     try {
@@ -115,7 +117,10 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
     }
     const std::string& type = env.msg_type();
 
-    if (type == "HANDSHAKE") { handle_handshake(env); return; }
+    if (type == "HANDSHAKE") {
+        handle_handshake(env);
+        return;
+    }
 
     if (!authenticated_) {
         send_error("UNAUTHORIZED", "handshake required");
@@ -123,13 +128,7 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
         return;
     }
 
-    if (type == "HEARTBEAT") { handle_heartbeat(env); }
-    else if (type.rfind("MINE_", 0) == 0) { handle_mining(env, type); }
-    else if (type.rfind("UPGRADE", 0) == 0) { handle_upgrade(env); }
-    else if (type.rfind("MISSION", 0) == 0) { handle_mission(env, type); }
-    else if (type == "SLOT_UNLOCK") { handle_slot_unlock(env); }
-    else if (type == "OFFLINE_REWARD_REQUEST") { handle_offline_reward(env); }
-    else {
+    if (!router_.dispatch(env)) {
         send_error("UNKNOWN_TYPE", type);
     }
 
@@ -270,6 +269,17 @@ void Session::handle_offline_reward(const infinitepickaxe::Envelope& env) {
     res.set_efficiency(0);
     res.set_new_total_gold(0);
     send_envelope("OFFLINE_REWARD", res);
+}
+
+void Session::init_router() {
+    router_.register_handler("HEARTBEAT", [this](const infinitepickaxe::Envelope& e) { handle_heartbeat(e); });
+    router_.register_handler("MINE_START", [this](const infinitepickaxe::Envelope& e) { handle_mining(e, "MINE_START"); });
+    router_.register_handler("MINE_SYNC", [this](const infinitepickaxe::Envelope& e) { handle_mining(e, "MINE_SYNC"); });
+    router_.register_handler("UPGRADE_PICKAXE", [this](const infinitepickaxe::Envelope& e) { handle_upgrade(e); });
+    router_.register_handler("MISSION_CLAIM", [this](const infinitepickaxe::Envelope& e) { handle_mission(e, "MISSION_CLAIM"); });
+    router_.register_handler("MISSION_REROLL", [this](const infinitepickaxe::Envelope& e) { handle_mission(e, "MISSION_REROLL"); });
+    router_.register_handler("SLOT_UNLOCK", [this](const infinitepickaxe::Envelope& e) { handle_slot_unlock(e); });
+    router_.register_handler("OFFLINE_REWARD_REQUEST", [this](const infinitepickaxe::Envelope& e) { handle_offline_reward(e); });
 }
 
 void Session::send_envelope(const std::string& msg_type, const google::protobuf::Message& msg) {

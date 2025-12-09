@@ -7,6 +7,7 @@
 #include "auth_service.h"
 #include "game_repository.h"
 #include "game.pb.h"
+#include "message_router.h"
 
 class Session : public std::enable_shared_from_this<Session> {
 public:
@@ -27,6 +28,7 @@ private:
     void handle_mission(const infinitepickaxe::Envelope& env, const std::string& type);
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
     void handle_offline_reward(const infinitepickaxe::Envelope& env);
+    void init_router();
     void send_envelope(const std::string& msg_type, const google::protobuf::Message& msg);
     void send_error(const std::string& code, const std::string& message);
     bool is_expired() const;
@@ -35,6 +37,7 @@ private:
     boost::asio::ip::tcp::socket socket_;
     AuthService& auth_service_;
     GameRepository& game_repo_;
+    MessageRouter router_;
 
     // 세션 컨텍스트
     std::string user_id_;
