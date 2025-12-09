@@ -26,7 +26,7 @@ int main() {
             if (!db_client.ensure_user_initialized(vr.user_id)) {
                 return false;
             }
-            redis_client.set_session(vr.user_id, vr.expires_at);
+            redis_client.set_session(vr.user_id, vr.expires_at, vr.device_id, "");
             return true;
         };
 

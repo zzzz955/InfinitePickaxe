@@ -5,7 +5,10 @@
 RedisClient::RedisClient(const std::string& host, unsigned short port)
     : host_(host), port_(port) {}
 
-bool RedisClient::set_session(const std::string& user_id, std::chrono::system_clock::time_point expires_at) {
+bool RedisClient::set_session(const std::string& user_id,
+                              std::chrono::system_clock::time_point expires_at,
+                              const std::string& device_id,
+                              const std::string& client_ip) {
     try {
         sw::redis::ConnectionOptions opts;
         opts.host = host_;
@@ -19,7 +22,13 @@ bool RedisClient::set_session(const std::string& user_id, std::chrono::system_cl
             auto diff = std::chrono::duration_cast<std::chrono::seconds>(expires_at - now).count();
             if (diff > 0) ttl_seconds = diff;
         }
-        redis.set(key, "AUTH_OK", std::chrono::seconds(ttl_seconds));
+        // 간단한 JSON 형태로 메타 저장
+        std::string payload = std::string("{\"status\":\"AUTH_OK\"")
+            + ",\"device_id\":\"" + device_id + "\""
+            + ",\"client_ip\":\"" + client_ip + "\""
+            + "}";
+
+        redis.set(key, payload, std::chrono::seconds(ttl_seconds));
         return true;
     } catch (const std::exception& ex) {
         spdlog::warn("Redis set_session failed for user {}: {}", user_id, ex.what());

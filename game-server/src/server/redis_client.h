@@ -6,7 +6,10 @@ class RedisClient {
 public:
     RedisClient(const std::string& host, unsigned short port);
     // 세션 키 기록 (유저 인증 성공 시), TTL은 만료 시각 기준 또는 fallback
-    bool set_session(const std::string& user_id, std::chrono::system_clock::time_point expires_at);
+    bool set_session(const std::string& user_id,
+                     std::chrono::system_clock::time_point expires_at,
+                     const std::string& device_id,
+                     const std::string& client_ip);
 
 private:
     std::string host_;
