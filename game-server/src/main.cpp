@@ -23,9 +23,16 @@ int main() {
         RedisClient redis_client(cfg.redis_host, cfg.redis_port);
         AuthService auth_service(cfg.auth_host, cfg.auth_port, redis_client);
         GameRepository game_repo(db_pool);
+        MiningService mining_service;
+        UpgradeService upgrade_service;
+        MissionService mission_service;
+        SlotService slot_service;
+        OfflineService offline_service;
         boost::asio::io_context io;
 
-        TcpServer server(io, cfg.listen_port, auth_service, game_repo);
+        TcpServer server(io, cfg.listen_port, auth_service, game_repo,
+                         mining_service, upgrade_service, mission_service,
+                         slot_service, offline_service);
         server.start();
 
         spdlog::info("Game server listening on port {}", cfg.listen_port);

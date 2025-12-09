@@ -8,12 +8,22 @@
 #include "game_repository.h"
 #include "game.pb.h"
 #include "message_router.h"
+#include "mining_service.h"
+#include "upgrade_service.h"
+#include "mission_service.h"
+#include "slot_service.h"
+#include "offline_service.h"
 
 class Session : public std::enable_shared_from_this<Session> {
 public:
     Session(boost::asio::ip::tcp::socket socket,
             AuthService& auth_service,
-            GameRepository& game_repo);
+            GameRepository& game_repo,
+            MiningService& mining_service,
+            UpgradeService& upgrade_service,
+            MissionService& mission_service,
+            SlotService& slot_service,
+            OfflineService& offline_service);
 
     void start();
 
@@ -38,6 +48,11 @@ private:
     AuthService& auth_service_;
     GameRepository& game_repo_;
     MessageRouter router_;
+    MiningService& mining_service_;
+    UpgradeService& upgrade_service_;
+    MissionService& mission_service_;
+    SlotService& slot_service_;
+    OfflineService& offline_service_;
 
     // 세션 컨텍스트
     std::string user_id_;

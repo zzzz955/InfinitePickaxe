@@ -1,6 +1,7 @@
 #include "session.h"
 #include <iostream>
 #include <cstring>
+#include <ctime>
 #include <cmath>
 
 namespace {
@@ -21,10 +22,20 @@ std::array<uint8_t,4> encode_le(uint32_t v) {
 
 Session::Session(boost::asio::ip::tcp::socket socket,
                  AuthService& auth_service,
-                 GameRepository& game_repo)
+                 GameRepository& game_repo,
+                 MiningService& mining_service,
+                 UpgradeService& upgrade_service,
+                 MissionService& mission_service,
+                 SlotService& slot_service,
+                 OfflineService& offline_service)
     : socket_(std::move(socket)),
       auth_service_(auth_service),
-      game_repo_(game_repo) {
+      game_repo_(game_repo),
+      mining_service_(mining_service),
+      upgrade_service_(upgrade_service),
+      mission_service_(mission_service),
+      slot_service_(slot_service),
+      offline_service_(offline_service) {
     init_router();
 }
 
@@ -196,12 +207,7 @@ void Session::handle_mining(const infinitepickaxe::Envelope& env, const std::str
             send_error("INVALID_PAYLOAD", "MINE_START parse failed");
             return;
         }
-        infinitepickaxe::MiningUpdate upd;
-        upd.set_mineral_id(req.mineral_id());
-        upd.set_current_hp(0);
-        upd.set_max_hp(0);
-        upd.set_damage_dealt(0);
-        upd.set_server_timestamp(static_cast<uint64_t>(std::time(nullptr)));
+        auto upd = mining_service_.handle_start(req.mineral_id());
         send_envelope("MINE_UPDATE", upd);
     } else if (type == "MINE_SYNC") {
         infinitepickaxe::MiningSync req;
@@ -209,12 +215,15 @@ void Session::handle_mining(const infinitepickaxe::Envelope& env, const std::str
             send_error("INVALID_PAYLOAD", "MINE_SYNC parse failed");
             return;
         }
-        infinitepickaxe::MiningUpdate upd;
-        upd.set_mineral_id(req.mineral_id());
-        upd.set_current_hp(req.client_hp());
-        upd.set_max_hp(req.client_hp());
-        upd.set_damage_dealt(0);
-        upd.set_server_timestamp(static_cast<uint64_t>(std::time(nullptr)));
+        auto upd = mining_service_.handle_sync(req.mineral_id(), req.client_hp());
+        send_envelope("MINE_UPDATE", upd);
+    } else if (type == "MINE_COMPLETE") {
+        infinitepickaxe::MiningComplete comp;
+        if (!comp.ParseFromString(env.payload())) {
+            send_error("INVALID_PAYLOAD", "MINE_COMPLETE parse failed");
+            return;
+        }
+        auto upd = mining_service_.handle_complete(comp.mineral_id());
         send_envelope("MINE_UPDATE", upd);
     } else {
         infinitepickaxe::Error err;
@@ -230,17 +239,13 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope& env) {
         send_error("INVALID_PAYLOAD", "UPGRADE_PICKAXE parse failed");
         return;
     }
-    infinitepickaxe::UpgradeResult res;
-    res.set_success(false);
-    res.set_error_code("NOT_IMPLEMENTED");
+    auto res = upgrade_service_.handle_upgrade(req.slot_index(), req.target_level());
     send_envelope("UPGRADE_RESULT", res);
 }
 
 void Session::handle_mission(const infinitepickaxe::Envelope& env, const std::string& type) {
-    infinitepickaxe::Error err;
-    err.set_error_code("NOT_IMPLEMENTED");
-    err.set_error_message("mission route not implemented");
-    send_envelope("ERROR", err);
+    auto upd = mission_service_.build_stub_update();
+    send_envelope("MISSION_UPDATE", upd);
 }
 
 void Session::handle_slot_unlock(const infinitepickaxe::Envelope& env) {
@@ -249,9 +254,7 @@ void Session::handle_slot_unlock(const infinitepickaxe::Envelope& env) {
         send_error("INVALID_PAYLOAD", "SLOT_UNLOCK parse failed");
         return;
     }
-    infinitepickaxe::SlotUnlockResult res;
-    res.set_success(false);
-    res.set_error_code("NOT_IMPLEMENTED");
+    auto res = slot_service_.handle_unlock(req.slot_index());
     send_envelope("SLOT_UNLOCK_RESULT", res);
 }
 
@@ -261,13 +264,7 @@ void Session::handle_offline_reward(const infinitepickaxe::Envelope& env) {
         send_error("INVALID_PAYLOAD", "OFFLINE_REWARD_REQUEST parse failed");
         return;
     }
-    infinitepickaxe::OfflineReward res;
-    res.set_offline_seconds(0);
-    res.set_gold_earned(0);
-    res.set_mining_cycles(0);
-    res.set_mineral_id(0);
-    res.set_efficiency(0);
-    res.set_new_total_gold(0);
+    auto res = offline_service_.handle_request();
     send_envelope("OFFLINE_REWARD", res);
 }
 
