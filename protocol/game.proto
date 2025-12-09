@@ -2,16 +2,16 @@ syntax = "proto3";
 
 package infinitepickaxe;
 
-// 공통 Envelope: msg_type으로 라우팅
+// 공통 Envelope: msg_type으로 메시지 구분
 message Envelope {
   string msg_type = 1;  // HANDSHAKE, HEARTBEAT, MINE_START, ...
   uint32 version = 2;   // 프로토콜 버전
   uint32 seq = 3;       // 시퀀스 번호 (옵션, 0이면 미사용)
-  uint64 timestamp = 4; // 클라이언트 Unix timestamp (초)
-  bytes payload = 5;    // 직렬화된 구체 메시지
+  uint64 timestamp = 4; // 클라이언트 Unix timestamp(초)
+  bytes payload = 5;    // 직렬화된 메시지 페이로드
 }
 
-// -------------- 인증 / 세션 --------------
+// -------------- 접속 / 세션 --------------
 
 message HandshakeReq {
   string jwt = 1;
@@ -23,7 +23,7 @@ message UserDataSnapshot {
   string user_id = 1;
   uint64 gold = 2;
   uint32 crystal = 3;
-  repeated bool unlocked_slots = 4; // 길이 4 예상
+  repeated bool unlocked_slots = 4; // 길이 4 고정
   uint32 current_mineral_id = 5;
   uint64 mineral_hp = 6;
   uint64 mineral_max_hp = 7;
@@ -89,11 +89,15 @@ message UpgradePickaxe {
 message UpgradeResult {
   bool success = 1;
   uint32 slot_index = 2;
-  uint32 new_level = 3;
-  uint64 new_dps = 4;
+  uint32 new_level = 3;       // 시도 후 최종 레벨
+  uint64 new_dps = 4;         // 시도 후 최종 DPS
   uint64 gold_spent = 5;
   uint64 remaining_gold = 6;
-  string error_code = 7; // INSUFFICIENT_GOLD 등
+  string error_code = 7;      // 3001 부족, 3002 대상 레벨 오류 등
+  double base_rate = 8;       // 기본 확률 (0.0~1.0)
+  double bonus_rate = 9;      // 실패 누적 보너스 증가량(기본확률의 몇 %)
+  double final_rate = 10;     // 최종 적용 확률
+  uint32 pity_bonus = 11;     // basis 10000 = 100.00%
 }
 
 // -------------- 미션 --------------
@@ -159,6 +163,6 @@ message OfflineReward {
 
 message Error {
   string error_code = 1;    // AUTH_FAILED, INVALID_PACKET, INSUFFICIENT_GOLD 등
-  string error_message = 2; // 선택적 상세
-  bytes detail = 3;         // 선택적: 추가 JSON/PROTO
+  string error_message = 2; // 상세 메시지
+  bytes detail = 3;         // 선택적 추가 JSON/PROTO
 }

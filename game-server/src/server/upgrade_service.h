@@ -1,7 +1,7 @@
 #pragma once
 #include "game.pb.h"
-#include "upgrade_repository.h"
 #include "metadata/metadata_loader.h"
+#include "upgrade_repository.h"
 
 class UpgradeService {
 public:
