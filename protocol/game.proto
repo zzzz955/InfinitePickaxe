@@ -1,0 +1,162 @@
+syntax = "proto3";
+
+package infinitepickaxe;
+
+// 공통 Envelope: msg_type으로 라우팅
+message Envelope {
+  string msg_type = 1;  // HANDSHAKE, HEARTBEAT, MINE_START, ...
+  uint32 version = 2;   // 프로토콜 버전
+  bytes payload = 3;    // 직렬화된 구체 메시지
+}
+
+// -------------- 인증 / 세션 --------------
+
+message HandshakeReq {
+  string jwt = 1;
+  string client_version = 2;
+  string device_id = 3;
+}
+
+message UserDataSnapshot {
+  string user_id = 1;
+  uint64 gold = 2;
+  uint32 crystal = 3;
+  repeated bool unlocked_slots = 4; // 길이 4 예상
+  uint32 current_mineral_id = 5;
+  uint64 mineral_hp = 6;
+  uint64 mineral_max_hp = 7;
+  uint64 pickaxe_dps = 8;
+  uint32 pickaxe_level = 9;
+  uint32 highest_pickaxe_level = 10;
+  uint64 server_time = 11; // unix seconds
+}
+
+message HandshakeRes {
+  bool ok = 1;
+  string error = 2;        // INVALID_JWT, BANNED, EXPIRED ...
+  string user_id = 3;
+  string device_id = 4;
+  string google_id = 5;
+  UserDataSnapshot snapshot = 6;
+}
+
+message Heartbeat {
+  uint64 client_time_ms = 1;
+}
+
+message HeartbeatAck {
+  uint64 server_time_ms = 1;
+}
+
+// -------------- 채굴 --------------
+
+message MiningStart {
+  uint32 mineral_id = 1;
+}
+
+message MiningSync {
+  uint32 mineral_id = 1;
+  uint64 client_hp = 2;
+  uint64 client_timestamp = 3;
+}
+
+message MiningUpdate {
+  uint32 mineral_id = 1;
+  uint64 current_hp = 2;
+  uint64 max_hp = 3;
+  uint64 damage_dealt = 4;
+  uint64 server_timestamp = 5;
+}
+
+message MiningComplete {
+  uint32 mineral_id = 1;
+  uint64 gold_earned = 2;
+  uint64 total_gold = 3;
+  uint64 mining_count = 4;
+  uint32 respawn_time = 5;
+  uint64 server_timestamp = 6;
+}
+
+// -------------- 강화 --------------
+
+message UpgradePickaxe {
+  uint32 slot_index = 1;
+  uint32 target_level = 2;
+}
+
+message UpgradeResult {
+  bool success = 1;
+  uint32 slot_index = 2;
+  uint32 new_level = 3;
+  uint64 new_dps = 4;
+  uint64 gold_spent = 5;
+  uint64 remaining_gold = 6;
+  string error_code = 7; // INSUFFICIENT_GOLD 등
+}
+
+// -------------- 미션 --------------
+
+message MissionClaim {
+  uint32 mission_index = 1;
+}
+
+message MissionReroll {
+  bool use_ad = 1;
+}
+
+message MissionEntry {
+  uint32 index = 1;
+  string type = 2;
+  string description = 3;
+  uint32 target = 4;
+  uint32 current = 5;
+  uint32 reward_crystal = 6;
+  bool completed = 7;
+  bool claimed = 8;
+}
+
+message MissionUpdate {
+  repeated MissionEntry missions = 1;
+  bool milestone_completed_3 = 2;
+  bool milestone_completed_5 = 3;
+  bool milestone_completed_7 = 4;
+  uint32 offline_bonus_hours = 5;
+  uint64 reset_time = 6; // unix seconds
+}
+
+// -------------- 슬롯 해금 --------------
+
+message SlotUnlock {
+  uint32 slot_index = 1;
+}
+
+message SlotUnlockResult {
+  bool success = 1;
+  uint32 slot_index = 2;
+  uint32 crystal_spent = 3;
+  uint32 remaining_crystal = 4;
+  string error_code = 5;
+}
+
+// -------------- 오프라인 보상 --------------
+
+message OfflineRewardRequest {
+  string request_type = 1; // "calculate" 등
+}
+
+message OfflineReward {
+  uint32 offline_seconds = 1;
+  uint64 gold_earned = 2;
+  uint32 mining_cycles = 3;
+  uint32 mineral_id = 4;
+  double efficiency = 5;
+  uint64 new_total_gold = 6;
+}
+
+// -------------- 공통 에러 --------------
+
+message Error {
+  string error_code = 1;    // AUTH_FAILED, INVALID_PACKET, INSUFFICIENT_GOLD 등
+  string error_message = 2; // 선택적 상세
+  bytes detail = 3;         // 선택적: 추가 JSON/PROTO
+}
