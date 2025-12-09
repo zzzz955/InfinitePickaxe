@@ -18,18 +18,8 @@ public:
     void start();
 
 private:
-    struct SessionCtx {
-        std::string user_id;
-        std::string device_id;
-        std::chrono::system_clock::time_point expires_at;
-    };
-
     void do_accept();
-    void start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
-    void start_message_loop(std::shared_ptr<boost::asio::ip::tcp::socket> socket, SessionCtx ctx);
-    void handle_message(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
-                        SessionCtx& ctx,
-                        const std::string& msg);
+    void start_handshake(std::shared_ptr<class Session> session);
 
     boost::asio::ip::tcp::acceptor acceptor_;
     AuthService& auth_service_;
