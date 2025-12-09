@@ -27,6 +27,7 @@ int main() {
             spdlog::error("Failed to load metadata from {}", meta_path);
             return 1;
         }
+        spdlog::info("Metadata loaded from {}", meta_path);
         RedisClient redis_client(cfg.redis_host, cfg.redis_port);
         AuthService auth_service(cfg.auth_host, cfg.auth_port, redis_client);
         GameRepository game_repo(db_pool);
@@ -51,6 +52,7 @@ int main() {
         spdlog::info("Auth endpoint {}:{}", cfg.auth_host, cfg.auth_port);
         spdlog::info("DB endpoint {}:{} dbname={}", cfg.db_host, cfg.db_port, cfg.db_name);
         spdlog::info("Redis endpoint {}:{}", cfg.redis_host, cfg.redis_port);
+        spdlog::info("Services initialized (mining/upgrade/mission/slot/offline) with metadata");
 
         // 워커 스레드 풀 실행 (0이면 하드웨어 동시성)
         unsigned int workers = cfg.worker_threads;
