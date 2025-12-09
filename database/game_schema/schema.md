@@ -28,6 +28,7 @@
 | level | INTEGER | DEFAULT 0, CHECK 0-100 | 레벨 |
 | tier | INTEGER | DEFAULT 1, CHECK 1-5 | 티어 |
 | dps | BIGINT | DEFAULT 10, CHECK >0 | DPS |
+| pity_bonus | INTEGER | DEFAULT 0, CHECK 0-10000 | 실패 보정 (basis 10000=100.00%) |
 | created_at | TIMESTAMP | DEFAULT now |  |
 | updated_at | TIMESTAMP | DEFAULT now |  |
 | last_upgraded_at | TIMESTAMP |  | 최근 강화 |

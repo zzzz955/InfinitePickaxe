@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS game_schema.pickaxe_slots (
     level            INTEGER NOT NULL DEFAULT 0 CHECK (level >= 0 AND level <= 100),
     tier             INTEGER NOT NULL DEFAULT 1 CHECK (tier BETWEEN 1 AND 5),
     dps              BIGINT NOT NULL DEFAULT 10 CHECK (dps > 0),
+    pity_bonus       INTEGER NOT NULL DEFAULT 0 CHECK (pity_bonus >= 0 AND pity_bonus <= 10000), -- basis 10000 = 100.00%
     created_at       TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at       TIMESTAMP NOT NULL DEFAULT NOW(),
     last_upgraded_at TIMESTAMP,
