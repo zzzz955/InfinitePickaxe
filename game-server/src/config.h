@@ -7,6 +7,24 @@ inline std::string env_or(const char* key, const char* def) {
     return v ? std::string(v) : std::string(def);
 }
 
+inline unsigned int parse_uint_or(const char* key, const char* def) {
+    std::string raw = env_or(key, def);
+    try {
+        return static_cast<unsigned int>(std::stoul(raw));
+    } catch (...) {
+        return static_cast<unsigned int>(std::stoul(def));
+    }
+}
+
+inline unsigned short parse_ushort_or(const char* key, const char* def) {
+    std::string raw = env_or(key, def);
+    try {
+        return static_cast<unsigned short>(std::stoul(raw));
+    } catch (...) {
+        return static_cast<unsigned short>(std::stoul(def));
+    }
+}
+
 struct ServerConfig {
     unsigned short listen_port = 10001;
     std::string auth_host = "auth-server";
@@ -30,19 +48,19 @@ struct ServerConfig {
 
 inline ServerConfig load_config() {
     ServerConfig cfg;
-    cfg.listen_port = static_cast<unsigned short>(std::stoi(env_or("GAME_LISTEN_PORT", "10001")));
+    cfg.listen_port = parse_ushort_or("GAME_LISTEN_PORT", "10001");
     cfg.auth_host = env_or("AUTH_HOST", "auth-server");
-    cfg.auth_port = static_cast<unsigned short>(std::stoi(env_or("AUTH_PORT", "10000")));
-    cfg.health_port = static_cast<unsigned short>(std::stoi(env_or("HEALTH_PORT", "18080")));
+    cfg.auth_port = parse_ushort_or("AUTH_PORT", "10000");
+    cfg.health_port = parse_ushort_or("HEALTH_PORT", "18080");
     cfg.db_host = env_or("DB_HOST", "postgres");
-    cfg.db_port = static_cast<unsigned short>(std::stoi(env_or("DB_PORT", "5432")));
+    cfg.db_port = parse_ushort_or("DB_PORT", "5432");
     cfg.db_user = env_or("DB_USER", "pickaxe");
     cfg.db_password = env_or("DB_PASSWORD", "pickaxe");
     cfg.db_name = env_or("DB_NAME", "pickaxe_auth");
-    cfg.db_pool_size = static_cast<unsigned int>(std::stoul(env_or("DB_POOL_SIZE", "4")));
-    cfg.db_pool_max = static_cast<unsigned int>(std::stoul(env_or("DB_POOL_MAX", "16")));
+    cfg.db_pool_size = parse_uint_or("DB_POOL_SIZE", "4");
+    cfg.db_pool_max = parse_uint_or("DB_POOL_MAX", "16");
     cfg.redis_host = env_or("REDIS_HOST", "redis");
-    cfg.redis_port = static_cast<unsigned short>(std::stoi(env_or("REDIS_PORT", "6379")));
-    cfg.worker_threads = static_cast<unsigned int>(std::stoul(env_or("WORKER_THREADS", "0")));
+    cfg.redis_port = parse_ushort_or("REDIS_PORT", "6379");
+    cfg.worker_threads = parse_uint_or("WORKER_THREADS", "0");
     return cfg;
 }

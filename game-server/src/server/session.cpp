@@ -84,49 +84,7 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
     }
     const std::string& type = env.msg_type();
 
-    if (type == "HANDSHAKE") {
-        infinitepickaxe::HandshakeReq req;
-        if (!req.ParseFromString(env.payload())) {
-            send_error("INVALID_PAYLOAD", "handshake parse failed");
-            return;
-        }
-        VerifyResult vr = auth_service_.verify_and_cache(req.jwt(), client_ip_);
-        infinitepickaxe::HandshakeRes res;
-        if (!vr.valid || vr.is_banned) {
-            res.set_ok(false);
-            res.set_error(vr.is_banned ? "BANNED" : "AUTH_FAILED");
-            send_envelope("HANDSHAKE_RES", res);
-            close();
-            return;
-        }
-        if (is_expired()) {
-            res.set_ok(false);
-            res.set_error("TOKEN_EXPIRED");
-            send_envelope("HANDSHAKE_RES", res);
-            close();
-            return;
-        }
-        if (!game_repo_.ensure_user_initialized(vr.user_id)) {
-            res.set_ok(false);
-            res.set_error("DB_ERROR");
-            send_envelope("HANDSHAKE_RES", res);
-            close();
-            return;
-        }
-        user_id_ = vr.user_id;
-        device_id_ = vr.device_id;
-        google_id_ = vr.google_id;
-        expires_at_ = vr.expires_at;
-        authenticated_ = true;
-
-        res.set_ok(true);
-        res.set_user_id(vr.user_id);
-        res.set_device_id(vr.device_id);
-        res.set_google_id(vr.google_id);
-        // snapshot 채우기(필요하면 확장)
-        send_envelope("HANDSHAKE_RES", res);
-        return;
-    }
+    if (type == "HANDSHAKE") { handle_handshake(env); return; }
 
     if (!authenticated_) {
         send_error("UNAUTHORIZED", "handshake required");
@@ -134,16 +92,75 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
         return;
     }
 
-    if (type == "HEARTBEAT") {
-        infinitepickaxe::Heartbeat hb;
-        hb.ParseFromString(env.payload());
-        infinitepickaxe::HeartbeatAck ack;
-        ack.set_server_time_ms(
-            static_cast<uint64_t>(
-                std::chrono::duration_cast<std::chrono::milliseconds>(
-                    std::chrono::system_clock::now().time_since_epoch()).count()));
-        send_envelope("HEARTBEAT_ACK", ack);
-    } else if (type == "MINE_START") {
+    if (type == "HEARTBEAT") { handle_heartbeat(env); }
+    else if (type.rfind("MINE_", 0) == 0) { handle_mining(env, type); }
+    else if (type.rfind("UPGRADE", 0) == 0) { handle_upgrade(env); }
+    else if (type.rfind("MISSION", 0) == 0) { handle_mission(env, type); }
+    else if (type == "SLOT_UNLOCK") { handle_slot_unlock(env); }
+    else if (type == "OFFLINE_REWARD_REQUEST") { handle_offline_reward(env); }
+    else {
+        send_error("UNKNOWN_TYPE", type);
+    }
+
+    // 다음 프레임 대기
+    read_length();
+}
+
+void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
+    infinitepickaxe::HandshakeReq req;
+    if (!req.ParseFromString(env.payload())) {
+        send_error("INVALID_PAYLOAD", "handshake parse failed");
+        return;
+    }
+    VerifyResult vr = auth_service_.verify_and_cache(req.jwt(), client_ip_);
+    infinitepickaxe::HandshakeRes res;
+    if (!vr.valid || vr.is_banned) {
+        res.set_ok(false);
+        res.set_error(vr.is_banned ? "BANNED" : "AUTH_FAILED");
+        send_envelope("HANDSHAKE_RES", res);
+        close();
+        return;
+    }
+    if (is_expired()) {
+        res.set_ok(false);
+        res.set_error("TOKEN_EXPIRED");
+        send_envelope("HANDSHAKE_RES", res);
+        close();
+        return;
+    }
+    if (!game_repo_.ensure_user_initialized(vr.user_id)) {
+        res.set_ok(false);
+        res.set_error("DB_ERROR");
+        send_envelope("HANDSHAKE_RES", res);
+        close();
+        return;
+    }
+    user_id_ = vr.user_id;
+    device_id_ = vr.device_id;
+    google_id_ = vr.google_id;
+    expires_at_ = vr.expires_at;
+    authenticated_ = true;
+
+    res.set_ok(true);
+    res.set_user_id(vr.user_id);
+    res.set_device_id(vr.device_id);
+    res.set_google_id(vr.google_id);
+    send_envelope("HANDSHAKE_RES", res);
+}
+
+void Session::handle_heartbeat(const infinitepickaxe::Envelope& env) {
+    infinitepickaxe::Heartbeat hb;
+    hb.ParseFromString(env.payload());
+    infinitepickaxe::HeartbeatAck ack;
+    ack.set_server_time_ms(
+        static_cast<uint64_t>(
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count()));
+    send_envelope("HEARTBEAT_ACK", ack);
+}
+
+void Session::handle_mining(const infinitepickaxe::Envelope& env, const std::string& type) {
+    if (type == "MINE_START") {
         infinitepickaxe::MiningStart req;
         if (!req.ParseFromString(env.payload())) {
             send_error("INVALID_PAYLOAD", "MINE_START parse failed");
@@ -162,7 +179,6 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
             send_error("INVALID_PAYLOAD", "MINE_SYNC parse failed");
             return;
         }
-        // TODO: 검증/치트 스코어 로직
         infinitepickaxe::MiningUpdate upd;
         upd.set_mineral_id(req.mineral_id());
         upd.set_current_hp(req.client_hp());
@@ -170,32 +186,59 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
         upd.set_damage_dealt(0);
         upd.set_server_timestamp(static_cast<uint64_t>(std::time(nullptr)));
         send_envelope("MINE_UPDATE", upd);
-    } else if (type == "UPGRADE_PICKAXE") {
-        infinitepickaxe::UpgradePickaxe req;
-        if (!req.ParseFromString(env.payload())) {
-            send_error("INVALID_PAYLOAD", "UPGRADE_PICKAXE parse failed");
-            return;
-        }
-        infinitepickaxe::UpgradeResult res;
-        res.set_success(false);
-        res.set_error_code("NOT_IMPLEMENTED");
-        send_envelope("UPGRADE_RESULT", res);
-    } else if (type == "MISSION_CLAIM" || type == "MISSION_REROLL" ||
-               type == "SLOT_UNLOCK" || type == "OFFLINE_REWARD_REQUEST" ||
-               type == "MINE_PROGRESS" || type == "MINE_COMPLETE" || type == "MISSION_UPDATE") {
-        infinitepickaxe::Error err;
-        err.set_error_code("NOT_IMPLEMENTED");
-        err.set_error_message("not implemented in MVP stub");
-        send_envelope("ERROR", err);
     } else {
         infinitepickaxe::Error err;
-        err.set_error_code("UNKNOWN_TYPE");
-        err.set_error_message(type);
+        err.set_error_code("NOT_IMPLEMENTED");
+        err.set_error_message("mining route not implemented");
         send_envelope("ERROR", err);
     }
+}
 
-    // 다음 프레임 대기
-    read_length();
+void Session::handle_upgrade(const infinitepickaxe::Envelope& env) {
+    infinitepickaxe::UpgradePickaxe req;
+    if (!req.ParseFromString(env.payload())) {
+        send_error("INVALID_PAYLOAD", "UPGRADE_PICKAXE parse failed");
+        return;
+    }
+    infinitepickaxe::UpgradeResult res;
+    res.set_success(false);
+    res.set_error_code("NOT_IMPLEMENTED");
+    send_envelope("UPGRADE_RESULT", res);
+}
+
+void Session::handle_mission(const infinitepickaxe::Envelope& env, const std::string& type) {
+    infinitepickaxe::Error err;
+    err.set_error_code("NOT_IMPLEMENTED");
+    err.set_error_message("mission route not implemented");
+    send_envelope("ERROR", err);
+}
+
+void Session::handle_slot_unlock(const infinitepickaxe::Envelope& env) {
+    infinitepickaxe::SlotUnlock req;
+    if (!req.ParseFromString(env.payload())) {
+        send_error("INVALID_PAYLOAD", "SLOT_UNLOCK parse failed");
+        return;
+    }
+    infinitepickaxe::SlotUnlockResult res;
+    res.set_success(false);
+    res.set_error_code("NOT_IMPLEMENTED");
+    send_envelope("SLOT_UNLOCK_RESULT", res);
+}
+
+void Session::handle_offline_reward(const infinitepickaxe::Envelope& env) {
+    infinitepickaxe::OfflineRewardRequest req;
+    if (!req.ParseFromString(env.payload())) {
+        send_error("INVALID_PAYLOAD", "OFFLINE_REWARD_REQUEST parse failed");
+        return;
+    }
+    infinitepickaxe::OfflineReward res;
+    res.set_offline_seconds(0);
+    res.set_gold_earned(0);
+    res.set_mining_cycles(0);
+    res.set_mineral_id(0);
+    res.set_efficiency(0);
+    res.set_new_total_gold(0);
+    send_envelope("OFFLINE_REWARD", res);
 }
 
 void Session::send_envelope(const std::string& msg_type, const google::protobuf::Message& msg) {
