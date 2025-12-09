@@ -191,6 +191,29 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ## 3. 게임 서버 프로토콜
 
+### 3-0. MVP 메시지 요약 (proto 전환용)
+
+| 메시지명 | 방향 | 목적/설명 | 핵심 필드(요약) |
+| --- | --- | --- | --- |
+| HandshakeReq | C→S | JWT 전달 및 버전/디바이스 식별 | `jwt`, `client_version`, `device_id` |
+| HandshakeRes | S→C | 인증 결과 + 초기 스냅샷 | `ok`, `error`, `user_id`, `device_id`, `google_id`, `user_data`(gold/crystal/slots/current_mineral 등) |
+| Heartbeat (Ping) | C→S | 연결 유지/지연 측정 | `client_time_ms` |
+| HeartbeatAck (Pong) | S→C | Heartbeat 응답 | `server_time_ms` |
+| MiningStart | C→S | 광물 선택 및 채굴 시작 | `mineral_id` |
+| MiningSync | C→S | 채굴 진행 검증용 보고(1초) | `mineral_id`, `client_hp`, `client_timestamp` |
+| MiningUpdate | S→C | 채굴 진행 브로드캐스트(1초) | `mineral_id`, `current_hp`, `max_hp`, `damage_dealt`, `server_timestamp` |
+| MiningComplete | S→C | 채굴 완료/보상 | `mineral_id`, `gold_earned`, `total_gold`, `mining_count`, `respawn_time`, `server_timestamp` |
+| UpgradePickaxe | C→S | 곡괭이 강화 요청 | `slot_index`, `target_level` |
+| UpgradeResult | S→C | 강화 결과 | `success`, `slot_index`, `new_level`, `new_dps`, `gold_spent`, `remaining_gold`, `error_code` |
+| MissionClaim | C→S | 일일 미션 보상 수령 | `mission_index` |
+| MissionReroll | C→S | 일일 미션 리롤 | `use_ad` |
+| MissionUpdate | S→C | 미션 상태/리셋 정보 | `missions[]`(index/type/target/current/reward/completed/claimed), `milestones`, `reset_time` |
+| SlotUnlock | C→S | 슬롯 해금 요청 | `slot_index` |
+| SlotUnlockResult | S→C | 슬롯 해금 결과 | `success`, `slot_index`, `crystal_spent`, `remaining_crystal`, `error_code` |
+| OfflineRewardRequest | C→S | 오프라인 보상 계산 요청 | `request_type` |
+| OfflineReward | S→C | 오프라인 보상 정산 | `offline_seconds`, `gold_earned`, `mining_cycles`, `mineral_id`, `efficiency`, `new_total_gold` |
+| Error | S→C | 공통 에러 응답 | `error_code`, `error_message`, `detail`(선택) |
+
 ### 3-1. TCP 패킷 구조
 
 ```
