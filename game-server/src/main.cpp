@@ -23,11 +23,16 @@ int main() {
         RedisClient redis_client(cfg.redis_host, cfg.redis_port);
         AuthService auth_service(cfg.auth_host, cfg.auth_port, redis_client);
         GameRepository game_repo(db_pool);
-        MiningService mining_service;
-        UpgradeService upgrade_service;
-        MissionService mission_service;
-        SlotService slot_service;
-        OfflineService offline_service;
+        MiningRepository mining_repo(db_pool);
+        UpgradeRepository upgrade_repo(db_pool);
+        MissionRepository mission_repo(db_pool);
+        SlotRepository slot_repo(db_pool);
+        OfflineRepository offline_repo(db_pool);
+        MiningService mining_service(mining_repo);
+        UpgradeService upgrade_service(upgrade_repo);
+        MissionService mission_service(mission_repo);
+        SlotService slot_service(slot_repo);
+        OfflineService offline_service(offline_repo);
         boost::asio::io_context io;
 
         TcpServer server(io, cfg.listen_port, auth_service, game_repo,
