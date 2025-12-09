@@ -13,6 +13,17 @@ bool MetadataLoader::load(const std::string& base_path) {
             for (auto& e : j) {
                 PickaxeLevel pl;
                 pl.level = e["level"].get<uint32_t>();
+                // tier가 "T1" 형태이므로 숫자만 추출
+                if (e["tier"].is_string()) {
+                    std::string t = e["tier"].get<std::string>();
+                    if (!t.empty() && (t[0] == 'T' || t[0] == 't')) {
+                        pl.tier = static_cast<uint32_t>(std::stoul(t.substr(1)));
+                    } else {
+                        pl.tier = e.value("tier_num", 1);
+                    }
+                } else {
+                    pl.tier = e.value("tier", 1);
+                }
                 pl.dps = e["dps"].get<uint64_t>();
                 pl.cost = e["cost"].get<uint64_t>();
                 pickaxe_levels_[pl.level] = pl;
@@ -64,6 +75,29 @@ bool MetadataLoader::load(const std::string& base_path) {
                         missions_.push_back(m);
                     }
                 }
+            }
+        }
+        // upgrade_rules.json (선택)
+        {
+            std::ifstream f(base_path + "/upgrade_rules.json");
+            if (f.good()) {
+                nlohmann::json j;
+                f >> j;
+                upgrade_rules_.min_rate = j.value("min_rate", 0.3);
+                upgrade_rules_.bonus_rate = j.value("bonus_rate", 0.1);
+                if (j.contains("base_rate_by_tier")) {
+                    for (auto& item : j["base_rate_by_tier"].items()) {
+                        uint32_t tier = static_cast<uint32_t>(std::stoul(item.key()));
+                        double rate = item.value().get<double>();
+                        upgrade_rules_.base_rate_by_tier[tier] = rate;
+                    }
+                }
+            } else {
+                // 기본값: T1 1.0, T2 0.95, T3 0.90, T4 0.85
+                upgrade_rules_.base_rate_by_tier[1] = 1.0;
+                upgrade_rules_.base_rate_by_tier[2] = 0.95;
+                upgrade_rules_.base_rate_by_tier[3] = 0.90;
+                upgrade_rules_.base_rate_by_tier[4] = 0.85;
             }
         }
         return true;
