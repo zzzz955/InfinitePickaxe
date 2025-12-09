@@ -3,8 +3,10 @@
 #include <memory>
 #include <string>
 #include <chrono>
+#include <array>
 #include "auth_service.h"
 #include "game_repository.h"
+#include "game.pb.h"
 
 class Session : public std::enable_shared_from_this<Session> {
 public:
@@ -15,9 +17,12 @@ public:
     void start();
 
 private:
-    void read_handshake();
-    void start_message_loop();
-    void handle_message(const std::string& msg);
+    void read_length();
+    void read_payload(std::size_t length);
+    void dispatch_envelope(const infinitepickaxe::Envelope& env);
+    void send_envelope(const std::string& msg_type, const google::protobuf::Message& msg);
+    void send_error(const std::string& code, const std::string& message);
+    bool is_expired() const;
     void close();
 
     boost::asio::ip::tcp::socket socket_;
@@ -30,6 +35,8 @@ private:
     std::string google_id_;
     std::string client_ip_;
     std::chrono::system_clock::time_point expires_at_;
+    bool authenticated_{false};
 
-    boost::asio::streambuf buffer_;
+    std::array<uint8_t, 4> len_buf_{};
+    std::vector<uint8_t> payload_buf_;
 };
