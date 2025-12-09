@@ -2,9 +2,10 @@
 #include <boost/asio.hpp>
 #include <iostream>
 
-TcpServer::TcpServer(boost::asio::io_context& io, unsigned short port, VerifyFn verifier)
+TcpServer::TcpServer(boost::asio::io_context& io, unsigned short port, VerifyFn verifier, OnAuthFn on_auth)
     : acceptor_(io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
-      verify_fn_(std::move(verifier)) {}
+      verify_fn_(std::move(verifier)),
+      on_auth_fn_(std::move(on_auth)) {}
 
 void TcpServer::start() {
     do_accept();
@@ -43,6 +44,13 @@ void TcpServer::start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> so
                     socket->close();
                     return;
                 }
+                if (on_auth_fn_) {
+                    if (!on_auth_fn_(vr)) {
+                        std::cout << "Auth DB init failed, closing connection." << std::endl;
+                        socket->close();
+                        return;
+                    }
+                }
                 std::cout << "JWT verified for user " << (vr.user_id.empty() ? "unknown" : vr.user_id);
                 if (!vr.google_id.empty()) {
                     std::cout << " (google_id=" << vr.google_id << ")";
@@ -51,7 +59,13 @@ void TcpServer::start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> so
                     std::cout << " device_id=" << vr.device_id;
                 }
                 std::cout << ", session opened." << std::endl;
-                start_echo(socket, vr.expires_at, vr.user_id);
+                // Send minimal ACK and close (no echo loop in MVP stub)
+                std::string ack = "AUTH_OK\n";
+                boost::asio::async_write(*socket, boost::asio::buffer(ack),
+                    [socket](boost::system::error_code write_ec, std::size_t /*written*/) {
+                        socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+                        socket->close();
+                    });
             } else {
                 if (vr.is_banned) {
                     std::cout << "User banned";
@@ -60,46 +74,12 @@ void TcpServer::start_handshake(std::shared_ptr<boost::asio::ip::tcp::socket> so
                 } else {
                     std::cout << "JWT invalid, closing connection." << std::endl;
                 }
-                socket->close();
-            }
-        });
-}
-
-void TcpServer::start_echo(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
-                           std::chrono::system_clock::time_point expires_at,
-                           std::string user_id) {
-    auto buffer = std::make_shared<boost::asio::streambuf>();
-    boost::asio::async_read_until(*socket, *buffer, '\n',
-        [this, socket, buffer, expires_at, user_id](boost::system::error_code ec, std::size_t /*len*/) {
-            if (ec) {
-                socket->close();
-                return;
-            }
-            auto now = std::chrono::system_clock::now();
-            if (expires_at.time_since_epoch().count() != 0 && now >= expires_at) {
-                std::cout << "Session expired, closing connection." << std::endl;
-                socket->close();
-                return;
-            }
-            std::istream is(buffer.get());
-            std::string msg;
-            std::getline(is, msg);
-            if (!msg.empty() && msg.back() == '\r') msg.pop_back();
-            if (user_id.empty()) {
-                std::cout << "Echo msg: " << msg << std::endl;
-            } else {
-                std::cout << "Echo msg from user " << user_id << ": " << msg << std::endl;
-            }
-            // Echo back
-            std::string echo_payload = msg + "\n";
-            boost::asio::async_write(*socket, boost::asio::buffer(echo_payload),
-                [this, socket, msg, expires_at, user_id](boost::system::error_code write_ec, std::size_t /*written*/) {
-                    if (write_ec) {
+                std::string nack = "AUTH_FAIL\n";
+                boost::asio::async_write(*socket, boost::asio::buffer(nack),
+                    [socket](boost::system::error_code /*ec*/, std::size_t /*written*/) {
+                        socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
                         socket->close();
-                        return;
-                    }
-                    // Continue reading
-                    start_echo(socket, expires_at, user_id);
-                });
+                    });
+            }
         });
 }

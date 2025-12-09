@@ -1,5 +1,6 @@
 #include "server/tcp_server.h"
 #include "server/http_auth_client.h"
+#include "server/db_client.h"
 #include "config.h"
 #include <boost/asio.hpp>
 #include <spdlog/spdlog.h>
@@ -8,6 +9,8 @@
 int main() {
     try {
         ServerConfig cfg = load_config();
+        DbConfig dbcfg{cfg.db_host, cfg.db_port, cfg.db_user, cfg.db_password, cfg.db_name};
+        DbClient db_client(dbcfg);
         boost::asio::io_context io;
 
         // JWT verifier using auth-service HTTP
@@ -15,11 +18,18 @@ int main() {
             return verify_jwt_with_auth(cfg.auth_host, cfg.auth_port, jwt);
         };
 
-        TcpServer server(io, cfg.listen_port, verifier);
+        // On-auth hook: ensure DB rows exist
+        auto on_auth = [&db_client](const VerifyResult& vr) {
+            if (vr.user_id.empty()) return false;
+            return db_client.ensure_user_initialized(vr.user_id);
+        };
+
+        TcpServer server(io, cfg.listen_port, verifier, on_auth);
         server.start();
 
         spdlog::info("Game server listening on port {}", cfg.listen_port);
         spdlog::info("Auth endpoint {}:{}", cfg.auth_host, cfg.auth_port);
+        spdlog::info("DB endpoint {}:{} dbname={}", cfg.db_host, cfg.db_port, cfg.db_name);
 
         io.run();
     } catch (const std::exception& ex) {

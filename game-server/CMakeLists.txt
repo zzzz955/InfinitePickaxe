@@ -9,6 +9,7 @@ add_executable(game-server
     src/main.cpp
     src/server/tcp_server.cpp
     src/server/http_auth_client.cpp
+    src/server/db_client.cpp
 )
 
 # Force module mode to avoid missing Boost config packages on distro builds
