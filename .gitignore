@@ -1,9 +1,47 @@
-# 프로젝트 루트
-
+# Root
 .env
 postgres-data/
 
-# 인증 서버 관련
-
+# Auth server
 auth-server/node_modules
 auth-server/.env
+
+# Unity project
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+MemoryCaptures/
+Sysinfo.txt
+*.pidb
+*.suo
+*.user
+*.userprefs
+*.unityproj
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.ide
+*.DotSettings.user
+.vs/
+.idea/
+*.csproj
+*.sln
+*.sln.dotsettings
+.vscode/
+
+# Unity samples/cache
+[Pp]ackages/com.unity.cinemachine/.samples/
+[Pp]ackages/com.unity.timeline/.samples/
+[Pp]ackages/com.unity.render-pipelines.high-definition/Runtime/RenderPipelineResources/LocalProfiles
+[Pp]ackages/com.unity.render-pipelines.universal/Runtime/RenderPipelineResources/LocalProfiles
+
+# Unity asset tools temp
+[Aa]ssets/AssetStoreTools*
+[Aa]ssets/Plugins/Editor/JetBrains*
