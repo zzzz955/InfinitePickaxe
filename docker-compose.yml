@@ -54,6 +54,8 @@ services:
       - DB_USER=${DB_USER:-pickaxe}
       - DB_PASSWORD=${DB_PASSWORD:-pickaxe}
       - DB_NAME=${DB_NAME:-pickaxe_auth}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     depends_on:
       - auth-server
       - postgres

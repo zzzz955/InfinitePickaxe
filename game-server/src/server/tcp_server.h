@@ -3,6 +3,7 @@
 #include <boost/asio.hpp>
 #include "http_auth_client.h"
 #include "db_client.h"
+#include "redis_client.h"
 #include <memory>
 #include <vector>
 #include <string>

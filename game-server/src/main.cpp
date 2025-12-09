@@ -1,6 +1,7 @@
 #include "server/tcp_server.h"
 #include "server/http_auth_client.h"
 #include "server/db_client.h"
+#include "server/redis_client.h"
 #include "config.h"
 #include <boost/asio.hpp>
 #include <spdlog/spdlog.h>
@@ -11,6 +12,7 @@ int main() {
         ServerConfig cfg = load_config();
         DbConfig dbcfg{cfg.db_host, cfg.db_port, cfg.db_user, cfg.db_password, cfg.db_name};
         DbClient db_client(dbcfg);
+        RedisClient redis_client(cfg.redis_host, cfg.redis_port);
         boost::asio::io_context io;
 
         // JWT verifier using auth-service HTTP
@@ -19,9 +21,13 @@ int main() {
         };
 
         // On-auth hook: ensure DB rows exist
-        auto on_auth = [&db_client](const VerifyResult& vr) {
+        auto on_auth = [&db_client, &redis_client](const VerifyResult& vr) {
             if (vr.user_id.empty()) return false;
-            return db_client.ensure_user_initialized(vr.user_id);
+            if (!db_client.ensure_user_initialized(vr.user_id)) {
+                return false;
+            }
+            redis_client.set_session(vr.user_id, vr.expires_at);
+            return true;
         };
 
         TcpServer server(io, cfg.listen_port, verifier, on_auth);
@@ -30,6 +36,7 @@ int main() {
         spdlog::info("Game server listening on port {}", cfg.listen_port);
         spdlog::info("Auth endpoint {}:{}", cfg.auth_host, cfg.auth_port);
         spdlog::info("DB endpoint {}:{} dbname={}", cfg.db_host, cfg.db_port, cfg.db_name);
+        spdlog::info("Redis endpoint {}:{}", cfg.redis_host, cfg.redis_port);
 
         io.run();
     } catch (const std::exception& ex) {

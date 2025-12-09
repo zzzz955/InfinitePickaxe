@@ -18,6 +18,9 @@ struct ServerConfig {
     std::string db_user = "pickaxe";
     std::string db_password = "pickaxe";
     std::string db_name = "pickaxe_auth";
+    // Redis 접속 설정
+    std::string redis_host = "redis";
+    unsigned short redis_port = 6379;
 };
 
 inline ServerConfig load_config() {
@@ -31,5 +34,7 @@ inline ServerConfig load_config() {
     cfg.db_user = env_or("DB_USER", "pickaxe");
     cfg.db_password = env_or("DB_PASSWORD", "pickaxe");
     cfg.db_name = env_or("DB_NAME", "pickaxe_auth");
+    cfg.redis_host = env_or("REDIS_HOST", "redis");
+    cfg.redis_port = static_cast<unsigned short>(std::stoi(env_or("REDIS_PORT", "6379")));
     return cfg;
 }
