@@ -57,6 +57,8 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - WORKER_THREADS={WORKER_THREADS:-0}
+      - DB_POOL_SIZE={DB_POOL_SIZE:-4}
+      - DB_POOL_MAX={DB_POOL_MAX:-16}
     depends_on:
       - auth-server
       - postgres

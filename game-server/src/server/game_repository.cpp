@@ -1,22 +1,16 @@
 #include "game_repository.h"
+#include "connection_pool.h"
 #include <pqxx/pqxx>
 #include <spdlog/spdlog.h>
 #include <sstream>
 
-GameRepository::GameRepository(const DbConfig& cfg) {
-    std::ostringstream ss;
-    ss << "host=" << cfg.host
-       << " port=" << cfg.port
-       << " user=" << cfg.user
-       << " password=" << cfg.password
-       << " dbname=" << cfg.dbname;
-    conn_str_ = ss.str();
-}
+GameRepository::GameRepository(ConnectionPool& pool)
+    : pool_(pool) {}
 
 bool GameRepository::ensure_user_initialized(const std::string& user_id) {
     try {
-        pqxx::connection conn(conn_str_);
-        pqxx::work tx(conn);
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
         tx.exec_params(
             "INSERT INTO game_schema.user_game_data (user_id) VALUES ($1) "
             "ON CONFLICT (user_id) DO NOTHING",

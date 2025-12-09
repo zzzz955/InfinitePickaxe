@@ -2,18 +2,27 @@
 #include "server/auth_service.h"
 #include "server/game_repository.h"
 #include "server/redis_client.h"
+#include "server/connection_pool.h"
 #include "config.h"
 #include <boost/asio.hpp>
 #include <spdlog/spdlog.h>
 #include <thread>
+#include <sstream>
 
 int main() {
     try {
         ServerConfig cfg = load_config();
         DbConfig dbcfg{cfg.db_host, cfg.db_port, cfg.db_user, cfg.db_password, cfg.db_name};
+        std::ostringstream conn_str;
+        conn_str << "host=" << dbcfg.host
+                 << " port=" << dbcfg.port
+                 << " user=" << dbcfg.user
+                 << " password=" << dbcfg.password
+                 << " dbname=" << dbcfg.dbname;
+        ConnectionPool db_pool(conn_str.str(), cfg.db_pool_size, cfg.db_pool_max);
         RedisClient redis_client(cfg.redis_host, cfg.redis_port);
         AuthService auth_service(cfg.auth_host, cfg.auth_port, redis_client);
-        GameRepository game_repo(dbcfg);
+        GameRepository game_repo(db_pool);
         boost::asio::io_context io;
 
         TcpServer server(io, cfg.listen_port, auth_service, game_repo);

@@ -18,6 +18,9 @@ struct ServerConfig {
     std::string db_user = "pickaxe";
     std::string db_password = "pickaxe";
     std::string db_name = "pickaxe_auth";
+    // DB 커넥션 풀
+    unsigned int db_pool_size = 4;
+    unsigned int db_pool_max = 16;
     // Redis 접속 설정
     std::string redis_host = "redis";
     unsigned short redis_port = 6379;
@@ -36,6 +39,8 @@ inline ServerConfig load_config() {
     cfg.db_user = env_or("DB_USER", "pickaxe");
     cfg.db_password = env_or("DB_PASSWORD", "pickaxe");
     cfg.db_name = env_or("DB_NAME", "pickaxe_auth");
+    cfg.db_pool_size = static_cast<unsigned int>(std::stoul(env_or("DB_POOL_SIZE", "4")));
+    cfg.db_pool_max = static_cast<unsigned int>(std::stoul(env_or("DB_POOL_MAX", "16")));
     cfg.redis_host = env_or("REDIS_HOST", "redis");
     cfg.redis_port = static_cast<unsigned short>(std::stoi(env_or("REDIS_PORT", "6379")));
     cfg.worker_threads = static_cast<unsigned int>(std::stoul(env_or("WORKER_THREADS", "0")));
