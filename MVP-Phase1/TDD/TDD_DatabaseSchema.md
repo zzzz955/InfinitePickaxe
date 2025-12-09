@@ -527,6 +527,7 @@ CREATE TABLE game_schema.pickaxe_slots (
     level INTEGER NOT NULL DEFAULT 0 CHECK (level >= 0 AND level <= 100),
     tier INTEGER NOT NULL DEFAULT 1 CHECK (tier BETWEEN 1 AND 5),
     dps BIGINT NOT NULL DEFAULT 10 CHECK (dps > 0),
+    pity_bonus INTEGER NOT NULL DEFAULT 0 CHECK (pity_bonus >= 0 AND pity_bonus <= 10000), -- basis 10000 = 100.00%
     
     -- 타임스탬프
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -544,6 +545,7 @@ CREATE INDEX idx_pickaxe_level ON game_schema.pickaxe_slots(level DESC);
 -- 코멘트
 COMMENT ON TABLE game_schema.pickaxe_slots IS '유저 곡괭이 슬롯';
 COMMENT ON COLUMN game_schema.pickaxe_slots.slot_index IS '슬롯 번호 (0-3)';
+COMMENT ON COLUMN game_schema.pickaxe_slots.pity_bonus IS '강화 실패 누적 보너스 (basis 10000 = 100.00%)';
 ```
 
 ---
@@ -799,40 +801,51 @@ COMMIT;
 
 ### 7-2. 트랜잭션 패턴
 
-#### **Pattern 1: 강화 (Upgrade)**
+#### **Pattern 1: 강화 (Upgrade, 확률 + 천장)**
 
 ```sql
 BEGIN;
 
--- 1. 골드 차감 (낙관적 락)
+-- 1. 메타 조회 (애플리케이션 레벨에서 기본 확률/보정률 계산)
+-- base_rate = meta(tier/level), bonus_rate = 읽기, final_rate = min(base+bonus, 100%)
+-- 클라이언트에는 final_rate, base_rate, bonus_rate 반환
+
+-- 2. 확률 판정 (서버)
+-- 성공/실패 결정 (성공 시 bonus=0, 실패 시 bonus += base*0.1, 상한 100)
+
+-- 3. 골드 차감 (성공/실패 공통)
 UPDATE game_schema.user_game_data 
 SET 
-    gold = gold - 3500,
+    gold = gold - $cost,
     updated_at = NOW()
 WHERE 
     user_id = $1 
-    AND gold >= 3500
+    AND gold >= $cost
 RETURNING gold;
 
--- 반환값 NULL이면 ROLLBACK
+-- 반환값 없으면 ROLLBACK (INSUFFICIENT_GOLD)
 
--- 2. 곡괭이 강화
+-- 4. 결과 적용
+-- 성공 시: level/dps 업데이트, bonus=0
+-- 실패 시: bonus 갱신, level/dps 유지
 UPDATE game_schema.pickaxe_slots 
 SET 
-    level = level + 1,
-    dps = 2310,
+    level = CASE WHEN $success THEN level + 1 ELSE level END,
+    dps = CASE WHEN $success THEN $new_dps ELSE dps END,
+    pity_bonus = CASE WHEN $success THEN 0 ELSE LEAST(pity_bonus + $bonus_add, 10000) END, -- basis 10000 = 100.00%
     last_upgraded_at = NOW(),
     updated_at = NOW()
 WHERE 
     user_id = $1 
-    AND slot_index = 0;
+    AND slot_index = $slot_index;
 
--- 3. 통계 업데이트
+-- 5. 통계 업데이트 (성공 시)
 UPDATE game_schema.user_game_data
 SET 
-    highest_pickaxe_level = GREATEST(highest_pickaxe_level, 13)
+    highest_pickaxe_level = GREATEST(highest_pickaxe_level, $new_level)
 WHERE user_id = $1;
 
+-- 6. 로그 (선택) upgrade_history 등에 기록
 COMMIT;
 ```
 

@@ -438,6 +438,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
   "new_dps": 2310,
   "gold_spent": 3500,
   "remaining_gold": 1870,
+  "base_rate": 0.85,
+  "bonus_rate": 0.085,
+  "final_rate": 0.935,
   "server_timestamp": 1701234580
 }
 ```
@@ -449,7 +452,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
   "error_code": "INSUFFICIENT_GOLD",
   "error_message": "Not enough gold to upgrade",
   "required": 3500,
-  "current": 1870
+  "current": 1870,
+  "base_rate": 0.85,
+  "bonus_rate": 0.085,
+  "final_rate": 0.935
 }
 ```
 
