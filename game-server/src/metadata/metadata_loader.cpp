@@ -1,7 +1,7 @@
 #include "metadata_loader.h"
 #include <fstream>
-#include <sstream>
 #include <nlohmann/json.hpp>
+#include <sstream>
 
 bool MetadataLoader::load(const std::string& base_path) {
     try {
@@ -13,7 +13,7 @@ bool MetadataLoader::load(const std::string& base_path) {
             for (auto& e : j) {
                 PickaxeLevel pl;
                 pl.level = e["level"].get<uint32_t>();
-                // tier가 "T1" 형태이므로 숫자만 추출
+                // tier가 "T1" 포맷이면 숫자만 추출
                 if (e["tier"].is_string()) {
                     std::string t = e["tier"].get<std::string>();
                     if (!t.empty() && (t[0] == 'T' || t[0] == 't')) {
@@ -62,7 +62,7 @@ bool MetadataLoader::load(const std::string& base_path) {
                     missions_.push_back(m);
                 }
             } else if (j.contains("pools")) {
-                // 간단한 풀 구조만 flatten (index 순차 증가)
+                // 간단하게 풀 구조를 flatten (index 순차 증가)
                 uint32_t idx = 0;
                 for (auto& pool : j["pools"].items()) {
                     for (auto& e : pool.value()) {
@@ -77,18 +77,29 @@ bool MetadataLoader::load(const std::string& base_path) {
                 }
             }
         }
-        // upgrade_rules.json (선택)
+
+        auto to_rate = [](const nlohmann::json& v, double fallback) {
+            if (v.is_number_integer()) {
+                return static_cast<double>(v.get<int64_t>()) / 10000.0; // basis 10000
+            }
+            if (v.is_number()) {
+                return v.get<double>();
+            }
+            return fallback;
+        };
+
+        // upgrade_rules.json (강화)
         {
             std::ifstream f(base_path + "/upgrade_rules.json");
             if (f.good()) {
                 nlohmann::json j;
                 f >> j;
-                upgrade_rules_.min_rate = j.value("min_rate", 0.3);
-                upgrade_rules_.bonus_rate = j.value("bonus_rate", 0.1);
+                upgrade_rules_.min_rate = to_rate(j["min_rate"], 0.3);
+                upgrade_rules_.bonus_rate = to_rate(j["bonus_rate"], 0.1);
                 if (j.contains("base_rate_by_tier")) {
                     for (auto& item : j["base_rate_by_tier"].items()) {
                         uint32_t tier = static_cast<uint32_t>(std::stoul(item.key()));
-                        double rate = item.value().get<double>();
+                        double rate = to_rate(item.value(), 1.0);
                         upgrade_rules_.base_rate_by_tier[tier] = rate;
                     }
                 }

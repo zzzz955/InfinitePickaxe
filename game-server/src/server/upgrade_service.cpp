@@ -1,5 +1,6 @@
 #include "upgrade_service.h"
 #include <ctime>
+#include <cmath>
 
 infinitepickaxe::UpgradeResult UpgradeService::handle_upgrade(const std::string& user_id, uint32_t slot_index, uint32_t target_level) const {
     infinitepickaxe::UpgradeResult res;
@@ -24,9 +25,10 @@ infinitepickaxe::UpgradeResult UpgradeService::handle_upgrade(const std::string&
     res.set_new_dps(repo_result.final_dps);
     res.set_gold_spent(repo_result.insufficient_gold ? 0 : cost);
     res.set_remaining_gold(repo_result.remaining_gold);
-    res.set_base_rate(repo_result.base_rate);
-    res.set_bonus_rate(rules.bonus_rate);
-    res.set_final_rate(repo_result.final_rate);
+    auto to_bp = [](double v) { return static_cast<uint32_t>(std::lround(v * 10000.0)); };
+    res.set_base_rate_bp(to_bp(repo_result.base_rate));
+    res.set_bonus_rate_bp(to_bp(rules.bonus_rate));
+    res.set_final_rate_bp(to_bp(repo_result.final_rate));
     res.set_pity_bonus(repo_result.pity_bonus);
 
     if (repo_result.invalid_slot) {

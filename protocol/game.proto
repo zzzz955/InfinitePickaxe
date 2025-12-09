@@ -89,15 +89,15 @@ message UpgradePickaxe {
 message UpgradeResult {
   bool success = 1;
   uint32 slot_index = 2;
-  uint32 new_level = 3;       // 시도 후 최종 레벨
-  uint64 new_dps = 4;         // 시도 후 최종 DPS
+  uint32 new_level = 3;        // 시도 후 최종 레벨
+  uint64 new_dps = 4;          // 시도 후 최종 DPS
   uint64 gold_spent = 5;
   uint64 remaining_gold = 6;
-  string error_code = 7;      // 3001 부족, 3002 대상 레벨 오류 등
-  double base_rate = 8;       // 기본 확률 (0.0~1.0)
-  double bonus_rate = 9;      // 실패 누적 보너스 증가량(기본확률의 몇 %)
-  double final_rate = 10;     // 최종 적용 확률
-  uint32 pity_bonus = 11;     // basis 10000 = 100.00%
+  string error_code = 7;       // 3001 부족, 3002 대상 레벨 오류 등
+  uint32 base_rate_bp = 8;     // 기본 확률, basis 10000 = 100.00%
+  uint32 bonus_rate_bp = 9;    // 누적 보너스 증가율, basis 10000
+  uint32 final_rate_bp = 10;   // 최종 적용 확률, basis 10000
+  uint32 pity_bonus = 11;      // basis 10000 = 100.00%
 }
 
 // -------------- 미션 --------------
