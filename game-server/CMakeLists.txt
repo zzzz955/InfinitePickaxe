@@ -25,6 +25,7 @@ add_executable(game-server
     src/server/mission_service.cpp
     src/server/slot_service.cpp
     src/server/offline_service.cpp
+    src/metadata/metadata_loader.cpp
 )
 
 # Force module mode to avoid missing Boost config packages on distro builds
@@ -72,6 +73,17 @@ if(NOT redis++_FOUND)
     FetchContent_MakeAvailable(redisplusplus)
 endif()
 
+# nlohmann json
+find_package(nlohmann_json 3.2.0 QUIET)
+if(NOT nlohmann_json_FOUND)
+    FetchContent_Declare(
+        nlohmann_json
+        GIT_REPOSITORY https://github.com/nlohmann/json.git
+        GIT_TAG v3.11.3
+    )
+    FetchContent_MakeAvailable(nlohmann_json)
+endif()
+
 # protobuf
 find_package(Protobuf QUIET)
 if(NOT Protobuf_FOUND)
@@ -98,6 +110,7 @@ target_link_libraries(game-server PRIVATE
     pqxx::pqxx
     redis++::redis++
     protobuf::libprotobuf
+    nlohmann_json::nlohmann_json
 )
 target_sources(game-server PRIVATE ${PROTO_SRCS} ${PROTO_HDRS})
 target_include_directories(game-server PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/generated)

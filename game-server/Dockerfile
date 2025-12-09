@@ -11,9 +11,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# 소스 복사: game-server 코드와 proto 스키마
+# 소스 복사: game-server 코드, proto 스키마, 메타데이터
 COPY game-server/ .
 COPY protocol/ ./protocol
+COPY metadata/ ./metadata
 
 ARG BUILD_JOBS=8
 ENV CCACHE_DIR=/root/.cache/ccache \

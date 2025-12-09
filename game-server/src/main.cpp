@@ -2,6 +2,7 @@
 #include "server/auth_service.h"
 #include "server/game_repository.h"
 #include "server/redis_client.h"
+#include "metadata/metadata_loader.h"
 #include "server/connection_pool.h"
 #include "config.h"
 #include <boost/asio.hpp>
@@ -20,6 +21,12 @@ int main() {
                  << " password=" << dbcfg.password
                  << " dbname=" << dbcfg.dbname;
         ConnectionPool db_pool(conn_str.str(), cfg.db_pool_size, cfg.db_pool_max);
+        MetadataLoader metadata;
+        std::string meta_path = env_or("METADATA_PATH", "./metadata");
+        if (!metadata.load(meta_path)) {
+            spdlog::error("Failed to load metadata from {}", meta_path);
+            return 1;
+        }
         RedisClient redis_client(cfg.redis_host, cfg.redis_port);
         AuthService auth_service(cfg.auth_host, cfg.auth_port, redis_client);
         GameRepository game_repo(db_pool);
@@ -28,11 +35,11 @@ int main() {
         MissionRepository mission_repo(db_pool);
         SlotRepository slot_repo(db_pool);
         OfflineRepository offline_repo(db_pool);
-        MiningService mining_service(mining_repo);
-        UpgradeService upgrade_service(upgrade_repo);
-        MissionService mission_service(mission_repo);
-        SlotService slot_service(slot_repo);
-        OfflineService offline_service(offline_repo);
+        MiningService mining_service(mining_repo, metadata);
+        UpgradeService upgrade_service(upgrade_repo, metadata);
+        MissionService mission_service(mission_repo, metadata);
+        SlotService slot_service(slot_repo, metadata);
+        OfflineService offline_service(offline_repo, metadata);
         boost::asio::io_context io;
 
         TcpServer server(io, cfg.listen_port, auth_service, game_repo,

@@ -94,7 +94,7 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
     // 시퀀스 검증 (0이면 검증 생략) - 불일치 시 카운트 증가, 3회면 종료
     if (env.seq() != 0) {
         if (env.seq() != expected_seq_) {
-            send_error("INVALID_SEQUENCE", "expected " + std::to_string(expected_seq_) + " got " + std::to_string(env.seq()));
+            send_error("2002", "INVALID_SEQUENCE expected=" + std::to_string(expected_seq_) + " got=" + std::to_string(env.seq()));
             violation_count_++;
             if (violation_count_ >= 3) {
                 close();
@@ -111,7 +111,7 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
         uint64_t diff = (now > ts) ? (now - ts) : (ts - now);
         const uint64_t MAX_DIFF = 60;
         if (diff > MAX_DIFF) {
-            send_error("TIMESTAMP_MISMATCH", "diff seconds=" + std::to_string(diff));
+            send_error("2003", "TIMESTAMP_MISMATCH diff=" + std::to_string(diff));
             violation_count_++;
             if (violation_count_ >= 3) {
                 close();
@@ -122,7 +122,7 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
     }
 
     if (is_expired()) {
-        send_error("TOKEN_EXPIRED", "session expired");
+        send_error("1003", "session expired");
         close();
         return;
     }
@@ -134,13 +134,13 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
     }
 
     if (!authenticated_) {
-        send_error("UNAUTHORIZED", "handshake required");
+        send_error("1001", "handshake required"); // AUTH_FAILED
         close();
         return;
     }
 
     if (!router_.dispatch(env)) {
-        send_error("UNKNOWN_TYPE", type);
+        send_error("2001", type); // INVALID_PACKET / UNKNOWN_TYPE
     }
 
     // 다음 프레임 대기
@@ -150,28 +150,28 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
 void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
     infinitepickaxe::HandshakeReq req;
     if (!req.ParseFromString(env.payload())) {
-        send_error("INVALID_PAYLOAD", "handshake parse failed");
+        send_error("2004", "handshake parse failed");
         return;
     }
     VerifyResult vr = auth_service_.verify_and_cache(req.jwt(), client_ip_);
     infinitepickaxe::HandshakeRes res;
     if (!vr.valid || vr.is_banned) {
         res.set_ok(false);
-        res.set_error(vr.is_banned ? "BANNED" : "AUTH_FAILED");
+        res.set_error(vr.is_banned ? "1001" : "1001"); // AUTH_FAILED/BANNED
         send_envelope("HANDSHAKE_RES", res);
         close();
         return;
     }
     if (is_expired()) {
         res.set_ok(false);
-        res.set_error("TOKEN_EXPIRED");
+        res.set_error("1003");
         send_envelope("HANDSHAKE_RES", res);
         close();
         return;
     }
     if (!game_repo_.ensure_user_initialized(vr.user_id)) {
         res.set_ok(false);
-        res.set_error("DB_ERROR");
+        res.set_error("5001");
         send_envelope("HANDSHAKE_RES", res);
         close();
         return;
@@ -204,7 +204,7 @@ void Session::handle_mining(const infinitepickaxe::Envelope& env, const std::str
     if (type == "MINE_START") {
         infinitepickaxe::MiningStart req;
         if (!req.ParseFromString(env.payload())) {
-            send_error("INVALID_PAYLOAD", "MINE_START parse failed");
+            send_error("2004", "MINE_START parse failed");
             return;
         }
         auto upd = mining_service_.handle_start(req.mineral_id());
@@ -212,7 +212,7 @@ void Session::handle_mining(const infinitepickaxe::Envelope& env, const std::str
     } else if (type == "MINE_SYNC") {
         infinitepickaxe::MiningSync req;
         if (!req.ParseFromString(env.payload())) {
-            send_error("INVALID_PAYLOAD", "MINE_SYNC parse failed");
+            send_error("2004", "MINE_SYNC parse failed");
             return;
         }
         auto upd = mining_service_.handle_sync(req.mineral_id(), req.client_hp());
@@ -220,7 +220,7 @@ void Session::handle_mining(const infinitepickaxe::Envelope& env, const std::str
     } else if (type == "MINE_COMPLETE") {
         infinitepickaxe::MiningComplete comp;
         if (!comp.ParseFromString(env.payload())) {
-            send_error("INVALID_PAYLOAD", "MINE_COMPLETE parse failed");
+            send_error("2004", "MINE_COMPLETE parse failed");
             return;
         }
         auto upd = mining_service_.handle_complete(comp.mineral_id());
@@ -236,7 +236,7 @@ void Session::handle_mining(const infinitepickaxe::Envelope& env, const std::str
 void Session::handle_upgrade(const infinitepickaxe::Envelope& env) {
     infinitepickaxe::UpgradePickaxe req;
     if (!req.ParseFromString(env.payload())) {
-        send_error("INVALID_PAYLOAD", "UPGRADE_PICKAXE parse failed");
+        send_error("2004", "UPGRADE_PICKAXE parse failed");
         return;
     }
     auto res = upgrade_service_.handle_upgrade(req.slot_index(), req.target_level());
@@ -251,7 +251,7 @@ void Session::handle_mission(const infinitepickaxe::Envelope& env, const std::st
 void Session::handle_slot_unlock(const infinitepickaxe::Envelope& env) {
     infinitepickaxe::SlotUnlock req;
     if (!req.ParseFromString(env.payload())) {
-        send_error("INVALID_PAYLOAD", "SLOT_UNLOCK parse failed");
+        send_error("2004", "SLOT_UNLOCK parse failed");
         return;
     }
     auto res = slot_service_.handle_unlock(req.slot_index());
@@ -261,7 +261,7 @@ void Session::handle_slot_unlock(const infinitepickaxe::Envelope& env) {
 void Session::handle_offline_reward(const infinitepickaxe::Envelope& env) {
     infinitepickaxe::OfflineRewardRequest req;
     if (!req.ParseFromString(env.payload())) {
-        send_error("INVALID_PAYLOAD", "OFFLINE_REWARD_REQUEST parse failed");
+        send_error("2004", "OFFLINE_REWARD_REQUEST parse failed");
         return;
     }
     auto res = offline_service_.handle_request();

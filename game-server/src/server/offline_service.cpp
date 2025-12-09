@@ -1,6 +1,8 @@
 #include "offline_service.h"
+#include <ctime>
 
 infinitepickaxe::OfflineReward OfflineService::handle_request() const {
+    // 스텁: 메타를 아직 사용하지 않음
     infinitepickaxe::OfflineReward res;
     res.set_offline_seconds(3600);
     res.set_gold_earned(100);

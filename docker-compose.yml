@@ -58,6 +58,7 @@ services:
       - DB_NAME=${DB_NAME:-pickaxe_auth}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - METADATA_PATH=/app/metadata
       - WORKER_THREADS={WORKER_THREADS:-0}
       - DB_POOL_SIZE={DB_POOL_SIZE:-4}
       - DB_POOL_MAX={DB_POOL_MAX:-16}
