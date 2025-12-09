@@ -1,9 +1,9 @@
-#include "db_client.h"
+#include "game_repository.h"
 #include <pqxx/pqxx>
 #include <spdlog/spdlog.h>
 #include <sstream>
 
-DbClient::DbClient(DbConfig cfg) {
+GameRepository::GameRepository(const DbConfig& cfg) {
     std::ostringstream ss;
     ss << "host=" << cfg.host
        << " port=" << cfg.port
@@ -13,7 +13,7 @@ DbClient::DbClient(DbConfig cfg) {
     conn_str_ = ss.str();
 }
 
-bool DbClient::ensure_user_initialized(const std::string& user_id) {
+bool GameRepository::ensure_user_initialized(const std::string& user_id) {
     try {
         pqxx::connection conn(conn_str_);
         pqxx::work tx(conn);

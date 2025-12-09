@@ -21,6 +21,8 @@ struct ServerConfig {
     // Redis 접속 설정
     std::string redis_host = "redis";
     unsigned short redis_port = 6379;
+    // 워커 스레드 수 (0이면 하드웨어 동시성)
+    unsigned int worker_threads = 0;
 };
 
 inline ServerConfig load_config() {
@@ -36,5 +38,6 @@ inline ServerConfig load_config() {
     cfg.db_name = env_or("DB_NAME", "pickaxe_auth");
     cfg.redis_host = env_or("REDIS_HOST", "redis");
     cfg.redis_port = static_cast<unsigned short>(std::stoi(env_or("REDIS_PORT", "6379")));
+    cfg.worker_threads = static_cast<unsigned int>(std::stoul(env_or("WORKER_THREADS", "0")));
     return cfg;
 }

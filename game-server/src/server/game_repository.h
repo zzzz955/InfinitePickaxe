@@ -9,10 +9,12 @@ struct DbConfig {
     std::string dbname;
 };
 
-class DbClient {
+// 게임 데이터 접근을 담당하는 리포지토리
+class GameRepository {
 public:
-    explicit DbClient(DbConfig cfg);
-    // 유저 기본 행과 슬롯 0번이 없으면 생성
+    explicit GameRepository(const DbConfig& cfg);
+
+    // 유저 기본 행, 슬롯 0번을 없으면 생성
     bool ensure_user_initialized(const std::string& user_id);
 
 private:

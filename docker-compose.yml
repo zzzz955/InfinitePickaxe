@@ -56,6 +56,7 @@ services:
       - DB_NAME=${DB_NAME:-pickaxe_auth}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - WORKER_THREADS={WORKER_THREADS:-0}
     depends_on:
       - auth-server
       - postgres
