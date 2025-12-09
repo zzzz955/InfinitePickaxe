@@ -51,3 +51,7 @@ keystore/
 
 # Unity Plugin
 /pickaxe-client/Assets/Firebase/Plugins/x86_64/
+
+# Unity Build
+*.apk
+*.abb
