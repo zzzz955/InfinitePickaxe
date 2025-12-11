@@ -39,11 +39,13 @@
    - 프로토 버전/앱 버전 로그 남김.  
    - SecureStorage에서 RefreshToken 조회 및 Title 씬으로 전달.
 2) Title(로그인/핸드셰이크)  
-   - RefreshToken 존재 시 자동 재인증→유저 데이터 로드 후 Game 씬 이동(RefreshToken SecureStorage, Dev/Editor는 PlayerPrefs 대체).  
-   - 미존재/실패 시 GPG 로그인 버튼 노출(계정 선택 이슈로 SDK 버전 별 플로우 테스트 필요). 인증 중에는 전 화면 LoadingOverlay로 인터랙션 차단.  
-   - 인증 완료 시에만 게임 시작(Start) 버튼 노출, 미인증 시 Google 로그인 버튼만 노출.  
-   - 성공 시 스냅샷(UserDataSnapshot) UI에 반영: 골드, 크리스탈, 슬롯 잠금 여부, 현재 광물, HP, DPS, 최고 레벨.  
-   - 실패 코드(1001 AUTH_FAILED, 1003 EXPIRED 등) 표시 및 재시도 버튼.
+   - 씬명: `Title`. BootStrap에서 전달된 RefreshToken이 있으면 자동 재인증 → 성공 시 Game 씬 이동, 실패 시 토큰 폐기 후 수동 로그인 노출.  
+   - 토큰 저장: Android는 SecureStorage, 에디터/비-Android는 PlayerPrefs 대체(DEV).  
+   - 로그인: Google provider 필수(guest 제거). Dev 더미 계정은 provider=`admin`으로 서버 화이트리스트(서버에서 Firebase 검증 생략).  
+   - UI 상태: 인증 중/데이터 로드 중에는 전 화면 LoadingOverlay로 인터랙션 차단. 인증 완료 시에만 Start 버튼/Logout 버튼 노출(동일 위치), 미인증 시 Google 로그인 버튼만 노출.  
+   - 닉네임: 백엔드 응답 nickname이 null이면 닉네임 입력 모달 표시. Confirm 시 서버에 닉네임 등록, Cancel 시 모달을 닫고 로그아웃(재인증 필요 상태로 복귀). 닉네임 검증은 한글 2~8자, 영문 4~16자, 숫자 허용, 특수문자 금지.  
+   - 실패 코드(1001 AUTH_FAILED, 1003 EXPIRED 등) 표시 및 재시도 버튼.  
+   - Start 버튼 클릭 시 JWT로 TCP 핸드셰이크 진행, 서버 인증 실패 시 로그아웃 및 재인증 유도.  
 3) 하트비트 (Game 씬 상주)  
    - 상태 표시(연결, 지연시간 추정).  
    - 2회 연속 실패 시 자동 재연결 트리거.

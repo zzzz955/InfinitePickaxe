@@ -241,9 +241,10 @@ CREATE TABLE auth_schema.users (
     user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     
     -- 인증 정보
-    google_id VARCHAR(255) UNIQUE NOT NULL,
-    username VARCHAR(50),
-    device_id VARCHAR(255),
+    provider VARCHAR(32) NOT NULL,              -- 예: google, apple, facebook, admin(dev)
+    external_id VARCHAR(255) NOT NULL,          -- 플랫폼 고유 ID (예: 구글 sub)
+    email VARCHAR(255),                         -- 소셜 제공 시만 저장, nullable
+    nickname VARCHAR(32),                       -- 게임 닉네임, nullable(미설정 상태)
     
     -- 타임스탬프
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -259,15 +260,16 @@ CREATE TABLE auth_schema.users (
 );
 
 -- 인덱스
-CREATE UNIQUE INDEX idx_auth_users_google_id ON auth_schema.users(google_id);
+CREATE UNIQUE INDEX idx_auth_users_provider_ext ON auth_schema.users(provider, external_id);
 CREATE INDEX idx_auth_users_last_login ON auth_schema.users(last_login DESC);
 CREATE INDEX idx_auth_users_banned ON auth_schema.users(is_banned) 
     WHERE is_banned = true;
 
 -- 코멘트
 COMMENT ON TABLE auth_schema.users IS '유저 인증 정보 (Auth Service 전용)';
-COMMENT ON COLUMN auth_schema.users.google_id IS 'Google Play Games 고유 ID';
-COMMENT ON COLUMN auth_schema.users.is_banned IS '밴 여부 (JWT 발급/검증 시 체크)';
+COMMENT ON COLUMN auth_schema.users.provider IS '소셜/인증 제공자 (google, apple 등)';
+COMMENT ON COLUMN auth_schema.users.external_id IS '플랫폼 고유 ID (provider와 조합하여 유니크)';
+COMMENT ON COLUMN auth_schema.users.nickname IS '게임 내 표시용 닉네임(미설정 시 NULL)';
 ```
 
 **주의**:
@@ -321,6 +323,9 @@ CREATE INDEX idx_jwt_families_expires ON auth_schema.jwt_families(expires_at);
 -- 코멘트
 COMMENT ON TABLE auth_schema.jwt_families IS 'JWT 슬라이딩 세션 패밀리';
 COMMENT ON COLUMN auth_schema.jwt_families.refresh_count IS '현재 refresh 횟수';
+
+-- 정책 메모
+-- 기본 유효 30일, Refresh 시 슬라이딩 연장하되 최대 90일까지(또는 max_refresh_count 초과 시) 재인증 요구.
 ```
 
 ---
@@ -371,9 +376,9 @@ COMMENT ON COLUMN auth_schema.jwt_tokens.is_used IS 'Refresh에 사용됨 → �
 
 ---
 
-### 4-4. session_history (세션 히스토리)
+### 4-4. session_history (세션/인증 로그)
 
-**목적**: 세션 로그 (분석용), 실시간 관리는 인메모리
+**목적**: 인증/접속 로그. 실시간 세션 관리는 인메모리/Redis, 여기서는 감사/분석용으로만 저장.
 
 ```sql
 CREATE TABLE auth_schema.session_history (
@@ -383,36 +388,36 @@ CREATE TABLE auth_schema.session_history (
     -- 외래키
     user_id UUID NOT NULL REFERENCES auth_schema.users(user_id) ON DELETE CASCADE,
     
-    -- 세션 정보
-    server_ip VARCHAR(45),  -- IPv6 지원
+    -- 인증 정보 스냅샷
+    provider VARCHAR(32) NOT NULL,
+    external_id VARCHAR(255) NOT NULL,
+    device_id VARCHAR(255),
     client_ip INET,
-    client_version VARCHAR(20),
+    user_agent TEXT,
+    client_version VARCHAR(32),
     
     -- 타임스탬프
-    connected_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    disconnected_at TIMESTAMP,
+    login_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    logout_at TIMESTAMP,
     duration_seconds INTEGER,
     
-    -- 연결 종료 이유
-    disconnect_reason TEXT,  -- 'CLIENT_DISCONNECT', 'SERVER_RESTART', 'TIMEOUT', 'BANNED'
-    
-    -- 통계 (선택적)
-    packets_sent BIGINT,
-    packets_received BIGINT
+    -- 종료 사유
+    disconnect_reason TEXT  -- 'CLIENT_DISCONNECT','TOKEN_INVALID','REPLACED','TIMEOUT','BANNED','SERVER_RESTART'
 );
 
 -- 인덱스
 CREATE INDEX idx_session_history_user ON auth_schema.session_history(user_id);
-CREATE INDEX idx_session_history_connected ON auth_schema.session_history(connected_at DESC);
+CREATE INDEX idx_session_history_login ON auth_schema.session_history(login_at DESC);
+CREATE INDEX idx_session_history_provider ON auth_schema.session_history(provider, external_id);
 
 -- 코멘트
-COMMENT ON TABLE auth_schema.session_history IS '세션 히스토리 로그 (분석용)';
-COMMENT ON COLUMN auth_schema.session_history.disconnect_reason IS '연결 종료 이유';
+COMMENT ON TABLE auth_schema.session_history IS '인증/세션 로그 (감사/분석용)';
+COMMENT ON COLUMN auth_schema.session_history.disconnect_reason IS '연결 종료/인증 실패 사유';
 ```
 
 **중요**: 
-- ✅ 연결 종료 시에만 INSERT (분석용)
-- ❌ 실시간 세션 관리는 Game Server 인메모리
+- 로그인 시점에 INSERT, 로그아웃/토큰 무효 시 logout_at/duration 업데이트(가능한 경우).  
+- Game Server의 실시간 세션 제어는 인메모리/Redis에서 처리하고, 최소 정보만 여기 누적.  
 
 ---
 
@@ -1405,6 +1410,14 @@ CREATE TRIGGER update_pickaxe_slots_updated_at
 
 ---
 
+### 12-5. 최근 마이그레이션 메모 (MVP)
+- auth_schema.users: provider/external_id/email/nickname 구조로 변경, google_id/username/device_id 제거, 유니크 인덱스(provider, external_id).  
+- auth_schema.session_history: 인증 로그 중심(provider, external_id, device_id, client_ip, login_at/logout_at, disconnect_reason).  
+- RefreshToken 슬라이딩 정책: 기본 30일, Refresh 시 최대 90일까지 연장 후 재인증 필수.  
+- 마이그레이션 파일 예시: `20251212_provider_external_id.sql`, `20251212_session_history_redefine.sql`.
+
+---
+
 ## 13. DB 분리 시나리오 (Phase 2+)
 
 ### 13-1. 현재 (스키마 분리)
@@ -1446,9 +1459,10 @@ psql game_db < game_schema.sql
 
 | 버전 | 날짜 | 변경 내용 |
 |------|------|----------|
-| 1.0 | 2024-12-08 | 초안 작성 (단일 스키마) |
-| 2.0 | 2024-12-08 | 스키마 분리, 인메모리 세션, Lazy Evaluation 적용 |
-| 3.0 | 2024-12-09 | Redis 운용/플러시 세부 전략 업데이트 |
+| 1.0 | 2025-12-08 | 초안 작성 (단일 스키마) |
+| 2.0 | 2025-12-08 | 스키마 분리, 인메모리 세션, Lazy Evaluation 적용 |
+| 3.0 | 2025-12-09 | Redis 운용/플러시 세부 전략 업데이트 |
+| 4.0 | 2025-12-12 | 인증 스키마 구조 변경 및 마이그레이션 |
 
 ---
 
