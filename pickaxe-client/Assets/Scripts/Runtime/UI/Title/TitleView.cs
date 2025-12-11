@@ -28,6 +28,7 @@ namespace InfinitePickaxe.Client.UI.Title
         [SerializeField] private TextMeshProUGUI modalMessageText;
         [SerializeField] private TextMeshProUGUI modalStatusText;
         [SerializeField] private Button modalConfirmButton;
+        [SerializeField] private Button modalCancelButton;
         [SerializeField] private TMP_InputField modalInputField;
         [SerializeField] private bool preserveModalLayout = true;
 
@@ -179,7 +180,7 @@ namespace InfinitePickaxe.Client.UI.Title
             modalGroup.transform.SetAsLastSibling();
         }
 
-        public void ShowInputModal(string message, string placeholder, string buttonText, System.Action<string> onSubmit)
+        public void ShowInputModal(string message, string placeholder, string buttonText, System.Action<string> onSubmit, System.Action onCancel = null)
         {
             EnsureModalInstance();
 
@@ -226,6 +227,20 @@ namespace InfinitePickaxe.Client.UI.Title
             else
             {
                 Debug.LogError("TitleView: modalConfirmButton is not assigned. Please wire the ConfirmButton from the prefab.");
+            }
+
+            if (modalCancelButton != null)
+            {
+                modalCancelButton.onClick.RemoveAllListeners();
+                modalCancelButton.onClick.AddListener(() =>
+                {
+                    HideModal();
+                    onCancel?.Invoke();
+                });
+            }
+            else if (onCancel != null)
+            {
+                Debug.LogWarning("TitleView: modalCancelButton is not assigned; cancel action will not be invoked.");
             }
 
             modalGroup.gameObject.SetActive(true);

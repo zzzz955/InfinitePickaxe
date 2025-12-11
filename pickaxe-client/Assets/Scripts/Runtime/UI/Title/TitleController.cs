@@ -181,20 +181,29 @@ namespace InfinitePickaxe.Client.UI.Title
         private void PromptNickname()
         {
             view.ShowOverlay(true, "닉네임 설정 중...");
-            view.ShowInputModal("닉네임을 설정해주세요.", "닉네임", "확인", async nickname =>
-            {
-                var result = await sessionService.UpdateNicknameAsync(nickname);
-                view.ShowOverlay(false);
-                if (result.Success && sessionService.Tokens.HasNickname)
+            view.ShowInputModal(
+                "닉네임을 설정해주세요.",
+                "닉네임",
+                "확인",
+                async nickname =>
+                {
+                    var result = await sessionService.UpdateNicknameAsync(nickname);
+                    view.ShowOverlay(false);
+                    if (result.Success && sessionService.Tokens.HasNickname)
+                    {
+                        view.HideModal();
+                        view.SetState(TitleState.Authenticated, $"환영합니다 {sessionService.Tokens.Nickname}님!");
+                    }
+                    else
+                    {
+                        view.SetModalStatus($"닉네임 설정 실패: {result.Error}");
+                    }
+                },
+                () =>
                 {
                     view.HideModal();
-                    view.SetState(TitleState.Authenticated, $"환영합니다 {sessionService.Tokens.Nickname}님!");
-                }
-                else
-                {
-                    view.SetModalStatus($"닉네임 설정 실패: {result.Error}");
-                }
-            });
+                    OnLogoutClicked();
+                });
         }
 
         private void HandleInvalidToken(string message)
