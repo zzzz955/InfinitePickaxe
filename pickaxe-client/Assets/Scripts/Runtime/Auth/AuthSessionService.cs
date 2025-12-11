@@ -31,8 +31,8 @@ namespace InfinitePickaxe.Client.Auth
                 return AuthResult.Fail("No refresh token");
             }
 
-            var refresh = tokenStorage.GetRefreshToken();
-            var result = await backendClient.RefreshAsync(refresh);
+            var jwt = tokenStorage.GetRefreshToken();
+            var result = await backendClient.VerifyAsync(jwt);
             if (result.Success)
             {
                 tokens = new AuthTokens(result.IdToken, result.RefreshToken, result.UserId, result.DisplayName);
@@ -41,9 +41,9 @@ namespace InfinitePickaxe.Client.Auth
             return result;
         }
 
-        public async Task<AuthResult> AuthenticateWithGoogleAsync(string googleIdToken)
+        public async Task<AuthResult> AuthenticateWithGoogleAsync(string googleIdToken, string deviceId)
         {
-            var result = await backendClient.LoginWithGoogleAsync(googleIdToken);
+            var result = await backendClient.LoginWithGoogleAsync(googleIdToken, deviceId);
             if (result.Success)
             {
                 tokens = new AuthTokens(result.IdToken, result.RefreshToken, result.UserId, result.DisplayName);

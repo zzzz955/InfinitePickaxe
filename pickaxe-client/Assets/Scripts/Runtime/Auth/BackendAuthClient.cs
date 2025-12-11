@@ -14,24 +14,27 @@ namespace InfinitePickaxe.Client.Auth
         [Serializable]
         private sealed class GoogleLoginRequest
         {
-            public string id_token;
+            public string google_token;
+            public string device_id;
         }
 
         [Serializable]
         private sealed class RefreshRequest
         {
-            public string refresh_token;
+            public string jwt;
         }
 
         [Serializable]
         private sealed class AuthResponseDto
         {
-            public bool ok;
+            public bool success;
             public string error;
-            public string access_token;
-            public string refresh_token;
+            public string jwt;
             public string user_id;
-            public string display_name;
+            public bool valid;
+            public string google_id;
+            public string device_id;
+            public long expires_at;
         }
 
         public BackendAuthClient(string baseUri, int timeoutSeconds = 10)
@@ -40,19 +43,19 @@ namespace InfinitePickaxe.Client.Auth
             this.timeoutSeconds = timeoutSeconds;
         }
 
-        public async Task<AuthResult> LoginWithGoogleAsync(string googleIdToken)
+        public async Task<AuthResult> LoginWithGoogleAsync(string googleIdToken, string deviceId)
         {
-            var payload = new GoogleLoginRequest { id_token = googleIdToken };
-            return await PostAuthAsync("/auth/google", payload);
+            var payload = new GoogleLoginRequest { google_token = googleIdToken, device_id = deviceId };
+            return await PostLoginAsync("/auth/login", payload);
         }
 
-        public async Task<AuthResult> RefreshAsync(string refreshToken)
+        public async Task<AuthResult> VerifyAsync(string jwt)
         {
-            var payload = new RefreshRequest { refresh_token = refreshToken };
-            return await PostAuthAsync("/auth/refresh", payload);
+            var payload = new RefreshRequest { jwt = jwt };
+            return await PostVerifyAsync("/auth/verify", payload);
         }
 
-        private async Task<AuthResult> PostAuthAsync(string path, object payload)
+        private async Task<AuthResult> PostLoginAsync(string path, object payload)
         {
             var url = $"{baseUri}{path}";
             var json = JsonUtility.ToJson(payload);
@@ -89,12 +92,64 @@ namespace InfinitePickaxe.Client.Auth
                         return AuthResult.Fail("Empty auth response");
                     }
 
-                    if (!dto.ok)
+                    if (!dto.success)
                     {
                         return AuthResult.Fail(string.IsNullOrEmpty(dto.error) ? "Auth failed" : dto.error);
                     }
 
-                    return AuthResult.Ok(dto.user_id, dto.display_name, dto.access_token, dto.refresh_token, null);
+                    return AuthResult.Ok(dto.user_id, null, dto.jwt, null, null);
+                }
+                catch (Exception ex)
+                {
+                    return AuthResult.Fail($"Parse error: {ex.Message}");
+                }
+            }
+        }
+
+        private async Task<AuthResult> PostVerifyAsync(string path, object payload)
+        {
+            var url = $"{baseUri}{path}";
+            var json = JsonUtility.ToJson(payload);
+            using (var request = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST))
+            {
+                var bodyRaw = Encoding.UTF8.GetBytes(json);
+                request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+                request.downloadHandler = new DownloadHandlerBuffer();
+                request.SetRequestHeader("Content-Type", "application/json");
+                request.timeout = timeoutSeconds;
+
+                var operation = request.SendWebRequest();
+                while (!operation.isDone)
+                {
+                    await Task.Yield();
+                }
+
+#if UNITY_2020_1_OR_NEWER
+                var isError = request.result != UnityWebRequest.Result.Success;
+#else
+                var isError = request.isNetworkError || request.isHttpError;
+#endif
+
+                if (isError)
+                {
+                    return AuthResult.Fail($"HTTP {request.responseCode}: {request.error}");
+                }
+
+                try
+                {
+                    var dto = JsonUtility.FromJson<AuthResponseDto>(request.downloadHandler.text);
+                    if (dto == null)
+                    {
+                        return AuthResult.Fail("Empty verify response");
+                    }
+
+                    if (!dto.valid)
+                    {
+                        return AuthResult.Fail(string.IsNullOrEmpty(dto.error) ? "VERIFY_FAILED" : dto.error);
+                    }
+
+                    // Verification does not return new tokens; reuse existing JWT.
+                    return AuthResult.Ok(dto.user_id, null, ((RefreshRequest)payload).jwt, null, null);
                 }
                 catch (Exception ex)
                 {

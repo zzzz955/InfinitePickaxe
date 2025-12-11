@@ -10,7 +10,7 @@ namespace InfinitePickaxe.Client.Auth
         private readonly string refreshKey;
         private readonly string accessKey;
 
-        public PlayerPrefsTokenStorage(string refreshKey = "auth_refresh_token", string accessKey = "auth_access_token")
+        public PlayerPrefsTokenStorage(string refreshKey = "auth_jwt", string accessKey = "auth_access_token")
         {
             this.refreshKey = refreshKey;
             this.accessKey = accessKey;

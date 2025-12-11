@@ -22,6 +22,7 @@ namespace InfinitePickaxe.Client.UI.Title
 
         private bool autoAuthAttempted;
         private AuthSessionService sessionService;
+        private string deviceId;
 
         private void Awake()
         {
@@ -29,6 +30,7 @@ namespace InfinitePickaxe.Client.UI.Title
             {
                 view = GetComponentInChildren<TitleView>();
             }
+            deviceId = SystemInfo.deviceUniqueIdentifier;
         }
 
         private void OnEnable()
@@ -106,7 +108,7 @@ namespace InfinitePickaxe.Client.UI.Title
                 return;
             }
 
-            var backendResult = await sessionService.AuthenticateWithGoogleAsync(result.GoogleIdToken);
+            var backendResult = await sessionService.AuthenticateWithGoogleAsync(result.GoogleIdToken, deviceId);
             if (!backendResult.Success)
             {
                 view.SetError($"백엔드 인증 실패: {backendResult.Error}");
