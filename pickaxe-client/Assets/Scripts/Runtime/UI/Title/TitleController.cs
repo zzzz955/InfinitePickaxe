@@ -55,7 +55,7 @@ namespace InfinitePickaxe.Client.UI.Title
             }
 
             sessionService = CreateSessionService();
-            view.SetButtonHandlers(OnGoogleSignInClicked, OnStartClicked);
+            view.SetButtonHandlers(OnGoogleSignInClicked, OnStartClicked, OnLogoutClicked);
             view.SetState(TitleState.Idle, IdleStatus);
 
             if (attemptSilentSignIn && !autoAuthAttempted && sessionService.HasRefreshToken)
@@ -141,6 +141,14 @@ namespace InfinitePickaxe.Client.UI.Title
             LoadGameScene();
         }
 
+        public void OnLogoutClicked()
+        {
+            sessionService.Clear();
+            view.ShowOverlay(true, "로그아웃 처리 중...");
+            view.SetState(TitleState.Idle, IdleStatus);
+            view.ShowOverlay(false);
+        }
+
         private void LoadGameScene()
         {
             if (string.IsNullOrWhiteSpace(gameSceneName))
@@ -184,7 +192,7 @@ namespace InfinitePickaxe.Client.UI.Title
                 }
                 else
                 {
-                    view.SetModalMessage($"닉네임 설정 실패: {result.Error}");
+                    view.SetModalStatus($"닉네임 설정 실패: {result.Error}");
                 }
             });
         }

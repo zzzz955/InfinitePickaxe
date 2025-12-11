@@ -20,16 +20,20 @@ namespace InfinitePickaxe.Client.UI.Title
         [SerializeField] private TextMeshProUGUI errorText;
         [SerializeField] private Button googleButton;
         [SerializeField] private Button startButton;
+        [SerializeField] private Button logoutButton;
         [SerializeField] private CanvasGroup overlayGroup;
         [SerializeField] private GameObject modalPrefab;
         [SerializeField] private string modalResourcePath = "UI/Modal";
         [SerializeField] private CanvasGroup modalGroup;
         [SerializeField] private TextMeshProUGUI modalMessageText;
+        [SerializeField] private TextMeshProUGUI modalStatusText;
         [SerializeField] private Button modalConfirmButton;
         [SerializeField] private TMP_InputField modalInputField;
+        [SerializeField] private bool preserveModalLayout = true;
 
         private System.Action onGoogleClicked;
         private System.Action onStartClicked;
+        private System.Action onLogoutClicked;
         private TitleState state = TitleState.Idle;
 
         private void Awake()
@@ -46,6 +50,7 @@ namespace InfinitePickaxe.Client.UI.Title
             {
                 startButton = CreateStartButtonFrom(googleButton);
             }
+            AlignStartButtonWithGoogle();
             if (overlayGroup == null)
             {
                 overlayGroup = CreateOverlay();
@@ -56,10 +61,11 @@ namespace InfinitePickaxe.Client.UI.Title
             ApplyState();
         }
 
-        public void SetButtonHandlers(System.Action onGoogle, System.Action onStart)
+        public void SetButtonHandlers(System.Action onGoogle, System.Action onStart, System.Action onLogout)
         {
             onGoogleClicked = onGoogle;
             onStartClicked = onStart;
+            onLogoutClicked = onLogout;
 
             if (googleButton != null)
             {
@@ -71,6 +77,12 @@ namespace InfinitePickaxe.Client.UI.Title
             {
                 startButton.onClick.RemoveAllListeners();
                 startButton.onClick.AddListener(() => onStartClicked?.Invoke());
+            }
+
+            if (logoutButton != null)
+            {
+                logoutButton.onClick.RemoveAllListeners();
+                logoutButton.onClick.AddListener(() => onLogoutClicked?.Invoke());
             }
         }
 
@@ -137,6 +149,7 @@ namespace InfinitePickaxe.Client.UI.Title
             SetModalMessage(string.IsNullOrEmpty(message)
                 ? "알 수 없는 오류가 발생했습니다."
                 : message);
+            SetModalStatus(string.Empty, false);
 
             if (modalConfirmButton != null)
             {
@@ -173,6 +186,7 @@ namespace InfinitePickaxe.Client.UI.Title
             SetModalMessage(string.IsNullOrEmpty(message)
                 ? "정보를 입력해주세요."
                 : message);
+            SetModalStatus(string.Empty, false);
 
             if (modalInputField != null)
             {
@@ -183,6 +197,10 @@ namespace InfinitePickaxe.Client.UI.Title
                 {
                     ph.text = string.IsNullOrEmpty(placeholder) ? "입력" : placeholder;
                 }
+            }
+            else
+            {
+                Debug.LogError("TitleView: modalInputField is not assigned. Please wire the InputField from the prefab.");
             }
 
             if (modalConfirmButton != null)
@@ -199,11 +217,15 @@ namespace InfinitePickaxe.Client.UI.Title
                     var value = modalInputField != null ? modalInputField.text?.Trim() : string.Empty;
                     if (string.IsNullOrEmpty(value))
                     {
-                        SetModalMessage("올바른 닉네임을 입력해주세요.");
+                        SetModalStatus("올바른 닉네임을 입력해주세요.");
                         return;
                     }
                     onSubmit?.Invoke(value);
                 });
+            }
+            else
+            {
+                Debug.LogError("TitleView: modalConfirmButton is not assigned. Please wire the ConfirmButton from the prefab.");
             }
 
             modalGroup.gameObject.SetActive(true);
@@ -232,6 +254,23 @@ namespace InfinitePickaxe.Client.UI.Title
             if (modalMessageText != null)
             {
                 modalMessageText.text = message ?? string.Empty;
+            }
+        }
+
+        public void SetModalStatus(string message, bool show = true, Color? color = null)
+        {
+            EnsureModalInstance();
+            if (modalStatusText == null)
+            {
+                return;
+            }
+
+            var hasMessage = !string.IsNullOrEmpty(message);
+            modalStatusText.gameObject.SetActive(show && hasMessage);
+            if (show && hasMessage)
+            {
+                modalStatusText.text = message;
+                modalStatusText.color = color ?? new Color(1f, 0.6f, 0.6f, 1f);
             }
         }
 
@@ -278,6 +317,12 @@ namespace InfinitePickaxe.Client.UI.Title
                 startButton.gameObject.SetActive(isAuthenticated && !isLoading);
                 startButton.interactable = buttonsInteractable && isAuthenticated;
             }
+
+            if (logoutButton != null)
+            {
+                logoutButton.gameObject.SetActive(isAuthenticated && !isLoading);
+                logoutButton.interactable = buttonsInteractable && isAuthenticated;
+            }
         }
 
         private Button FindButtonByName(string name)
@@ -320,7 +365,7 @@ namespace InfinitePickaxe.Client.UI.Title
             var clone = Instantiate(source.gameObject, source.transform.parent);
             clone.name = "StartButton";
             var rt = clone.GetComponent<RectTransform>();
-            rt.anchoredPosition += new Vector2(0, -120f);
+            rt.anchoredPosition = source.GetComponent<RectTransform>()?.anchoredPosition ?? rt.anchoredPosition;
 
             var text = clone.GetComponentInChildren<TextMeshProUGUI>();
             if (text != null)
@@ -332,6 +377,23 @@ namespace InfinitePickaxe.Client.UI.Title
             return btn;
         }
 
+        private void AlignStartButtonWithGoogle()
+        {
+            if (startButton == null || googleButton == null)
+            {
+                return;
+            }
+
+            if (googleButton.TryGetComponent(out RectTransform sourceRt) &&
+                startButton.TryGetComponent(out RectTransform targetRt))
+            {
+                targetRt.anchorMin = sourceRt.anchorMin;
+                targetRt.anchorMax = sourceRt.anchorMax;
+                targetRt.sizeDelta = sourceRt.sizeDelta;
+                targetRt.anchoredPosition = sourceRt.anchoredPosition;
+            }
+        }
+
         private CanvasGroup EnsureModalInstance()
         {
             if (modalGroup != null)
@@ -339,132 +401,38 @@ namespace InfinitePickaxe.Client.UI.Title
                 return modalGroup;
             }
 
-            GameObject instance = null;
-            var parent = GetCanvasTransform();
+            // Expect the modal to be placed in the scene and references assigned in the inspector.
+            modalGroup = modalPrefab != null
+                ? modalPrefab.GetComponent<CanvasGroup>() ?? modalPrefab.GetComponentInChildren<CanvasGroup>()
+                : GetComponentInChildren<CanvasGroup>(true);
 
-            if (modalPrefab != null)
+            if (modalGroup == null)
             {
-                instance = Instantiate(modalPrefab, parent);
-            }
-            else if (!string.IsNullOrEmpty(modalResourcePath))
-            {
-                var prefab = Resources.Load<GameObject>(modalResourcePath);
-                if (prefab != null)
-                {
-                    instance = Instantiate(prefab, parent);
-                }
+                Debug.LogError("TitleView: modalGroup is not assigned. Drag the modal prefab into the scene and wire fields in the inspector.");
+                return null;
             }
 
-            if (instance != null)
+            var panel = modalGroup.transform.Find("Panel");
+            if (modalMessageText == null)
             {
-                instance.name = modalPrefab != null ? modalPrefab.name : "Modal";
-                modalGroup = instance.GetComponent<CanvasGroup>();
-                var panel = instance.transform.Find("Panel");
-                if (modalMessageText == null)
-                {
-                    var msg = instance.transform.Find("Panel/Message");
-                    if (msg != null) modalMessageText = msg.GetComponent<TextMeshProUGUI>();
-                }
-                if (modalConfirmButton == null)
-                {
-                    var btn = instance.transform.Find("Panel/ConfirmButton");
-                    if (btn != null) modalConfirmButton = btn.GetComponent<Button>();
-                }
-                EnsureInputField(panel);
-                modalGroup.gameObject.SetActive(false);
+                var msg = modalGroup.transform.Find("Panel/Message");
+                if (msg != null) modalMessageText = msg.GetComponent<TextMeshProUGUI>();
             }
-            else
+            if (modalConfirmButton == null)
             {
-                modalGroup = CreateModal(parent);
+                var btn = modalGroup.transform.Find("Panel/ConfirmButton");
+                if (btn != null) modalConfirmButton = btn.GetComponent<Button>();
             }
+            EnsureInputField(panel);
+            EnsureStatusLabel(panel);
 
             return modalGroup;
         }
 
         private CanvasGroup CreateModal(Transform parent)
         {
-            var modalRoot = new GameObject("Modal", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(CanvasGroup));
-            modalRoot.transform.SetParent(parent, false);
-            var canvas = modalRoot.AddComponent<Canvas>();
-            canvas.overrideSorting = true;
-            canvas.sortingOrder = 1000; // ensure on top
-            modalRoot.AddComponent<UnityEngine.UI.GraphicRaycaster>();
-
-            var rootRt = modalRoot.GetComponent<RectTransform>();
-            rootRt.anchorMin = Vector2.zero;
-            rootRt.anchorMax = Vector2.one;
-            rootRt.offsetMin = Vector2.zero;
-            rootRt.offsetMax = Vector2.zero;
-
-            var rootImg = modalRoot.GetComponent<UnityEngine.UI.Image>();
-            rootImg.color = new Color(0f, 0f, 0f, 0.55f);
-            rootImg.raycastTarget = true;
-
-            modalGroup = modalRoot.GetComponent<CanvasGroup>();
-            modalGroup.alpha = 0f;
-            modalGroup.interactable = false;
-            modalGroup.blocksRaycasts = false;
-
-            var panel = new GameObject("Panel", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image));
-            panel.transform.SetParent(modalRoot.transform, false);
-            var panelRt = panel.GetComponent<RectTransform>();
-            panelRt.sizeDelta = new Vector2(640f, 360f);
-            panelRt.anchorMin = new Vector2(0.5f, 0.5f);
-            panelRt.anchorMax = new Vector2(0.5f, 0.5f);
-            panelRt.anchoredPosition = Vector2.zero;
-
-            var panelImg = panel.GetComponent<UnityEngine.UI.Image>();
-            panelImg.color = new Color(0.1f, 0.1f, 0.1f, 0.9f);
-            panelImg.raycastTarget = true;
-
-            var textGo = new GameObject("Message", typeof(RectTransform), typeof(TextMeshProUGUI));
-            textGo.transform.SetParent(panel.transform, false);
-            var textRt = textGo.GetComponent<RectTransform>();
-            textRt.anchorMin = new Vector2(0.1f, 0.4f);
-            textRt.anchorMax = new Vector2(0.9f, 0.85f);
-            textRt.offsetMin = Vector2.zero;
-            textRt.offsetMax = Vector2.zero;
-
-            modalMessageText = textGo.GetComponent<TextMeshProUGUI>();
-            modalMessageText.text = string.Empty;
-            modalMessageText.fontSize = 30f;
-            modalMessageText.alignment = TextAlignmentOptions.Center;
-            modalMessageText.enableWordWrapping = true;
-
-            EnsureInputField(panel.transform);
-
-            var buttonGo = new GameObject("ConfirmButton", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(Button));
-            buttonGo.transform.SetParent(panel.transform, false);
-            var buttonRt = buttonGo.GetComponent<RectTransform>();
-            buttonRt.anchorMin = new Vector2(0.3f, 0.1f);
-            buttonRt.anchorMax = new Vector2(0.7f, 0.25f);
-            buttonRt.offsetMin = Vector2.zero;
-            buttonRt.offsetMax = Vector2.zero;
-
-            var buttonImg = buttonGo.GetComponent<UnityEngine.UI.Image>();
-            buttonImg.color = new Color(0.2f, 0.4f, 0.8f, 1f);
-            buttonImg.raycastTarget = true;
-
-            modalConfirmButton = buttonGo.GetComponent<Button>();
-
-            var btnTextGo = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
-            btnTextGo.transform.SetParent(buttonGo.transform, false);
-            var btnTextRt = btnTextGo.GetComponent<RectTransform>();
-            btnTextRt.anchorMin = Vector2.zero;
-            btnTextRt.anchorMax = Vector2.one;
-            btnTextRt.offsetMin = Vector2.zero;
-            btnTextRt.offsetMax = Vector2.zero;
-
-            var btnLabel = btnTextGo.GetComponent<TextMeshProUGUI>();
-            btnLabel.text = "확인";
-            btnLabel.fontSize = 28f;
-            btnLabel.alignment = TextAlignmentOptions.Center;
-            btnLabel.enableWordWrapping = false;
-
-            modalGroup.transform.SetAsLastSibling();
-            modalGroup.gameObject.SetActive(false);
-
-            return modalGroup;
+            Debug.LogError("TitleView: No modal assigned. Please place the modal prefab in the scene and assign references.");
+            return null;
         }
 
         private Transform GetCanvasTransform()
@@ -517,10 +485,7 @@ namespace InfinitePickaxe.Client.UI.Title
                 return;
             }
 
-            if (panel == null)
-            {
-                return;
-            }
+            if (panel == null) return;
 
             var existing = panel.Find("InputField");
             if (existing != null)
@@ -528,49 +493,28 @@ namespace InfinitePickaxe.Client.UI.Title
                 modalInputField = existing.GetComponent<TMP_InputField>();
                 if (modalInputField == null)
                 {
-                    modalInputField = existing.gameObject.AddComponent<TMP_InputField>();
-                }
-                if (modalInputField.placeholder == null)
-                {
-                    modalInputField.placeholder = CreatePlaceholder(existing);
-                }
-                if (modalInputField.textComponent == null)
-                {
-                    modalInputField.textComponent = CreateInputText(existing);
+                    Debug.LogError("TitleView: InputField object exists but TMP_InputField is missing. Please add TMP_InputField component.");
+                    return;
                 }
                 StyleInputField(modalInputField);
                 return;
             }
 
-            var inputGo = new GameObject("InputField", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(TMP_InputField));
-            inputGo.transform.SetParent(panel, false);
-            var inputRt = inputGo.GetComponent<RectTransform>();
-            inputRt.anchorMin = new Vector2(0.1f, 0.22f);
-            inputRt.anchorMax = new Vector2(0.9f, 0.36f);
-            inputRt.offsetMin = Vector2.zero;
-            inputRt.offsetMax = Vector2.zero;
-
-            var inputBg = inputGo.GetComponent<UnityEngine.UI.Image>();
-            inputBg.color = new Color(0.22f, 0.26f, 0.32f, 0.95f);
-            inputBg.raycastTarget = true;
-
-            modalInputField = inputGo.GetComponent<TMP_InputField>();
-            modalInputField.textViewport = inputGo.GetComponent<RectTransform>();
-            modalInputField.textComponent = CreateInputText(inputGo.transform);
-            modalInputField.placeholder = CreatePlaceholder(inputGo.transform);
-            modalInputField.contentType = TMP_InputField.ContentType.Standard;
-            modalInputField.characterLimit = 16;
-            modalInputField.gameObject.SetActive(false);
-            StyleInputField(modalInputField);
+            Debug.LogError("TitleView: InputField not found under modal Panel. Please place the prefab in the scene and assign the fields.");
         }
 
         private void StyleInputField(TMP_InputField field)
         {
+            if (preserveModalLayout)
+            {
+                return;
+            }
+
             var rt = field.GetComponent<RectTransform>();
             if (rt != null)
             {
-                rt.anchorMin = new Vector2(0.1f, 0.22f);
-                rt.anchorMax = new Vector2(0.9f, 0.36f);
+                rt.anchorMin = new Vector2(0.1f, 0.32f);
+                rt.anchorMax = new Vector2(0.9f, 0.48f);
                 rt.offsetMin = Vector2.zero;
                 rt.offsetMax = Vector2.zero;
             }
@@ -578,7 +522,7 @@ namespace InfinitePickaxe.Client.UI.Title
             var bg = field.GetComponent<UnityEngine.UI.Image>();
             if (bg != null)
             {
-                bg.color = new Color(0.22f, 0.26f, 0.32f, 0.95f);
+                bg.color = new Color(0.18f, 0.28f, 0.45f, 1f);
             }
 
             var font = modalMessageText != null ? modalMessageText.font : null;
@@ -586,11 +530,150 @@ namespace InfinitePickaxe.Client.UI.Title
             {
                 if (font != null) field.textComponent.font = font;
                 field.textComponent.color = Color.white;
+                field.textComponent.fontSize = 28f;
             }
             if (field.placeholder is TextMeshProUGUI ph)
             {
                 if (font != null) ph.font = font;
-                ph.color = new Color(1f, 1f, 1f, 0.6f);
+                ph.color = new Color(1f, 1f, 1f, 0.7f);
+                ph.fontSize = 24f;
+            }
+        }
+
+        private void EnsureStatusLabel(Transform panel)
+        {
+            if (modalStatusText != null)
+            {
+                StyleStatusLabel(modalStatusText);
+                return;
+            }
+
+            if (panel == null) return;
+
+            var existing = panel.Find("Status");
+            if (existing != null)
+            {
+                modalStatusText = existing.GetComponent<TextMeshProUGUI>();
+                if (modalStatusText != null)
+                {
+                    StyleStatusLabel(modalStatusText);
+                }
+                return;
+            }
+
+            Debug.LogWarning("TitleView: Status label not found under modal Panel. Add a Status TextMeshProUGUI to show validation messages.");
+        }
+
+        private void StyleStatusLabel(TextMeshProUGUI label)
+        {
+            if (label == null)
+            {
+                return;
+            }
+
+            if (preserveModalLayout)
+            {
+                label.gameObject.SetActive(false);
+                return;
+            }
+
+            label.alignment = TextAlignmentOptions.MidlineLeft;
+            label.enableWordWrapping = true;
+            label.fontSize = 24f;
+            label.color = new Color(1f, 0.6f, 0.6f, 1f);
+            if (modalMessageText != null)
+            {
+                label.font = modalMessageText.font;
+            }
+            if (label.rectTransform != null)
+            {
+                label.rectTransform.anchorMin = new Vector2(0.1f, 0.18f);
+                label.rectTransform.anchorMax = new Vector2(0.9f, 0.26f);
+                label.rectTransform.offsetMin = Vector2.zero;
+                label.rectTransform.offsetMax = Vector2.zero;
+            }
+            label.gameObject.SetActive(false);
+        }
+
+        private void EnsureCanvasOnModal(GameObject instance)
+        {
+            if (instance == null) return;
+
+            var canvas = instance.GetComponent<Canvas>();
+            if (canvas != null)
+            {
+                canvas.overrideSorting = true;
+                canvas.sortingOrder = 1000;
+            }
+        }
+
+        private void ApplyModalFonts()
+        {
+            if (preserveModalLayout)
+            {
+                return;
+            }
+
+            var baseFont = statusText != null ? statusText.font : modalMessageText != null ? modalMessageText.font : null;
+            if (baseFont == null)
+            {
+                return;
+            }
+
+            if (modalMessageText != null)
+            {
+                modalMessageText.font = baseFont;
+            }
+
+            if (modalStatusText != null)
+            {
+                modalStatusText.font = baseFont;
+            }
+
+            if (modalInputField != null)
+            {
+                if (modalInputField.textComponent != null)
+                {
+                    modalInputField.textComponent.font = baseFont;
+                }
+                if (modalInputField.placeholder is TextMeshProUGUI ph)
+                {
+                    ph.font = baseFont;
+                }
+            }
+
+            if (modalConfirmButton != null)
+            {
+                var label = modalConfirmButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (label != null)
+                {
+                    label.font = baseFont;
+                }
+            }
+        }
+
+        private void StyleModalLayout()
+        {
+            if (preserveModalLayout)
+            {
+                return;
+            }
+
+            if (modalMessageText != null && modalMessageText.rectTransform != null)
+            {
+                var rt = modalMessageText.rectTransform;
+                rt.anchorMin = new Vector2(0.1f, 0.55f);
+                rt.anchorMax = new Vector2(0.9f, 0.88f);
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+            }
+
+            if (modalConfirmButton != null && modalConfirmButton.transform is RectTransform btnRt)
+            {
+                btnRt.anchorMin = new Vector2(0.3f, 0.1f);
+                btnRt.anchorMax = new Vector2(0.7f, 0.17f);
+                btnRt.offsetMin = Vector2.zero;
+                btnRt.offsetMax = Vector2.zero;
             }
         }
     }
