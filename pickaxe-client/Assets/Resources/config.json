@@ -1,0 +1,28 @@
+{
+  "environment": "dev",
+  "connectTimeoutSeconds": 5,
+  "receiveTimeoutSeconds": 5,
+  "sendTimeoutSeconds": 5,
+  "heartbeatIntervalSeconds": 30,
+  "maxMessageBytes": 1048576,
+  "environments": [
+    {
+      "name": "dev",
+      "host": "127.0.0.1",
+      "port": 10001,
+      "useTls": false
+    },
+    {
+      "name": "stage",
+      "host": "stage.infinitepickaxe.dev",
+      "port": 10001,
+      "useTls": true
+    },
+    {
+      "name": "prod",
+      "host": "prod.infinitepickaxe.com",
+      "port": 10001,
+      "useTls": true
+    }
+  ]
+}
