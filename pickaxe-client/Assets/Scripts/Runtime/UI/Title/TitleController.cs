@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using InfinitePickaxe.Client.Auth;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,12 +9,13 @@ namespace InfinitePickaxe.Client.UI.Title
     {
         [Header("View")]
         [SerializeField] private TitleView view;
+        [SerializeField] private GoogleFirebaseAuthService authService;
 
         [Header("Scenes")]
         [SerializeField] private string gameSceneName = "Game";
 
         [Header("Auth")]
-        [SerializeField] private string refreshTokenPlayerPrefsKey = "refresh_token";
+        [SerializeField] private bool attemptSilentSignIn = true;
 
         private bool autoAuthAttempted;
 
@@ -33,22 +35,26 @@ namespace InfinitePickaxe.Client.UI.Title
                 return;
             }
 
+            if (authService == null)
+            {
+                authService = GetComponent<GoogleFirebaseAuthService>();
+                if (authService == null)
+                {
+                    Debug.LogError("TitleController: GoogleFirebaseAuthService is not assigned.");
+                    return;
+                }
+            }
+
             // Ensure buttons are wired.
             view.SetButtonHandlers(OnGoogleSignInClicked);
 
             view.SetState(TitleState.Idle, "로그인 상태: 미인증");
 
-            if (!autoAuthAttempted && HasSavedRefreshToken())
+            if (attemptSilentSignIn && !autoAuthAttempted)
             {
                 autoAuthAttempted = true;
                 _ = AutoAuthenticateAsync();
             }
-        }
-
-        private bool HasSavedRefreshToken()
-        {
-            return PlayerPrefs.HasKey(refreshTokenPlayerPrefsKey) &&
-                   !string.IsNullOrWhiteSpace(PlayerPrefs.GetString(refreshTokenPlayerPrefsKey));
         }
 
         private async Task AutoAuthenticateAsync()
@@ -56,16 +62,16 @@ namespace InfinitePickaxe.Client.UI.Title
             view.SetState(TitleState.Loading, "저장된 토큰으로 자동 로그인 시도 중...");
             view.SetLoadingMessage("재인증 중...");
 
-            var success = await SimulateAuthAsync();
+            var result = await authService.SignInAsync(silent: true);
 
-            if (success)
+            if (result.Success)
             {
                 view.SetState(TitleState.Authenticated, "로그인 상태: 인증 완료");
                 LoadGameScene();
             }
             else
             {
-                view.SetError("자동 로그인 실패: 다시 시도해주세요.");
+                view.SetError($"자동 로그인 실패: {result.Error}");
                 view.SetState(TitleState.Idle, "로그인 상태: 미인증");
             }
         }
@@ -75,29 +81,18 @@ namespace InfinitePickaxe.Client.UI.Title
             view.SetState(TitleState.Loading, "Google 로그인 진행 중...");
             view.SetLoadingMessage("Google 계정 선택...");
 
-            var success = await SimulateAuthAsync();
+            var result = await authService.SignInAsync(silent: false);
 
-            if (success)
+            if (result.Success)
             {
-                // Save placeholder refresh token for future auto-auth.
-                PlayerPrefs.SetString(refreshTokenPlayerPrefsKey, "mock_refresh_token");
-                PlayerPrefs.Save();
-
                 view.SetState(TitleState.Authenticated, "로그인 상태: 인증 완료");
                 LoadGameScene();
             }
             else
             {
-                view.SetError("Google 로그인 실패: 다시 시도해주세요.");
+                view.SetError($"Google 로그인 실패: {result.Error}");
                 view.SetState(TitleState.Idle, "로그인 상태: 미인증");
             }
-        }
-
-        private async Task<bool> SimulateAuthAsync()
-        {
-            // Placeholder for real auth flow (GPG/Firebase + handshake).
-            await Task.Delay(1000);
-            return true;
         }
 
         private void LoadGameScene()

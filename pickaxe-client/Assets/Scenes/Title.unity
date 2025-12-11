@@ -1266,6 +1266,7 @@ GameObject:
   - component: {fileID: 2100000261}
   - component: {fileID: 2100000262}
   - component: {fileID: 2100000263}
+  - component: {fileID: 2100000264}
   m_Layer: 0
   m_Name: TitleController
   m_TagString: Untagged
@@ -1304,6 +1305,21 @@ MonoBehaviour:
   loadingText: {fileID: 2100000242}
   errorText: {fileID: 2100000252}
   googleButton: {fileID: 2100000223}
+  authService: {fileID: 2100000264}
+--- !u!114 &2100000264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100000260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb994b5a1a117914bb5d0d74666b06ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  webClientId: 
+  forceTokenRefresh: 0
 --- !u!114 &2100000263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1318,7 +1334,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 2100000262}
   gameSceneName: Game
-  refreshTokenPlayerPrefsKey: refresh_token
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
