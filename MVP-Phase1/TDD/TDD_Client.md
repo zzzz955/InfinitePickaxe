@@ -19,9 +19,9 @@
 - 환경 설정: ScriptableObject 또는 `Resources/config.json`(dev/stage/prod 호스트, 포트, 타임아웃, 하트비트 주기).
 
 ## 3. 아키텍처 개요
-- Bootstrap 씬: DI 컨테이너/Service Locator 생성, 네트워크 매니저 초기화, 설정 로드, 메타데이터/버전 체크, SecureStorage에서 RefreshToken 조회.
-- MainScene: 로그인 진입점. RefreshToken 존재 시 자동 재인증→유저 데이터 로드 후 GameScene으로 즉시 전환. 미존재 시 GPG 로그인 플로우 노출.
-- GameScene: MVP 기준 단일 씬으로 플레이 진행(향후 Zone 추가 시 Scene 분리 검토). 씬 전환 시 LoadingOverlay 표시.
+- BootStrap 씬: DI 컨테이너/Service Locator 생성, 네트워크 매니저 초기화, 설정 로드, 메타데이터/버전 체크, SecureStorage에서 RefreshToken 조회 후 다음 씬으로 넘김.
+- Title 씬: 로그인 진입점. RefreshToken 존재 시 자동 재인증→유저 데이터 로드 후 Game 씬으로 즉시 전환. 미존재 시 GPG 로그인 플로우 노출.
+- Game 씬: MVP 기준 단일 씬으로 플레이 진행(향후 Zone 추가 시 Scene 분리 검토). 씬 전환 시 LoadingOverlay 표시.
 - 네트워크 계층: `TcpClient`(길이 프리픽스), 송신 큐, 수신 디멀티플렉서(Envelope.msg_type 기반 라우팅).
 - 데이터 계층: 최소 캐시(현재 골드, 슬롯 상태, 미션 상태, 오프라인 결과). 저장소는 메모리 우선, RefreshToken은 SecureStorage, 나머지 로컬 캐시는 PlayerPrefs/파일은 Dev 전용.
 - 전역 시스템: DontDestroyOnLoad 싱글톤/서비스로 네트워크, 세션, 설정, 메타데이터 보관(패턴 확정 필요).
@@ -33,16 +33,16 @@
 - 메시지 직렬화: proto 바이너리를 payload에 넣고 msg_type 문자열로 구분.
 
 ## 5. 화면/플로우별 요구사항
-1) 부트스트랩  
+1) BootStrap  
    - 설정/메타 로드 실패 시 기본 localhost:10001(dev)로 연결 시도 여부 팝업.  
    - 프로토 버전/앱 버전 로그 남김.  
-   - SecureStorage에서 RefreshToken 조회.
-2) 로그인/핸드셰이크  
-   - RefreshToken 존재 시 자동 재인증→유저 데이터 로드 후 GameScene 이동.  
+   - SecureStorage에서 RefreshToken 조회 및 Title 씬으로 전달.
+2) Title(로그인/핸드셰이크)  
+   - RefreshToken 존재 시 자동 재인증→유저 데이터 로드 후 Game 씬 이동.  
    - 미존재/실패 시 GPG 로그인 버튼 노출(계정 선택 이슈로 SDK 버전 별 플로우 테스트 필요).  
    - 성공 시 스냅샷(UserDataSnapshot) UI에 반영: 골드, 크리스탈, 슬롯 잠금 여부, 현재 광물, HP, DPS, 최고 레벨.  
    - 실패 코드(1001 AUTH_FAILED, 1003 EXPIRED 등) 표시 및 재시도 버튼.
-3) 하트비트  
+3) 하트비트 (Game 씬 상주)  
    - 상태 표시(연결, 지연시간 추정).  
    - 2회 연속 실패 시 자동 재연결 트리거.
 4) 채굴(Stub 가능)  
