@@ -31,8 +31,8 @@ namespace InfinitePickaxe.Client.Auth
                 return AuthResult.Fail("No refresh token");
             }
 
-            var jwt = tokenStorage.GetRefreshToken();
-            var result = await backendClient.VerifyAsync(jwt);
+            var refresh = tokenStorage.GetRefreshToken();
+            var result = await backendClient.VerifyAsync(refresh);
             if (result.Success)
             {
                 tokens = new AuthTokens(result.IdToken, result.RefreshToken, result.UserId, result.DisplayName);

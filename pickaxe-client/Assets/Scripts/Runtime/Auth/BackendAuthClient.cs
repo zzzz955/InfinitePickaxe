@@ -25,13 +25,25 @@ namespace InfinitePickaxe.Client.Auth
         }
 
         [Serializable]
-        private sealed class AuthResponseDto
+        private sealed class LoginResponseDto
         {
             public bool success;
             public string error;
             public string jwt;
+            public string refresh_token;
             public string user_id;
+            public bool is_new_user;
+            public long server_time;
+        }
+
+        private sealed class VerifyResponseDto
+        {
             public bool valid;
+            public string error;
+            public string jwt;
+            public string refresh_token;
+            public long refresh_expires_at;
+            public string user_id;
             public string google_id;
             public string device_id;
             public long expires_at;
@@ -86,7 +98,7 @@ namespace InfinitePickaxe.Client.Auth
 
                 try
                 {
-                    var dto = JsonUtility.FromJson<AuthResponseDto>(request.downloadHandler.text);
+                    var dto = JsonUtility.FromJson<LoginResponseDto>(request.downloadHandler.text);
                     if (dto == null)
                     {
                         return AuthResult.Fail("Empty auth response");
@@ -97,7 +109,7 @@ namespace InfinitePickaxe.Client.Auth
                         return AuthResult.Fail(string.IsNullOrEmpty(dto.error) ? "Auth failed" : dto.error);
                     }
 
-                    return AuthResult.Ok(dto.user_id, null, dto.jwt, null, null);
+                    return AuthResult.Ok(dto.user_id, null, dto.jwt, dto.refresh_token, null);
                 }
                 catch (Exception ex)
                 {
@@ -137,7 +149,7 @@ namespace InfinitePickaxe.Client.Auth
 
                 try
                 {
-                    var dto = JsonUtility.FromJson<AuthResponseDto>(request.downloadHandler.text);
+                    var dto = JsonUtility.FromJson<VerifyResponseDto>(request.downloadHandler.text);
                     if (dto == null)
                     {
                         return AuthResult.Fail("Empty verify response");
@@ -148,8 +160,8 @@ namespace InfinitePickaxe.Client.Auth
                         return AuthResult.Fail(string.IsNullOrEmpty(dto.error) ? "VERIFY_FAILED" : dto.error);
                     }
 
-                    // Verification does not return new tokens; reuse existing JWT.
-                    return AuthResult.Ok(dto.user_id, null, ((RefreshRequest)payload).jwt, null, null);
+                    var jwt = string.IsNullOrEmpty(dto.jwt) ? ((RefreshRequest)payload).jwt : dto.jwt;
+                    return AuthResult.Ok(dto.user_id, null, jwt, dto.refresh_token, null);
                 }
                 catch (Exception ex)
                 {
