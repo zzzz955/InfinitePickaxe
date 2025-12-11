@@ -21,6 +21,11 @@ namespace InfinitePickaxe.Client.UI.Title
         [SerializeField] private Button googleButton;
         [SerializeField] private Button startButton;
         [SerializeField] private CanvasGroup overlayGroup;
+        [SerializeField] private GameObject modalPrefab;
+        [SerializeField] private string modalResourcePath = "UI/Modal";
+        [SerializeField] private CanvasGroup modalGroup;
+        [SerializeField] private TextMeshProUGUI modalMessageText;
+        [SerializeField] private Button modalConfirmButton;
 
         private System.Action onGoogleClicked;
         private System.Action onStartClicked;
@@ -44,6 +49,8 @@ namespace InfinitePickaxe.Client.UI.Title
             {
                 overlayGroup = CreateOverlay();
             }
+
+            EnsureModalInstance();
 
             ApplyState();
         }
@@ -96,6 +103,10 @@ namespace InfinitePickaxe.Client.UI.Title
             {
                 errorText.text = errorMessage;
             }
+            if (statusText != null)
+            {
+                statusText.text = "로그인 상태: 오류";
+            }
 
             state = TitleState.Error;
             ApplyState();
@@ -116,6 +127,51 @@ namespace InfinitePickaxe.Client.UI.Title
             {
                 SetLoadingMessage(message);
             }
+        }
+
+        public void ShowModal(string message, string buttonText = "확인", System.Action onClose = null)
+        {
+            EnsureModalInstance();
+
+            if (modalMessageText != null)
+            {
+                modalMessageText.text = string.IsNullOrEmpty(message)
+                    ? "알 수 없는 오류가 발생했습니다."
+                    : message;
+            }
+
+            if (modalConfirmButton != null)
+            {
+                var label = modalConfirmButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (label != null)
+                {
+                    label.text = string.IsNullOrEmpty(buttonText) ? "확인" : buttonText;
+                }
+
+                modalConfirmButton.onClick.RemoveAllListeners();
+                modalConfirmButton.onClick.AddListener(() =>
+                {
+                    HideModal();
+                    onClose?.Invoke();
+                });
+            }
+
+            modalGroup.alpha = 1f;
+            modalGroup.interactable = true;
+            modalGroup.blocksRaycasts = true;
+            modalGroup.transform.SetAsLastSibling();
+        }
+
+        public void HideModal()
+        {
+            if (modalGroup == null)
+            {
+                return;
+            }
+
+            modalGroup.alpha = 0f;
+            modalGroup.interactable = false;
+            modalGroup.blocksRaycasts = false;
         }
 
         private void ApplyState()
@@ -213,6 +269,129 @@ namespace InfinitePickaxe.Client.UI.Title
 
             var btn = clone.GetComponent<Button>();
             return btn;
+        }
+
+        private CanvasGroup EnsureModalInstance()
+        {
+            if (modalGroup != null)
+            {
+                return modalGroup;
+            }
+
+            GameObject instance = null;
+
+            if (modalPrefab != null)
+            {
+                instance = Instantiate(modalPrefab, transform);
+            }
+            else if (!string.IsNullOrEmpty(modalResourcePath))
+            {
+                var prefab = Resources.Load<GameObject>(modalResourcePath);
+                if (prefab != null)
+                {
+                    instance = Instantiate(prefab, transform);
+                }
+            }
+
+            if (instance != null)
+            {
+                instance.name = modalPrefab != null ? modalPrefab.name : "Modal";
+                modalGroup = instance.GetComponent<CanvasGroup>();
+                if (modalMessageText == null)
+                {
+                    var msg = instance.transform.Find("Panel/Message");
+                    if (msg != null) modalMessageText = msg.GetComponent<TextMeshProUGUI>();
+                }
+                if (modalConfirmButton == null)
+                {
+                    var btn = instance.transform.Find("Panel/ConfirmButton");
+                    if (btn != null) modalConfirmButton = btn.GetComponent<Button>();
+                }
+            }
+            else
+            {
+                modalGroup = CreateModal();
+            }
+
+            return modalGroup;
+        }
+
+        private CanvasGroup CreateModal()
+        {
+            var modalRoot = new GameObject("Modal", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(CanvasGroup));
+            modalRoot.transform.SetParent(transform, false);
+
+            var rootRt = modalRoot.GetComponent<RectTransform>();
+            rootRt.anchorMin = Vector2.zero;
+            rootRt.anchorMax = Vector2.one;
+            rootRt.offsetMin = Vector2.zero;
+            rootRt.offsetMax = Vector2.zero;
+
+            var rootImg = modalRoot.GetComponent<UnityEngine.UI.Image>();
+            rootImg.color = new Color(0f, 0f, 0f, 0.55f);
+            rootImg.raycastTarget = true;
+
+            modalGroup = modalRoot.GetComponent<CanvasGroup>();
+            modalGroup.alpha = 0f;
+            modalGroup.interactable = false;
+            modalGroup.blocksRaycasts = false;
+
+            var panel = new GameObject("Panel", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image));
+            panel.transform.SetParent(modalRoot.transform, false);
+            var panelRt = panel.GetComponent<RectTransform>();
+            panelRt.sizeDelta = new Vector2(640f, 360f);
+            panelRt.anchorMin = new Vector2(0.5f, 0.5f);
+            panelRt.anchorMax = new Vector2(0.5f, 0.5f);
+            panelRt.anchoredPosition = Vector2.zero;
+
+            var panelImg = panel.GetComponent<UnityEngine.UI.Image>();
+            panelImg.color = new Color(0.1f, 0.1f, 0.1f, 0.9f);
+            panelImg.raycastTarget = true;
+
+            var textGo = new GameObject("Message", typeof(RectTransform), typeof(TextMeshProUGUI));
+            textGo.transform.SetParent(panel.transform, false);
+            var textRt = textGo.GetComponent<RectTransform>();
+            textRt.anchorMin = new Vector2(0.1f, 0.4f);
+            textRt.anchorMax = new Vector2(0.9f, 0.85f);
+            textRt.offsetMin = Vector2.zero;
+            textRt.offsetMax = Vector2.zero;
+
+            modalMessageText = textGo.GetComponent<TextMeshProUGUI>();
+            modalMessageText.text = string.Empty;
+            modalMessageText.fontSize = 30f;
+            modalMessageText.alignment = TextAlignmentOptions.Center;
+            modalMessageText.enableWordWrapping = true;
+
+            var buttonGo = new GameObject("ConfirmButton", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(Button));
+            buttonGo.transform.SetParent(panel.transform, false);
+            var buttonRt = buttonGo.GetComponent<RectTransform>();
+            buttonRt.anchorMin = new Vector2(0.3f, 0.1f);
+            buttonRt.anchorMax = new Vector2(0.7f, 0.25f);
+            buttonRt.offsetMin = Vector2.zero;
+            buttonRt.offsetMax = Vector2.zero;
+
+            var buttonImg = buttonGo.GetComponent<UnityEngine.UI.Image>();
+            buttonImg.color = new Color(0.2f, 0.4f, 0.8f, 1f);
+            buttonImg.raycastTarget = true;
+
+            modalConfirmButton = buttonGo.GetComponent<Button>();
+
+            var btnTextGo = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            btnTextGo.transform.SetParent(buttonGo.transform, false);
+            var btnTextRt = btnTextGo.GetComponent<RectTransform>();
+            btnTextRt.anchorMin = Vector2.zero;
+            btnTextRt.anchorMax = Vector2.one;
+            btnTextRt.offsetMin = Vector2.zero;
+            btnTextRt.offsetMax = Vector2.zero;
+
+            var btnLabel = btnTextGo.GetComponent<TextMeshProUGUI>();
+            btnLabel.text = "확인";
+            btnLabel.fontSize = 28f;
+            btnLabel.alignment = TextAlignmentOptions.Center;
+            btnLabel.enableWordWrapping = false;
+
+            modalGroup.transform.SetAsLastSibling();
+            return modalGroup;
         }
     }
 }

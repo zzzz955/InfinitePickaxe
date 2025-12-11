@@ -146,11 +146,13 @@ namespace InfinitePickaxe.Client.UI.Title
         private void HandleInvalidToken(string message)
         {
             sessionService?.Clear();
-            view.SetError(string.IsNullOrEmpty(message)
+            var display = string.IsNullOrEmpty(message)
                 ? "세션이 만료되었습니다. 다시 로그인해주세요."
-                : message);
+                : message;
+            view.SetError(display);
             view.SetState(TitleState.Idle, "로그인 상태: 재로그인 필요");
             view.ShowOverlay(false);
+            view.ShowModal(display, "다시 로그인");
         }
     }
 }
