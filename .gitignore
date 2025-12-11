@@ -61,6 +61,7 @@ pickaxe-client/Assets/google-services.json
 pickaxe-client/Assets/google-services.json.meta
 pickaxe-client/Assets/StreamingAssets/google-services-desktop.json
 pickaxe-client/Assets/StreamingAssets/google-services-desktop.json.meta
+pickaxe-client/Assets/Plugins/Android/FirebaseApp.androidlib/res/values/google-services.xml
 
 # claude
 *.claude
