@@ -14,9 +14,9 @@ namespace InfinitePickaxe.Client.Auth
         [SerializeField] private bool forceTokenRefresh;
         [SerializeField] private bool useDummyInEditor = true;
         [SerializeField] private string dummyUserId = "dev-user";
-        [SerializeField] private string dummyDisplayName = "Dev User";
         [SerializeField] private string dummyGoogleIdToken = "dev-google-idtoken";
         [SerializeField] private string dummyIdToken = "dev-id-token";
+        [SerializeField] private string editorProvider = "admin";
 
         private FirebaseAuth auth;
         private bool initialized;
@@ -27,7 +27,7 @@ namespace InfinitePickaxe.Client.Auth
             if (useDummyInEditor)
             {
                 // Return a dummy GoogleIdToken so the backend path can still be exercised in dev.
-                return AuthResult.Ok(dummyUserId, dummyDisplayName, dummyIdToken, null, $"{dummyGoogleIdToken}");
+                return AuthResult.Ok(dummyUserId, null, null, editorProvider, dummyIdToken, null, $"{dummyGoogleIdToken}");
             }
             return AuthResult.Fail("Google/Firebase 로그인은 Android 디바이스에서만 지원됩니다.");
 #else
@@ -56,7 +56,7 @@ namespace InfinitePickaxe.Client.Auth
 
                 // FirebaseUser.RefreshToken is not exposed in Unity SDK. Refresh token for your auth server
                 // should be obtained by exchanging idToken/googleUser.IdToken with your backend.
-                return AuthResult.Ok(firebaseUser.UserId, firebaseUser.DisplayName, idToken, null, googleUser.IdToken);
+                return AuthResult.Ok(firebaseUser.UserId, null, firebaseUser.Email, "google", idToken, null, googleUser.IdToken);
             }
             catch (Exception ex)
             {
@@ -70,7 +70,7 @@ namespace InfinitePickaxe.Client.Auth
         {
             if (initialized && auth != null)
             {
-                return AuthResult.Ok(auth.CurrentUser?.UserId, auth.CurrentUser?.DisplayName, null, null, null);
+                return AuthResult.Ok(auth.CurrentUser?.UserId, null, auth.CurrentUser?.Email, "google", null, null, null);
             }
 
             var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
@@ -81,7 +81,7 @@ namespace InfinitePickaxe.Client.Auth
 
             auth = FirebaseAuth.DefaultInstance;
             initialized = true;
-            return AuthResult.Ok(null, null, null, null, null);
+            return AuthResult.Ok(null, null, null, "google", null, null, null);
         }
 
         private void ConfigureGoogleSignIn()

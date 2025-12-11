@@ -1,80 +1,85 @@
-# auth_schema 테이블 요약 (MVP)
+# auth_schema 설계 (MVP)
 
 ## users
-| 컬럼 | 타입 | 제약/기본값 | 비고 |
-| --- | --- | --- | --- |
-| user_id | UUID | PK, `gen_random_uuid()` | 내부 PK |
-| google_id | VARCHAR(255) | UNIQUE, NOT NULL | Google ID |
-| username | VARCHAR(50) |  | 표시명(옵션) |
-| device_id | VARCHAR(255) |  | 최근 디바이스 |
-| created_at | TIMESTAMP | DEFAULT now | 생성 시각 |
-| updated_at | TIMESTAMP | DEFAULT now | 업데이트 시각 |
-| last_login | TIMESTAMP |  | 마지막 로그인 |
-| last_logout | TIMESTAMP |  | 마지막 로그아웃 |
-| is_banned | BOOLEAN | DEFAULT false | 밴 여부 |
-| ban_reason | TEXT |  | 밴 사유 |
-| banned_at | TIMESTAMP |  | 밴 시작 |
-| banned_until | TIMESTAMP |  | NULL이면 영구 |
+| column        | type         | constraint/default        | note                                      |
+| ---           | ---          | ---                       | ---                                       |
+| user_id       | UUID         | PK, `gen_random_uuid()`   |                                           |
+| provider      | VARCHAR(30)  | NOT NULL, DEFAULT 'google'| 소셜 제공자 (google/apple/…)              |
+| external_id   | VARCHAR(255) | UNIQUE, NOT NULL          | `{provider}-{provider_user_id}`           |
+| nickname      | VARCHAR(50)  |                           | 선택, 중복 가능, 검증 규칙 적용           |
+| email         | VARCHAR(255) |                           | 선택                                      |
+| created_at    | TIMESTAMP    | DEFAULT now               |                                           |
+| updated_at    | TIMESTAMP    | DEFAULT now               |                                           |
+| last_login    | TIMESTAMP    |                           |                                           |
+| last_logout   | TIMESTAMP    |                           |                                           |
+| is_banned     | BOOLEAN      | DEFAULT false             |                                           |
+| ban_reason    | TEXT         |                           |                                           |
+| banned_at     | TIMESTAMP    |                           |                                           |
+| banned_until  | TIMESTAMP    |                           | NULL => 영구                              |
+
+닉네임 검증 규칙: 한글/숫자 2~8자 또는 영문/숫자 4~16자, 특수문자 불가.
 
 ## jwt_families
-| 컬럼 | 타입 | 제약/기본값 | 비고 |
-| --- | --- | --- | --- |
-| family_id | UUID | PK | 슬라이딩 세션 패밀리 |
-| user_id | UUID | FK→users | 유저 |
-| device_id | VARCHAR(255) |  | 디바이스 |
-| login_ip | INET |  | 로그인 IP |
-| user_agent | TEXT |  | UA |
-| is_active | BOOLEAN | DEFAULT true | 활성 |
-| is_revoked | BOOLEAN | DEFAULT false | 철회 여부 |
-| revoked_reason | TEXT |  | 철회 사유 |
-| created_at | TIMESTAMP | DEFAULT now | 생성 |
-| last_refreshed_at | TIMESTAMP | DEFAULT now | 마지막 리프레시 |
-| expires_at | TIMESTAMP | NOT NULL | 만료 |
-| revoked_at | TIMESTAMP |  | 철회 시각 |
-| refresh_count | INTEGER | DEFAULT 0 | 리프레시 횟수 |
-| max_refresh_count | INTEGER | DEFAULT 100, CHECK | 최대 허용 |
+| column            | type      | constraint/default              | note                           |
+| ---               | ---       | ---                             | ---                            |
+| family_id         | UUID      | PK                              | 리프레시 패밀리                |
+| user_id           | UUID      | FK→users                        |                                |
+| device_id         | VARCHAR   |                                 |                                |
+| login_ip          | INET      |                                 |                                |
+| user_agent        | TEXT      |                                 |                                |
+| is_active         | BOOLEAN   | DEFAULT true                    |                                |
+| is_revoked        | BOOLEAN   | DEFAULT false                   |                                |
+| revoked_reason    | TEXT      |                                 |                                |
+| created_at        | TIMESTAMP | DEFAULT now                     |                                |
+| last_refreshed_at | TIMESTAMP | DEFAULT now                     |                                |
+| expires_at        | TIMESTAMP | NOT NULL                        |                                |
+| revoked_at        | TIMESTAMP |                                 |                                |
+| refresh_count     | INTEGER   | DEFAULT 0                       |                                |
+| max_refresh_count | INTEGER   | DEFAULT 100, CHECK              |                                |
 
 ## jwt_tokens
-| 컬럼 | 타입 | 제약/기본값 | 비고 |
-| --- | --- | --- | --- |
-| token_id | UUID | PK |  |
-| family_id | UUID | FK→jwt_families | 패밀리 |
-| user_id | UUID | FK→users | 유저 |
-| token_hash | VARCHAR(64) | UNIQUE, NOT NULL | SHA-256 |
-| jti | VARCHAR(36) | UNIQUE, NOT NULL | JWT ID |
-| is_valid | BOOLEAN | DEFAULT true | 유효 여부 |
-| is_used | BOOLEAN | DEFAULT false | 리프레시에 사용됨 |
-| issued_at | TIMESTAMP | DEFAULT now | 발급 |
-| expires_at | TIMESTAMP | NOT NULL | 만료 |
-| used_at | TIMESTAMP |  | 사용 시각 |
-| revoked_at | TIMESTAMP |  | 철회 시각 |
-| issued_ip | INET |  | 발급 IP |
-| used_ip | INET |  | 사용 IP |
+| column     | type      | constraint/default              | note          |
+| ---        | ---       | ---                             | ---           |
+| token_id   | UUID      | PK                              |               |
+| family_id  | UUID      | FK→jwt_families                 |               |
+| user_id    | UUID      | FK→users                        |               |
+| token_hash | VARCHAR   | UNIQUE, NOT NULL                | SHA-256       |
+| jti        | VARCHAR   | UNIQUE, NOT NULL                | JWT ID        |
+| is_valid   | BOOLEAN   | DEFAULT true                    |               |
+| is_used    | BOOLEAN   | DEFAULT false                   |               |
+| issued_at  | TIMESTAMP | DEFAULT now                     |               |
+| expires_at | TIMESTAMP | NOT NULL                        |               |
+| used_at    | TIMESTAMP |                                 |               |
+| revoked_at | TIMESTAMP |                                 |               |
+| issued_ip  | INET      |                                 |               |
+| used_ip    | INET      |                                 |               |
 
 ## session_history
-| 컬럼 | 타입 | 제약/기본값 | 비고 |
-| --- | --- | --- | --- |
-| session_id | UUID | PK |  |
-| user_id | UUID | FK→users | 유저 |
-| server_ip | VARCHAR(45) |  | 서버 IP |
-| client_ip | INET |  | 클라이언트 IP |
-| client_version | VARCHAR(20) |  | 클라이언트 버전 |
-| connected_at | TIMESTAMP | DEFAULT now | 접속 |
-| disconnected_at | TIMESTAMP |  | 종료 |
-| duration_seconds | INTEGER |  | 지속 |
-| disconnect_reason | TEXT |  | 종료 이유 |
-| packets_sent | BIGINT |  | 선택적 |
-| packets_received | BIGINT |  | 선택적 |
+| column            | type      | constraint/default      | note                              |
+| ---               | ---       | ---                     | ---                               |
+| session_id        | UUID      | PK                      |                                   |
+| user_id           | UUID      | FK→users                |                                   |
+| provider          | VARCHAR   |                         |                                   |
+| external_id       | VARCHAR   |                         |                                   |
+| device_id         | VARCHAR   |                         |                                   |
+| client_ip         | INET      |                         |                                   |
+| user_agent        | TEXT      |                         |                                   |
+| result            | VARCHAR   |                         | SUCCESS / FAIL / BANNED / INVALID |
+| reason            | TEXT      |                         | 에러/거부 사유                     |
+| login_at          | TIMESTAMP | DEFAULT now             |                                   |
+| logout_at         | TIMESTAMP |                         |                                   |
+| duration_seconds  | INTEGER   |                         |                                   |
+| created_at        | TIMESTAMP | DEFAULT now             |                                   |
 
 ## ban_history
-| 컬럼 | 타입 | 제약/기본값 | 비고 |
-| --- | --- | --- | --- |
-| ban_id | UUID | PK |  |
-| user_id | UUID | FK→users | 유저 |
-| ban_reason | TEXT | NOT NULL | 밴 사유 |
-| ban_type | VARCHAR(20) | NOT NULL | TEMPORARY/PERMANENT |
-| banned_by | VARCHAR(100) | DEFAULT 'SYSTEM' | 관리 주체 |
-| banned_at | TIMESTAMP | DEFAULT now | 밴 시각 |
-| banned_until | TIMESTAMP |  | 종료 예정 |
-| unbanned_at | TIMESTAMP |  | 해제 시각 |
-| unban_reason | TEXT |  | 해제 사유 |
+| column      | type      | constraint/default       | note                     |
+| ---         | ---       | ---                      | ---                      |
+| ban_id      | UUID      | PK                       |                          |
+| user_id     | UUID      | FK→users                 |                          |
+| ban_reason  | TEXT      | NOT NULL                 |                          |
+| ban_type    | VARCHAR   | NOT NULL                 | TEMPORARY/PERMANENT      |
+| banned_by   | VARCHAR   | DEFAULT 'SYSTEM'         |                          |
+| banned_at   | TIMESTAMP | DEFAULT now              |                          |
+| banned_until| TIMESTAMP |                          | NULL => 영구             |
+| unbanned_at | TIMESTAMP |                          |                          |
+| unban_reason| TEXT      |                          |                          |

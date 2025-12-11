@@ -5,9 +5,10 @@ CREATE SCHEMA IF NOT EXISTS auth_schema;
 
 CREATE TABLE IF NOT EXISTS auth_schema.users (
     user_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    google_id     VARCHAR(255) NOT NULL UNIQUE,
-    username      VARCHAR(50),
-    device_id     VARCHAR(255),
+    provider      VARCHAR(30) NOT NULL DEFAULT 'google',
+    external_id   VARCHAR(255) NOT NULL UNIQUE,
+    nickname      VARCHAR(50),
+    email         VARCHAR(255),
     created_at    TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at    TIMESTAMP NOT NULL DEFAULT NOW(),
     last_login    TIMESTAMP,
@@ -19,6 +20,7 @@ CREATE TABLE IF NOT EXISTS auth_schema.users (
 );
 CREATE INDEX IF NOT EXISTS idx_auth_users_last_login ON auth_schema.users(last_login DESC);
 CREATE INDEX IF NOT EXISTS idx_auth_users_banned ON auth_schema.users(is_banned) WHERE is_banned = TRUE;
+CREATE INDEX IF NOT EXISTS idx_auth_users_email ON auth_schema.users(email);
 
 CREATE TABLE IF NOT EXISTS auth_schema.jwt_families (
     family_id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -60,20 +62,23 @@ CREATE INDEX IF NOT EXISTS idx_jwt_tokens_family ON auth_schema.jwt_tokens(famil
 CREATE INDEX IF NOT EXISTS idx_jwt_tokens_valid ON auth_schema.jwt_tokens(family_id, is_valid) WHERE is_valid = TRUE;
 
 CREATE TABLE IF NOT EXISTS auth_schema.session_history (
-    session_id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id           UUID NOT NULL REFERENCES auth_schema.users(user_id) ON DELETE CASCADE,
-    server_ip         VARCHAR(45),
-    client_ip         INET,
-    client_version    VARCHAR(20),
-    connected_at      TIMESTAMP NOT NULL DEFAULT NOW(),
-    disconnected_at   TIMESTAMP,
-    duration_seconds  INTEGER,
-    disconnect_reason TEXT,
-    packets_sent      BIGINT,
-    packets_received  BIGINT
+    session_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id          UUID NOT NULL REFERENCES auth_schema.users(user_id) ON DELETE CASCADE,
+    provider         VARCHAR(30),
+    external_id      VARCHAR(255),
+    device_id        VARCHAR(255),
+    client_ip        INET,
+    user_agent       TEXT,
+    result           VARCHAR(20),  -- SUCCESS / FAIL / BANNED / INVALID
+    reason           TEXT,
+    login_at         TIMESTAMP NOT NULL DEFAULT NOW(),
+    logout_at        TIMESTAMP,
+    duration_seconds INTEGER,
+    created_at       TIMESTAMP NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_session_history_user ON auth_schema.session_history(user_id);
-CREATE INDEX IF NOT EXISTS idx_session_history_connected ON auth_schema.session_history(connected_at DESC);
+CREATE INDEX IF NOT EXISTS idx_session_history_login ON auth_schema.session_history(login_at DESC);
+CREATE INDEX IF NOT EXISTS idx_session_history_external ON auth_schema.session_history(external_id);
 
 CREATE TABLE IF NOT EXISTS auth_schema.ban_history (
     ban_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),

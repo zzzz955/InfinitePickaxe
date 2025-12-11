@@ -6,8 +6,7 @@ export const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 export const REFRESH_EXPIRES_DAYS = parseInt(process.env.REFRESH_EXPIRES_DAYS || '14', 10);
 export const PORT = process.env.PORT || 10000;
-
-export const GOOGLE_MOCK_MODE = process.env.GOOGLE_MOCK_MODE !== 'false';
+export const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
 
 // DB config
 export const DB_HOST = process.env.DB_HOST || 'localhost';

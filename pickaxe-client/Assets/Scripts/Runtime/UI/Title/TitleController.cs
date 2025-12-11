@@ -26,7 +26,6 @@ namespace InfinitePickaxe.Client.UI.Title
 
         private const string IdleStatus = "로그인 상태: 미인증";
         private const string AuthenticatedStatus = "로그인 상태: 인증 완료";
-        private const string DummyTokenPrefix = "dev-";
 
         private void Awake()
         {
@@ -92,8 +91,7 @@ namespace InfinitePickaxe.Client.UI.Title
             var result = await sessionService.AuthenticateWithRefreshAsync();
             if (result.Success)
             {
-                view.SetState(TitleState.Authenticated, AuthenticatedStatus);
-                view.ShowOverlay(false);
+                OnAuthenticated(result.Nickname);
             }
             else
             {
@@ -114,19 +112,31 @@ namespace InfinitePickaxe.Client.UI.Title
                 return;
             }
 
-            var backendResult = await sessionService.AuthenticateWithGoogleAsync(result.GoogleIdToken, deviceId);
+            var provider = string.IsNullOrEmpty(result.Provider) ? "google" : result.Provider;
+            var backendResult = await sessionService.AuthenticateWithProviderAsync(provider, result.GoogleIdToken, deviceId, result.Email);
             if (!backendResult.Success)
             {
                 HandleInvalidToken($"백엔드 인증 실패: {backendResult.Error}");
                 return;
             }
 
-            view.SetState(TitleState.Authenticated, AuthenticatedStatus);
-            view.ShowOverlay(false);
+            OnAuthenticated(backendResult.Nickname);
         }
 
         public void OnStartClicked()
         {
+            if (!sessionService.IsAuthenticated)
+            {
+                HandleInvalidToken("로그인이 필요합니다.");
+                return;
+            }
+
+            if (!sessionService.Tokens.HasNickname)
+            {
+                PromptNickname();
+                return;
+            }
+
             view.ShowOverlay(true, "게임 데이터를 불러오는 중...");
             LoadGameScene();
         }
@@ -143,6 +153,38 @@ namespace InfinitePickaxe.Client.UI.Title
             }
 
             SceneManager.LoadScene(gameSceneName);
+        }
+
+        private void OnAuthenticated(string nickname)
+        {
+            view.ShowOverlay(false);
+            if (!string.IsNullOrEmpty(nickname))
+            {
+                view.SetState(TitleState.Authenticated, $"환영합니다 {nickname}님!");
+            }
+            else
+            {
+                view.SetState(TitleState.Authenticated, AuthenticatedStatus);
+                PromptNickname();
+            }
+        }
+
+        private void PromptNickname()
+        {
+            view.ShowInputModal("닉네임을 설정해주세요.", "닉네임", "확인", async nickname =>
+            {
+                view.ShowOverlay(true, "닉네임 설정 중...");
+                var result = await sessionService.UpdateNicknameAsync(nickname);
+                view.ShowOverlay(false);
+                if (result.Success && sessionService.Tokens.HasNickname)
+                {
+                    view.SetState(TitleState.Authenticated, $"환영합니다 {sessionService.Tokens.Nickname}님!");
+                }
+                else
+                {
+                    view.ShowModal($"닉네임 설정 실패: {result.Error}", "확인");
+                }
+            });
         }
 
         private void HandleInvalidToken(string message)

@@ -22,7 +22,7 @@ namespace InfinitePickaxe.Client.Auth
 
         public void Clear()
         {
-            tokens = new AuthTokens(null, null, null, null);
+            tokens = new AuthTokens(null, null, null);
             tokenStorage.Clear();
         }
 
@@ -37,18 +37,34 @@ namespace InfinitePickaxe.Client.Auth
             var result = await backendClient.VerifyAsync(refresh, deviceId);
             if (result.Success)
             {
-                tokens = new AuthTokens(result.IdToken, result.RefreshToken, result.UserId, result.DisplayName);
+                tokens = new AuthTokens(result.IdToken, result.RefreshToken, result.UserId, result.Nickname, result.Email);
                 tokenStorage.SaveTokens(tokens);
             }
             return result;
         }
 
-        public async Task<AuthResult> AuthenticateWithGoogleAsync(string googleIdToken, string deviceId)
+        public async Task<AuthResult> AuthenticateWithProviderAsync(string provider, string token, string deviceId, string email)
         {
-            var result = await backendClient.LoginWithGoogleAsync(googleIdToken, deviceId);
+            var result = await backendClient.LoginAsync(provider, token, deviceId, email);
             if (result.Success)
             {
-                tokens = new AuthTokens(result.IdToken, result.RefreshToken, result.UserId, result.DisplayName);
+                tokens = new AuthTokens(result.IdToken, result.RefreshToken, result.UserId, result.Nickname, result.Email);
+                tokenStorage.SaveTokens(tokens);
+            }
+            return result;
+        }
+
+        public async Task<AuthResult> UpdateNicknameAsync(string nickname)
+        {
+            if (!tokens.HasAccessToken)
+            {
+                return AuthResult.Fail("로그인이 필요합니다.");
+            }
+
+            var result = await backendClient.SetNicknameAsync(tokens.AccessToken, nickname);
+            if (result.Success)
+            {
+                tokens = new AuthTokens(tokens.AccessToken, tokens.RefreshToken, tokens.UserId, result.Nickname, tokens.Email);
                 tokenStorage.SaveTokens(tokens);
             }
             return result;

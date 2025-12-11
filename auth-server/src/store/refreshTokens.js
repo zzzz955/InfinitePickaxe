@@ -57,7 +57,7 @@ export async function verifyRefreshToken({ token, deviceId }) {
   const client = await pool.connect();
   try {
     const { rows } = await client.query(
-      `SELECT t.token_id, t.family_id, t.user_id, t.expires_at, t.is_valid, f.device_id, u.google_id
+      `SELECT t.token_id, t.family_id, t.user_id, t.expires_at, t.is_valid, f.device_id, u.external_id, u.provider
        FROM auth_schema.jwt_tokens t
        JOIN auth_schema.jwt_families f ON f.family_id = t.family_id
        JOIN auth_schema.users u ON u.user_id = t.user_id
@@ -87,7 +87,8 @@ export async function verifyRefreshToken({ token, deviceId }) {
       valid: true,
       family_id: row.family_id,
       user_id: row.user_id,
-      google_id: row.google_id,
+      external_id: row.external_id,
+      provider: row.provider,
       expires_at: row.expires_at
     };
   } finally {

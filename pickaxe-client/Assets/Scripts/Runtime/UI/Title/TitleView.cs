@@ -26,6 +26,7 @@ namespace InfinitePickaxe.Client.UI.Title
         [SerializeField] private CanvasGroup modalGroup;
         [SerializeField] private TextMeshProUGUI modalMessageText;
         [SerializeField] private Button modalConfirmButton;
+        [SerializeField] private TMP_InputField modalInputField;
 
         private System.Action onGoogleClicked;
         private System.Action onStartClicked;
@@ -153,6 +154,59 @@ namespace InfinitePickaxe.Client.UI.Title
                 {
                     HideModal();
                     onClose?.Invoke();
+                });
+            }
+
+            if (modalInputField != null)
+            {
+                modalInputField.gameObject.SetActive(false);
+            }
+
+            modalGroup.alpha = 1f;
+            modalGroup.interactable = true;
+            modalGroup.blocksRaycasts = true;
+            modalGroup.transform.SetAsLastSibling();
+        }
+
+        public void ShowInputModal(string message, string placeholder, string buttonText, System.Action<string> onSubmit)
+        {
+            EnsureModalInstance();
+
+            if (modalMessageText != null)
+            {
+                modalMessageText.text = string.IsNullOrEmpty(message)
+                    ? "정보를 입력해주세요."
+                    : message;
+            }
+
+            if (modalInputField != null)
+            {
+                modalInputField.gameObject.SetActive(true);
+                modalInputField.text = string.Empty;
+                var ph = modalInputField.placeholder as TextMeshProUGUI;
+                if (ph != null)
+                {
+                    ph.text = string.IsNullOrEmpty(placeholder) ? "입력" : placeholder;
+                }
+            }
+
+            if (modalConfirmButton != null)
+            {
+                var label = modalConfirmButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (label != null)
+                {
+                    label.text = string.IsNullOrEmpty(buttonText) ? "확인" : buttonText;
+                }
+
+                modalConfirmButton.onClick.RemoveAllListeners();
+                modalConfirmButton.onClick.AddListener(() =>
+                {
+                    var value = modalInputField != null ? modalInputField.text?.Trim() : string.Empty;
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        HideModal();
+                        onSubmit?.Invoke(value);
+                    }
                 });
             }
 
@@ -307,6 +361,11 @@ namespace InfinitePickaxe.Client.UI.Title
                     var btn = instance.transform.Find("Panel/ConfirmButton");
                     if (btn != null) modalConfirmButton = btn.GetComponent<Button>();
                 }
+                if (modalInputField == null)
+                {
+                    var input = instance.transform.Find("Panel/InputField");
+                    if (input != null) modalInputField = input.GetComponent<TMP_InputField>();
+                }
             }
             else
             {
@@ -362,6 +421,26 @@ namespace InfinitePickaxe.Client.UI.Title
             modalMessageText.alignment = TextAlignmentOptions.Center;
             modalMessageText.enableWordWrapping = true;
 
+            var inputGo = new GameObject("InputField", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(TMP_InputField));
+            inputGo.transform.SetParent(panel.transform, false);
+            var inputRt = inputGo.GetComponent<RectTransform>();
+            inputRt.anchorMin = new Vector2(0.1f, 0.25f);
+            inputRt.anchorMax = new Vector2(0.9f, 0.38f);
+            inputRt.offsetMin = Vector2.zero;
+            inputRt.offsetMax = Vector2.zero;
+
+            var inputBg = inputGo.GetComponent<UnityEngine.UI.Image>();
+            inputBg.color = new Color(0.15f, 0.15f, 0.2f, 0.9f);
+            inputBg.raycastTarget = true;
+
+            modalInputField = inputGo.GetComponent<TMP_InputField>();
+            modalInputField.textViewport = inputGo.GetComponent<RectTransform>();
+            modalInputField.textComponent = CreateInputText(inputGo.transform);
+            modalInputField.placeholder = CreatePlaceholder(inputGo.transform);
+            modalInputField.contentType = TMP_InputField.ContentType.Standard;
+            modalInputField.characterLimit = 16;
+            modalInputField.gameObject.SetActive(false);
+
             var buttonGo = new GameObject("ConfirmButton", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(Button));
             buttonGo.transform.SetParent(panel.transform, false);
             var buttonRt = buttonGo.GetComponent<RectTransform>();
@@ -391,7 +470,44 @@ namespace InfinitePickaxe.Client.UI.Title
             btnLabel.enableWordWrapping = false;
 
             modalGroup.transform.SetAsLastSibling();
+
             return modalGroup;
+        }
+
+        private TextMeshProUGUI CreateInputText(Transform parent)
+        {
+            var textGo = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+            textGo.transform.SetParent(parent, false);
+            var rt = textGo.GetComponent<RectTransform>();
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.offsetMin = new Vector2(10f, 10f);
+            rt.offsetMax = new Vector2(-10f, -10f);
+
+            var txt = textGo.GetComponent<TextMeshProUGUI>();
+            txt.text = string.Empty;
+            txt.fontSize = 28f;
+            txt.alignment = TextAlignmentOptions.MidlineLeft;
+            txt.enableWordWrapping = false;
+            return txt;
+        }
+
+        private TextMeshProUGUI CreatePlaceholder(Transform parent)
+        {
+            var phGo = new GameObject("Placeholder", typeof(RectTransform), typeof(TextMeshProUGUI));
+            phGo.transform.SetParent(parent, false);
+            var rt = phGo.GetComponent<RectTransform>();
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.offsetMin = new Vector2(10f, 10f);
+            rt.offsetMax = new Vector2(-10f, -10f);
+
+            var txt = phGo.GetComponent<TextMeshProUGUI>();
+            txt.text = "입력";
+            txt.fontSize = 24f;
+            txt.alignment = TextAlignmentOptions.MidlineLeft;
+            txt.color = new Color(1f, 1f, 1f, 0.5f);
+            return txt;
         }
     }
 }

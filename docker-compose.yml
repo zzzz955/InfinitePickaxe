@@ -15,6 +15,7 @@ services:
       - DB_USER=${DB_USER:-pickaxe}
       - DB_PASSWORD=${DB_PASSWORD:-pickaxe}
       - DB_NAME=${DB_NAME:-pickaxe_auth}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID:-pickaxeclient}
     depends_on:
       - postgres
       - redis
