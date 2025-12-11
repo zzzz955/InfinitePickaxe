@@ -24,6 +24,9 @@ namespace InfinitePickaxe.Client.UI.Title
         private AuthSessionService sessionService;
         private string deviceId;
 
+        private const string IdleStatus = "로그인 상태: 미인증";
+        private const string AuthenticatedStatus = "로그인 상태: 인증 완료";
+
         private void Awake()
         {
             if (view == null)
@@ -53,7 +56,7 @@ namespace InfinitePickaxe.Client.UI.Title
 
             sessionService = CreateSessionService();
             view.SetButtonHandlers(OnGoogleSignInClicked, OnStartClicked);
-            view.SetState(TitleState.Idle, "로그인 상태: 미인증");
+            view.SetState(TitleState.Idle, IdleStatus);
 
             if (attemptSilentSignIn && !autoAuthAttempted && sessionService.HasRefreshToken)
             {
@@ -80,21 +83,19 @@ namespace InfinitePickaxe.Client.UI.Title
 
         private async Task AutoAuthenticateAsync()
         {
-            view.SetState(TitleState.Loading, "저장된 토큰으로 자동 로그인 시도 중...");
-            view.SetLoadingMessage("재인증 중...");
-            view.ShowOverlay(true, "토큰으로 인증 중...");
+            view.SetState(TitleState.Loading, "저장된 토큰으로 자동 로그인 중...");
+            view.SetLoadingMessage("세션 검증 중...");
+            view.ShowOverlay(true, "세션 검증 중...");
 
             var result = await sessionService.AuthenticateWithRefreshAsync();
             if (result.Success)
             {
-                view.SetState(TitleState.Authenticated, "로그인 상태: 인증 완료");
+                view.SetState(TitleState.Authenticated, AuthenticatedStatus);
                 view.ShowOverlay(false);
             }
             else
             {
-                view.SetError($"자동 로그인 실패: {result.Error}");
-                view.SetState(TitleState.Idle, "로그인 상태: 미인증");
-                view.ShowOverlay(false);
+                HandleInvalidToken($"자동 로그인 실패: {result.Error}");
             }
         }
 
@@ -107,28 +108,24 @@ namespace InfinitePickaxe.Client.UI.Title
             var result = await authService.SignInAsync(silent: false);
             if (!result.Success)
             {
-                view.SetError($"Google 로그인 실패: {result.Error}");
-                view.SetState(TitleState.Idle, "로그인 상태: 미인증");
-                view.ShowOverlay(false);
+                HandleInvalidToken($"Google 로그인 실패: {result.Error}");
                 return;
             }
 
             var backendResult = await sessionService.AuthenticateWithGoogleAsync(result.GoogleIdToken, deviceId);
             if (!backendResult.Success)
             {
-                view.SetError($"백엔드 인증 실패: {backendResult.Error}");
-                view.SetState(TitleState.Idle, "로그인 상태: 미인증");
-                view.ShowOverlay(false);
+                HandleInvalidToken($"백엔드 인증 실패: {backendResult.Error}");
                 return;
             }
 
-            view.SetState(TitleState.Authenticated, "로그인 상태: 인증 완료");
+            view.SetState(TitleState.Authenticated, AuthenticatedStatus);
             view.ShowOverlay(false);
         }
 
         public void OnStartClicked()
         {
-            view.ShowOverlay(true, "게임 데이터 불러오는 중...");
+            view.ShowOverlay(true, "게임 데이터를 불러오는 중...");
             LoadGameScene();
         }
 
@@ -138,12 +135,22 @@ namespace InfinitePickaxe.Client.UI.Title
             {
                 Debug.LogError("TitleController: gameSceneName is not set.");
                 view.SetError("게임 씬 이름이 설정되지 않았습니다.");
-                view.SetState(TitleState.Idle, "로그인 상태: 미인증");
+                view.SetState(TitleState.Idle, IdleStatus);
                 view.ShowOverlay(false);
                 return;
             }
 
             SceneManager.LoadScene(gameSceneName);
+        }
+
+        private void HandleInvalidToken(string message)
+        {
+            sessionService?.Clear();
+            view.SetError(string.IsNullOrEmpty(message)
+                ? "세션이 만료되었습니다. 다시 로그인해주세요."
+                : message);
+            view.SetState(TitleState.Idle, "로그인 상태: 재로그인 필요");
+            view.ShowOverlay(false);
         }
     }
 }
