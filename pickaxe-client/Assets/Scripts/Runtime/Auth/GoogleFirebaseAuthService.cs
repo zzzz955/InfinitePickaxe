@@ -43,7 +43,7 @@ namespace InfinitePickaxe.Client.Auth
 
                 // FirebaseUser.RefreshToken is not exposed in Unity SDK. Refresh token for your auth server
                 // should be obtained by exchanging idToken/googleUser.IdToken with your backend.
-                return AuthResult.Ok(firebaseUser.UserId, firebaseUser.DisplayName, idToken, googleUser.IdToken);
+                return AuthResult.Ok(firebaseUser.UserId, firebaseUser.DisplayName, idToken, null, googleUser.IdToken);
             }
             catch (Exception ex)
             {
@@ -56,7 +56,7 @@ namespace InfinitePickaxe.Client.Auth
         {
             if (initialized && auth != null)
             {
-                return AuthResult.Ok(auth.CurrentUser?.UserId, auth.CurrentUser?.DisplayName, null, null);
+                return AuthResult.Ok(auth.CurrentUser?.UserId, auth.CurrentUser?.DisplayName, null, null, null);
             }
 
             var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
@@ -67,7 +67,7 @@ namespace InfinitePickaxe.Client.Auth
 
             auth = FirebaseAuth.DefaultInstance;
             initialized = true;
-            return AuthResult.Ok(null, null, null, null);
+            return AuthResult.Ok(null, null, null, null, null);
         }
 
         private void ConfigureGoogleSignIn()

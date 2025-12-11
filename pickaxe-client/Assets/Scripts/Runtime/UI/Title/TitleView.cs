@@ -19,23 +19,50 @@ namespace InfinitePickaxe.Client.UI.Title
         [SerializeField] private TextMeshProUGUI loadingText;
         [SerializeField] private TextMeshProUGUI errorText;
         [SerializeField] private Button googleButton;
-        private System.Action onGoogleClicked;
+        [SerializeField] private Button startButton;
+        [SerializeField] private CanvasGroup overlayGroup;
 
+        private System.Action onGoogleClicked;
+        private System.Action onStartClicked;
         private TitleState state = TitleState.Idle;
 
         private void Awake()
         {
+            if (googleButton == null)
+            {
+                googleButton = FindButtonByName("GoogleButton");
+            }
+            if (startButton == null)
+            {
+                startButton = FindButtonByName("StartButton");
+            }
+            if (startButton == null && googleButton != null)
+            {
+                startButton = CreateStartButtonFrom(googleButton);
+            }
+            if (overlayGroup == null)
+            {
+                overlayGroup = CreateOverlay();
+            }
+
             ApplyState();
         }
 
-        public void SetButtonHandlers(System.Action onGoogle)
+        public void SetButtonHandlers(System.Action onGoogle, System.Action onStart)
         {
             onGoogleClicked = onGoogle;
+            onStartClicked = onStart;
 
             if (googleButton != null)
             {
                 googleButton.onClick.RemoveAllListeners();
                 googleButton.onClick.AddListener(() => onGoogleClicked?.Invoke());
+            }
+
+            if (startButton != null)
+            {
+                startButton.onClick.RemoveAllListeners();
+                startButton.onClick.AddListener(() => onStartClicked?.Invoke());
             }
         }
 
@@ -74,6 +101,23 @@ namespace InfinitePickaxe.Client.UI.Title
             ApplyState();
         }
 
+        public void ShowOverlay(bool show, string message = null)
+        {
+            if (overlayGroup == null)
+            {
+                return;
+            }
+
+            overlayGroup.alpha = show ? 1f : 0f;
+            overlayGroup.interactable = show;
+            overlayGroup.blocksRaycasts = show;
+
+            if (!string.IsNullOrEmpty(message))
+            {
+                SetLoadingMessage(message);
+            }
+        }
+
         private void ApplyState()
         {
             var isLoading = state == TitleState.Loading;
@@ -105,11 +149,70 @@ namespace InfinitePickaxe.Client.UI.Title
                 errorText.gameObject.SetActive(isError);
             }
 
-            var buttonsInteractable = !isLoading && !isAuthenticated;
+            var buttonsInteractable = !isLoading;
             if (googleButton != null)
             {
-                googleButton.interactable = buttonsInteractable;
+                googleButton.gameObject.SetActive(!isAuthenticated && !isLoading);
+                googleButton.interactable = buttonsInteractable && !isAuthenticated;
             }
+
+            if (startButton != null)
+            {
+                startButton.gameObject.SetActive(isAuthenticated && !isLoading);
+                startButton.interactable = buttonsInteractable && isAuthenticated;
+            }
+        }
+
+        private Button FindButtonByName(string name)
+        {
+            var transforms = GetComponentsInChildren<Transform>(true);
+            foreach (var tr in transforms)
+            {
+                if (tr.name == name && tr.TryGetComponent(out Button btn))
+                {
+                    return btn;
+                }
+            }
+            return null;
+        }
+
+        private CanvasGroup CreateOverlay()
+        {
+            var overlay = new GameObject("LoadingOverlay", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(CanvasGroup));
+            overlay.transform.SetParent(transform, false);
+            var rt = overlay.GetComponent<RectTransform>();
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+
+            var img = overlay.GetComponent<UnityEngine.UI.Image>();
+            img.color = new Color(0f, 0f, 0f, 0.35f);
+            img.raycastTarget = true;
+
+            var cg = overlay.GetComponent<CanvasGroup>();
+            cg.alpha = 0f;
+            cg.interactable = false;
+            cg.blocksRaycasts = false;
+
+            return cg;
+        }
+
+        private Button CreateStartButtonFrom(Button source)
+        {
+            var clone = Instantiate(source.gameObject, source.transform.parent);
+            clone.name = "StartButton";
+            var rt = clone.GetComponent<RectTransform>();
+            rt.anchoredPosition += new Vector2(0, -120f);
+
+            var text = clone.GetComponentInChildren<TextMeshProUGUI>();
+            if (text != null)
+            {
+                text.text = "게임 시작";
+            }
+
+            var btn = clone.GetComponent<Button>();
+            return btn;
         }
     }
 }
