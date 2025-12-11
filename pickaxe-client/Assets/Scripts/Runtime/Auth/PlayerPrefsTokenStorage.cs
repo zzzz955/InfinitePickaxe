@@ -2,10 +2,7 @@ using UnityEngine;
 
 namespace InfinitePickaxe.Client.Auth
 {
-    /// <summary>
-    /// Simple token storage using PlayerPrefs. Replace with secure storage (KeyStore/Keychain) for production.
-    /// </summary>
-    public sealed class PlayerPrefsTokenStorage
+    public sealed class PlayerPrefsTokenStorage : ITokenStorage
     {
         private readonly string refreshKey;
         private readonly string accessKey;

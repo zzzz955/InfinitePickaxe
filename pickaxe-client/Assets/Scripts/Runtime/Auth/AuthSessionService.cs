@@ -5,13 +5,15 @@ namespace InfinitePickaxe.Client.Auth
     public sealed class AuthSessionService
     {
         private readonly BackendAuthClient backendClient;
-        private readonly PlayerPrefsTokenStorage tokenStorage;
+        private readonly ITokenStorage tokenStorage;
+        private readonly string deviceId;
         private AuthTokens tokens;
 
-        public AuthSessionService(BackendAuthClient backendClient, PlayerPrefsTokenStorage tokenStorage)
+        public AuthSessionService(BackendAuthClient backendClient, ITokenStorage tokenStorage, string deviceId = null)
         {
             this.backendClient = backendClient;
             this.tokenStorage = tokenStorage;
+            this.deviceId = deviceId;
         }
 
         public bool HasRefreshToken => tokenStorage.HasRefreshToken();
@@ -32,7 +34,7 @@ namespace InfinitePickaxe.Client.Auth
             }
 
             var refresh = tokenStorage.GetRefreshToken();
-            var result = await backendClient.VerifyAsync(refresh);
+            var result = await backendClient.VerifyAsync(refresh, deviceId);
             if (result.Success)
             {
                 tokens = new AuthTokens(result.IdToken, result.RefreshToken, result.UserId, result.DisplayName);

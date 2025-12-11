@@ -69,8 +69,13 @@ namespace InfinitePickaxe.Client.UI.Title
             var scheme = env.useTls ? "https" : "http";
             var baseUri = $"{scheme}://{env.host}:{env.port}";
             var backend = new BackendAuthClient(baseUri, backendTimeoutSeconds);
-            var storage = new PlayerPrefsTokenStorage();
-            return new AuthSessionService(backend, storage);
+            ITokenStorage storage;
+#if UNITY_EDITOR
+            storage = new PlayerPrefsTokenStorage();
+#else
+            storage = new SecureStorageTokenStorage();
+#endif
+            return new AuthSessionService(backend, storage, deviceId);
         }
 
         private async Task AutoAuthenticateAsync()

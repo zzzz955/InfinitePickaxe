@@ -19,9 +19,11 @@ namespace InfinitePickaxe.Client.Auth
         }
 
         [Serializable]
-        private sealed class RefreshRequest
+        private sealed class VerifyRequest
         {
             public string jwt;
+            public string refresh_token;
+            public string device_id;
         }
 
         [Serializable]
@@ -36,6 +38,7 @@ namespace InfinitePickaxe.Client.Auth
             public long server_time;
         }
 
+        [Serializable]
         private sealed class VerifyResponseDto
         {
             public bool valid;
@@ -61,9 +64,14 @@ namespace InfinitePickaxe.Client.Auth
             return await PostLoginAsync("/auth/login", payload);
         }
 
-        public async Task<AuthResult> VerifyAsync(string jwt)
+        public async Task<AuthResult> VerifyAsync(string refreshToken, string deviceId = null, string jwt = null)
         {
-            var payload = new RefreshRequest { jwt = jwt };
+            var payload = new VerifyRequest
+            {
+                jwt = jwt,
+                refresh_token = refreshToken,
+                device_id = deviceId
+            };
             return await PostVerifyAsync("/auth/verify", payload);
         }
 
@@ -118,7 +126,7 @@ namespace InfinitePickaxe.Client.Auth
             }
         }
 
-        private async Task<AuthResult> PostVerifyAsync(string path, object payload)
+        private async Task<AuthResult> PostVerifyAsync(string path, VerifyRequest payload)
         {
             var url = $"{baseUri}{path}";
             var json = JsonUtility.ToJson(payload);
@@ -160,8 +168,9 @@ namespace InfinitePickaxe.Client.Auth
                         return AuthResult.Fail(string.IsNullOrEmpty(dto.error) ? "VERIFY_FAILED" : dto.error);
                     }
 
-                    var jwt = string.IsNullOrEmpty(dto.jwt) ? ((RefreshRequest)payload).jwt : dto.jwt;
-                    return AuthResult.Ok(dto.user_id, null, jwt, dto.refresh_token, null);
+                    var jwtToUse = string.IsNullOrEmpty(dto.jwt) ? payload.jwt : dto.jwt;
+                    var refreshToUse = string.IsNullOrEmpty(dto.refresh_token) ? payload.refresh_token : dto.refresh_token;
+                    return AuthResult.Ok(dto.user_id, null, jwtToUse, refreshToUse, null);
                 }
                 catch (Exception ex)
                 {
