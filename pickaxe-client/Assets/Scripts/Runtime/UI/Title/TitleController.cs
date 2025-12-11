@@ -157,32 +157,34 @@ namespace InfinitePickaxe.Client.UI.Title
 
         private void OnAuthenticated(string nickname)
         {
-            view.ShowOverlay(false);
             if (!string.IsNullOrEmpty(nickname))
             {
+                view.ShowOverlay(false);
                 view.SetState(TitleState.Authenticated, $"환영합니다 {nickname}님!");
             }
             else
             {
-                view.SetState(TitleState.Authenticated, AuthenticatedStatus);
+                view.SetState(TitleState.Loading, "닉네임을 설정해주세요.");
+                view.ShowOverlay(true, "닉네임 설정 필요");
                 PromptNickname();
             }
         }
 
         private void PromptNickname()
         {
+            view.ShowOverlay(true, "닉네임 설정 중...");
             view.ShowInputModal("닉네임을 설정해주세요.", "닉네임", "확인", async nickname =>
             {
-                view.ShowOverlay(true, "닉네임 설정 중...");
                 var result = await sessionService.UpdateNicknameAsync(nickname);
                 view.ShowOverlay(false);
                 if (result.Success && sessionService.Tokens.HasNickname)
                 {
+                    view.HideModal();
                     view.SetState(TitleState.Authenticated, $"환영합니다 {sessionService.Tokens.Nickname}님!");
                 }
                 else
                 {
-                    view.ShowModal($"닉네임 설정 실패: {result.Error}", "확인");
+                    view.SetModalMessage($"닉네임 설정 실패: {result.Error}");
                 }
             });
         }

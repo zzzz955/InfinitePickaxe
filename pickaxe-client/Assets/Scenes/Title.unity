@@ -306,6 +306,7 @@ GameObject:
   - component: {fileID: 2100000002}
   - component: {fileID: 2100000003}
   - component: {fileID: 2100000004}
+  - component: {fileID: 2100000005}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -396,6 +397,30 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2100000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e654a6a5c1d4f6c8e5ff8de7f72b4b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statusText: {fileID: 2100000212}
+  loadingText: {fileID: 2100000242}
+  errorText: {fileID: 2100000252}
+  googleButton: {fileID: 2100000223}
+  startButton: {fileID: 0}
+  overlayGroup: {fileID: 0}
+  modalPrefab: {fileID: 0}
+  modalResourcePath: UI/Modal
+  modalGroup: {fileID: 0}
+  modalMessageText: {fileID: 0}
+  modalConfirmButton: {fileID: 0}
+  modalInputField: {fileID: 0}
 --- !u!1 &2100000100
 GameObject:
   m_ObjectHideFlags: 0
@@ -1264,7 +1289,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2100000261}
-  - component: {fileID: 2100000262}
   - component: {fileID: 2100000263}
   - component: {fileID: 2100000264}
   m_Layer: 0
@@ -1289,30 +1313,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2100000262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e654a6a5c1d4f6c8e5ff8de7f72b4b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  statusText: {fileID: 2100000212}
-  loadingText: {fileID: 2100000242}
-  errorText: {fileID: 2100000252}
-  googleButton: {fileID: 2100000223}
-  startButton: {fileID: 0}
-  overlayGroup: {fileID: 0}
-  modalPrefab: {fileID: 0}
-  modalResourcePath: UI/Modal
-  modalGroup: {fileID: 0}
-  modalMessageText: {fileID: 0}
-  modalConfirmButton: {fileID: 0}
-  modalInputField: {fileID: 0}
 --- !u!114 &2100000263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1325,7 +1325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dbcacb03b790de4f8f58cb09463c005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  view: {fileID: 2100000262}
+  view: {fileID: 2100000005}
   authService: {fileID: 0}
   gameSceneName: Game
   attemptSilentSignIn: 1

@@ -134,12 +134,9 @@ namespace InfinitePickaxe.Client.UI.Title
         {
             EnsureModalInstance();
 
-            if (modalMessageText != null)
-            {
-                modalMessageText.text = string.IsNullOrEmpty(message)
-                    ? "알 수 없는 오류가 발생했습니다."
-                    : message;
-            }
+            SetModalMessage(string.IsNullOrEmpty(message)
+                ? "알 수 없는 오류가 발생했습니다."
+                : message);
 
             if (modalConfirmButton != null)
             {
@@ -162,6 +159,7 @@ namespace InfinitePickaxe.Client.UI.Title
                 modalInputField.gameObject.SetActive(false);
             }
 
+            modalGroup.gameObject.SetActive(true);
             modalGroup.alpha = 1f;
             modalGroup.interactable = true;
             modalGroup.blocksRaycasts = true;
@@ -172,12 +170,9 @@ namespace InfinitePickaxe.Client.UI.Title
         {
             EnsureModalInstance();
 
-            if (modalMessageText != null)
-            {
-                modalMessageText.text = string.IsNullOrEmpty(message)
-                    ? "정보를 입력해주세요."
-                    : message;
-            }
+            SetModalMessage(string.IsNullOrEmpty(message)
+                ? "정보를 입력해주세요."
+                : message);
 
             if (modalInputField != null)
             {
@@ -202,14 +197,16 @@ namespace InfinitePickaxe.Client.UI.Title
                 modalConfirmButton.onClick.AddListener(() =>
                 {
                     var value = modalInputField != null ? modalInputField.text?.Trim() : string.Empty;
-                    if (!string.IsNullOrEmpty(value))
+                    if (string.IsNullOrEmpty(value))
                     {
-                        HideModal();
-                        onSubmit?.Invoke(value);
+                        SetModalMessage("올바른 닉네임을 입력해주세요.");
+                        return;
                     }
+                    onSubmit?.Invoke(value);
                 });
             }
 
+            modalGroup.gameObject.SetActive(true);
             modalGroup.alpha = 1f;
             modalGroup.interactable = true;
             modalGroup.blocksRaycasts = true;
@@ -226,6 +223,16 @@ namespace InfinitePickaxe.Client.UI.Title
             modalGroup.alpha = 0f;
             modalGroup.interactable = false;
             modalGroup.blocksRaycasts = false;
+            modalGroup.gameObject.SetActive(false);
+        }
+
+        public void SetModalMessage(string message)
+        {
+            EnsureModalInstance();
+            if (modalMessageText != null)
+            {
+                modalMessageText.text = message ?? string.Empty;
+            }
         }
 
         private void ApplyState()
@@ -333,17 +340,18 @@ namespace InfinitePickaxe.Client.UI.Title
             }
 
             GameObject instance = null;
+            var parent = GetCanvasTransform();
 
             if (modalPrefab != null)
             {
-                instance = Instantiate(modalPrefab, transform);
+                instance = Instantiate(modalPrefab, parent);
             }
             else if (!string.IsNullOrEmpty(modalResourcePath))
             {
                 var prefab = Resources.Load<GameObject>(modalResourcePath);
                 if (prefab != null)
                 {
-                    instance = Instantiate(prefab, transform);
+                    instance = Instantiate(prefab, parent);
                 }
             }
 
@@ -351,6 +359,7 @@ namespace InfinitePickaxe.Client.UI.Title
             {
                 instance.name = modalPrefab != null ? modalPrefab.name : "Modal";
                 modalGroup = instance.GetComponent<CanvasGroup>();
+                var panel = instance.transform.Find("Panel");
                 if (modalMessageText == null)
                 {
                     var msg = instance.transform.Find("Panel/Message");
@@ -361,24 +370,25 @@ namespace InfinitePickaxe.Client.UI.Title
                     var btn = instance.transform.Find("Panel/ConfirmButton");
                     if (btn != null) modalConfirmButton = btn.GetComponent<Button>();
                 }
-                if (modalInputField == null)
-                {
-                    var input = instance.transform.Find("Panel/InputField");
-                    if (input != null) modalInputField = input.GetComponent<TMP_InputField>();
-                }
+                EnsureInputField(panel);
+                modalGroup.gameObject.SetActive(false);
             }
             else
             {
-                modalGroup = CreateModal();
+                modalGroup = CreateModal(parent);
             }
 
             return modalGroup;
         }
 
-        private CanvasGroup CreateModal()
+        private CanvasGroup CreateModal(Transform parent)
         {
             var modalRoot = new GameObject("Modal", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(CanvasGroup));
-            modalRoot.transform.SetParent(transform, false);
+            modalRoot.transform.SetParent(parent, false);
+            var canvas = modalRoot.AddComponent<Canvas>();
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = 1000; // ensure on top
+            modalRoot.AddComponent<UnityEngine.UI.GraphicRaycaster>();
 
             var rootRt = modalRoot.GetComponent<RectTransform>();
             rootRt.anchorMin = Vector2.zero;
@@ -421,25 +431,7 @@ namespace InfinitePickaxe.Client.UI.Title
             modalMessageText.alignment = TextAlignmentOptions.Center;
             modalMessageText.enableWordWrapping = true;
 
-            var inputGo = new GameObject("InputField", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(TMP_InputField));
-            inputGo.transform.SetParent(panel.transform, false);
-            var inputRt = inputGo.GetComponent<RectTransform>();
-            inputRt.anchorMin = new Vector2(0.1f, 0.25f);
-            inputRt.anchorMax = new Vector2(0.9f, 0.38f);
-            inputRt.offsetMin = Vector2.zero;
-            inputRt.offsetMax = Vector2.zero;
-
-            var inputBg = inputGo.GetComponent<UnityEngine.UI.Image>();
-            inputBg.color = new Color(0.15f, 0.15f, 0.2f, 0.9f);
-            inputBg.raycastTarget = true;
-
-            modalInputField = inputGo.GetComponent<TMP_InputField>();
-            modalInputField.textViewport = inputGo.GetComponent<RectTransform>();
-            modalInputField.textComponent = CreateInputText(inputGo.transform);
-            modalInputField.placeholder = CreatePlaceholder(inputGo.transform);
-            modalInputField.contentType = TMP_InputField.ContentType.Standard;
-            modalInputField.characterLimit = 16;
-            modalInputField.gameObject.SetActive(false);
+            EnsureInputField(panel.transform);
 
             var buttonGo = new GameObject("ConfirmButton", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(Button));
             buttonGo.transform.SetParent(panel.transform, false);
@@ -470,8 +462,15 @@ namespace InfinitePickaxe.Client.UI.Title
             btnLabel.enableWordWrapping = false;
 
             modalGroup.transform.SetAsLastSibling();
+            modalGroup.gameObject.SetActive(false);
 
             return modalGroup;
+        }
+
+        private Transform GetCanvasTransform()
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            return canvas != null ? canvas.transform : transform;
         }
 
         private TextMeshProUGUI CreateInputText(Transform parent)
@@ -508,6 +507,91 @@ namespace InfinitePickaxe.Client.UI.Title
             txt.alignment = TextAlignmentOptions.MidlineLeft;
             txt.color = new Color(1f, 1f, 1f, 0.5f);
             return txt;
+        }
+
+        private void EnsureInputField(Transform panel)
+        {
+            if (modalInputField != null)
+            {
+                StyleInputField(modalInputField);
+                return;
+            }
+
+            if (panel == null)
+            {
+                return;
+            }
+
+            var existing = panel.Find("InputField");
+            if (existing != null)
+            {
+                modalInputField = existing.GetComponent<TMP_InputField>();
+                if (modalInputField == null)
+                {
+                    modalInputField = existing.gameObject.AddComponent<TMP_InputField>();
+                }
+                if (modalInputField.placeholder == null)
+                {
+                    modalInputField.placeholder = CreatePlaceholder(existing);
+                }
+                if (modalInputField.textComponent == null)
+                {
+                    modalInputField.textComponent = CreateInputText(existing);
+                }
+                StyleInputField(modalInputField);
+                return;
+            }
+
+            var inputGo = new GameObject("InputField", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(TMP_InputField));
+            inputGo.transform.SetParent(panel, false);
+            var inputRt = inputGo.GetComponent<RectTransform>();
+            inputRt.anchorMin = new Vector2(0.1f, 0.22f);
+            inputRt.anchorMax = new Vector2(0.9f, 0.36f);
+            inputRt.offsetMin = Vector2.zero;
+            inputRt.offsetMax = Vector2.zero;
+
+            var inputBg = inputGo.GetComponent<UnityEngine.UI.Image>();
+            inputBg.color = new Color(0.22f, 0.26f, 0.32f, 0.95f);
+            inputBg.raycastTarget = true;
+
+            modalInputField = inputGo.GetComponent<TMP_InputField>();
+            modalInputField.textViewport = inputGo.GetComponent<RectTransform>();
+            modalInputField.textComponent = CreateInputText(inputGo.transform);
+            modalInputField.placeholder = CreatePlaceholder(inputGo.transform);
+            modalInputField.contentType = TMP_InputField.ContentType.Standard;
+            modalInputField.characterLimit = 16;
+            modalInputField.gameObject.SetActive(false);
+            StyleInputField(modalInputField);
+        }
+
+        private void StyleInputField(TMP_InputField field)
+        {
+            var rt = field.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                rt.anchorMin = new Vector2(0.1f, 0.22f);
+                rt.anchorMax = new Vector2(0.9f, 0.36f);
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+            }
+
+            var bg = field.GetComponent<UnityEngine.UI.Image>();
+            if (bg != null)
+            {
+                bg.color = new Color(0.22f, 0.26f, 0.32f, 0.95f);
+            }
+
+            var font = modalMessageText != null ? modalMessageText.font : null;
+            if (field.textComponent != null)
+            {
+                if (font != null) field.textComponent.font = font;
+                field.textComponent.color = Color.white;
+            }
+            if (field.placeholder is TextMeshProUGUI ph)
+            {
+                if (font != null) ph.font = font;
+                ph.color = new Color(1f, 1f, 1f, 0.6f);
+            }
         }
     }
 }
