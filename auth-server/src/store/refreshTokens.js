@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { pool } from '../db/index.js';
 
 const REFRESH_TTL_DAYS = 30;           // token-level sliding window
-const FAMILY_MAX_DAYS = 90;            // hard cap
+const FAMILY_MAX_DAYS = 90;            // hard cap from initial family creation
 const MAX_REFRESH_COUNT = 200;
 
 export async function rotateRefreshToken({ userId, deviceId, familyId = null }) {
@@ -10,25 +10,68 @@ export async function rotateRefreshToken({ userId, deviceId, familyId = null }) 
   try {
     await client.query('BEGIN');
 
-    let useFamilyId = familyId;
-    if (!useFamilyId) {
+    const now = Date.now();
+    const ttlMillis = REFRESH_TTL_DAYS * 24 * 60 * 60 * 1000;
+    const familyCapMillis = FAMILY_MAX_DAYS * 24 * 60 * 60 * 1000;
+
+    // 1) 우선 기존 family 재사용 (우선순위: device 일치 > 최근 갱신)
+    let familyRow = null;
+    if (familyId) {
+      const { rows } = await client.query(
+        `SELECT family_id, expires_at
+         FROM auth_schema.jwt_families
+         WHERE family_id = $1 AND user_id = $2 AND expires_at > NOW()`,
+        [familyId, userId]
+      );
+      familyRow = rows[0] || null;
+    }
+
+    if (!familyRow) {
+      const { rows } = await client.query(
+        `SELECT family_id, expires_at
+         FROM auth_schema.jwt_families
+         WHERE user_id = $1
+           AND expires_at > NOW()
+         ORDER BY (CASE WHEN device_id IS NOT NULL AND device_id = $2 THEN 1 ELSE 0 END) DESC,
+                  COALESCE(last_refreshed_at, created_at, NOW()) DESC
+         LIMIT 1`,
+        [userId, deviceId || null]
+      );
+      familyRow = rows[0] || null;
+    }
+
+    // 2) 없으면 새 family 생성
+    if (!familyRow) {
       const famRes = await client.query(
         `INSERT INTO auth_schema.jwt_families (user_id, device_id, expires_at, max_refresh_count)
          VALUES ($1, $2, NOW() + INTERVAL '${FAMILY_MAX_DAYS} days', $3)
          RETURNING family_id, expires_at, refresh_count, max_refresh_count;`,
-        [userId, deviceId, MAX_REFRESH_COUNT]
+        [userId, deviceId || null, MAX_REFRESH_COUNT]
       );
-      useFamilyId = famRes.rows[0].family_id;
+      familyRow = famRes.rows[0];
     }
+
+    const useFamilyId = familyRow.family_id;
+    const familyExpires = new Date(familyRow.expires_at).getTime();
+    const tokenExpires = new Date(Math.min(now + ttlMillis, familyExpires));
+
+    // 3) 새 토큰 발급 전에 기존 유효/미사용 토큰 무효화 (user 단위, 필요 시 device 단위로 좁힐 수 있음)
+    await client.query(
+      `UPDATE auth_schema.jwt_tokens
+       SET is_valid = FALSE
+       WHERE user_id = $1
+         AND is_valid = TRUE
+         AND is_used = FALSE;`,
+      [userId]
+    );
 
     const token = crypto.randomBytes(32).toString('hex');
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-    const expiresAt = new Date(Date.now() + REFRESH_TTL_DAYS * 24 * 60 * 60 * 1000);
 
     await client.query(
       `INSERT INTO auth_schema.jwt_tokens (family_id, user_id, token_hash, jti, expires_at)
        VALUES ($1, $2, $3, gen_random_uuid()::text, $4);`,
-      [useFamilyId, userId, tokenHash, expiresAt]
+      [useFamilyId, userId, tokenHash, tokenExpires]
     );
 
     await client.query(
@@ -42,7 +85,7 @@ export async function rotateRefreshToken({ userId, deviceId, familyId = null }) 
     );
 
     await client.query('COMMIT');
-    return { token, expires_at: expiresAt, family_id: useFamilyId };
+    return { token, expires_at: tokenExpires, family_id: useFamilyId };
   } catch (err) {
     await client.query('ROLLBACK');
     throw err;
