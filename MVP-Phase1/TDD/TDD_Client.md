@@ -14,7 +14,7 @@
 ## 2. 기술 스택 및 의존성
 - Unity 2022.3 LTS, IL2CPP / Mono 플레이 모드.
 - Google.Protobuf 패키지, 프로토 코드: `protocol/game.proto`를 C#으로 생성하여 `Assets/Scripts/Generated/`에 포함.
-- 인증: Google Play Games SDK 1.x(계정 선택 가능) 사용. RefreshToken은 SecureStorage(Android Keystore 등) 우선.
+- 인증: Google Play Games SDK 1.x(계정 선택 가능) 사용. 서버 JWT + RefreshToken은 SecureStorage(Android Keystore 등) 우선 저장(Dev/Editor는 PlayerPrefs 대체 허용).
 - 전송 방식: TCP 길이 프리픽스(4바이트 Little Endian) + Envelope(proto).
 - 환경 설정: ScriptableObject 또는 `Resources/config.json`(dev/stage/prod 호스트, 포트, 타임아웃, 하트비트 주기).
 
@@ -25,6 +25,7 @@
 - 네트워크 계층: `TcpClient`(길이 프리픽스), 송신 큐, 수신 디멀티플렉서(Envelope.msg_type 기반 라우팅).
 - 데이터 계층: 최소 캐시(현재 골드, 슬롯 상태, 미션 상태, 오프라인 결과). 저장소는 메모리 우선, RefreshToken은 SecureStorage, 나머지 로컬 캐시는 PlayerPrefs/파일은 Dev 전용.
 - 전역 시스템: DontDestroyOnLoad 싱글톤/서비스로 네트워크, 세션, 설정, 메타데이터 보관(패턴 확정 필요).
+- 세션/토큰: 서버 JWT/Refresh는 인증 서버(/auth/login, /auth/verify)로 관리. RefreshToken은 SecureStorage 우선, Dev/Editor에서는 PlayerPrefs 대체 허용. Refresh는 30일 슬라이딩, 최대 90일 절대 만료(또는 refresh_count 상한) 후 재로그인 필요.
 
 ## 4. 프로토콜 적용 규칙
 - Envelope.version은 서버와 동일(현재 1). 불일치 시 핸드셰이크 단계에서 오류 노출.
@@ -38,8 +39,9 @@
    - 프로토 버전/앱 버전 로그 남김.  
    - SecureStorage에서 RefreshToken 조회 및 Title 씬으로 전달.
 2) Title(로그인/핸드셰이크)  
-   - RefreshToken 존재 시 자동 재인증→유저 데이터 로드 후 Game 씬 이동.  
-   - 미존재/실패 시 GPG 로그인 버튼 노출(계정 선택 이슈로 SDK 버전 별 플로우 테스트 필요).  
+   - RefreshToken 존재 시 자동 재인증→유저 데이터 로드 후 Game 씬 이동(RefreshToken SecureStorage, Dev/Editor는 PlayerPrefs 대체).  
+   - 미존재/실패 시 GPG 로그인 버튼 노출(계정 선택 이슈로 SDK 버전 별 플로우 테스트 필요). 인증 중에는 전 화면 LoadingOverlay로 인터랙션 차단.  
+   - 인증 완료 시에만 게임 시작(Start) 버튼 노출, 미인증 시 Google 로그인 버튼만 노출.  
    - 성공 시 스냅샷(UserDataSnapshot) UI에 반영: 골드, 크리스탈, 슬롯 잠금 여부, 현재 광물, HP, DPS, 최고 레벨.  
    - 실패 코드(1001 AUTH_FAILED, 1003 EXPIRED 등) 표시 및 재시도 버튼.
 3) 하트비트 (Game 씬 상주)  
