@@ -8,7 +8,8 @@ namespace InfinitePickaxe.Client.Config
     {
         public string name = "dev";
         public string host = "127.0.0.1";
-        public int port = 10001;
+        public int port = 10001; // game/TCP
+        public int authPort = 10000; // REST auth server
         public bool useTls;
     }
 
@@ -53,6 +54,7 @@ namespace InfinitePickaxe.Client.Config
                         name = "dev",
                         host = "127.0.0.1",
                         port = 10001,
+                        authPort = 10000,
                         useTls = false
                     },
                     new EnvironmentConfig
@@ -60,6 +62,7 @@ namespace InfinitePickaxe.Client.Config
                         name = "stage",
                         host = "stage.example.com",
                         port = 10001,
+                        authPort = 10000,
                         useTls = true
                     },
                     new EnvironmentConfig
@@ -67,6 +70,7 @@ namespace InfinitePickaxe.Client.Config
                         name = "prod",
                         host = "prod.example.com",
                         port = 10001,
+                        authPort = 10000,
                         useTls = true
                     }
                 },

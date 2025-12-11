@@ -26,6 +26,7 @@ namespace InfinitePickaxe.Client.UI.Title
 
         private const string IdleStatus = "로그인 상태: 미인증";
         private const string AuthenticatedStatus = "로그인 상태: 인증 완료";
+        private const string DummyTokenPrefix = "dev-";
 
         private void Awake()
         {
@@ -70,7 +71,8 @@ namespace InfinitePickaxe.Client.UI.Title
             var config = ClientRuntime.IsInitialized ? ClientRuntime.Config : ClientConfigLoader.Load();
             var env = config.GetActiveEnvironment();
             var scheme = env.useTls ? "https" : "http";
-            var baseUri = $"{scheme}://{env.host}:{env.port}";
+            var authPort = env.authPort > 0 ? env.authPort : env.port;
+            var baseUri = $"{scheme}://{env.host}:{authPort}";
             var backend = new BackendAuthClient(baseUri, backendTimeoutSeconds);
             ITokenStorage storage;
 #if UNITY_EDITOR

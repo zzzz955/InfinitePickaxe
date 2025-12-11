@@ -12,12 +12,25 @@ namespace InfinitePickaxe.Client.Auth
         [Header("Config")]
         [SerializeField] private string webClientId = "";
         [SerializeField] private bool forceTokenRefresh;
+        [SerializeField] private bool useDummyInEditor = true;
+        [SerializeField] private string dummyUserId = "dev-user";
+        [SerializeField] private string dummyDisplayName = "Dev User";
+        [SerializeField] private string dummyGoogleIdToken = "dev-google-idtoken";
+        [SerializeField] private string dummyIdToken = "dev-id-token";
 
         private FirebaseAuth auth;
         private bool initialized;
 
         public async Task<AuthResult> SignInAsync(bool silent = false)
         {
+#if !UNITY_ANDROID || UNITY_EDITOR
+            if (useDummyInEditor)
+            {
+                // Return a dummy GoogleIdToken so the backend path can still be exercised in dev.
+                return AuthResult.Ok(dummyUserId, dummyDisplayName, dummyIdToken, null, $"{dummyGoogleIdToken}");
+            }
+            return AuthResult.Fail("Google/Firebase 로그인은 Android 디바이스에서만 지원됩니다.");
+#else
             var init = await EnsureInitializedAsync();
             if (!init.Success)
             {
@@ -50,6 +63,7 @@ namespace InfinitePickaxe.Client.Auth
                 Debug.LogWarning($"Google/Firebase sign-in failed: {ex}");
                 return AuthResult.Fail(ex.Message);
             }
+#endif
         }
 
         private async Task<AuthResult> EnsureInitializedAsync()
