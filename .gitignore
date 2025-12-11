@@ -56,5 +56,11 @@ keystore/
 *.apk
 *.abb
 
+# API Keys
+pickaxe-client/Assets/google-services.json
+pickaxe-client/Assets/google-services.json.meta
+pickaxe-client/Assets/StreamingAssets/google-services-desktop.json
+pickaxe-client/Assets/StreamingAssets/google-services-desktop.json.meta
+
 # claude
 *.claude
