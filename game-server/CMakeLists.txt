@@ -26,6 +26,7 @@ add_executable(game-server
     src/server/slot_service.cpp
     src/server/offline_service.cpp
     src/server/session_registry.cpp
+    src/server/connection_rate_limiter.cpp
     src/metadata/metadata_loader.cpp
 )
 

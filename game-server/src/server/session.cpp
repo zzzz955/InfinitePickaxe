@@ -37,6 +37,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       mission_service_(mission_service),
       slot_service_(slot_service),
       offline_service_(offline_service),
+      auth_timer_(socket_.get_executor()),
       registry_(std::move(registry)) {
     init_router();
 }
@@ -47,6 +48,7 @@ void Session::start() {
     } catch (...) {
         client_ip_.clear();
     }
+    start_auth_timer();
     read_length();
 }
 
@@ -210,6 +212,8 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
     google_id_ = vr.google_id;
     expires_at_ = vr.expires_at;
     authenticated_ = true;
+    boost::system::error_code timer_ec;
+    auth_timer_.cancel(timer_ec);
 
     if (registry_) {
         if (auto previous = registry_->replace_session(user_id_, shared_from_this())) {
@@ -350,10 +354,24 @@ void Session::send_error(const std::string& code, const std::string& message) {
 void Session::close() {
     if (closed_) return;
     closed_ = true;
+    boost::system::error_code timer_ec;
+    auth_timer_.cancel(timer_ec);
     if (registry_ && !user_id_.empty()) {
         registry_->remove_if_match(user_id_, this);
     }
     boost::system::error_code ignored;
     socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored);
     socket_.close(ignored);
+}
+
+void Session::start_auth_timer() {
+    auto self = shared_from_this();
+    auth_timer_.expires_after(std::chrono::seconds(5));
+    auth_timer_.async_wait([this, self](const boost::system::error_code& ec) {
+        if (ec) return; // cancelled
+        if (!authenticated_) {
+            send_error("1007", "AUTH_TIMEOUT");
+            close();
+        }
+    });
 }

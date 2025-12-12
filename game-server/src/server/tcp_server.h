@@ -9,6 +9,7 @@
 #include "slot_service.h"
 #include "offline_service.h"
 #include "session_registry.h"
+#include "connection_rate_limiter.h"
 #include <memory>
 #include <vector>
 #include <string>
@@ -33,6 +34,7 @@ private:
 
     boost::asio::ip::tcp::acceptor acceptor_;
     std::shared_ptr<SessionRegistry> registry_;
+    std::shared_ptr<ConnectionRateLimiter> rate_limiter_;
     AuthService& auth_service_;
     GameRepository& game_repo_;
     MiningService& mining_service_;

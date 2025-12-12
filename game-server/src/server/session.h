@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/asio.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <memory>
 #include <string>
 #include <chrono>
@@ -45,9 +46,11 @@ private:
     void send_envelope(const std::string& msg_type, const google::protobuf::Message& msg);
     void send_error(const std::string& code, const std::string& message);
     bool is_expired() const;
+    void start_auth_timer();
     void close();
 
     boost::asio::ip::tcp::socket socket_;
+    boost::asio::steady_timer auth_timer_;
     AuthService& auth_service_;
     GameRepository& game_repo_;
     MessageRouter router_;
