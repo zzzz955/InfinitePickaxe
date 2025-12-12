@@ -68,3 +68,6 @@ pickaxe-client/Assets/Plugins/Android/FirebaseApp.androidlib/res/values/google-s
 
 # codex
 .codex/
+
+# log
+last_log.txt
