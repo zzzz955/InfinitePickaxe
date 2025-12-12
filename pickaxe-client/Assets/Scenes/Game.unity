@@ -1893,6 +1893,7 @@ GameObject:
   m_Component:
   - component: {fileID: 152648781}
   - component: {fileID: 152648782}
+  - component: {fileID: 152648783}
   m_Layer: 5
   m_Name: MiningTab
   m_TagString: Untagged
@@ -1947,6 +1948,28 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &152648783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152648780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5e4c36d07dfb2408733a3841f52e5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initializeOnAwake: 1
+  mineInfoText: {fileID: 1624094269}
+  mineHPSlider: {fileID: 0}
+  mineHPText: {fileID: 126343320}
+  dpsText: {fileID: 1957562628}
+  selectMineralButton: {fileID: 1657495456}
+  currentMineralName: "\uC57D\uD55C \uB3CC"
+  currentHP: 25
+  maxHP: 25
+  currentDPS: 10
 --- !u!1 &214605565
 GameObject:
   m_ObjectHideFlags: 0
@@ -2674,6 +2697,61 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 958471742}
   m_CullTransparentMesh: 1
+--- !u!1 &991037478
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 991037480}
+  - component: {fileID: 991037479}
+  m_Layer: 0
+  m_Name: GameTabManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &991037479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991037478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 216694b170c32b841ba5c4d5031e19c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  miningTab: {fileID: 152648780}
+  upgradeTab: {fileID: 0}
+  questTab: {fileID: 0}
+  shopTab: {fileID: 0}
+  settingsTab: {fileID: 0}
+  mineButton: {fileID: 200214}
+  upgradeButton: {fileID: 200224}
+  questButton: {fileID: 200234}
+  shopButton: {fileID: 200244}
+  settingsButton: {fileID: 200254}
+  defaultTab: 0
+--- !u!4 &991037480
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991037478}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 433.76843, y: 868.75305, z: -8.439438}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1057511238
 GameObject:
   m_ObjectHideFlags: 0
@@ -4326,3 +4404,4 @@ SceneRoots:
   - {fileID: 373977829}
   - {fileID: 100001}
   - {fileID: 100011}
+  - {fileID: 991037480}

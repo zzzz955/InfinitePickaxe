@@ -65,6 +65,7 @@ pickaxe-client/Assets/Plugins/Android/FirebaseApp.androidlib/res/values/google-s
 
 # claude
 *.claude
+CLAUDE.md
 
 # codex
 .codex/
