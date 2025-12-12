@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package infinitepickaxe;
 
+import "google/protobuf/wrappers.proto";
+
 // 공통 Envelope: msg_type으로 메시지 구분
 message Envelope {
   string msg_type = 1;  // HANDSHAKE, HEARTBEAT, MINE_START, ...
@@ -20,26 +22,22 @@ message HandshakeReq {
 }
 
 message UserDataSnapshot {
-  string user_id = 1;
-  uint64 gold = 2;
-  uint32 crystal = 3;
-  repeated bool unlocked_slots = 4; // 길이 4 고정
-  uint32 current_mineral_id = 5;
-  uint64 mineral_hp = 6;
-  uint64 mineral_max_hp = 7;
-  uint64 pickaxe_dps = 8;
-  uint32 pickaxe_level = 9;
-  uint32 highest_pickaxe_level = 10;
-  uint64 server_time = 11; // unix seconds
+  google.protobuf.UInt64Value gold = 1;
+  google.protobuf.UInt32Value crystal = 2;
+  repeated bool unlocked_slots = 3; // 길이 4 고정 예상
+  google.protobuf.UInt32Value current_mineral_id = 4;
+  google.protobuf.UInt64Value mineral_hp = 5;
+  google.protobuf.UInt64Value mineral_max_hp = 6;
+  google.protobuf.UInt64Value pickaxe_dps = 7;
+  google.protobuf.UInt32Value pickaxe_level = 8;
+  google.protobuf.UInt32Value highest_pickaxe_level = 9;
+  google.protobuf.UInt64Value server_time = 10; // unix seconds
 }
 
 message HandshakeRes {
   bool ok = 1;
   string error = 2;        // INVALID_JWT, BANNED, EXPIRED ...
-  string user_id = 3;
-  string device_id = 4;
-  string google_id = 5;
-  UserDataSnapshot snapshot = 6;
+  UserDataSnapshot snapshot = 3;
 }
 
 message Heartbeat {

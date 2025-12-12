@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using InfinitePickaxe.Client.Auth;
 using InfinitePickaxe.Client.Config;
 using InfinitePickaxe.Client.Core;
+using InfinitePickaxe.Client.Net;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,6 +24,9 @@ namespace InfinitePickaxe.Client.UI.Title
         private bool autoAuthAttempted;
         private AuthSessionService sessionService;
         private string deviceId;
+        private NetworkClient networkClient;
+        private NetworkSettings networkSettings;
+        private GameSessionState gameSessionState;
 
         private const string IdleStatus = "로그인 상태: 미인증";
         private const string AuthenticatedStatus = "로그인 상태: 인증 완료";
@@ -55,6 +59,9 @@ namespace InfinitePickaxe.Client.UI.Title
             }
 
             sessionService = CreateSessionService();
+            ClientRuntime.TryResolve(out networkClient);
+            ClientRuntime.TryResolve(out networkSettings);
+            ClientRuntime.TryResolve(out gameSessionState);
             view.SetButtonHandlers(OnGoogleSignInClicked, OnStartClicked, OnLogoutClicked);
             view.SetState(TitleState.Idle, IdleStatus);
 
@@ -232,9 +239,41 @@ namespace InfinitePickaxe.Client.UI.Title
                 return;
             }
 
-            // TODO: TCP 핸드셰이크 + 초기 스냅샷 수신 구현 필요
+            view.ShowOverlay(true, "게임 서버에 연결 중...");
+            var hsResult = await DoHandshakeAsync(sessionService.Tokens.AccessToken);
+            if (!hsResult.Success)
+            {
+                view.ShowOverlay(false);
+                view.ShowModal($"게임 서버 연결 실패: {hsResult.Error}", "다시 시도", () =>
+                {
+                    view.ShowOverlay(false);
+                });
+                if (networkClient != null)
+                {
+                    await networkClient.DisconnectAsync("handshake failed");
+                }
+                return;
+            }
+
+            if (gameSessionState != null)
+            {
+                gameSessionState.LastHandshake = hsResult.Response;
+            }
+
             view.ShowOverlay(true, "게임 데이터를 불러오는 중...");
             LoadGameScene();
+        }
+
+        private async Task<GameHandshakeResult> DoHandshakeAsync(string accessToken)
+        {
+            if (networkClient == null || networkSettings == null)
+            {
+                return GameHandshakeResult.Fail("네트워크 클라이언트가 초기화되지 않았습니다.");
+            }
+
+            using var cts = new System.Threading.CancellationTokenSource(System.TimeSpan.FromSeconds(10));
+            var handshakeClient = new GameHandshakeClient(networkClient, networkSettings, Application.version);
+            return await handshakeClient.ConnectAndHandshakeAsync(accessToken, deviceId, cts.Token);
         }
     }
 }

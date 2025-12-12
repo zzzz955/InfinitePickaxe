@@ -222,9 +222,6 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
     }
 
     res.set_ok(true);
-    res.set_user_id(vr.user_id);
-    res.set_device_id(vr.device_id);
-    res.set_google_id(vr.google_id);
     send_envelope("HANDSHAKE_RES", res);
     read_length();
 }
