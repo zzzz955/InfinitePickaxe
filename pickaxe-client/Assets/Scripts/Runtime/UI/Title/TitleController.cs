@@ -125,20 +125,7 @@ namespace InfinitePickaxe.Client.UI.Title
 
         public void OnStartClicked()
         {
-            if (!sessionService.IsAuthenticated)
-            {
-                HandleInvalidToken("로그인이 필요합니다.");
-                return;
-            }
-
-            if (!sessionService.Tokens.HasNickname)
-            {
-                PromptNickname();
-                return;
-            }
-
-            view.ShowOverlay(true, "게임 데이터를 불러오는 중...");
-            LoadGameScene();
+            _ = StartGameFlowAsync();
         }
 
         public void OnLogoutClicked()
@@ -216,6 +203,38 @@ namespace InfinitePickaxe.Client.UI.Title
             view.SetState(TitleState.Idle, "로그인 상태: 재로그인 필요");
             view.ShowOverlay(false);
             view.ShowModal(display, "다시 로그인");
+        }
+
+        private async Task StartGameFlowAsync()
+        {
+            if (!sessionService.IsAuthenticated)
+            {
+                HandleInvalidToken("로그인이 필요합니다.");
+                return;
+            }
+
+            if (!sessionService.Tokens.HasNickname)
+            {
+                PromptNickname();
+                return;
+            }
+
+            view.ShowOverlay(true, "게임 서버 연결 준비 중...");
+
+            var refreshResult = await sessionService.RefreshAccessTokenIfNeededAsync(120);
+            if (!refreshResult.Success)
+            {
+                view.ShowOverlay(false);
+                view.ShowModal($"토큰 갱신 실패: {refreshResult.Error}", "다시 로그인", () =>
+                {
+                    HandleInvalidToken(refreshResult.Error);
+                });
+                return;
+            }
+
+            // TODO: TCP 핸드셰이크 + 초기 스냅샷 수신 구현 필요
+            view.ShowOverlay(true, "게임 데이터를 불러오는 중...");
+            LoadGameScene();
         }
     }
 }
