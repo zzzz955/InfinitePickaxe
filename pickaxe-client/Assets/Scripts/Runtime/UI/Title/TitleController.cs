@@ -3,6 +3,7 @@ using InfinitePickaxe.Client.Auth;
 using InfinitePickaxe.Client.Config;
 using InfinitePickaxe.Client.Core;
 using InfinitePickaxe.Client.Net;
+using Infinitepickaxe;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -243,8 +244,9 @@ namespace InfinitePickaxe.Client.UI.Title
             var hsResult = await DoHandshakeAsync(sessionService.Tokens.AccessToken);
             if (!hsResult.Success)
             {
+                Debug.LogError($"Handshake failed: {hsResult.Error}");
                 view.ShowOverlay(false);
-                view.ShowModal($"게임 서버 연결 실패: {hsResult.Error}", "다시 시도", () =>
+                view.ShowModal("게임 서버 연결 실패", "다시 시도", () =>
                 {
                     view.ShowOverlay(false);
                 });

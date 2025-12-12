@@ -52,11 +52,18 @@ namespace InfinitePickaxe.Client.Net
             ThrowIfDisposed();
 
             TaskCompletionSource<GameHandshakeResult> tcs = new TaskCompletionSource<GameHandshakeResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+            void DisconnectedHandler(Exception ex)
+            {
+                var reason = ex != null ? ex.Message : "DISCONNECTED";
+                tcs.TrySetResult(GameHandshakeResult.Fail(reason));
+            }
             void FrameHandler(ReadOnlyMemory<byte> frame)
             {
                 try
                 {
-                    var env = Infinitepickaxe.Envelope.Parser.ParseFrom(frame.Span);
+                    // Span 기반 ParseContext 메서드가 없는 환경을 위해 ToArray 사용
+                    var bytes = frame.ToArray();
+                    var env = Infinitepickaxe.Envelope.Parser.ParseFrom(bytes);
                     switch (env.MsgType)
                     {
                         case "HANDSHAKE_RES":
@@ -81,6 +88,7 @@ namespace InfinitePickaxe.Client.Net
                 }
             }
 
+            networkClient.Disconnected += DisconnectedHandler;
             networkClient.FrameReceived += FrameHandler;
             try
             {
@@ -117,6 +125,7 @@ namespace InfinitePickaxe.Client.Net
             finally
             {
                 networkClient.FrameReceived -= FrameHandler;
+                networkClient.Disconnected -= DisconnectedHandler;
                 // 연결은 호출자에게 맡김 (성공 시 유지, 실패 시 종료)
             }
         }
