@@ -13,6 +13,7 @@ TcpServer::TcpServer(boost::asio::io_context& io,
                      SlotService& slot_service,
                      OfflineService& offline_service)
     : acceptor_(io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
+      registry_(std::make_shared<SessionRegistry>()),
       auth_service_(auth_service),
       game_repo_(game_repo),
       mining_service_(mining_service),
@@ -37,7 +38,8 @@ void TcpServer::do_accept() {
                                                          upgrade_service_,
                                                          mission_service_,
                                                          slot_service_,
-                                                         offline_service_);
+                                                         offline_service_,
+                                                         registry_);
                 session->start();
             }
             do_accept();

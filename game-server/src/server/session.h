@@ -13,6 +13,7 @@
 #include "mission_service.h"
 #include "slot_service.h"
 #include "offline_service.h"
+#include "session_registry.h"
 
 class Session : public std::enable_shared_from_this<Session> {
 public:
@@ -23,9 +24,11 @@ public:
             UpgradeService& upgrade_service,
             MissionService& mission_service,
             SlotService& slot_service,
-            OfflineService& offline_service);
+            OfflineService& offline_service,
+            std::shared_ptr<SessionRegistry> registry);
 
     void start();
+    void notify_duplicate_and_close();
 
 private:
     void read_length();
@@ -53,6 +56,7 @@ private:
     MissionService& mission_service_;
     SlotService& slot_service_;
     OfflineService& offline_service_;
+    std::shared_ptr<SessionRegistry> registry_;
 
     // 세션 컨텍스트
     std::string user_id_;
@@ -61,6 +65,7 @@ private:
     std::string client_ip_;
     std::chrono::system_clock::time_point expires_at_;
     bool authenticated_{false};
+    bool closed_{false};
     uint32_t expected_seq_{1};
     uint32_t violation_count_{0};
 

@@ -25,6 +25,7 @@ add_executable(game-server
     src/server/mission_service.cpp
     src/server/slot_service.cpp
     src/server/offline_service.cpp
+    src/server/session_registry.cpp
     src/metadata/metadata_loader.cpp
 )
 

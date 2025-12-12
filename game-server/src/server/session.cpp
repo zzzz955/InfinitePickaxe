@@ -27,7 +27,8 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  UpgradeService& upgrade_service,
                  MissionService& mission_service,
                  SlotService& slot_service,
-                 OfflineService& offline_service)
+                 OfflineService& offline_service,
+                 std::shared_ptr<SessionRegistry> registry)
     : socket_(std::move(socket)),
       auth_service_(auth_service),
       game_repo_(game_repo),
@@ -35,7 +36,8 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       upgrade_service_(upgrade_service),
       mission_service_(mission_service),
       slot_service_(slot_service),
-      offline_service_(offline_service) {
+      offline_service_(offline_service),
+      registry_(std::move(registry)) {
     init_router();
 }
 
@@ -46,6 +48,32 @@ void Session::start() {
         client_ip_.clear();
     }
     read_length();
+}
+
+void Session::notify_duplicate_and_close() {
+    infinitepickaxe::Error err;
+    err.set_error_code("1006");
+    err.set_error_message("DUPLICATE_SESSION");
+
+    infinitepickaxe::Envelope env;
+    env.set_msg_type("ERROR");
+    env.set_version(1);
+    err.SerializeToString(env.mutable_payload());
+
+    std::string body;
+    env.SerializeToString(&body);
+    auto len = static_cast<uint32_t>(body.size());
+    auto len_enc = encode_le(len);
+
+    auto self = shared_from_this();
+    std::array<boost::asio::const_buffer, 2> bufs = {
+        boost::asio::buffer(len_enc),
+        boost::asio::buffer(body)
+    };
+    boost::asio::async_write(socket_, bufs,
+        [this, self](boost::system::error_code /*ec*/, std::size_t /*written*/) {
+            close();
+        });
 }
 
 void Session::read_length() {
@@ -162,7 +190,8 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
         close();
         return;
     }
-    if (is_expired()) {
+    auto now = std::chrono::system_clock::now();
+    if (vr.expires_at.time_since_epoch().count() != 0 && now >= vr.expires_at) {
         res.set_ok(false);
         res.set_error("1003");
         send_envelope("HANDSHAKE_RES", res);
@@ -182,11 +211,18 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
     expires_at_ = vr.expires_at;
     authenticated_ = true;
 
+    if (registry_) {
+        if (auto previous = registry_->replace_session(user_id_, shared_from_this())) {
+            previous->notify_duplicate_and_close();
+        }
+    }
+
     res.set_ok(true);
     res.set_user_id(vr.user_id);
     res.set_device_id(vr.device_id);
     res.set_google_id(vr.google_id);
     send_envelope("HANDSHAKE_RES", res);
+    read_length();
 }
 
 void Session::handle_heartbeat(const infinitepickaxe::Envelope& env) {
@@ -312,6 +348,11 @@ void Session::send_error(const std::string& code, const std::string& message) {
 }
 
 void Session::close() {
+    if (closed_) return;
+    closed_ = true;
+    if (registry_ && !user_id_.empty()) {
+        registry_->remove_if_match(user_id_, this);
+    }
     boost::system::error_code ignored;
     socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored);
     socket_.close(ignored);

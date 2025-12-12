@@ -8,6 +8,7 @@
 #include "mission_service.h"
 #include "slot_service.h"
 #include "offline_service.h"
+#include "session_registry.h"
 #include <memory>
 #include <vector>
 #include <string>
@@ -29,9 +30,9 @@ public:
 
 private:
     void do_accept();
-    void start_handshake(std::shared_ptr<class Session> session);
 
     boost::asio::ip::tcp::acceptor acceptor_;
+    std::shared_ptr<SessionRegistry> registry_;
     AuthService& auth_service_;
     GameRepository& game_repo_;
     MiningService& mining_service_;
