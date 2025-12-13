@@ -25,7 +25,8 @@ namespace InfinitePickaxe.Client.Editor
             GUILayout.Space(10);
 
             EditorGUILayout.HelpBox(
-                "이 도구는 Game 씬의 Panel 아래에 4개 탭을 자동으로 생성합니다.\n" +
+                "이 도구는 Game 씬의 Panel 아래에 5개 탭을 자동으로 생성합니다.\n" +
+                "- MiningTab (채굴 탭) - HP 슬라이더 포함\n" +
                 "- UpgradeTab (강화 탭)\n" +
                 "- QuestTab (미션 탭)\n" +
                 "- ShopTab (상점 탭)\n" +
@@ -35,6 +36,11 @@ namespace InfinitePickaxe.Client.Editor
             );
 
             GUILayout.Space(10);
+
+            if (GUILayout.Button("Create MiningTab", GUILayout.Height(40)))
+            {
+                CreateMiningTab();
+            }
 
             if (GUILayout.Button("Create UpgradeTab", GUILayout.Height(40)))
             {
@@ -66,6 +72,7 @@ namespace InfinitePickaxe.Client.Editor
 
         private static void CreateAllTabs()
         {
+            CreateMiningTab();
             CreateUpgradeTab();
             CreateQuestTab();
             CreateShopTab();
@@ -73,6 +80,156 @@ namespace InfinitePickaxe.Client.Editor
 
             Debug.Log("모든 탭 생성 완료!");
         }
+
+        #region MiningTab Creation
+
+        private static void CreateMiningTab()
+        {
+            var panel = GameObject.Find("Panel");
+            if (panel == null)
+            {
+                Debug.LogError("Panel GameObject를 찾을 수 없습니다!");
+                return;
+            }
+
+            var existing = panel.transform.Find("MiningTab");
+            if (existing != null)
+            {
+                if (!EditorUtility.DisplayDialog("확인", "기존 MiningTab을 삭제하고 다시 생성하시겠습니까?", "예", "아니오"))
+                    return;
+                DestroyImmediate(existing.gameObject);
+            }
+
+            // Root GameObject 생성 (스크롤 활성화)
+            var miningTab = CreateTabRoot("MiningTab", panel.transform, enableScroll: true);
+
+            var layoutGroup = miningTab.AddComponent<VerticalLayoutGroup>();
+            layoutGroup.padding = new RectOffset(0, 0, 0, 0);
+            layoutGroup.spacing = 20;
+            layoutGroup.childAlignment = TextAnchor.UpperCenter;
+            layoutGroup.childControlWidth = false;
+            layoutGroup.childControlHeight = false;
+
+            miningTab.AddComponent<UI.Game.MiningTabController>();
+
+            // 1. SlotsRow (곡괭이 슬롯 4개)
+            var slotsRow = CreateEmpty(miningTab.transform, "SlotsRow", new Vector2(1080, 360));
+            var slotsLayout = slotsRow.AddComponent<HorizontalLayoutGroup>();
+            slotsLayout.spacing = 20;
+            slotsLayout.padding = new RectOffset(40, 40, 40, 40);
+            slotsLayout.childAlignment = TextAnchor.MiddleCenter;
+            slotsLayout.childControlWidth = false;
+            slotsLayout.childControlHeight = false;
+
+            // 배경
+            var slotsImage = slotsRow.AddComponent<Image>();
+            slotsImage.color = new Color(0, 0, 0, 0.6f);
+
+            // 슬롯 1-4 생성
+            for (int i = 1; i <= 4; i++)
+            {
+                var slot = CreateEmpty(slotsRow.transform, $"Slot{i}", new Vector2(240, 280));
+                var slotLayout = slot.AddComponent<VerticalLayoutGroup>();
+                slotLayout.spacing = 10;
+                slotLayout.padding = new RectOffset(20, 20, 20, 20);
+                slotLayout.childAlignment = TextAnchor.MiddleCenter;
+
+                var slotBg = slot.AddComponent<Image>();
+                slotBg.color = i == 1 ? new Color(0.2f, 0.2f, 0.2f, 0.8f) : new Color(0.1f, 0.1f, 0.1f, 0.5f);
+
+                // 곡괭이 스프라이트 영역
+                var pickaxeArea = CreateEmpty(slot.transform, "PickaxeArea", new Vector2(200, 180));
+                var pickaxeImage = pickaxeArea.AddComponent<Image>();
+                pickaxeImage.color = i > 1 ? new Color(0.3f, 0.3f, 0.3f) : Color.white;
+
+                // 레벨 텍스트
+                CreateText(slot.transform, "LevelText", i == 1 ? "Lv 0" : "잠김", 36, TextAlignmentOptions.Center, new Vector2(200, 50));
+            }
+
+            // 2. CenterPanel (채굴 중앙 영역)
+            var centerPanel = CreateEmpty(miningTab.transform, "CenterPanel", new Vector2(1080, 1272));
+            var centerLayout = centerPanel.AddComponent<VerticalLayoutGroup>();
+            centerLayout.spacing = 30;
+            centerLayout.padding = new RectOffset(60, 60, 40, 40);
+            centerLayout.childAlignment = TextAnchor.UpperCenter;
+            centerLayout.childControlWidth = false;
+            centerLayout.childControlHeight = false;
+
+            var centerBg = centerPanel.AddComponent<Image>();
+            centerBg.color = new Color(0.12f, 0.12f, 0.12f, 0.7f);
+
+            // 광물 정보 텍스트
+            var mineInfoText = CreateText(centerPanel.transform, "MineInfoText", "채굴 중: 약한 돌", 48, TextAlignmentOptions.Center, new Vector2(960, 60));
+            mineInfoText.GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0.5f);
+
+            // 광물 스프라이트 영역
+            var mineralArea = CreateEmpty(centerPanel.transform, "MineralArea", new Vector2(500, 500));
+            var mineralImage = mineralArea.AddComponent<Image>();
+            mineralImage.color = new Color(0.7f, 0.5f, 0.3f);
+
+            // HP 슬라이더 영역
+            var hpSliderContainer = CreateEmpty(centerPanel.transform, "HPSliderContainer", new Vector2(800, 100));
+            var hpContainerLayout = hpSliderContainer.AddComponent<VerticalLayoutGroup>();
+            hpContainerLayout.spacing = 10;
+            hpContainerLayout.childAlignment = TextAnchor.UpperCenter;
+
+            // HP 텍스트
+            var mineHPText = CreateText(hpSliderContainer.transform, "MineHPText", "HP: 25/25 (100.0%)", 40, TextAlignmentOptions.Center, new Vector2(800, 50));
+            mineHPText.GetComponent<TextMeshProUGUI>().color = new Color(0.2f, 1f, 0.2f);
+
+            // HP 슬라이더
+            var sliderGo = new GameObject("MineHPSlider");
+            sliderGo.transform.SetParent(hpSliderContainer.transform, false);
+            var sliderRect = sliderGo.AddComponent<RectTransform>();
+            sliderRect.sizeDelta = new Vector2(800, 50);
+
+            // Slider Background
+            var sliderBg = sliderGo.AddComponent<Image>();
+            sliderBg.color = new Color(0.2f, 0.2f, 0.2f);
+
+            var slider = sliderGo.AddComponent<Slider>();
+            slider.minValue = 0;
+            slider.maxValue = 100;
+            slider.value = 100;
+            slider.interactable = false;
+
+            // Fill Area
+            var fillArea = new GameObject("Fill Area");
+            fillArea.transform.SetParent(sliderGo.transform, false);
+            var fillAreaRect = fillArea.AddComponent<RectTransform>();
+            fillAreaRect.anchorMin = Vector2.zero;
+            fillAreaRect.anchorMax = Vector2.one;
+            fillAreaRect.sizeDelta = new Vector2(-20, -20);
+
+            // Fill
+            var fill = new GameObject("Fill");
+            fill.transform.SetParent(fillArea.transform, false);
+            var fillRect = fill.AddComponent<RectTransform>();
+            fillRect.anchorMin = Vector2.zero;
+            fillRect.anchorMax = Vector2.one;
+            fillRect.sizeDelta = Vector2.zero;
+
+            var fillImage = fill.AddComponent<Image>();
+            fillImage.color = new Color(0.2f, 1f, 0.2f);
+            fillImage.type = Image.Type.Filled;
+            fillImage.fillMethod = Image.FillMethod.Horizontal;
+
+            slider.fillRect = fillRect;
+
+            // DPS 텍스트
+            var dpsText = CreateText(centerPanel.transform, "DPSText", "DPS: 10.0", 52, TextAlignmentOptions.Center, new Vector2(960, 70), FontStyles.Bold);
+            dpsText.GetComponent<TextMeshProUGUI>().color = new Color(1f, 0.8f, 0.2f);
+
+            // 광물 선택 버튼
+            CreateButton(centerPanel.transform, "SelectMineralButton", "광물 선택", 48, new Vector2(600, 120), new Color(0.2f, 0.6f, 0.8f));
+
+            // 초기 활성화 (MiningTab은 기본 활성 상태)
+            miningTab.transform.parent.gameObject.SetActive(true);
+
+            Debug.Log("MiningTab 생성 완료!");
+        }
+
+        #endregion
 
         #region UpgradeTab Creation
 
