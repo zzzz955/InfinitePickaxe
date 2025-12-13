@@ -10,7 +10,7 @@ namespace InfinitePickaxe.Client.Editor
     /// </summary>
     public class TMPFontChanger : EditorWindow
     {
-        private const string DEFAULT_FONT_PATH = "Assets/TextMesh Pro/Resources/Fonts & Materials/NeoDunggeunmoPro-Regular SDF.asset";
+        private const string DEFAULT_FONT_PATH = "Assets/Fonts/NeoDunggeunmoPro-Regular SDF.asset";
 
         private TMP_FontAsset targetFont;
         private string fontPath = DEFAULT_FONT_PATH;

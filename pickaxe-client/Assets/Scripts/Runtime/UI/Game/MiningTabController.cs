@@ -17,21 +17,65 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI dpsText;
         [SerializeField] private Button selectMineralButton;
 
+        [Header("Pickaxe Slot References")]
+        [SerializeField] private Button pickaxeSlot1Button;
+        [SerializeField] private Button pickaxeSlot2Button;
+        [SerializeField] private Button pickaxeSlot3Button;
+        [SerializeField] private Button pickaxeSlot4Button;
+
+        [Header("Modal References")]
+        [SerializeField] private GameObject pickaxeInfoModal;
+        [SerializeField] private GameObject lockedSlotModal;
+        [SerializeField] private GameObject mineralSelectModal;
+
         [Header("Mining Data")]
         [SerializeField] private string currentMineralName = "약한 돌";
         [SerializeField] private float currentHP = 25f;
         [SerializeField] private float maxHP = 25f;
         [SerializeField] private float currentDPS = 10f;
+        [SerializeField] private bool slot2Unlocked = true;
+        [SerializeField] private bool slot3Unlocked = false;
+        [SerializeField] private bool slot4Unlocked = false;
+
+        private GameTabManager tabManager;
 
         protected override void Initialize()
         {
             base.Initialize();
+
+            // GameTabManager 찾기
+            tabManager = FindObjectOfType<GameTabManager>();
+            if (tabManager == null)
+            {
+                Debug.LogWarning("MiningTabController: GameTabManager를 찾을 수 없습니다.");
+            }
 
             // 광물 선택 버튼 이벤트 등록
             if (selectMineralButton != null)
             {
                 selectMineralButton.onClick.AddListener(OnSelectMineralClicked);
             }
+
+            // 슬롯 버튼 이벤트 등록
+            if (pickaxeSlot1Button != null)
+            {
+                pickaxeSlot1Button.onClick.AddListener(() => OnPickaxeSlotClicked(1));
+            }
+            if (pickaxeSlot2Button != null)
+            {
+                pickaxeSlot2Button.onClick.AddListener(() => OnPickaxeSlotClicked(2));
+            }
+            if (pickaxeSlot3Button != null)
+            {
+                pickaxeSlot3Button.onClick.AddListener(() => OnPickaxeSlotClicked(3));
+            }
+            if (pickaxeSlot4Button != null)
+            {
+                pickaxeSlot4Button.onClick.AddListener(() => OnPickaxeSlotClicked(4));
+            }
+
+            // 모달 닫기 버튼 이벤트 등록
+            SetupModalCloseButtons();
 
             // 초기 UI 업데이트
             RefreshData();
@@ -100,8 +144,209 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void OnSelectMineralClicked()
         {
-            // TODO: 광물 선택 UI 표시
-            Debug.Log("MiningTabController: 광물 선택 버튼 클릭됨");
+            OpenMineralSelectModal();
+        }
+
+        /// <summary>
+        /// 곡괭이 슬롯 클릭 이벤트
+        /// </summary>
+        private void OnPickaxeSlotClicked(int slotIndex)
+        {
+            // 슬롯 해금 여부 확인
+            bool isUnlocked = slotIndex switch
+            {
+                1 => true, // 슬롯 1은 항상 해금
+                2 => slot2Unlocked,
+                3 => slot3Unlocked,
+                4 => slot4Unlocked,
+                _ => false
+            };
+
+            if (isUnlocked)
+            {
+                // 해금된 슬롯: 곡괭이 정보 모달 열기
+                OpenPickaxeInfoModal(slotIndex);
+            }
+            else
+            {
+                // 잠긴 슬롯: 잠금 안내 모달 열기
+                OpenLockedSlotModal();
+            }
+        }
+
+        /// <summary>
+        /// 모달 닫기 버튼 이벤트 설정
+        /// </summary>
+        private void SetupModalCloseButtons()
+        {
+            // PickaxeInfoModal 닫기 버튼
+            if (pickaxeInfoModal != null)
+            {
+                var closeButton = pickaxeInfoModal.transform.Find("ModalPanel/ButtonRow/CloseButton");
+                if (closeButton != null)
+                {
+                    var button = closeButton.GetComponent<Button>();
+                    if (button != null)
+                    {
+                        button.onClick.AddListener(() => CloseModal(pickaxeInfoModal));
+                    }
+                }
+
+                // 배경 클릭으로 닫기
+                var bgButton = pickaxeInfoModal.GetComponent<Button>();
+                if (bgButton != null)
+                {
+                    bgButton.onClick.AddListener(() => CloseModal(pickaxeInfoModal));
+                }
+
+                // 강화 버튼 (모달 닫고 업그레이드 탭으로 이동)
+                var upgradeButton = pickaxeInfoModal.transform.Find("ModalPanel/ButtonRow/UpgradeButton");
+                if (upgradeButton != null)
+                {
+                    var button = upgradeButton.GetComponent<Button>();
+                    if (button != null)
+                    {
+                        button.onClick.AddListener(OnUpgradeButtonClicked);
+                    }
+                }
+            }
+
+            // LockedSlotModal 닫기 버튼
+            if (lockedSlotModal != null)
+            {
+                var closeButton = lockedSlotModal.transform.Find("ModalPanel/ButtonRow/CloseButton");
+                if (closeButton != null)
+                {
+                    var button = closeButton.GetComponent<Button>();
+                    if (button != null)
+                    {
+                        button.onClick.AddListener(() => CloseModal(lockedSlotModal));
+                    }
+                }
+
+                // 배경 클릭으로 닫기
+                var bgButton = lockedSlotModal.GetComponent<Button>();
+                if (bgButton != null)
+                {
+                    bgButton.onClick.AddListener(() => CloseModal(lockedSlotModal));
+                }
+
+                // 상점 버튼 (모달 닫고 상점 탭으로 이동)
+                var shopButton = lockedSlotModal.transform.Find("ModalPanel/ButtonRow/ShopButton");
+                if (shopButton != null)
+                {
+                    var button = shopButton.GetComponent<Button>();
+                    if (button != null)
+                    {
+                        button.onClick.AddListener(OnShopButtonClicked);
+                    }
+                }
+            }
+
+            // MineralSelectModal 닫기 버튼
+            if (mineralSelectModal != null)
+            {
+                var closeButton = mineralSelectModal.transform.Find("ModalPanel/CloseButton");
+                if (closeButton != null)
+                {
+                    var button = closeButton.GetComponent<Button>();
+                    if (button != null)
+                    {
+                        button.onClick.AddListener(() => CloseModal(mineralSelectModal));
+                    }
+                }
+
+                // 배경 클릭으로 닫기
+                var bgButton = mineralSelectModal.GetComponent<Button>();
+                if (bgButton != null)
+                {
+                    bgButton.onClick.AddListener(() => CloseModal(mineralSelectModal));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 곡괭이 정보 모달 열기
+        /// </summary>
+        private void OpenPickaxeInfoModal(int slotIndex)
+        {
+            if (pickaxeInfoModal != null)
+            {
+                // TODO: 슬롯 인덱스에 맞는 곡괭이 정보 업데이트
+                pickaxeInfoModal.SetActive(true);
+                Debug.Log($"MiningTabController: 곡괭이 슬롯 {slotIndex} 정보 모달 열림");
+            }
+        }
+
+        /// <summary>
+        /// 잠긴 슬롯 모달 열기
+        /// </summary>
+        private void OpenLockedSlotModal()
+        {
+            if (lockedSlotModal != null)
+            {
+                lockedSlotModal.SetActive(true);
+                Debug.Log("MiningTabController: 잠긴 슬롯 모달 열림");
+            }
+        }
+
+        /// <summary>
+        /// 광물 선택 모달 열기
+        /// </summary>
+        private void OpenMineralSelectModal()
+        {
+            if (mineralSelectModal != null)
+            {
+                mineralSelectModal.SetActive(true);
+                Debug.Log("MiningTabController: 광물 선택 모달 열림");
+            }
+        }
+
+        /// <summary>
+        /// 모달 닫기
+        /// </summary>
+        private void CloseModal(GameObject modal)
+        {
+            if (modal != null)
+            {
+                modal.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 강화 버튼 클릭 (곡괭이 정보 모달에서)
+        /// </summary>
+        private void OnUpgradeButtonClicked()
+        {
+            CloseModal(pickaxeInfoModal);
+
+            if (tabManager != null)
+            {
+                tabManager.ShowTab(GameTab.Upgrade);
+                Debug.Log("MiningTabController: 강화 탭으로 이동");
+            }
+            else
+            {
+                Debug.LogError("MiningTabController: GameTabManager를 찾을 수 없어 탭 전환 실패");
+            }
+        }
+
+        /// <summary>
+        /// 상점 버튼 클릭 (잠긴 슬롯 모달에서)
+        /// </summary>
+        private void OnShopButtonClicked()
+        {
+            CloseModal(lockedSlotModal);
+
+            if (tabManager != null)
+            {
+                tabManager.ShowTab(GameTab.Shop);
+                Debug.Log("MiningTabController: 상점 탭으로 이동");
+            }
+            else
+            {
+                Debug.LogError("MiningTabController: GameTabManager를 찾을 수 없어 탭 전환 실패");
+            }
         }
 
         /// <summary>
