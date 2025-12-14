@@ -434,7 +434,10 @@ namespace InfinitePickaxe.Client.Net
                 Envelope envelope = Envelope.Parser.ParseFrom(messageBytes);
 
 #if UNITY_EDITOR || DEBUG_NET
-                // Debug.Log($"메시지 수신: {envelope.Type} ({messageLength} bytes)");
+                if (envelope.Type != MessageType.MiningUpdate)
+                {
+                    Debug.Log($"메시지 수신: {envelope.Type} ({messageLength} bytes)");
+                }
 #endif
 
                 return envelope;

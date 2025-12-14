@@ -45,7 +45,7 @@ namespace InfinitePickaxe.Client.UI.Game
             isInitialized = true;
 
 #if UNITY_EDITOR || DEBUG_TAB
-            Debug.Log($"{GetType().Name}: 초기화 완료");
+            // Debug.Log($"{GetType().Name}: 초기화 완료");
 #endif
         }
 
@@ -57,7 +57,7 @@ namespace InfinitePickaxe.Client.UI.Game
             isActive = true;
 
 #if UNITY_EDITOR || DEBUG_TAB
-            Debug.Log($"{GetType().Name}: 탭 표시됨");
+            // Debug.Log($"{GetType().Name}: 탭 표시됨");
 #endif
         }
 
@@ -69,7 +69,7 @@ namespace InfinitePickaxe.Client.UI.Game
             isActive = false;
 
 #if UNITY_EDITOR || DEBUG_TAB
-            Debug.Log($"{GetType().Name}: 탭 숨김");
+            // Debug.Log($"{GetType().Name}: 탭 숨김");
 #endif
         }
 

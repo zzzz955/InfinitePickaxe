@@ -70,20 +70,17 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (milestone3Text != null)
             {
-                var status = completedCount >= 3 ? "✅" : "⬜";
-                milestone3Text.text = $"{status} 3개 완료: 오프라인 +1h";
+                milestone3Text.text = $"3개 완료: 오프라인 +1h";
             }
 
             if (milestone5Text != null)
             {
-                var status = completedCount >= 5 ? "✅" : "⬜";
-                milestone5Text.text = $"{status} 5개 완료: 오프라인 +1h";
+                milestone5Text.text = $"5개 완료: 오프라인 +1h";
             }
 
             if (milestone7Text != null)
             {
-                var status = completedCount >= 7 ? "✅" : "⬜";
-                milestone7Text.text = $"{status} 7개 완료: 오프라인 +1h";
+                milestone7Text.text = $"7개 완료: 오프라인 +1h";
             }
         }
 

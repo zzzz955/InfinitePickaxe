@@ -73,7 +73,7 @@ namespace InfinitePickaxe.Client.Net
         public event Action<OfflineRewardResult> OnOfflineRewardResult;
 
         // 하트비트
-        public event Action<Heartbeat> OnHeartbeat;
+        public event Action<HeartbeatAck> OnHeartbeat;
 
         // 에러
         public event Action<ErrorNotification> OnErrorNotification;
@@ -196,8 +196,8 @@ namespace InfinitePickaxe.Client.Net
                         HandleOfflineRewardResult(envelope.OfflineRewardResult);
                         break;
 
-                    case MessageType.Heartbeat:
-                        HandleHeartbeat(envelope.Heartbeat);
+                    case MessageType.HeartbeatAck:
+                        HandleHeartbeat(envelope.HeartbeatAck);
                         break;
 
                     case MessageType.ErrorNotification:
@@ -370,14 +370,14 @@ namespace InfinitePickaxe.Client.Net
             OnOfflineRewardResult?.Invoke(result);
         }
 
-        private void HandleHeartbeat(Heartbeat heartbeat)
+        private void HandleHeartbeat(HeartbeatAck heartbeatAck)
         {
             // 클라이언트가 받는 하트비트는 실제로는 사용하지 않음
             // 서버는 HeartbeatAck를 보내야 함
 #if UNITY_EDITOR || DEBUG_NET
             Debug.Log($"하트비트 수신");
 #endif
-            OnHeartbeat?.Invoke(heartbeat);
+            OnHeartbeat?.Invoke(heartbeatAck);
         }
 
         private void HandleErrorNotification(ErrorNotification error)

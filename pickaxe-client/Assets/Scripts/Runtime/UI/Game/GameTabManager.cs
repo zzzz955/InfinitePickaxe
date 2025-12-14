@@ -153,7 +153,7 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
 #if UNITY_EDITOR || DEBUG_TAB_MANAGER
-            Debug.Log($"GameTabManager: {tab} 탭 활성화");
+            // Debug.Log($"GameTabManager: {tab} 탭 활성화");
 #endif
         }
 

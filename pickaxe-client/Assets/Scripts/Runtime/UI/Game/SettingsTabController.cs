@@ -124,7 +124,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (accountInfoText != null)
             {
                 // TODO: 실제 계정 정보 표시
-                accountInfoText.text = "Google Play 연동: ✅";
+                accountInfoText.text = "Google Play 연동";
             }
         }
 

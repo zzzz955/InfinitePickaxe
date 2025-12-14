@@ -104,7 +104,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (adCountText != null)
             {
-                adCountText.text = $"📺 광고 시청 (오늘 {watchedAdCount}/{maxAdCount})";
+                adCountText.text = $"광고 시청 (오늘 {watchedAdCount}/{maxAdCount})";
             }
 
             // 광고 버튼 활성화 상태 업데이트
