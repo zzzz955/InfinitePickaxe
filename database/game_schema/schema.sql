@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS game_schema.user_game_data (
     total_mining_count    BIGINT NOT NULL DEFAULT 0,
     highest_pickaxe_level INTEGER NOT NULL DEFAULT 0,
     unlocked_slots        BOOLEAN[4] NOT NULL DEFAULT ARRAY[TRUE, FALSE, FALSE, FALSE],
+    current_mineral_id    INTEGER NOT NULL DEFAULT 1 CHECK (current_mineral_id BETWEEN 1 AND 7),
+    current_mineral_hp    BIGINT NOT NULL DEFAULT 100 CHECK (current_mineral_hp >= 0),
     ad_count_today        INTEGER NOT NULL DEFAULT 0,
     ad_reset_date         DATE NOT NULL DEFAULT CURRENT_DATE,
     mission_reroll_free   INTEGER NOT NULL DEFAULT 2,
@@ -41,30 +43,37 @@ CREATE TABLE IF NOT EXISTS game_schema.pickaxe_slots (
 CREATE INDEX IF NOT EXISTS idx_pickaxe_user ON game_schema.pickaxe_slots(user_id);
 CREATE INDEX IF NOT EXISTS idx_pickaxe_level ON game_schema.pickaxe_slots(level DESC);
 
-CREATE TABLE IF NOT EXISTS game_schema.mining_snapshots (
-    snapshot_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id           UUID NOT NULL,
-    mineral_id        INTEGER NOT NULL CHECK (mineral_id BETWEEN 0 AND 6),
-    current_hp        BIGINT NOT NULL CHECK (current_hp >= 0),
-    max_hp            BIGINT NOT NULL,
-    mining_start_time TIMESTAMP NOT NULL,
-    snapshot_time     TIMESTAMP NOT NULL DEFAULT NOW(),
-    CONSTRAINT uq_user_mineral UNIQUE (user_id, mineral_id)
-);
-CREATE INDEX IF NOT EXISTS idx_mining_snapshots_user ON game_schema.mining_snapshots(user_id);
-CREATE INDEX IF NOT EXISTS idx_mining_snapshots_time ON game_schema.mining_snapshots(snapshot_time);
+-- ====================================================================
+-- 로그성 데이터 (Post-MVP: 시계열 DB 또는 로그 시스템으로 이동 예정)
+-- ====================================================================
+-- mining_snapshots: user_game_data.current_mineral_* 로 대체
+-- mining_completions: 추후 TimescaleDB/InfluxDB/CloudWatch Logs 사용
+-- ====================================================================
 
-CREATE TABLE IF NOT EXISTS game_schema.mining_completions (
-    completion_id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id                  UUID NOT NULL,
-    mineral_id               INTEGER NOT NULL,
-    gold_earned              BIGINT NOT NULL CHECK (gold_earned >= 0),
-    mining_duration_seconds  INTEGER NOT NULL,
-    completed_at             TIMESTAMP NOT NULL DEFAULT NOW()
-);
-CREATE INDEX IF NOT EXISTS idx_mining_completions_user ON game_schema.mining_completions(user_id);
-CREATE INDEX IF NOT EXISTS idx_mining_completions_time ON game_schema.mining_completions(completed_at DESC);
-CREATE INDEX IF NOT EXISTS idx_mining_completions_mineral ON game_schema.mining_completions(mineral_id);
+-- CREATE TABLE IF NOT EXISTS game_schema.mining_snapshots (
+--     snapshot_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--     user_id           UUID NOT NULL,
+--     mineral_id        INTEGER NOT NULL CHECK (mineral_id BETWEEN 0 AND 6),
+--     current_hp        BIGINT NOT NULL CHECK (current_hp >= 0),
+--     max_hp            BIGINT NOT NULL,
+--     mining_start_time TIMESTAMP NOT NULL,
+--     snapshot_time     TIMESTAMP NOT NULL DEFAULT NOW(),
+--     CONSTRAINT uq_user_mineral UNIQUE (user_id, mineral_id)
+-- );
+-- CREATE INDEX IF NOT EXISTS idx_mining_snapshots_user ON game_schema.mining_snapshots(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_mining_snapshots_time ON game_schema.mining_snapshots(snapshot_time);
+
+-- CREATE TABLE IF NOT EXISTS game_schema.mining_completions (
+--     completion_id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--     user_id                  UUID NOT NULL,
+--     mineral_id               INTEGER NOT NULL,
+--     gold_earned              BIGINT NOT NULL CHECK (gold_earned >= 0),
+--     mining_duration_seconds  INTEGER NOT NULL,
+--     completed_at             TIMESTAMP NOT NULL DEFAULT NOW()
+-- );
+-- CREATE INDEX IF NOT EXISTS idx_mining_completions_user ON game_schema.mining_completions(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_mining_completions_time ON game_schema.mining_completions(completed_at DESC);
+-- CREATE INDEX IF NOT EXISTS idx_mining_completions_mineral ON game_schema.mining_completions(mineral_id);
 
 CREATE TABLE IF NOT EXISTS game_schema.daily_missions (
     mission_id      UUID PRIMARY KEY DEFAULT gen_random_uuid(),

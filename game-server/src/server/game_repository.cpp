@@ -38,7 +38,8 @@ UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
         pqxx::work tx(*conn);
 
         auto row = tx.exec_params1(
-            "SELECT gold, crystal, unlocked_slots, ad_count_today, "
+            "SELECT gold, crystal, unlocked_slots, current_mineral_id, current_mineral_hp, "
+            "       ad_count_today, "
             "       (2 - mission_reroll_free) + (3 - mission_reroll_ad) as mission_rerolls_used, "
             "       max_offline_hours "
             "FROM game_schema.user_game_data WHERE user_id = $1",
@@ -63,9 +64,11 @@ UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
             data.unlocked_slots.push_back(false);
         }
 
-        data.ad_count_today = row[3].as<uint32_t>();
-        data.mission_rerolls_used = row[4].as<uint32_t>();
-        data.max_offline_hours = row[5].as<uint32_t>();
+        data.current_mineral_id = row[3].as<uint32_t>();
+        data.current_mineral_hp = row[4].as<uint64_t>();
+        data.ad_count_today = row[5].as<uint32_t>();
+        data.mission_rerolls_used = row[6].as<uint32_t>();
+        data.max_offline_hours = row[7].as<uint32_t>();
 
         tx.commit();
     } catch (const std::exception& ex) {
@@ -74,6 +77,8 @@ UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
         data.gold = 0;
         data.crystal = 0;
         data.unlocked_slots = {true, false, false, false};
+        data.current_mineral_id = 1;
+        data.current_mineral_hp = 100;
         data.ad_count_today = 0;
         data.mission_rerolls_used = 0;
         data.max_offline_hours = 3;

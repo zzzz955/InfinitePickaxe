@@ -14,6 +14,8 @@ struct UserGameData {
     uint64_t gold;
     uint32_t crystal;
     std::vector<bool> unlocked_slots;  // 4개
+    uint32_t current_mineral_id;       // 현재 채굴 중인 광물 ID
+    uint64_t current_mineral_hp;       // 현재 광물 HP
     uint32_t ad_count_today;
     uint32_t mission_rerolls_used;  // mission_reroll_free + mission_reroll_ad의 사용량
     uint32_t max_offline_hours;

@@ -10,8 +10,10 @@ public:
     MiningService(MiningRepository& repo, SlotRepository& slot_repo, const MetadataLoader& meta)
         : repo_(repo), slot_repo_(slot_repo), meta_(meta) {}
 
-    infinitepickaxe::MiningUpdate handle_start(const std::string& user_id, uint32_t mineral_id) const;
-    infinitepickaxe::MiningUpdate handle_sync(const std::string& user_id, uint32_t mineral_id, uint64_t client_hp) const;
+    // 서버 권위형 아키텍처로 변경되어 더 이상 사용하지 않음
+    // infinitepickaxe::MiningUpdate handle_start(const std::string& user_id, uint32_t mineral_id) const;
+    // infinitepickaxe::MiningUpdate handle_sync(const std::string& user_id, uint32_t mineral_id, uint64_t client_hp) const;
+
     infinitepickaxe::MiningComplete handle_complete(const std::string& user_id, uint32_t mineral_id) const;
 
 private:

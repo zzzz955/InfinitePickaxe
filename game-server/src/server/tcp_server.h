@@ -26,13 +26,16 @@ public:
               UpgradeService& upgrade_service,
               MissionService& mission_service,
               SlotService& slot_service,
-              OfflineService& offline_service);
+              OfflineService& offline_service,
+              const class MetadataLoader& metadata);
     void start();
 
 private:
     void do_accept();
+    void start_mining_tick();  // 40ms 채굴 틱 시작
 
     boost::asio::ip::tcp::acceptor acceptor_;
+    boost::asio::steady_timer mining_tick_timer_;  // 40ms 타이머
     std::shared_ptr<SessionRegistry> registry_;
     std::shared_ptr<ConnectionRateLimiter> rate_limiter_;
     AuthService& auth_service_;
@@ -42,4 +45,5 @@ private:
     MissionService& mission_service_;
     SlotService& slot_service_;
     OfflineService& offline_service_;
+    const class MetadataLoader& metadata_;
 };

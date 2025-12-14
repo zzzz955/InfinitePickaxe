@@ -1,5 +1,6 @@
 #include "session_registry.h"
 #include "session.h"
+#include <vector>
 
 std::shared_ptr<Session> SessionRegistry::replace_session(const std::string& user_id,
                                                           const std::shared_ptr<Session>& session) {
@@ -22,4 +23,18 @@ void SessionRegistry::remove_if_match(const std::string& user_id, const Session*
             sessions_.erase(it);
         }
     }
+}
+
+std::vector<std::shared_ptr<Session>> SessionRegistry::get_all_sessions() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::vector<std::shared_ptr<Session>> result;
+
+    for (auto& pair : sessions_) {
+        auto session = pair.second.lock();
+        if (session) {
+            result.push_back(session);
+        }
+    }
+
+    return result;
 }

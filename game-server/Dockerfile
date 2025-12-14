@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # 소스 복사: game-server 코드, proto 스키마, 메타데이터
+# 주의: 이 Dockerfile은 프로젝트 루트에서 실행되어야 합니다
+# docker build -f game-server/Dockerfile .
 COPY game-server/ .
 COPY protocol/ ./protocol
 COPY metadata/ ./metadata

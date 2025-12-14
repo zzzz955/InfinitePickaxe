@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <mutex>
+#include <vector>
 
 class Session;
 
@@ -15,6 +16,9 @@ public:
 
     // 세션 종료 시 등록 해제 (매칭되는 경우에만)
     void remove_if_match(const std::string& user_id, const Session* session);
+
+    // 모든 활성 세션 가져오기 (채굴 틱 업데이트용)
+    std::vector<std::shared_ptr<Session>> get_all_sessions();
 
 private:
     std::unordered_map<std::string, std::weak_ptr<Session>> sessions_;

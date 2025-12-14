@@ -23,11 +23,11 @@ enum MessageType {
   CHANGE_MINERAL_REQUEST = 22;
   CHANGE_MINERAL_RESPONSE = 23;
 
-  // 채굴
-  MINING_START = 30;
-  MINING_SYNC = 31;
-  MINING_UPDATE = 32;
-  MINING_COMPLETE = 33;
+  // 채굴 (서버 주도 시뮬레이션)
+  // MINING_START = 30;  // 제거: 서버가 자동 시작
+  // MINING_SYNC = 31;   // 제거: 서버가 시뮬레이션
+  MINING_UPDATE = 32;      // 서버 → 클라이언트 (40ms마다)
+  MINING_COMPLETE = 33;    // 서버 → 클라이언트 (즉시)
 
   // 슬롯
   ALL_SLOTS_REQUEST = 40;
@@ -83,8 +83,8 @@ message Envelope {
     ChangeMineralRequest change_mineral_request = 32;
     ChangeMineralResponse change_mineral_response = 33;
 
-    MiningStart mining_start = 40;
-    MiningSync mining_sync = 41;
+    // MiningStart mining_start = 40;  // 제거: 서버 주도 시뮬레이션
+    // MiningSync mining_sync = 41;    // 제거: 서버 주도 시뮬레이션
     MiningUpdate mining_update = 42;
     MiningComplete mining_complete = 43;
 
@@ -202,23 +202,22 @@ message ChangeMineralResponse {
 
 // -------------- 채굴 --------------
 
-message MiningStart {
-  uint32 mineral_id = 1;        // 채굴할 광물 (모든 슬롯이 동일 광물 채굴)
+// 서버 주도 시뮬레이션: 클라이언트는 MiningUpdate만 수신
+// MiningStart, MiningSync는 제거됨 (서버가 자동으로 시뮬레이션)
+
+// 개별 곡괭이 공격 이벤트 (40ms 틱 내 발생한 공격)
+message PickaxeAttack {
+  uint32 slot_index = 1;        // 0-3 (어떤 슬롯이 공격했는지)
+  uint64 damage = 2;            // 이 공격으로 입힌 데미지
 }
 
-message MiningSync {
-  uint32 mineral_id = 1;
-  uint64 client_hp = 2;
-  uint64 client_timestamp = 3;
-}
-
+// 서버 → 클라이언트: 40ms마다 전송되는 채굴 상태 업데이트
 message MiningUpdate {
   uint32 mineral_id = 1;
   uint64 current_hp = 2;
   uint64 max_hp = 3;
-  uint64 damage_dealt = 4;      // 이번 틱의 총 데미지
-  uint64 total_dps = 5;         // 모든 슬롯의 DPS 합계
-  uint64 server_timestamp = 6;
+  repeated PickaxeAttack attacks = 4;  // 이번 틱(40ms)에 발생한 공격들
+  uint64 server_timestamp = 5;
 }
 
 message MiningComplete {

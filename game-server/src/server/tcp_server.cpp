@@ -11,8 +11,10 @@ TcpServer::TcpServer(boost::asio::io_context& io,
                      UpgradeService& upgrade_service,
                      MissionService& mission_service,
                      SlotService& slot_service,
-                     OfflineService& offline_service)
+                     OfflineService& offline_service,
+                     const MetadataLoader& metadata)
     : acceptor_(io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
+      mining_tick_timer_(io),
       registry_(std::make_shared<SessionRegistry>()),
       auth_service_(auth_service),
       game_repo_(game_repo),
@@ -20,12 +22,14 @@ TcpServer::TcpServer(boost::asio::io_context& io,
       upgrade_service_(upgrade_service),
       mission_service_(mission_service),
       slot_service_(slot_service),
-      offline_service_(offline_service) {
+      offline_service_(offline_service),
+      metadata_(metadata) {
     rate_limiter_ = std::make_shared<ConnectionRateLimiter>(10, std::chrono::seconds(10));
 }
 
 void TcpServer::start() {
     do_accept();
+    start_mining_tick();  // 40ms 채굴 틱 시작
 }
 
 void TcpServer::do_accept() {
@@ -45,6 +49,14 @@ void TcpServer::do_accept() {
                     socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored);
                     socket.close(ignored);
                 } else {
+                    // TCP_NODELAY 설정 (Nagle 알고리즘 비활성화 - 40ms 틱 즉시 전송)
+                    boost::asio::ip::tcp::no_delay option(true);
+                    boost::system::error_code ec_nodelay;
+                    socket.set_option(option, ec_nodelay);
+                    if (ec_nodelay) {
+                        std::cerr << "Failed to set TCP_NODELAY: " << ec_nodelay.message() << std::endl;
+                    }
+
                     std::cout << "Accepted connection from " << socket.remote_endpoint() << std::endl;
                     auto session = std::make_shared<Session>(std::move(socket),
                                                              auth_service_,
@@ -54,10 +66,29 @@ void TcpServer::do_accept() {
                                                              mission_service_,
                                                              slot_service_,
                                                              offline_service_,
-                                                             registry_);
+                                                             registry_,
+                                                             metadata_);
                     session->start();
                 }
             }
             do_accept();
         });
+}
+
+void TcpServer::start_mining_tick() {
+    // 40ms 후에 실행되도록 타이머 설정
+    mining_tick_timer_.expires_after(std::chrono::milliseconds(40));
+
+    mining_tick_timer_.async_wait([this](boost::system::error_code ec) {
+        if (!ec) {
+            // 모든 활성 세션의 채굴 시뮬레이션 업데이트
+            auto sessions = registry_->get_all_sessions();
+            for (auto& session : sessions) {
+                session->update_mining_tick(40.0f);  // 40ms
+            }
+
+            // 다음 틱 스케줄링 (재귀)
+            start_mining_tick();
+        }
+    });
 }
