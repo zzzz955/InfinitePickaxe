@@ -6,7 +6,9 @@
 struct PickaxeLevel {
     uint32_t level;
     uint32_t tier;
-    uint64_t dps;
+    uint64_t attack_power;   // 공격력
+    double attack_speed;     // 공격속도 (1.0 = 1초당 1회)
+    uint64_t dps;            // DPS = attack_power * attack_speed (검증용)
     uint64_t cost;
 };
 

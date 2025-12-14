@@ -24,6 +24,8 @@ bool MetadataLoader::load(const std::string& base_path) {
                 } else {
                     pl.tier = e.value("tier", 1);
                 }
+                pl.attack_power = e["attack_power"].get<uint64_t>();
+                pl.attack_speed = e["attack_speed"].get<double>();
                 pl.dps = e["dps"].get<uint64_t>();
                 pl.cost = e["cost"].get<uint64_t>();
                 pickaxe_levels_[pl.level] = pl;
