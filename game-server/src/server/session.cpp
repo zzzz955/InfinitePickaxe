@@ -53,14 +53,13 @@ void Session::start() {
 }
 
 void Session::notify_duplicate_and_close() {
-    infinitepickaxe::Error err;
+    infinitepickaxe::ErrorNotification err;
     err.set_error_code("1006");
-    err.set_error_message("DUPLICATE_SESSION");
+    err.set_message("DUPLICATE_SESSION");
 
     infinitepickaxe::Envelope env;
-    env.set_msg_type("ERROR");
-    env.set_version(1);
-    err.SerializeToString(env.mutable_payload());
+    env.set_type(infinitepickaxe::ERROR_NOTIFICATION);
+    *env.mutable_error_notification() = err;
 
     std::string body;
     env.SerializeToString(&body);
@@ -121,56 +120,25 @@ bool Session::is_expired() const {
 }
 
 void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
-    // 시퀀스 검증 (0이면 검증 생략) - 불일치 시 카운트 증가, 3회면 종료
-    if (env.seq() != 0) {
-        if (env.seq() != expected_seq_) {
-            send_error("2002", "INVALID_SEQUENCE expected=" + std::to_string(expected_seq_) + " got=" + std::to_string(env.seq()));
-            violation_count_++;
-            if (violation_count_ >= 3) {
-                close();
-                return;
-            }
-        }
-        expected_seq_ = env.seq() + 1;
-    }
-
-    // 타임스탬프 검증 (0이면 검증 생략) - 허용 범위 초과 시 카운트 증가, 3회면 종료
-    if (env.timestamp() != 0) {
-        uint64_t now = static_cast<uint64_t>(std::time(nullptr));
-        uint64_t ts = env.timestamp();
-        uint64_t diff = (now > ts) ? (now - ts) : (ts - now);
-        const uint64_t MAX_DIFF = 60;
-        if (diff > MAX_DIFF) {
-            send_error("2003", "TIMESTAMP_MISMATCH diff=" + std::to_string(diff));
-            violation_count_++;
-            if (violation_count_ >= 3) {
-                close();
-                return;
-            }
-            return;
-        }
-    }
-
     if (is_expired()) {
         send_error("1003", "session expired");
         close();
         return;
     }
-    const std::string& type = env.msg_type();
 
-    if (type == "HANDSHAKE") {
+    if (env.type() == infinitepickaxe::HANDSHAKE) {
         handle_handshake(env);
         return;
     }
 
     if (!authenticated_) {
-        send_error("1001", "handshake required"); // AUTH_FAILED
+        send_error("1001", "handshake required");
         close();
         return;
     }
 
     if (!router_.dispatch(env)) {
-        send_error("2001", type); // INVALID_PACKET / UNKNOWN_TYPE
+        send_error("2001", "UNKNOWN_MESSAGE_TYPE");
     }
 
     // 다음 프레임 대기
@@ -178,32 +146,45 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
 }
 
 void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
-    infinitepickaxe::HandshakeReq req;
-    if (!req.ParseFromString(env.payload())) {
-        send_error("2004", "handshake parse failed");
+    if (!env.has_handshake()) {
+        send_error("2004", "handshake message missing");
         return;
     }
+    const auto& req = env.handshake();
     VerifyResult vr = auth_service_.verify_and_cache(req.jwt(), client_ip_);
-    infinitepickaxe::HandshakeRes res;
+
+    infinitepickaxe::HandshakeResponse res;
     if (!vr.valid || vr.is_banned) {
-        res.set_ok(false);
-        res.set_error(vr.is_banned ? "1001" : "1001"); // AUTH_FAILED/BANNED
-        send_envelope("HANDSHAKE_RES", res);
+        res.set_success(false);
+        res.set_message(vr.is_banned ? "BANNED" : "AUTH_FAILED");
+
+        infinitepickaxe::Envelope response_env;
+        response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);
+        *response_env.mutable_handshake_result() = res;
+        send_envelope(response_env);
         close();
         return;
     }
     auto now = std::chrono::system_clock::now();
     if (vr.expires_at.time_since_epoch().count() != 0 && now >= vr.expires_at) {
-        res.set_ok(false);
-        res.set_error("1003");
-        send_envelope("HANDSHAKE_RES", res);
+        res.set_success(false);
+        res.set_message("TOKEN_EXPIRED");
+
+        infinitepickaxe::Envelope response_env;
+        response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);
+        *response_env.mutable_handshake_result() = res;
+        send_envelope(response_env);
         close();
         return;
     }
     if (!game_repo_.ensure_user_initialized(vr.user_id)) {
-        res.set_ok(false);
-        res.set_error("5001");
-        send_envelope("HANDSHAKE_RES", res);
+        res.set_success(false);
+        res.set_message("USER_INIT_FAILED");
+
+        infinitepickaxe::Envelope response_env;
+        response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);
+        *response_env.mutable_handshake_result() = res;
+        send_envelope(response_env);
         close();
         return;
     }
@@ -221,107 +202,150 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
         }
     }
 
-    res.set_ok(true);
-    send_envelope("HANDSHAKE_RES", res);
+    res.set_success(true);
+    res.set_message("OK");
+    // TODO: UserDataSnapshot 추가 필요
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);
+    *response_env.mutable_handshake_result() = res;
+    send_envelope(response_env);
     read_length();
 }
 
 void Session::handle_heartbeat(const infinitepickaxe::Envelope& env) {
-    infinitepickaxe::Heartbeat hb;
-    hb.ParseFromString(env.payload());
+    if (!env.has_heartbeat()) {
+        send_error("2004", "heartbeat message missing");
+        return;
+    }
+
     infinitepickaxe::HeartbeatAck ack;
     ack.set_server_time_ms(
         static_cast<uint64_t>(
             std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now().time_since_epoch()).count()));
-    send_envelope("HEARTBEAT_ACK", ack);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::HEARTBEAT_ACK);
+    *response_env.mutable_heartbeat_ack() = ack;
+    send_envelope(response_env);
 }
 
-void Session::handle_mining(const infinitepickaxe::Envelope& env, const std::string& type) {
-    if (type == "MINE_START") {
-        infinitepickaxe::MiningStart req;
-        if (!req.ParseFromString(env.payload())) {
-            send_error("2004", "MINE_START parse failed");
+void Session::handle_mining(const infinitepickaxe::Envelope& env) {
+    infinitepickaxe::Envelope response_env;
+
+    if (env.type() == infinitepickaxe::MINING_START) {
+        if (!env.has_mining_start()) {
+            send_error("2004", "mining_start message missing");
             return;
         }
-        auto upd = mining_service_.handle_start(req.mineral_id());
-        send_envelope("MINE_UPDATE", upd);
-    } else if (type == "MINE_SYNC") {
-        infinitepickaxe::MiningSync req;
-        if (!req.ParseFromString(env.payload())) {
-            send_error("2004", "MINE_SYNC parse failed");
+        const auto& req = env.mining_start();
+        auto upd = mining_service_.handle_start(user_id_, req.mineral_id());
+
+        response_env.set_type(infinitepickaxe::MINING_UPDATE);
+        *response_env.mutable_mining_update() = upd;
+        send_envelope(response_env);
+
+    } else if (env.type() == infinitepickaxe::MINING_SYNC) {
+        if (!env.has_mining_sync()) {
+            send_error("2004", "mining_sync message missing");
             return;
         }
-        auto upd = mining_service_.handle_sync(req.mineral_id(), req.client_hp());
-        send_envelope("MINE_UPDATE", upd);
-    } else if (type == "MINE_COMPLETE") {
-        infinitepickaxe::MiningComplete comp;
-        if (!comp.ParseFromString(env.payload())) {
-            send_error("2004", "MINE_COMPLETE parse failed");
+        const auto& req = env.mining_sync();
+        auto upd = mining_service_.handle_sync(user_id_, req.mineral_id(), req.client_hp());
+
+        response_env.set_type(infinitepickaxe::MINING_UPDATE);
+        *response_env.mutable_mining_update() = upd;
+        send_envelope(response_env);
+
+    } else if (env.type() == infinitepickaxe::MINING_COMPLETE) {
+        if (!env.has_mining_complete()) {
+            send_error("2004", "mining_complete message missing");
             return;
         }
-        auto res = mining_service_.handle_complete(user_id_, comp.mineral_id());
-        send_envelope("MINE_COMPLETE", res);
+        const auto& req = env.mining_complete();
+        auto res = mining_service_.handle_complete(user_id_, req.mineral_id());
+
+        response_env.set_type(infinitepickaxe::MINING_COMPLETE);
+        *response_env.mutable_mining_complete() = res;
+        send_envelope(response_env);
+
     } else {
-        infinitepickaxe::Error err;
-        err.set_error_code("NOT_IMPLEMENTED");
-        err.set_error_message("mining route not implemented");
-        send_envelope("ERROR", err);
+        send_error("NOT_IMPLEMENTED", "unknown mining message type");
     }
 }
 
 void Session::handle_upgrade(const infinitepickaxe::Envelope& env) {
-    infinitepickaxe::UpgradePickaxe req;
-    if (!req.ParseFromString(env.payload())) {
-        send_error("2004", "UPGRADE_PICKAXE parse failed");
+    if (!env.has_upgrade_request()) {
+        send_error("2004", "upgrade_request message missing");
         return;
     }
-    auto res = upgrade_service_.handle_upgrade(user_id_, req.slot_index(), req.target_level());
-    send_envelope("UPGRADE_RESULT", res);
+    const auto& req = env.upgrade_request();
+    auto res = upgrade_service_.handle_upgrade(user_id_, req.slot_index(), 0);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::UPGRADE_RESULT);
+    *response_env.mutable_upgrade_result() = res;
+    send_envelope(response_env);
 }
 
-void Session::handle_mission(const infinitepickaxe::Envelope& env, const std::string& type) {
-    auto upd = mission_service_.build_stub_update();
-    send_envelope("MISSION_UPDATE", upd);
+void Session::handle_mission(const infinitepickaxe::Envelope& env) {
+    auto res = mission_service_.build_stub_update();
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::DAILY_MISSIONS_RESPONSE);
+    *response_env.mutable_daily_missions_response() = res;
+    send_envelope(response_env);
 }
 
 void Session::handle_slot_unlock(const infinitepickaxe::Envelope& env) {
-    infinitepickaxe::SlotUnlock req;
-    if (!req.ParseFromString(env.payload())) {
-        send_error("2004", "SLOT_UNLOCK parse failed");
+    if (!env.has_slot_unlock()) {
+        send_error("2004", "slot_unlock message missing");
         return;
     }
-    auto res = slot_service_.handle_unlock(req.slot_index());
-    send_envelope("SLOT_UNLOCK_RESULT", res);
+    const auto& req = env.slot_unlock();
+    auto res = slot_service_.handle_unlock(user_id_, req.slot_index());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::SLOT_UNLOCK_RESULT);
+    *response_env.mutable_slot_unlock_result() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_all_slots(const infinitepickaxe::Envelope& env) {
+    auto res = slot_service_.handle_all_slots(user_id_);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::ALL_SLOTS_RESPONSE);
+    *response_env.mutable_all_slots_response() = res;
+    send_envelope(response_env);
 }
 
 void Session::handle_offline_reward(const infinitepickaxe::Envelope& env) {
-    infinitepickaxe::OfflineRewardRequest req;
-    if (!req.ParseFromString(env.payload())) {
-        send_error("2004", "OFFLINE_REWARD_REQUEST parse failed");
+    if (!env.has_offline_reward_request()) {
+        send_error("2004", "offline_reward_request message missing");
         return;
     }
     auto res = offline_service_.handle_request();
-    send_envelope("OFFLINE_REWARD", res);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::OFFLINE_REWARD_RESULT);
+    *response_env.mutable_offline_reward_result() = res;
+    send_envelope(response_env);
 }
 
 void Session::init_router() {
-    router_.register_handler("HEARTBEAT", [this](const infinitepickaxe::Envelope& e) { handle_heartbeat(e); });
-    router_.register_handler("MINE_START", [this](const infinitepickaxe::Envelope& e) { handle_mining(e, "MINE_START"); });
-    router_.register_handler("MINE_SYNC", [this](const infinitepickaxe::Envelope& e) { handle_mining(e, "MINE_SYNC"); });
-    router_.register_handler("UPGRADE_PICKAXE", [this](const infinitepickaxe::Envelope& e) { handle_upgrade(e); });
-    router_.register_handler("MISSION_CLAIM", [this](const infinitepickaxe::Envelope& e) { handle_mission(e, "MISSION_CLAIM"); });
-    router_.register_handler("MISSION_REROLL", [this](const infinitepickaxe::Envelope& e) { handle_mission(e, "MISSION_REROLL"); });
-    router_.register_handler("SLOT_UNLOCK", [this](const infinitepickaxe::Envelope& e) { handle_slot_unlock(e); });
-    router_.register_handler("OFFLINE_REWARD_REQUEST", [this](const infinitepickaxe::Envelope& e) { handle_offline_reward(e); });
+    router_.register_handler(infinitepickaxe::HEARTBEAT, [this](const infinitepickaxe::Envelope& e) { handle_heartbeat(e); });
+    router_.register_handler(infinitepickaxe::MINING_START, [this](const infinitepickaxe::Envelope& e) { handle_mining(e); });
+    router_.register_handler(infinitepickaxe::MINING_SYNC, [this](const infinitepickaxe::Envelope& e) { handle_mining(e); });
+    router_.register_handler(infinitepickaxe::UPGRADE_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_upgrade(e); });
+    router_.register_handler(infinitepickaxe::DAILY_MISSIONS_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_mission(e); });
+    router_.register_handler(infinitepickaxe::SLOT_UNLOCK, [this](const infinitepickaxe::Envelope& e) { handle_slot_unlock(e); });
+    router_.register_handler(infinitepickaxe::ALL_SLOTS_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_all_slots(e); });
+    router_.register_handler(infinitepickaxe::OFFLINE_REWARD_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_offline_reward(e); });
 }
 
-void Session::send_envelope(const std::string& msg_type, const google::protobuf::Message& msg) {
-    infinitepickaxe::Envelope env;
-    env.set_msg_type(msg_type);
-    env.set_version(1);
-    msg.SerializeToString(env.mutable_payload());
-
+void Session::send_envelope(const infinitepickaxe::Envelope& env) {
     std::string body;
     env.SerializeToString(&body);
     auto len = static_cast<uint32_t>(body.size());
@@ -342,10 +366,14 @@ void Session::send_envelope(const std::string& msg_type, const google::protobuf:
 }
 
 void Session::send_error(const std::string& code, const std::string& message) {
-    infinitepickaxe::Error err;
+    infinitepickaxe::ErrorNotification err;
     err.set_error_code(code);
-    err.set_error_message(message);
-    send_envelope("ERROR", err);
+    err.set_message(message);
+
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::ERROR_NOTIFICATION);
+    *env.mutable_error_notification() = err;
+    send_envelope(env);
 }
 
 void Session::close() {

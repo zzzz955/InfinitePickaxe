@@ -1,23 +1,20 @@
 #include "mission_service.h"
 #include <ctime>
 
-infinitepickaxe::MissionUpdate MissionService::build_stub_update() const {
-    infinitepickaxe::MissionUpdate upd;
+infinitepickaxe::DailyMissionsResponse MissionService::build_stub_update() const {
+    infinitepickaxe::DailyMissionsResponse res;
     for (auto& m : meta_.missions()) {
-        auto* entry = upd.add_missions();
-        entry->set_index(m.index);
+        auto* entry = res.add_missions();
+        entry->set_mission_id(m.index);
         entry->set_type(m.type);
         entry->set_description(m.description);
-        entry->set_target(m.target);
-        entry->set_current(0);
-        entry->set_reward_crystal(m.reward_crystal);
-        entry->set_completed(false);
-        entry->set_claimed(false);
+        entry->set_required_progress(m.target);
+        entry->set_current_progress(0);
+        entry->set_gold_reward(m.reward_crystal);
+        entry->set_is_completed(false);
+        entry->set_is_claimed(false);
     }
-    upd.set_milestone_completed_3(false);
-    upd.set_milestone_completed_5(false);
-    upd.set_milestone_completed_7(false);
-    upd.set_offline_bonus_hours(0);
-    upd.set_reset_time(static_cast<uint64_t>(std::time(nullptr)) + 86400);
-    return upd;
+    res.set_ads_watched_today(0);
+    res.set_mission_rerolls_used(0);
+    return res;
 }

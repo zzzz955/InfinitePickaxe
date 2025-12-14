@@ -7,7 +7,7 @@ class OfflineService {
 public:
     OfflineService(OfflineRepository& repo, const MetadataLoader& meta)
         : repo_(repo), meta_(meta) {}
-    infinitepickaxe::OfflineReward handle_request() const;
+    infinitepickaxe::OfflineRewardResult handle_request() const;
 private:
     OfflineRepository& repo_;
     const MetadataLoader& meta_;

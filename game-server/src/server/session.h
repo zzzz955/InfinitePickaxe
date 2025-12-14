@@ -37,13 +37,14 @@ private:
     void dispatch_envelope(const infinitepickaxe::Envelope& env);
     void handle_handshake(const infinitepickaxe::Envelope& env);
     void handle_heartbeat(const infinitepickaxe::Envelope& env);
-    void handle_mining(const infinitepickaxe::Envelope& env, const std::string& type);
+    void handle_mining(const infinitepickaxe::Envelope& env);
     void handle_upgrade(const infinitepickaxe::Envelope& env);
-    void handle_mission(const infinitepickaxe::Envelope& env, const std::string& type);
+    void handle_mission(const infinitepickaxe::Envelope& env);
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
+    void handle_all_slots(const infinitepickaxe::Envelope& env);
     void handle_offline_reward(const infinitepickaxe::Envelope& env);
     void init_router();
-    void send_envelope(const std::string& msg_type, const google::protobuf::Message& msg);
+    void send_envelope(const infinitepickaxe::Envelope& env);
     void send_error(const std::string& code, const std::string& message);
     bool is_expired() const;
     void start_auth_timer();

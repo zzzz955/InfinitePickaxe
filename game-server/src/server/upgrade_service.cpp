@@ -14,14 +14,20 @@ infinitepickaxe::UpgradeResult UpgradeService::handle_upgrade(const std::string&
         return res;
     }
 
+    uint64_t attack_power = pl->attack_power;
+    uint32_t attack_speed_x100 = static_cast<uint32_t>(pl->attack_speed * 100.0);
     uint64_t dps = pl->dps;
     uint64_t cost = pl->cost;
 
     const auto& rules = meta_.upgrade_rules();
-    auto repo_result = repo_.try_upgrade_with_probability(user_id, slot_index, target_level, dps, cost, rules);
+    auto repo_result = repo_.try_upgrade_with_probability(
+        user_id, slot_index, target_level,
+        attack_power, attack_speed_x100, dps, cost, rules);
 
     res.set_success(repo_result.success);
     res.set_new_level(repo_result.final_level);
+    res.set_new_attack_power(repo_result.final_attack_power);
+    res.set_new_attack_speed_x100(repo_result.final_attack_speed_x100);
     res.set_new_dps(repo_result.final_dps);
     res.set_gold_spent(repo_result.insufficient_gold ? 0 : cost);
     res.set_remaining_gold(repo_result.remaining_gold);
