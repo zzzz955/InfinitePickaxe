@@ -132,8 +132,8 @@ GameObject:
   m_Component:
   - component: {fileID: 100001}
   - component: {fileID: 100002}
-  - component: {fileID: 100003}
   - component: {fileID: 100004}
+  - component: {fileID: 100005}
   m_Layer: 5
   m_Name: UI Canvas
   m_TagString: Untagged
@@ -184,18 +184,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &100003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f0b6232c0b144a09b129d8a8a2811b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &100004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,6 +201,22 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &100005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02dd20da0999e51469fe3700edc2419a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loginSceneName: Title
+  handshakeTimeoutSeconds: 10
+  loadingPanel: {fileID: 0}
+  gameUIRoot: {fileID: 0}
 --- !u!1 &100010
 GameObject:
   m_ObjectHideFlags: 0

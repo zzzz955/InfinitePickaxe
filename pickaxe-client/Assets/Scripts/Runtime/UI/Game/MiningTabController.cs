@@ -468,16 +468,27 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
-        /// 채굴 진행 업데이트 처리
+        /// 채굴 진행 업데이트 처리 (서버 40ms 틱)
         /// </summary>
         private void HandleMiningUpdate(MiningUpdate update)
         {
             currentHP = update.CurrentHp;
             maxHP = update.MaxHp;
-            currentDPS = update.TotalDps;
+
+            // DPS는 AllSlotsResponse에서 받은 값 유지 (TotalDps 필드 제거됨)
+            // currentDPS는 슬롯 변경 시에만 업데이트됨
+
+            // 각 곡괭이 공격 처리 (애니메이션 트리거)
+            if (update.Attacks != null && update.Attacks.Count > 0)
+            {
+                foreach (var attack in update.Attacks)
+                {
+                    TriggerPickaxeAttackAnimation(attack.SlotIndex, attack.Damage);
+                }
+            }
 
             UpdateHPBar();
-            UpdateDPS();
+            // UpdateDPS()는 호출하지 않음 (DPS는 슬롯 정보 변경 시에만 업데이트)
         }
 
         /// <summary>
@@ -489,6 +500,46 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // 다음 광물 자동 시작 (서버에서 MiningUpdate가 올 것임)
             // UI는 자동으로 업데이트됨
+        }
+
+        /// <summary>
+        /// 곡괭이 공격 애니메이션 트리거
+        /// </summary>
+        /// <param name="slotIndex">슬롯 인덱스 (0~3)</param>
+        /// <param name="damage">공격 데미지</param>
+        private void TriggerPickaxeAttackAnimation(uint slotIndex, ulong damage)
+        {
+            // TODO: 슬롯별 곡괭이 공격 애니메이션 재생
+            // 예시:
+            // - 곡괭이 슬롯 버튼에 Animator 컴포넌트 추가
+            // - Attack 트리거 파라미터 설정
+            // - pickaxeSlotAnimators[slotIndex]?.SetTrigger("Attack");
+            //
+            // 또는:
+            // - 파티클 이펙트 재생
+            // - 데미지 텍스트 표시 (Floating Damage Number)
+            // - 사운드 재생
+
+#if UNITY_EDITOR || DEBUG_MINING
+            Debug.Log($"곡괭이 공격: 슬롯 {slotIndex}, 데미지 {damage}");
+#endif
+
+            // 임시: 슬롯 버튼 찾아서 간단한 시각 효과
+            // (실제 구현 시 아래 코드 대신 애니메이션 사용)
+            Button slotButton = slotIndex switch
+            {
+                0 => pickaxeSlot1Button,
+                1 => pickaxeSlot2Button,
+                2 => pickaxeSlot3Button,
+                3 => pickaxeSlot4Button,
+                _ => null
+            };
+
+            if (slotButton != null)
+            {
+                // TODO: 실제 애니메이션 재생
+                // 예: slotButton.GetComponent<Animator>()?.SetTrigger("Attack");
+            }
         }
 
         /// <summary>

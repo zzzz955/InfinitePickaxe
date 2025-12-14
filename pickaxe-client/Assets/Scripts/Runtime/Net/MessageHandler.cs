@@ -234,7 +234,16 @@ namespace InfinitePickaxe.Client.Net
         private void HandleMiningUpdate(MiningUpdate update)
         {
 #if UNITY_EDITOR || DEBUG_NET
-            Debug.Log($"채굴 업데이트: 광물 #{update.MineralId}, HP {update.CurrentHp}/{update.MaxHp}, DPS {update.TotalDps}");
+            int attackCount = update.Attacks?.Count ?? 0;
+            ulong totalDamage = 0;
+            if (attackCount > 0)
+            {
+                foreach (var attack in update.Attacks)
+                {
+                    totalDamage += attack.Damage;
+                }
+            }
+            // Debug.Log($"채굴 업데이트: 광물 #{update.MineralId}, HP {update.CurrentHp}/{update.MaxHp}, 공격 {attackCount}회, 총 데미지 {totalDamage}");
 #endif
             OnMiningUpdate?.Invoke(update);
         }

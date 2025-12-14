@@ -359,14 +359,16 @@ namespace InfinitePickaxe.Client.Net
                 byte[] messageBytes = envelope.ToByteArray();
                 int messageLength = messageBytes.Length;
 
-                // Length-Prefix (4바이트, Big-Endian)
+                // Length-Prefix (4바이트, Little-Endian 고정)
                 byte[] lengthBytes = BitConverter.GetBytes(messageLength);
-                if (BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(lengthBytes);
-                }
 
                 // Length + Message 전송
+                if (!IsConnected || networkStream == null)
+                {
+                    Debug.LogWarning("전송 스트림이 준비되지 않아 메시지 전송을 건너뜁니다.");
+                    return;
+                }
+
                 await networkStream.WriteAsync(lengthBytes, 0, 4, cancellationToken);
                 await networkStream.WriteAsync(messageBytes, 0, messageLength, cancellationToken);
                 await networkStream.FlushAsync(cancellationToken);
@@ -389,7 +391,12 @@ namespace InfinitePickaxe.Client.Net
         {
             try
             {
-                // Length-Prefix 수신 (4바이트)
+                if (networkStream == null)
+                {
+                    throw new IOException("수신 스트림이 준비되지 않았습니다.");
+                }
+
+                // Length-Prefix 수신 (4바이트, Little-Endian 고정)
                 byte[] lengthBytes = new byte[4];
                 int bytesRead = 0;
                 while (bytesRead < 4)
@@ -402,11 +409,6 @@ namespace InfinitePickaxe.Client.Net
                     bytesRead += read;
                 }
 
-                // Big-Endian to int
-                if (BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(lengthBytes);
-                }
                 int messageLength = BitConverter.ToInt32(lengthBytes, 0);
 
                 // 메시지 크기 검증
@@ -432,7 +434,7 @@ namespace InfinitePickaxe.Client.Net
                 Envelope envelope = Envelope.Parser.ParseFrom(messageBytes);
 
 #if UNITY_EDITOR || DEBUG_NET
-                Debug.Log($"메시지 수신: {envelope.Type} ({messageLength} bytes)");
+                // Debug.Log($"메시지 수신: {envelope.Type} ({messageLength} bytes)");
 #endif
 
                 return envelope;

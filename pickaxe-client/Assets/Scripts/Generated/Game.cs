@@ -25,7 +25,7 @@ namespace Infinitepickaxe {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgpnYW1lLnByb3RvEg9pbmZpbml0ZXBpY2theGUaHmdvb2dsZS9wcm90b2J1",
-            "Zi93cmFwcGVycy5wcm90byLCEQoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
+            "Zi93cmFwcGVycy5wcm90byLYEAoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
             "LmluZmluaXRlcGlja2F4ZS5NZXNzYWdlVHlwZRI2CgloYW5kc2hha2UYCiAB",
             "KAsyIS5pbmZpbml0ZXBpY2theGUuSGFuZHNoYWtlUmVxdWVzdEgAEj4KEGhh",
             "bmRzaGFrZV9yZXN1bHQYCyABKAsyIi5pbmZpbml0ZXBpY2theGUuSGFuZHNo",
@@ -39,149 +39,145 @@ namespace Infinitepickaxe {
             "c3BvbnNlSAASRwoWY2hhbmdlX21pbmVyYWxfcmVxdWVzdBggIAEoCzIlLmlu",
             "ZmluaXRlcGlja2F4ZS5DaGFuZ2VNaW5lcmFsUmVxdWVzdEgAEkkKF2NoYW5n",
             "ZV9taW5lcmFsX3Jlc3BvbnNlGCEgASgLMiYuaW5maW5pdGVwaWNrYXhlLkNo",
-            "YW5nZU1pbmVyYWxSZXNwb25zZUgAEjQKDG1pbmluZ19zdGFydBgoIAEoCzIc",
-            "LmluZmluaXRlcGlja2F4ZS5NaW5pbmdTdGFydEgAEjIKC21pbmluZ19zeW5j",
-            "GCkgASgLMhsuaW5maW5pdGVwaWNrYXhlLk1pbmluZ1N5bmNIABI2Cg1taW5p",
-            "bmdfdXBkYXRlGCogASgLMh0uaW5maW5pdGVwaWNrYXhlLk1pbmluZ1VwZGF0",
-            "ZUgAEjoKD21pbmluZ19jb21wbGV0ZRgrIAEoCzIfLmluZmluaXRlcGlja2F4",
-            "ZS5NaW5pbmdDb21wbGV0ZUgAEj0KEWFsbF9zbG90c19yZXF1ZXN0GDIgASgL",
-            "MiAuaW5maW5pdGVwaWNrYXhlLkFsbFNsb3RzUmVxdWVzdEgAEj8KEmFsbF9z",
-            "bG90c19yZXNwb25zZRgzIAEoCzIhLmluZmluaXRlcGlja2F4ZS5BbGxTbG90",
-            "c1Jlc3BvbnNlSAASMgoLc2xvdF91bmxvY2sYNCABKAsyGy5pbmZpbml0ZXBp",
-            "Y2theGUuU2xvdFVubG9ja0gAEj8KEnNsb3RfdW5sb2NrX3Jlc3VsdBg1IAEo",
-            "CzIhLmluZmluaXRlcGlja2F4ZS5TbG90VW5sb2NrUmVzdWx0SAASOgoPdXBn",
-            "cmFkZV9yZXF1ZXN0GDwgASgLMh8uaW5maW5pdGVwaWNrYXhlLlVwZ3JhZGVS",
-            "ZXF1ZXN0SAASOAoOdXBncmFkZV9yZXN1bHQYPSABKAsyHi5pbmZpbml0ZXBp",
-            "Y2theGUuVXBncmFkZVJlc3VsdEgAEkcKFmRhaWx5X21pc3Npb25zX3JlcXVl",
-            "c3QYRiABKAsyJS5pbmZpbml0ZXBpY2theGUuRGFpbHlNaXNzaW9uc1JlcXVl",
-            "c3RIABJJChdkYWlseV9taXNzaW9uc19yZXNwb25zZRhHIAEoCzImLmluZmlu",
-            "aXRlcGlja2F4ZS5EYWlseU1pc3Npb25zUmVzcG9uc2VIABJJChdtaXNzaW9u",
-            "X3Byb2dyZXNzX3VwZGF0ZRhIIAEoCzImLmluZmluaXRlcGlja2F4ZS5NaXNz",
-            "aW9uUHJvZ3Jlc3NVcGRhdGVIABI8ChBtaXNzaW9uX2NvbXBsZXRlGEkgASgL",
-            "MiAuaW5maW5pdGVwaWNrYXhlLk1pc3Npb25Db21wbGV0ZUgAEkkKF21pc3Np",
-            "b25fY29tcGxldGVfcmVzdWx0GEogASgLMiYuaW5maW5pdGVwaWNrYXhlLk1p",
-            "c3Npb25Db21wbGV0ZVJlc3VsdEgAEjgKDm1pc3Npb25fcmVyb2xsGEsgASgL",
-            "Mh4uaW5maW5pdGVwaWNrYXhlLk1pc3Npb25SZXJvbGxIABJFChVtaXNzaW9u",
-            "X3Jlcm9sbF9yZXN1bHQYTCABKAsyJC5pbmZpbml0ZXBpY2theGUuTWlzc2lv",
-            "blJlcm9sbFJlc3VsdEgAEjoKD21pbGVzdG9uZV9jbGFpbRhNIAEoCzIfLmlu",
-            "ZmluaXRlcGlja2F4ZS5NaWxlc3RvbmVDbGFpbUgAEkcKFm1pbGVzdG9uZV9j",
-            "bGFpbV9yZXN1bHQYTiABKAsyJS5pbmZpbml0ZXBpY2theGUuTWlsZXN0b25l",
-            "Q2xhaW1SZXN1bHRIABI9ChFhZF93YXRjaF9jb21wbGV0ZRhQIAEoCzIgLmlu",
-            "ZmluaXRlcGlja2F4ZS5BZFdhdGNoQ29tcGxldGVIABI5Cg9hZF93YXRjaF9y",
-            "ZXN1bHQYUSABKAsyHi5pbmZpbml0ZXBpY2theGUuQWRXYXRjaFJlc3VsdEgA",
-            "EjoKD2N1cnJlbmN5X3VwZGF0ZRhaIAEoCzIfLmluZmluaXRlcGlja2F4ZS5D",
-            "dXJyZW5jeVVwZGF0ZUgAEkcKFm9mZmxpbmVfcmV3YXJkX3JlcXVlc3QYZCAB",
-            "KAsyJS5pbmZpbml0ZXBpY2theGUuT2ZmbGluZVJld2FyZFJlcXVlc3RIABJF",
-            "ChVvZmZsaW5lX3Jld2FyZF9yZXN1bHQYZSABKAsyJC5pbmZpbml0ZXBpY2th",
-            "eGUuT2ZmbGluZVJld2FyZFJlc3VsdEgAEkAKEmVycm9yX25vdGlmaWNhdGlv",
-            "bhhuIAEoCzIiLmluZmluaXRlcGlja2F4ZS5FcnJvck5vdGlmaWNhdGlvbkgA",
-            "QgkKB21lc3NhZ2UiSgoQSGFuZHNoYWtlUmVxdWVzdBILCgNqd3QYASABKAkS",
-            "FgoOY2xpZW50X3ZlcnNpb24YAiABKAkSEQoJZGV2aWNlX2lkGAMgASgJIocB",
-            "Cg9QaWNrYXhlU2xvdEluZm8SEgoKc2xvdF9pbmRleBgBIAEoDRINCgVsZXZl",
-            "bBgCIAEoDRIUCgxhdHRhY2tfcG93ZXIYAyABKAQSGQoRYXR0YWNrX3NwZWVk",
-            "X3gxMDAYBCABKA0SCwoDZHBzGAUgASgEEhMKC2lzX3VubG9ja2VkGAYgASgI",
-            "IvwDChBVc2VyRGF0YVNuYXBzaG90EioKBGdvbGQYASABKAsyHC5nb29nbGUu",
-            "cHJvdG9idWYuVUludDY0VmFsdWUSLQoHY3J5c3RhbBgCIAEoCzIcLmdvb2ds",
-            "ZS5wcm90b2J1Zi5VSW50MzJWYWx1ZRIWCg51bmxvY2tlZF9zbG90cxgDIAMo",
-            "CBI4ChJjdXJyZW50X21pbmVyYWxfaWQYBCABKAsyHC5nb29nbGUucHJvdG9i",
-            "dWYuVUludDMyVmFsdWUSMAoKbWluZXJhbF9ocBgFIAEoCzIcLmdvb2dsZS5w",
-            "cm90b2J1Zi5VSW50NjRWYWx1ZRI0Cg5taW5lcmFsX21heF9ocBgGIAEoCzIc",
-            "Lmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1ZRI3Cg1waWNrYXhlX3Nsb3Rz",
-            "GAcgAygLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIRCgl0",
-            "b3RhbF9kcHMYCCABKAQSMQoLc2VydmVyX3RpbWUYCSABKAsyHC5nb29nbGUu",
-            "cHJvdG9idWYuVUludDY0VmFsdWUSGQoRYWRzX3dhdGNoZWRfdG9kYXkYCiAB",
-            "KA0SHAoUbWlzc2lvbl9yZXJvbGxzX3VzZWQYCyABKA0SGwoTb2ZmbGluZV9i",
-            "b251c19ob3VycxgMIAEoDSJqChFIYW5kc2hha2VSZXNwb25zZRIPCgdzdWNj",
-            "ZXNzGAEgASgIEg8KB21lc3NhZ2UYAiABKAkSMwoIc25hcHNob3QYAyABKAsy",
-            "IS5pbmZpbml0ZXBpY2theGUuVXNlckRhdGFTbmFwc2hvdCIjCglIZWFydGJl",
-            "YXQSFgoOY2xpZW50X3RpbWVfbXMYASABKAQiJgoMSGVhcnRiZWF0QWNrEhYK",
-            "DnNlcnZlcl90aW1lX21zGAEgASgEIhQKEk1pbmVyYWxMaXN0UmVxdWVzdCJn",
-            "CgtNaW5lcmFsSW5mbxISCgptaW5lcmFsX2lkGAEgASgNEgwKBG5hbWUYAiAB",
-            "KAkSDgoGbWF4X2hwGAMgASgEEhMKC2dvbGRfcmV3YXJkGAQgASgEEhEKCWlj",
-            "b25fbmFtZRgFIAEoCSJFChNNaW5lcmFsTGlzdFJlc3BvbnNlEi4KCG1pbmVy",
-            "YWxzGAEgAygLMhwuaW5maW5pdGVwaWNrYXhlLk1pbmVyYWxJbmZvIioKFENo",
-            "YW5nZU1pbmVyYWxSZXF1ZXN0EhIKCm1pbmVyYWxfaWQYASABKA0ifAoVQ2hh",
-            "bmdlTWluZXJhbFJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgSEgoKbWluZXJh",
-            "bF9pZBgCIAEoDRISCgptaW5lcmFsX2hwGAMgASgEEhYKDm1pbmVyYWxfbWF4",
-            "X2hwGAQgASgEEhIKCmVycm9yX2NvZGUYBSABKAkiIQoLTWluaW5nU3RhcnQS",
-            "EgoKbWluZXJhbF9pZBgBIAEoDSJNCgpNaW5pbmdTeW5jEhIKCm1pbmVyYWxf",
-            "aWQYASABKA0SEQoJY2xpZW50X2hwGAIgASgEEhgKEGNsaWVudF90aW1lc3Rh",
-            "bXAYAyABKAQiiQEKDE1pbmluZ1VwZGF0ZRISCgptaW5lcmFsX2lkGAEgASgN",
-            "EhIKCmN1cnJlbnRfaHAYAiABKAQSDgoGbWF4X2hwGAMgASgEEhQKDGRhbWFn",
-            "ZV9kZWFsdBgEIAEoBBIRCgl0b3RhbF9kcHMYBSABKAQSGAoQc2VydmVyX3Rp",
-            "bWVzdGFtcBgGIAEoBCKTAQoOTWluaW5nQ29tcGxldGUSEgoKbWluZXJhbF9p",
-            "ZBgBIAEoDRITCgtnb2xkX2Vhcm5lZBgCIAEoBBISCgp0b3RhbF9nb2xkGAMg",
-            "ASgEEhQKDG1pbmluZ19jb3VudBgEIAEoBBIUCgxyZXNwYXduX3RpbWUYBSAB",
-            "KA0SGAoQc2VydmVyX3RpbWVzdGFtcBgGIAEoBCIRCg9BbGxTbG90c1JlcXVl",
-            "c3QiVgoQQWxsU2xvdHNSZXNwb25zZRIvCgVzbG90cxgBIAMoCzIgLmluZmlu",
-            "aXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8SEQoJdG90YWxfZHBzGAIgASgE",
-            "IiQKDlVwZ3JhZGVSZXF1ZXN0EhIKCnNsb3RfaW5kZXgYASABKA0iwAIKDVVw",
-            "Z3JhZGVSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBISCgpzbG90X2luZGV4GAIg",
-            "ASgNEhEKCW5ld19sZXZlbBgDIAEoDRIYChBuZXdfYXR0YWNrX3Bvd2VyGAQg",
-            "ASgEEh0KFW5ld19hdHRhY2tfc3BlZWRfeDEwMBgFIAEoDRIPCgduZXdfZHBz",
-            "GAYgASgEEhUKDW5ld190b3RhbF9kcHMYByABKAQSEgoKZ29sZF9zcGVudBgI",
-            "IAEoBBIWCg5yZW1haW5pbmdfZ29sZBgJIAEoBBISCgplcnJvcl9jb2RlGAog",
-            "ASgJEhQKDGJhc2VfcmF0ZV9icBgLIAEoDRIVCg1ib251c19yYXRlX2JwGAwg",
-            "ASgNEhUKDWZpbmFsX3JhdGVfYnAYDSABKA0SEgoKcGl0eV9ib251cxgOIAEo",
-            "DSIWChREYWlseU1pc3Npb25zUmVxdWVzdCK5AQoMTWlzc2lvbkVudHJ5EhIK",
-            "Cm1pc3Npb25faWQYASABKA0SDAoEdHlwZRgCIAEoCRITCgtkZXNjcmlwdGlv",
-            "bhgDIAEoCRIZChFyZXF1aXJlZF9wcm9ncmVzcxgEIAEoDRIYChBjdXJyZW50",
-            "X3Byb2dyZXNzGAUgASgNEhMKC2dvbGRfcmV3YXJkGAYgASgEEhQKDGlzX2Nv",
-            "bXBsZXRlZBgHIAEoCBISCgppc19jbGFpbWVkGAggASgIIoEBChVEYWlseU1p",
-            "c3Npb25zUmVzcG9uc2USLwoIbWlzc2lvbnMYASADKAsyHS5pbmZpbml0ZXBp",
-            "Y2theGUuTWlzc2lvbkVudHJ5EhkKEWFkc193YXRjaGVkX3RvZGF5GAIgASgN",
-            "EhwKFG1pc3Npb25fcmVyb2xsc191c2VkGAMgASgNInYKFU1pc3Npb25Qcm9n",
-            "cmVzc1VwZGF0ZRISCgptaXNzaW9uX2lkGAEgASgNEhgKEGN1cnJlbnRfcHJv",
-            "Z3Jlc3MYAiABKA0SGQoRcmVxdWlyZWRfcHJvZ3Jlc3MYAyABKA0SFAoMaXNf",
-            "Y29tcGxldGVkGAQgASgIIiUKD01pc3Npb25Db21wbGV0ZRISCgptaXNzaW9u",
-            "X2lkGAEgASgNInkKFU1pc3Npb25Db21wbGV0ZVJlc3VsdBIPCgdzdWNjZXNz",
-            "GAEgASgIEhIKCm1pc3Npb25faWQYAiABKA0SEwoLZ29sZF9yZXdhcmQYAyAB",
-            "KAQSEgoKdG90YWxfZ29sZBgEIAEoBBISCgplcnJvcl9jb2RlGAUgASgJIg8K",
-            "DU1pc3Npb25SZXJvbGwiigEKE01pc3Npb25SZXJvbGxSZXN1bHQSDwoHc3Vj",
-            "Y2VzcxgBIAEoCBI4ChFyZXJvbGxlZF9taXNzaW9ucxgCIAMoCzIdLmluZmlu",
-            "aXRlcGlja2F4ZS5NaXNzaW9uRW50cnkSFAoMcmVyb2xsc191c2VkGAMgASgN",
-            "EhIKCmVycm9yX2NvZGUYBCABKAkiKQoOTWlsZXN0b25lQ2xhaW0SFwoPbWls",
-            "ZXN0b25lX2NvdW50GAEgASgNIo8BChRNaWxlc3RvbmVDbGFpbVJlc3VsdBIP",
-            "CgdzdWNjZXNzGAEgASgIEhcKD21pbGVzdG9uZV9jb3VudBgCIAEoDRIcChRv",
-            "ZmZsaW5lX2hvdXJzX2dhaW5lZBgDIAEoDRIbChN0b3RhbF9vZmZsaW5lX2hv",
-            "dXJzGAQgASgNEhIKCmVycm9yX2NvZGUYBSABKAkiIAoKU2xvdFVubG9jaxIS",
-            "CgpzbG90X2luZGV4GAEgASgNIn0KEFNsb3RVbmxvY2tSZXN1bHQSDwoHc3Vj",
-            "Y2VzcxgBIAEoCBISCgpzbG90X2luZGV4GAIgASgNEhUKDWNyeXN0YWxfc3Bl",
-            "bnQYAyABKA0SGQoRcmVtYWluaW5nX2NyeXN0YWwYBCABKA0SEgoKZXJyb3Jf",
-            "Y29kZRgFIAEoCSIiCg9BZFdhdGNoQ29tcGxldGUSDwoHYWRfdGllchgBIAEo",
-            "DSKPAQoNQWRXYXRjaFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEg8KB2FkX3Rp",
-            "ZXIYAiABKA0SFgoOY3J5c3RhbF9lYXJuZWQYAyABKA0SFQoNdG90YWxfY3J5",
-            "c3RhbBgEIAEoDRIZChFhZHNfd2F0Y2hlZF90b2RheRgFIAEoDRISCgplcnJv",
-            "cl9jb2RlGAYgASgJInsKDkN1cnJlbmN5VXBkYXRlEioKBGdvbGQYASABKAsy",
-            "HC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSLQoHY3J5c3RhbBgCIAEo",
-            "CzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJWYWx1ZRIOCgZyZWFzb24YAyAB",
-            "KAkiFgoUT2ZmbGluZVJld2FyZFJlcXVlc3QibQoTT2ZmbGluZVJld2FyZFJl",
-            "c3VsdBIXCg9lbGFwc2VkX3NlY29uZHMYASABKAQSEwoLZ29sZF9lYXJuZWQY",
-            "AiABKAQSFAoMbWluaW5nX2NvdW50GAMgASgNEhIKCnRvdGFsX2dvbGQYBCAB",
-            "KAQiOAoRRXJyb3JOb3RpZmljYXRpb24SEgoKZXJyb3JfY29kZRgBIAEoCRIP",
-            "CgdtZXNzYWdlGAIgASgJKqwGCgtNZXNzYWdlVHlwZRILCgdVTktOT1dOEAAS",
-            "DQoJSEFORFNIQUtFEAESFAoQSEFORFNIQUtFX1JFU1VMVBACEg0KCUhFQVJU",
-            "QkVBVBADEhEKDUhFQVJUQkVBVF9BQ0sQBBIWChJVU0VSX0RBVEFfU05BUFNI",
-            "T1QQChIYChRNSU5FUkFMX0xJU1RfUkVRVUVTVBAUEhkKFU1JTkVSQUxfTElT",
-            "VF9SRVNQT05TRRAVEhoKFkNIQU5HRV9NSU5FUkFMX1JFUVVFU1QQFhIbChdD",
-            "SEFOR0VfTUlORVJBTF9SRVNQT05TRRAXEhAKDE1JTklOR19TVEFSVBAeEg8K",
-            "C01JTklOR19TWU5DEB8SEQoNTUlOSU5HX1VQREFURRAgEhMKD01JTklOR19D",
-            "T01QTEVURRAhEhUKEUFMTF9TTE9UU19SRVFVRVNUECgSFgoSQUxMX1NMT1RT",
-            "X1JFU1BPTlNFECkSDwoLU0xPVF9VTkxPQ0sQKhIWChJTTE9UX1VOTE9DS19S",
-            "RVNVTFQQKxITCg9VUEdSQURFX1JFUVVFU1QQMhISCg5VUEdSQURFX1JFU1VM",
-            "VBAzEhoKFkRBSUxZX01JU1NJT05TX1JFUVVFU1QQPBIbChdEQUlMWV9NSVNT",
-            "SU9OU19SRVNQT05TRRA9EhsKF01JU1NJT05fUFJPR1JFU1NfVVBEQVRFED4S",
-            "FAoQTUlTU0lPTl9DT01QTEVURRA/EhsKF01JU1NJT05fQ09NUExFVEVfUkVT",
-            "VUxUEEASEgoOTUlTU0lPTl9SRVJPTEwQQRIZChVNSVNTSU9OX1JFUk9MTF9S",
-            "RVNVTFQQQhITCg9NSUxFU1RPTkVfQ0xBSU0QQxIaChZNSUxFU1RPTkVfQ0xB",
-            "SU1fUkVTVUxUEEQSFQoRQURfV0FUQ0hfQ09NUExFVEUQRhITCg9BRF9XQVRD",
-            "SF9SRVNVTFQQRxITCg9DVVJSRU5DWV9VUERBVEUQUBIaChZPRkZMSU5FX1JF",
-            "V0FSRF9SRVFVRVNUEFoSGQoVT0ZGTElORV9SRVdBUkRfUkVTVUxUEFsSFgoS",
-            "RVJST1JfTk9USUZJQ0FUSU9OEGRiBnByb3RvMw=="));
+            "YW5nZU1pbmVyYWxSZXNwb25zZUgAEjYKDW1pbmluZ191cGRhdGUYKiABKAsy",
+            "HS5pbmZpbml0ZXBpY2theGUuTWluaW5nVXBkYXRlSAASOgoPbWluaW5nX2Nv",
+            "bXBsZXRlGCsgASgLMh8uaW5maW5pdGVwaWNrYXhlLk1pbmluZ0NvbXBsZXRl",
+            "SAASPQoRYWxsX3Nsb3RzX3JlcXVlc3QYMiABKAsyIC5pbmZpbml0ZXBpY2th",
+            "eGUuQWxsU2xvdHNSZXF1ZXN0SAASPwoSYWxsX3Nsb3RzX3Jlc3BvbnNlGDMg",
+            "ASgLMiEuaW5maW5pdGVwaWNrYXhlLkFsbFNsb3RzUmVzcG9uc2VIABIyCgtz",
+            "bG90X3VubG9jaxg0IAEoCzIbLmluZmluaXRlcGlja2F4ZS5TbG90VW5sb2Nr",
+            "SAASPwoSc2xvdF91bmxvY2tfcmVzdWx0GDUgASgLMiEuaW5maW5pdGVwaWNr",
+            "YXhlLlNsb3RVbmxvY2tSZXN1bHRIABI6Cg91cGdyYWRlX3JlcXVlc3QYPCAB",
+            "KAsyHy5pbmZpbml0ZXBpY2theGUuVXBncmFkZVJlcXVlc3RIABI4Cg51cGdy",
+            "YWRlX3Jlc3VsdBg9IAEoCzIeLmluZmluaXRlcGlja2F4ZS5VcGdyYWRlUmVz",
+            "dWx0SAASRwoWZGFpbHlfbWlzc2lvbnNfcmVxdWVzdBhGIAEoCzIlLmluZmlu",
+            "aXRlcGlja2F4ZS5EYWlseU1pc3Npb25zUmVxdWVzdEgAEkkKF2RhaWx5X21p",
+            "c3Npb25zX3Jlc3BvbnNlGEcgASgLMiYuaW5maW5pdGVwaWNrYXhlLkRhaWx5",
+            "TWlzc2lvbnNSZXNwb25zZUgAEkkKF21pc3Npb25fcHJvZ3Jlc3NfdXBkYXRl",
+            "GEggASgLMiYuaW5maW5pdGVwaWNrYXhlLk1pc3Npb25Qcm9ncmVzc1VwZGF0",
+            "ZUgAEjwKEG1pc3Npb25fY29tcGxldGUYSSABKAsyIC5pbmZpbml0ZXBpY2th",
+            "eGUuTWlzc2lvbkNvbXBsZXRlSAASSQoXbWlzc2lvbl9jb21wbGV0ZV9yZXN1",
+            "bHQYSiABKAsyJi5pbmZpbml0ZXBpY2theGUuTWlzc2lvbkNvbXBsZXRlUmVz",
+            "dWx0SAASOAoObWlzc2lvbl9yZXJvbGwYSyABKAsyHi5pbmZpbml0ZXBpY2th",
+            "eGUuTWlzc2lvblJlcm9sbEgAEkUKFW1pc3Npb25fcmVyb2xsX3Jlc3VsdBhM",
+            "IAEoCzIkLmluZmluaXRlcGlja2F4ZS5NaXNzaW9uUmVyb2xsUmVzdWx0SAAS",
+            "OgoPbWlsZXN0b25lX2NsYWltGE0gASgLMh8uaW5maW5pdGVwaWNrYXhlLk1p",
+            "bGVzdG9uZUNsYWltSAASRwoWbWlsZXN0b25lX2NsYWltX3Jlc3VsdBhOIAEo",
+            "CzIlLmluZmluaXRlcGlja2F4ZS5NaWxlc3RvbmVDbGFpbVJlc3VsdEgAEj0K",
+            "EWFkX3dhdGNoX2NvbXBsZXRlGFAgASgLMiAuaW5maW5pdGVwaWNrYXhlLkFk",
+            "V2F0Y2hDb21wbGV0ZUgAEjkKD2FkX3dhdGNoX3Jlc3VsdBhRIAEoCzIeLmlu",
+            "ZmluaXRlcGlja2F4ZS5BZFdhdGNoUmVzdWx0SAASOgoPY3VycmVuY3lfdXBk",
+            "YXRlGFogASgLMh8uaW5maW5pdGVwaWNrYXhlLkN1cnJlbmN5VXBkYXRlSAAS",
+            "RwoWb2ZmbGluZV9yZXdhcmRfcmVxdWVzdBhkIAEoCzIlLmluZmluaXRlcGlj",
+            "a2F4ZS5PZmZsaW5lUmV3YXJkUmVxdWVzdEgAEkUKFW9mZmxpbmVfcmV3YXJk",
+            "X3Jlc3VsdBhlIAEoCzIkLmluZmluaXRlcGlja2F4ZS5PZmZsaW5lUmV3YXJk",
+            "UmVzdWx0SAASQAoSZXJyb3Jfbm90aWZpY2F0aW9uGG4gASgLMiIuaW5maW5p",
+            "dGVwaWNrYXhlLkVycm9yTm90aWZpY2F0aW9uSABCCQoHbWVzc2FnZSJKChBI",
+            "YW5kc2hha2VSZXF1ZXN0EgsKA2p3dBgBIAEoCRIWCg5jbGllbnRfdmVyc2lv",
+            "bhgCIAEoCRIRCglkZXZpY2VfaWQYAyABKAkihwEKD1BpY2theGVTbG90SW5m",
+            "bxISCgpzbG90X2luZGV4GAEgASgNEg0KBWxldmVsGAIgASgNEhQKDGF0dGFj",
+            "a19wb3dlchgDIAEoBBIZChFhdHRhY2tfc3BlZWRfeDEwMBgEIAEoDRILCgNk",
+            "cHMYBSABKAQSEwoLaXNfdW5sb2NrZWQYBiABKAgi/AMKEFVzZXJEYXRhU25h",
+            "cHNob3QSKgoEZ29sZBgBIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRW",
+            "YWx1ZRItCgdjcnlzdGFsGAIgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQz",
+            "MlZhbHVlEhYKDnVubG9ja2VkX3Nsb3RzGAMgAygIEjgKEmN1cnJlbnRfbWlu",
+            "ZXJhbF9pZBgEIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJWYWx1ZRIw",
+            "CgptaW5lcmFsX2hwGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZh",
+            "bHVlEjQKDm1pbmVyYWxfbWF4X2hwGAYgASgLMhwuZ29vZ2xlLnByb3RvYnVm",
+            "LlVJbnQ2NFZhbHVlEjcKDXBpY2theGVfc2xvdHMYByADKAsyIC5pbmZpbml0",
+            "ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhEKCXRvdGFsX2RwcxgIIAEoBBIx",
+            "CgtzZXJ2ZXJfdGltZRgJIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRW",
+            "YWx1ZRIZChFhZHNfd2F0Y2hlZF90b2RheRgKIAEoDRIcChRtaXNzaW9uX3Jl",
+            "cm9sbHNfdXNlZBgLIAEoDRIbChNvZmZsaW5lX2JvbnVzX2hvdXJzGAwgASgN",
+            "ImoKEUhhbmRzaGFrZVJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgSDwoHbWVz",
+            "c2FnZRgCIAEoCRIzCghzbmFwc2hvdBgDIAEoCzIhLmluZmluaXRlcGlja2F4",
+            "ZS5Vc2VyRGF0YVNuYXBzaG90IiMKCUhlYXJ0YmVhdBIWCg5jbGllbnRfdGlt",
+            "ZV9tcxgBIAEoBCImCgxIZWFydGJlYXRBY2sSFgoOc2VydmVyX3RpbWVfbXMY",
+            "ASABKAQiFAoSTWluZXJhbExpc3RSZXF1ZXN0ImcKC01pbmVyYWxJbmZvEhIK",
+            "Cm1pbmVyYWxfaWQYASABKA0SDAoEbmFtZRgCIAEoCRIOCgZtYXhfaHAYAyAB",
+            "KAQSEwoLZ29sZF9yZXdhcmQYBCABKAQSEQoJaWNvbl9uYW1lGAUgASgJIkUK",
+            "E01pbmVyYWxMaXN0UmVzcG9uc2USLgoIbWluZXJhbHMYASADKAsyHC5pbmZp",
+            "bml0ZXBpY2theGUuTWluZXJhbEluZm8iKgoUQ2hhbmdlTWluZXJhbFJlcXVl",
+            "c3QSEgoKbWluZXJhbF9pZBgBIAEoDSJ8ChVDaGFuZ2VNaW5lcmFsUmVzcG9u",
+            "c2USDwoHc3VjY2VzcxgBIAEoCBISCgptaW5lcmFsX2lkGAIgASgNEhIKCm1p",
+            "bmVyYWxfaHAYAyABKAQSFgoObWluZXJhbF9tYXhfaHAYBCABKAQSEgoKZXJy",
+            "b3JfY29kZRgFIAEoCSIzCg1QaWNrYXhlQXR0YWNrEhIKCnNsb3RfaW5kZXgY",
+            "ASABKA0SDgoGZGFtYWdlGAIgASgEIpEBCgxNaW5pbmdVcGRhdGUSEgoKbWlu",
+            "ZXJhbF9pZBgBIAEoDRISCgpjdXJyZW50X2hwGAIgASgEEg4KBm1heF9ocBgD",
+            "IAEoBBIvCgdhdHRhY2tzGAQgAygLMh4uaW5maW5pdGVwaWNrYXhlLlBpY2th",
+            "eGVBdHRhY2sSGAoQc2VydmVyX3RpbWVzdGFtcBgFIAEoBCKTAQoOTWluaW5n",
+            "Q29tcGxldGUSEgoKbWluZXJhbF9pZBgBIAEoDRITCgtnb2xkX2Vhcm5lZBgC",
+            "IAEoBBISCgp0b3RhbF9nb2xkGAMgASgEEhQKDG1pbmluZ19jb3VudBgEIAEo",
+            "BBIUCgxyZXNwYXduX3RpbWUYBSABKA0SGAoQc2VydmVyX3RpbWVzdGFtcBgG",
+            "IAEoBCIRCg9BbGxTbG90c1JlcXVlc3QiVgoQQWxsU2xvdHNSZXNwb25zZRIv",
+            "CgVzbG90cxgBIAMoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdElu",
+            "Zm8SEQoJdG90YWxfZHBzGAIgASgEIiQKDlVwZ3JhZGVSZXF1ZXN0EhIKCnNs",
+            "b3RfaW5kZXgYASABKA0iwAIKDVVwZ3JhZGVSZXN1bHQSDwoHc3VjY2VzcxgB",
+            "IAEoCBISCgpzbG90X2luZGV4GAIgASgNEhEKCW5ld19sZXZlbBgDIAEoDRIY",
+            "ChBuZXdfYXR0YWNrX3Bvd2VyGAQgASgEEh0KFW5ld19hdHRhY2tfc3BlZWRf",
+            "eDEwMBgFIAEoDRIPCgduZXdfZHBzGAYgASgEEhUKDW5ld190b3RhbF9kcHMY",
+            "ByABKAQSEgoKZ29sZF9zcGVudBgIIAEoBBIWCg5yZW1haW5pbmdfZ29sZBgJ",
+            "IAEoBBISCgplcnJvcl9jb2RlGAogASgJEhQKDGJhc2VfcmF0ZV9icBgLIAEo",
+            "DRIVCg1ib251c19yYXRlX2JwGAwgASgNEhUKDWZpbmFsX3JhdGVfYnAYDSAB",
+            "KA0SEgoKcGl0eV9ib251cxgOIAEoDSIWChREYWlseU1pc3Npb25zUmVxdWVz",
+            "dCK5AQoMTWlzc2lvbkVudHJ5EhIKCm1pc3Npb25faWQYASABKA0SDAoEdHlw",
+            "ZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIZChFyZXF1aXJlZF9wcm9n",
+            "cmVzcxgEIAEoDRIYChBjdXJyZW50X3Byb2dyZXNzGAUgASgNEhMKC2dvbGRf",
+            "cmV3YXJkGAYgASgEEhQKDGlzX2NvbXBsZXRlZBgHIAEoCBISCgppc19jbGFp",
+            "bWVkGAggASgIIoEBChVEYWlseU1pc3Npb25zUmVzcG9uc2USLwoIbWlzc2lv",
+            "bnMYASADKAsyHS5pbmZpbml0ZXBpY2theGUuTWlzc2lvbkVudHJ5EhkKEWFk",
+            "c193YXRjaGVkX3RvZGF5GAIgASgNEhwKFG1pc3Npb25fcmVyb2xsc191c2Vk",
+            "GAMgASgNInYKFU1pc3Npb25Qcm9ncmVzc1VwZGF0ZRISCgptaXNzaW9uX2lk",
+            "GAEgASgNEhgKEGN1cnJlbnRfcHJvZ3Jlc3MYAiABKA0SGQoRcmVxdWlyZWRf",
+            "cHJvZ3Jlc3MYAyABKA0SFAoMaXNfY29tcGxldGVkGAQgASgIIiUKD01pc3Np",
+            "b25Db21wbGV0ZRISCgptaXNzaW9uX2lkGAEgASgNInkKFU1pc3Npb25Db21w",
+            "bGV0ZVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhIKCm1pc3Npb25faWQYAiAB",
+            "KA0SEwoLZ29sZF9yZXdhcmQYAyABKAQSEgoKdG90YWxfZ29sZBgEIAEoBBIS",
+            "CgplcnJvcl9jb2RlGAUgASgJIg8KDU1pc3Npb25SZXJvbGwiigEKE01pc3Np",
+            "b25SZXJvbGxSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBI4ChFyZXJvbGxlZF9t",
+            "aXNzaW9ucxgCIAMoCzIdLmluZmluaXRlcGlja2F4ZS5NaXNzaW9uRW50cnkS",
+            "FAoMcmVyb2xsc191c2VkGAMgASgNEhIKCmVycm9yX2NvZGUYBCABKAkiKQoO",
+            "TWlsZXN0b25lQ2xhaW0SFwoPbWlsZXN0b25lX2NvdW50GAEgASgNIo8BChRN",
+            "aWxlc3RvbmVDbGFpbVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhcKD21pbGVz",
+            "dG9uZV9jb3VudBgCIAEoDRIcChRvZmZsaW5lX2hvdXJzX2dhaW5lZBgDIAEo",
+            "DRIbChN0b3RhbF9vZmZsaW5lX2hvdXJzGAQgASgNEhIKCmVycm9yX2NvZGUY",
+            "BSABKAkiIAoKU2xvdFVubG9jaxISCgpzbG90X2luZGV4GAEgASgNIn0KEFNs",
+            "b3RVbmxvY2tSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBISCgpzbG90X2luZGV4",
+            "GAIgASgNEhUKDWNyeXN0YWxfc3BlbnQYAyABKA0SGQoRcmVtYWluaW5nX2Ny",
+            "eXN0YWwYBCABKA0SEgoKZXJyb3JfY29kZRgFIAEoCSIiCg9BZFdhdGNoQ29t",
+            "cGxldGUSDwoHYWRfdGllchgBIAEoDSKPAQoNQWRXYXRjaFJlc3VsdBIPCgdz",
+            "dWNjZXNzGAEgASgIEg8KB2FkX3RpZXIYAiABKA0SFgoOY3J5c3RhbF9lYXJu",
+            "ZWQYAyABKA0SFQoNdG90YWxfY3J5c3RhbBgEIAEoDRIZChFhZHNfd2F0Y2hl",
+            "ZF90b2RheRgFIAEoDRISCgplcnJvcl9jb2RlGAYgASgJInsKDkN1cnJlbmN5",
+            "VXBkYXRlEioKBGdvbGQYASABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDY0",
+            "VmFsdWUSLQoHY3J5c3RhbBgCIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50",
+            "MzJWYWx1ZRIOCgZyZWFzb24YAyABKAkiFgoUT2ZmbGluZVJld2FyZFJlcXVl",
+            "c3QibQoTT2ZmbGluZVJld2FyZFJlc3VsdBIXCg9lbGFwc2VkX3NlY29uZHMY",
+            "ASABKAQSEwoLZ29sZF9lYXJuZWQYAiABKAQSFAoMbWluaW5nX2NvdW50GAMg",
+            "ASgNEhIKCnRvdGFsX2dvbGQYBCABKAQiOAoRRXJyb3JOb3RpZmljYXRpb24S",
+            "EgoKZXJyb3JfY29kZRgBIAEoCRIPCgdtZXNzYWdlGAIgASgJKokGCgtNZXNz",
+            "YWdlVHlwZRILCgdVTktOT1dOEAASDQoJSEFORFNIQUtFEAESFAoQSEFORFNI",
+            "QUtFX1JFU1VMVBACEg0KCUhFQVJUQkVBVBADEhEKDUhFQVJUQkVBVF9BQ0sQ",
+            "BBIWChJVU0VSX0RBVEFfU05BUFNIT1QQChIYChRNSU5FUkFMX0xJU1RfUkVR",
+            "VUVTVBAUEhkKFU1JTkVSQUxfTElTVF9SRVNQT05TRRAVEhoKFkNIQU5HRV9N",
+            "SU5FUkFMX1JFUVVFU1QQFhIbChdDSEFOR0VfTUlORVJBTF9SRVNQT05TRRAX",
+            "EhEKDU1JTklOR19VUERBVEUQIBITCg9NSU5JTkdfQ09NUExFVEUQIRIVChFB",
+            "TExfU0xPVFNfUkVRVUVTVBAoEhYKEkFMTF9TTE9UU19SRVNQT05TRRApEg8K",
+            "C1NMT1RfVU5MT0NLECoSFgoSU0xPVF9VTkxPQ0tfUkVTVUxUECsSEwoPVVBH",
+            "UkFERV9SRVFVRVNUEDISEgoOVVBHUkFERV9SRVNVTFQQMxIaChZEQUlMWV9N",
+            "SVNTSU9OU19SRVFVRVNUEDwSGwoXREFJTFlfTUlTU0lPTlNfUkVTUE9OU0UQ",
+            "PRIbChdNSVNTSU9OX1BST0dSRVNTX1VQREFURRA+EhQKEE1JU1NJT05fQ09N",
+            "UExFVEUQPxIbChdNSVNTSU9OX0NPTVBMRVRFX1JFU1VMVBBAEhIKDk1JU1NJ",
+            "T05fUkVST0xMEEESGQoVTUlTU0lPTl9SRVJPTExfUkVTVUxUEEISEwoPTUlM",
+            "RVNUT05FX0NMQUlNEEMSGgoWTUlMRVNUT05FX0NMQUlNX1JFU1VMVBBEEhUK",
+            "EUFEX1dBVENIX0NPTVBMRVRFEEYSEwoPQURfV0FUQ0hfUkVTVUxUEEcSEwoP",
+            "Q1VSUkVOQ1lfVVBEQVRFEFASGgoWT0ZGTElORV9SRVdBUkRfUkVRVUVTVBBa",
+            "EhkKFU9GRkxJTkVfUkVXQVJEX1JFU1VMVBBbEhYKEkVSUk9SX05PVElGSUNB",
+            "VElPThBkYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.MessageType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningStart", "MiningSync", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "AdWatchComplete", "AdWatchResult", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification" }, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "AdWatchComplete", "AdWatchResult", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification" }, new[]{ "Message" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HandshakeRequest), global::Infinitepickaxe.HandshakeRequest.Parser, new[]{ "Jwt", "ClientVersion", "DeviceId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeSlotInfo), global::Infinitepickaxe.PickaxeSlotInfo.Parser, new[]{ "SlotIndex", "Level", "AttackPower", "AttackSpeedX100", "Dps", "IsUnlocked" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UserDataSnapshot), global::Infinitepickaxe.UserDataSnapshot.Parser, new[]{ "Gold", "Crystal", "UnlockedSlots", "CurrentMineralId", "MineralHp", "MineralMaxHp", "PickaxeSlots", "TotalDps", "ServerTime", "AdsWatchedToday", "MissionRerollsUsed", "OfflineBonusHours" }, null, null, null, null),
@@ -193,9 +189,8 @@ namespace Infinitepickaxe {
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MineralListResponse), global::Infinitepickaxe.MineralListResponse.Parser, new[]{ "Minerals" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.ChangeMineralRequest), global::Infinitepickaxe.ChangeMineralRequest.Parser, new[]{ "MineralId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.ChangeMineralResponse), global::Infinitepickaxe.ChangeMineralResponse.Parser, new[]{ "Success", "MineralId", "MineralHp", "MineralMaxHp", "ErrorCode" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MiningStart), global::Infinitepickaxe.MiningStart.Parser, new[]{ "MineralId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MiningSync), global::Infinitepickaxe.MiningSync.Parser, new[]{ "MineralId", "ClientHp", "ClientTimestamp" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MiningUpdate), global::Infinitepickaxe.MiningUpdate.Parser, new[]{ "MineralId", "CurrentHp", "MaxHp", "DamageDealt", "TotalDps", "ServerTimestamp" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeAttack), global::Infinitepickaxe.PickaxeAttack.Parser, new[]{ "SlotIndex", "Damage" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MiningUpdate), global::Infinitepickaxe.MiningUpdate.Parser, new[]{ "MineralId", "CurrentHp", "MaxHp", "Attacks", "ServerTimestamp" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MiningComplete), global::Infinitepickaxe.MiningComplete.Parser, new[]{ "MineralId", "GoldEarned", "TotalGold", "MiningCount", "RespawnTime", "ServerTimestamp" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AllSlotsRequest), global::Infinitepickaxe.AllSlotsRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AllSlotsResponse), global::Infinitepickaxe.AllSlotsResponse.Parser, new[]{ "Slots", "TotalDps" }, null, null, null, null),
@@ -249,11 +244,14 @@ namespace Infinitepickaxe {
     [pbr::OriginalName("CHANGE_MINERAL_REQUEST")] ChangeMineralRequest = 22,
     [pbr::OriginalName("CHANGE_MINERAL_RESPONSE")] ChangeMineralResponse = 23,
     /// <summary>
-    /// 채굴
+    /// 채굴 (서버 주도 시뮬레이션)
+    /// MINING_START = 30;  // 제거: 서버가 자동 시작
+    /// MINING_SYNC = 31;   // 제거: 서버가 시뮬레이션
     /// </summary>
-    [pbr::OriginalName("MINING_START")] MiningStart = 30,
-    [pbr::OriginalName("MINING_SYNC")] MiningSync = 31,
     [pbr::OriginalName("MINING_UPDATE")] MiningUpdate = 32,
+    /// <summary>
+    /// 서버 → 클라이언트 (즉시)
+    /// </summary>
     [pbr::OriginalName("MINING_COMPLETE")] MiningComplete = 33,
     /// <summary>
     /// 슬롯
@@ -368,12 +366,6 @@ namespace Infinitepickaxe {
           break;
         case MessageOneofCase.ChangeMineralResponse:
           ChangeMineralResponse = other.ChangeMineralResponse.Clone();
-          break;
-        case MessageOneofCase.MiningStart:
-          MiningStart = other.MiningStart.Clone();
-          break;
-        case MessageOneofCase.MiningSync:
-          MiningSync = other.MiningSync.Clone();
           break;
         case MessageOneofCase.MiningUpdate:
           MiningUpdate = other.MiningUpdate.Clone();
@@ -575,32 +567,12 @@ namespace Infinitepickaxe {
       }
     }
 
-    /// <summary>Field number for the "mining_start" field.</summary>
-    public const int MiningStartFieldNumber = 40;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Infinitepickaxe.MiningStart MiningStart {
-      get { return messageCase_ == MessageOneofCase.MiningStart ? (global::Infinitepickaxe.MiningStart) message_ : null; }
-      set {
-        message_ = value;
-        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MiningStart;
-      }
-    }
-
-    /// <summary>Field number for the "mining_sync" field.</summary>
-    public const int MiningSyncFieldNumber = 41;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Infinitepickaxe.MiningSync MiningSync {
-      get { return messageCase_ == MessageOneofCase.MiningSync ? (global::Infinitepickaxe.MiningSync) message_ : null; }
-      set {
-        message_ = value;
-        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MiningSync;
-      }
-    }
-
     /// <summary>Field number for the "mining_update" field.</summary>
     public const int MiningUpdateFieldNumber = 42;
+    /// <summary>
+    /// MiningStart mining_start = 40;  // 제거: 서버 주도 시뮬레이션
+    /// MiningSync mining_sync = 41;    // 제거: 서버 주도 시뮬레이션
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Infinitepickaxe.MiningUpdate MiningUpdate {
@@ -888,8 +860,6 @@ namespace Infinitepickaxe {
       MineralListResponse = 31,
       ChangeMineralRequest = 32,
       ChangeMineralResponse = 33,
-      MiningStart = 40,
-      MiningSync = 41,
       MiningUpdate = 42,
       MiningComplete = 43,
       AllSlotsRequest = 50,
@@ -953,8 +923,6 @@ namespace Infinitepickaxe {
       if (!object.Equals(MineralListResponse, other.MineralListResponse)) return false;
       if (!object.Equals(ChangeMineralRequest, other.ChangeMineralRequest)) return false;
       if (!object.Equals(ChangeMineralResponse, other.ChangeMineralResponse)) return false;
-      if (!object.Equals(MiningStart, other.MiningStart)) return false;
-      if (!object.Equals(MiningSync, other.MiningSync)) return false;
       if (!object.Equals(MiningUpdate, other.MiningUpdate)) return false;
       if (!object.Equals(MiningComplete, other.MiningComplete)) return false;
       if (!object.Equals(AllSlotsRequest, other.AllSlotsRequest)) return false;
@@ -996,8 +964,6 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.MineralListResponse) hash ^= MineralListResponse.GetHashCode();
       if (messageCase_ == MessageOneofCase.ChangeMineralRequest) hash ^= ChangeMineralRequest.GetHashCode();
       if (messageCase_ == MessageOneofCase.ChangeMineralResponse) hash ^= ChangeMineralResponse.GetHashCode();
-      if (messageCase_ == MessageOneofCase.MiningStart) hash ^= MiningStart.GetHashCode();
-      if (messageCase_ == MessageOneofCase.MiningSync) hash ^= MiningSync.GetHashCode();
       if (messageCase_ == MessageOneofCase.MiningUpdate) hash ^= MiningUpdate.GetHashCode();
       if (messageCase_ == MessageOneofCase.MiningComplete) hash ^= MiningComplete.GetHashCode();
       if (messageCase_ == MessageOneofCase.AllSlotsRequest) hash ^= AllSlotsRequest.GetHashCode();
@@ -1079,14 +1045,6 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.ChangeMineralResponse) {
         output.WriteRawTag(138, 2);
         output.WriteMessage(ChangeMineralResponse);
-      }
-      if (messageCase_ == MessageOneofCase.MiningStart) {
-        output.WriteRawTag(194, 2);
-        output.WriteMessage(MiningStart);
-      }
-      if (messageCase_ == MessageOneofCase.MiningSync) {
-        output.WriteRawTag(202, 2);
-        output.WriteMessage(MiningSync);
       }
       if (messageCase_ == MessageOneofCase.MiningUpdate) {
         output.WriteRawTag(210, 2);
@@ -1230,14 +1188,6 @@ namespace Infinitepickaxe {
         output.WriteRawTag(138, 2);
         output.WriteMessage(ChangeMineralResponse);
       }
-      if (messageCase_ == MessageOneofCase.MiningStart) {
-        output.WriteRawTag(194, 2);
-        output.WriteMessage(MiningStart);
-      }
-      if (messageCase_ == MessageOneofCase.MiningSync) {
-        output.WriteRawTag(202, 2);
-        output.WriteMessage(MiningSync);
-      }
       if (messageCase_ == MessageOneofCase.MiningUpdate) {
         output.WriteRawTag(210, 2);
         output.WriteMessage(MiningUpdate);
@@ -1369,12 +1319,6 @@ namespace Infinitepickaxe {
       }
       if (messageCase_ == MessageOneofCase.ChangeMineralResponse) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(ChangeMineralResponse);
-      }
-      if (messageCase_ == MessageOneofCase.MiningStart) {
-        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MiningStart);
-      }
-      if (messageCase_ == MessageOneofCase.MiningSync) {
-        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MiningSync);
       }
       if (messageCase_ == MessageOneofCase.MiningUpdate) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(MiningUpdate);
@@ -1514,18 +1458,6 @@ namespace Infinitepickaxe {
             ChangeMineralResponse = new global::Infinitepickaxe.ChangeMineralResponse();
           }
           ChangeMineralResponse.MergeFrom(other.ChangeMineralResponse);
-          break;
-        case MessageOneofCase.MiningStart:
-          if (MiningStart == null) {
-            MiningStart = new global::Infinitepickaxe.MiningStart();
-          }
-          MiningStart.MergeFrom(other.MiningStart);
-          break;
-        case MessageOneofCase.MiningSync:
-          if (MiningSync == null) {
-            MiningSync = new global::Infinitepickaxe.MiningSync();
-          }
-          MiningSync.MergeFrom(other.MiningSync);
           break;
         case MessageOneofCase.MiningUpdate:
           if (MiningUpdate == null) {
@@ -1769,24 +1701,6 @@ namespace Infinitepickaxe {
             }
             input.ReadMessage(subBuilder);
             ChangeMineralResponse = subBuilder;
-            break;
-          }
-          case 322: {
-            global::Infinitepickaxe.MiningStart subBuilder = new global::Infinitepickaxe.MiningStart();
-            if (messageCase_ == MessageOneofCase.MiningStart) {
-              subBuilder.MergeFrom(MiningStart);
-            }
-            input.ReadMessage(subBuilder);
-            MiningStart = subBuilder;
-            break;
-          }
-          case 330: {
-            global::Infinitepickaxe.MiningSync subBuilder = new global::Infinitepickaxe.MiningSync();
-            if (messageCase_ == MessageOneofCase.MiningSync) {
-              subBuilder.MergeFrom(MiningSync);
-            }
-            input.ReadMessage(subBuilder);
-            MiningSync = subBuilder;
             break;
           }
           case 338: {
@@ -2098,24 +2012,6 @@ namespace Infinitepickaxe {
             }
             input.ReadMessage(subBuilder);
             ChangeMineralResponse = subBuilder;
-            break;
-          }
-          case 322: {
-            global::Infinitepickaxe.MiningStart subBuilder = new global::Infinitepickaxe.MiningStart();
-            if (messageCase_ == MessageOneofCase.MiningStart) {
-              subBuilder.MergeFrom(MiningStart);
-            }
-            input.ReadMessage(subBuilder);
-            MiningStart = subBuilder;
-            break;
-          }
-          case 330: {
-            global::Infinitepickaxe.MiningSync subBuilder = new global::Infinitepickaxe.MiningSync();
-            if (messageCase_ == MessageOneofCase.MiningSync) {
-              subBuilder.MergeFrom(MiningSync);
-            }
-            input.ReadMessage(subBuilder);
-            MiningSync = subBuilder;
             break;
           }
           case 338: {
@@ -5589,17 +5485,20 @@ namespace Infinitepickaxe {
 
   }
 
+  /// <summary>
+  /// 개별 곡괭이 공격 이벤트 (40ms 틱 내 발생한 공격)
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class MiningStart : pb::IMessage<MiningStart>
+  public sealed partial class PickaxeAttack : pb::IMessage<PickaxeAttack>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<MiningStart> _parser = new pb::MessageParser<MiningStart>(() => new MiningStart());
+    private static readonly pb::MessageParser<PickaxeAttack> _parser = new pb::MessageParser<PickaxeAttack>(() => new PickaxeAttack());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<MiningStart> Parser { get { return _parser; } }
+    public static pb::MessageParser<PickaxeAttack> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5615,7 +5514,7 @@ namespace Infinitepickaxe {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public MiningStart() {
+    public PickaxeAttack() {
       OnConstruction();
     }
 
@@ -5623,48 +5522,65 @@ namespace Infinitepickaxe {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public MiningStart(MiningStart other) : this() {
-      mineralId_ = other.mineralId_;
+    public PickaxeAttack(PickaxeAttack other) : this() {
+      slotIndex_ = other.slotIndex_;
+      damage_ = other.damage_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public MiningStart Clone() {
-      return new MiningStart(this);
+    public PickaxeAttack Clone() {
+      return new PickaxeAttack(this);
     }
 
-    /// <summary>Field number for the "mineral_id" field.</summary>
-    public const int MineralIdFieldNumber = 1;
-    private uint mineralId_;
+    /// <summary>Field number for the "slot_index" field.</summary>
+    public const int SlotIndexFieldNumber = 1;
+    private uint slotIndex_;
     /// <summary>
-    /// 채굴할 광물 (모든 슬롯이 동일 광물 채굴)
+    /// 0-3 (어떤 슬롯이 공격했는지)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint MineralId {
-      get { return mineralId_; }
+    public uint SlotIndex {
+      get { return slotIndex_; }
       set {
-        mineralId_ = value;
+        slotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "damage" field.</summary>
+    public const int DamageFieldNumber = 2;
+    private ulong damage_;
+    /// <summary>
+    /// 이 공격으로 입힌 데미지
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong Damage {
+      get { return damage_; }
+      set {
+        damage_ = value;
       }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as MiningStart);
+      return Equals(other as PickaxeAttack);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(MiningStart other) {
+    public bool Equals(PickaxeAttack other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (MineralId != other.MineralId) return false;
+      if (SlotIndex != other.SlotIndex) return false;
+      if (Damage != other.Damage) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5672,7 +5588,8 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (MineralId != 0) hash ^= MineralId.GetHashCode();
+      if (SlotIndex != 0) hash ^= SlotIndex.GetHashCode();
+      if (Damage != 0UL) hash ^= Damage.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5691,9 +5608,13 @@ namespace Infinitepickaxe {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (MineralId != 0) {
+      if (SlotIndex != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(MineralId);
+        output.WriteUInt32(SlotIndex);
+      }
+      if (Damage != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(Damage);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -5705,9 +5626,13 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (MineralId != 0) {
+      if (SlotIndex != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(MineralId);
+        output.WriteUInt32(SlotIndex);
+      }
+      if (Damage != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(Damage);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -5719,8 +5644,11 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (MineralId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MineralId);
+      if (SlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SlotIndex);
+      }
+      if (Damage != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Damage);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -5730,12 +5658,15 @@ namespace Infinitepickaxe {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(MiningStart other) {
+    public void MergeFrom(PickaxeAttack other) {
       if (other == null) {
         return;
       }
-      if (other.MineralId != 0) {
-        MineralId = other.MineralId;
+      if (other.SlotIndex != 0) {
+        SlotIndex = other.SlotIndex;
+      }
+      if (other.Damage != 0UL) {
+        Damage = other.Damage;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -5757,7 +5688,11 @@ namespace Infinitepickaxe {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            MineralId = input.ReadUInt32();
+            SlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            Damage = input.ReadUInt64();
             break;
           }
         }
@@ -5780,7 +5715,11 @@ namespace Infinitepickaxe {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            MineralId = input.ReadUInt32();
+            SlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            Damage = input.ReadUInt64();
             break;
           }
         }
@@ -5790,278 +5729,9 @@ namespace Infinitepickaxe {
 
   }
 
-  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class MiningSync : pb::IMessage<MiningSync>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<MiningSync> _parser = new pb::MessageParser<MiningSync>(() => new MiningSync());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<MiningSync> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[13]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public MiningSync() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public MiningSync(MiningSync other) : this() {
-      mineralId_ = other.mineralId_;
-      clientHp_ = other.clientHp_;
-      clientTimestamp_ = other.clientTimestamp_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public MiningSync Clone() {
-      return new MiningSync(this);
-    }
-
-    /// <summary>Field number for the "mineral_id" field.</summary>
-    public const int MineralIdFieldNumber = 1;
-    private uint mineralId_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint MineralId {
-      get { return mineralId_; }
-      set {
-        mineralId_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "client_hp" field.</summary>
-    public const int ClientHpFieldNumber = 2;
-    private ulong clientHp_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ulong ClientHp {
-      get { return clientHp_; }
-      set {
-        clientHp_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "client_timestamp" field.</summary>
-    public const int ClientTimestampFieldNumber = 3;
-    private ulong clientTimestamp_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ulong ClientTimestamp {
-      get { return clientTimestamp_; }
-      set {
-        clientTimestamp_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override bool Equals(object other) {
-      return Equals(other as MiningSync);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(MiningSync other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (MineralId != other.MineralId) return false;
-      if (ClientHp != other.ClientHp) return false;
-      if (ClientTimestamp != other.ClientTimestamp) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (MineralId != 0) hash ^= MineralId.GetHashCode();
-      if (ClientHp != 0UL) hash ^= ClientHp.GetHashCode();
-      if (ClientTimestamp != 0UL) hash ^= ClientTimestamp.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
-      if (MineralId != 0) {
-        output.WriteRawTag(8);
-        output.WriteUInt32(MineralId);
-      }
-      if (ClientHp != 0UL) {
-        output.WriteRawTag(16);
-        output.WriteUInt64(ClientHp);
-      }
-      if (ClientTimestamp != 0UL) {
-        output.WriteRawTag(24);
-        output.WriteUInt64(ClientTimestamp);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (MineralId != 0) {
-        output.WriteRawTag(8);
-        output.WriteUInt32(MineralId);
-      }
-      if (ClientHp != 0UL) {
-        output.WriteRawTag(16);
-        output.WriteUInt64(ClientHp);
-      }
-      if (ClientTimestamp != 0UL) {
-        output.WriteRawTag(24);
-        output.WriteUInt64(ClientTimestamp);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int CalculateSize() {
-      int size = 0;
-      if (MineralId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MineralId);
-      }
-      if (ClientHp != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ClientHp);
-      }
-      if (ClientTimestamp != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ClientTimestamp);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(MiningSync other) {
-      if (other == null) {
-        return;
-      }
-      if (other.MineralId != 0) {
-        MineralId = other.MineralId;
-      }
-      if (other.ClientHp != 0UL) {
-        ClientHp = other.ClientHp;
-      }
-      if (other.ClientTimestamp != 0UL) {
-        ClientTimestamp = other.ClientTimestamp;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-      if ((tag & 7) == 4) {
-        // Abort on any end group tag.
-        return;
-      }
-      switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 8: {
-            MineralId = input.ReadUInt32();
-            break;
-          }
-          case 16: {
-            ClientHp = input.ReadUInt64();
-            break;
-          }
-          case 24: {
-            ClientTimestamp = input.ReadUInt64();
-            break;
-          }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-      if ((tag & 7) == 4) {
-        // Abort on any end group tag.
-        return;
-      }
-      switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 8: {
-            MineralId = input.ReadUInt32();
-            break;
-          }
-          case 16: {
-            ClientHp = input.ReadUInt64();
-            break;
-          }
-          case 24: {
-            ClientTimestamp = input.ReadUInt64();
-            break;
-          }
-        }
-      }
-    }
-    #endif
-
-  }
-
+  /// <summary>
+  /// 서버 → 클라이언트: 40ms마다 전송되는 채굴 상태 업데이트
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class MiningUpdate : pb::IMessage<MiningUpdate>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -6077,7 +5747,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[14]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6100,8 +5770,7 @@ namespace Infinitepickaxe {
       mineralId_ = other.mineralId_;
       currentHp_ = other.currentHp_;
       maxHp_ = other.maxHp_;
-      damageDealt_ = other.damageDealt_;
-      totalDps_ = other.totalDps_;
+      attacks_ = other.attacks_.Clone();
       serverTimestamp_ = other.serverTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -6148,38 +5817,22 @@ namespace Infinitepickaxe {
       }
     }
 
-    /// <summary>Field number for the "damage_dealt" field.</summary>
-    public const int DamageDealtFieldNumber = 4;
-    private ulong damageDealt_;
+    /// <summary>Field number for the "attacks" field.</summary>
+    public const int AttacksFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.PickaxeAttack> _repeated_attacks_codec
+        = pb::FieldCodec.ForMessage(34, global::Infinitepickaxe.PickaxeAttack.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.PickaxeAttack> attacks_ = new pbc::RepeatedField<global::Infinitepickaxe.PickaxeAttack>();
     /// <summary>
-    /// 이번 틱의 총 데미지
+    /// 이번 틱(40ms)에 발생한 공격들
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ulong DamageDealt {
-      get { return damageDealt_; }
-      set {
-        damageDealt_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "total_dps" field.</summary>
-    public const int TotalDpsFieldNumber = 5;
-    private ulong totalDps_;
-    /// <summary>
-    /// 모든 슬롯의 DPS 합계
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ulong TotalDps {
-      get { return totalDps_; }
-      set {
-        totalDps_ = value;
-      }
+    public pbc::RepeatedField<global::Infinitepickaxe.PickaxeAttack> Attacks {
+      get { return attacks_; }
     }
 
     /// <summary>Field number for the "server_timestamp" field.</summary>
-    public const int ServerTimestampFieldNumber = 6;
+    public const int ServerTimestampFieldNumber = 5;
     private ulong serverTimestamp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -6208,8 +5861,7 @@ namespace Infinitepickaxe {
       if (MineralId != other.MineralId) return false;
       if (CurrentHp != other.CurrentHp) return false;
       if (MaxHp != other.MaxHp) return false;
-      if (DamageDealt != other.DamageDealt) return false;
-      if (TotalDps != other.TotalDps) return false;
+      if(!attacks_.Equals(other.attacks_)) return false;
       if (ServerTimestamp != other.ServerTimestamp) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -6221,8 +5873,7 @@ namespace Infinitepickaxe {
       if (MineralId != 0) hash ^= MineralId.GetHashCode();
       if (CurrentHp != 0UL) hash ^= CurrentHp.GetHashCode();
       if (MaxHp != 0UL) hash ^= MaxHp.GetHashCode();
-      if (DamageDealt != 0UL) hash ^= DamageDealt.GetHashCode();
-      if (TotalDps != 0UL) hash ^= TotalDps.GetHashCode();
+      hash ^= attacks_.GetHashCode();
       if (ServerTimestamp != 0UL) hash ^= ServerTimestamp.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -6254,16 +5905,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(24);
         output.WriteUInt64(MaxHp);
       }
-      if (DamageDealt != 0UL) {
-        output.WriteRawTag(32);
-        output.WriteUInt64(DamageDealt);
-      }
-      if (TotalDps != 0UL) {
-        output.WriteRawTag(40);
-        output.WriteUInt64(TotalDps);
-      }
+      attacks_.WriteTo(output, _repeated_attacks_codec);
       if (ServerTimestamp != 0UL) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(40);
         output.WriteUInt64(ServerTimestamp);
       }
       if (_unknownFields != null) {
@@ -6288,16 +5932,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(24);
         output.WriteUInt64(MaxHp);
       }
-      if (DamageDealt != 0UL) {
-        output.WriteRawTag(32);
-        output.WriteUInt64(DamageDealt);
-      }
-      if (TotalDps != 0UL) {
-        output.WriteRawTag(40);
-        output.WriteUInt64(TotalDps);
-      }
+      attacks_.WriteTo(ref output, _repeated_attacks_codec);
       if (ServerTimestamp != 0UL) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(40);
         output.WriteUInt64(ServerTimestamp);
       }
       if (_unknownFields != null) {
@@ -6319,12 +5956,7 @@ namespace Infinitepickaxe {
       if (MaxHp != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(MaxHp);
       }
-      if (DamageDealt != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(DamageDealt);
-      }
-      if (TotalDps != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(TotalDps);
-      }
+      size += attacks_.CalculateSize(_repeated_attacks_codec);
       if (ServerTimestamp != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ServerTimestamp);
       }
@@ -6349,12 +5981,7 @@ namespace Infinitepickaxe {
       if (other.MaxHp != 0UL) {
         MaxHp = other.MaxHp;
       }
-      if (other.DamageDealt != 0UL) {
-        DamageDealt = other.DamageDealt;
-      }
-      if (other.TotalDps != 0UL) {
-        TotalDps = other.TotalDps;
-      }
+      attacks_.Add(other.attacks_);
       if (other.ServerTimestamp != 0UL) {
         ServerTimestamp = other.ServerTimestamp;
       }
@@ -6389,15 +6016,11 @@ namespace Infinitepickaxe {
             MaxHp = input.ReadUInt64();
             break;
           }
-          case 32: {
-            DamageDealt = input.ReadUInt64();
+          case 34: {
+            attacks_.AddEntriesFrom(input, _repeated_attacks_codec);
             break;
           }
           case 40: {
-            TotalDps = input.ReadUInt64();
-            break;
-          }
-          case 48: {
             ServerTimestamp = input.ReadUInt64();
             break;
           }
@@ -6432,15 +6055,11 @@ namespace Infinitepickaxe {
             MaxHp = input.ReadUInt64();
             break;
           }
-          case 32: {
-            DamageDealt = input.ReadUInt64();
+          case 34: {
+            attacks_.AddEntriesFrom(ref input, _repeated_attacks_codec);
             break;
           }
           case 40: {
-            TotalDps = input.ReadUInt64();
-            break;
-          }
-          case 48: {
             ServerTimestamp = input.ReadUInt64();
             break;
           }
@@ -6466,7 +6085,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[15]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[14]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6852,7 +6471,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[16]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[15]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7013,7 +6632,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[17]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7243,7 +6862,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[18]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7444,7 +7063,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[19]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8150,7 +7769,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[20]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[19]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8311,7 +7930,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[21]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[20]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8768,7 +8387,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[22]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[21]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9029,7 +8648,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[23]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[22]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9338,7 +8957,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[24]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[23]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9536,7 +9155,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[25]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9885,7 +9504,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[26]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10046,7 +9665,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10347,7 +9966,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[28]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10548,7 +10167,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[29]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10900,7 +10519,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[30]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11098,7 +10717,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[31]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11444,7 +11063,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[32]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11645,7 +11264,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[33]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[32]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12028,7 +11647,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[34]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[33]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12322,7 +11941,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[35]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12483,7 +12102,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[36]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[35]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12792,7 +12411,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[37]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[36]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

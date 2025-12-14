@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using InfinitePickaxe.Client.Auth;
+using InfinitePickaxe.Client.Net;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using InfinitePickaxe.Client.Net;
 using Infinitepickaxe;
 
 namespace InfinitePickaxe.Client.Core
@@ -16,7 +17,7 @@ namespace InfinitePickaxe.Client.Core
     public class GameSceneController : MonoBehaviour
     {
         [Header("Configuration")]
-        [SerializeField] private string loginSceneName = "Login";
+        [SerializeField] private string loginSceneName = "Title";
         [SerializeField] private float handshakeTimeoutSeconds = 10f;
 
         [Header("UI References")]
@@ -25,6 +26,7 @@ namespace InfinitePickaxe.Client.Core
 
         private NetworkManager networkManager;
         private MessageHandler messageHandler;
+        private AuthSessionService sessionService;
 
         private bool isHandshakeCompleted = false;
         private bool isHandshakeFailed = false;
@@ -32,13 +34,16 @@ namespace InfinitePickaxe.Client.Core
 
         private void Start()
         {
-            // JWT 토큰 가져오기 (로그인 화면에서 저장했다고 가정)
-            jwtToken = PlayerPrefs.GetString("JWT_TOKEN", "");
+            if (!TryResolveSession())
+            {
+                FailAndReturnToTitle("세션 정보를 불러올 수 없습니다. 다시 로그인해주세요.", clearSession: true, disconnect: false, immediate: true);
+                return;
+            }
 
+            jwtToken = sessionService.Tokens.AccessToken;
             if (string.IsNullOrEmpty(jwtToken))
             {
-                Debug.LogError("JWT 토큰이 없습니다. 로그인 화면으로 돌아갑니다.");
-                ReturnToLogin();
+                FailAndReturnToTitle("액세스 토큰이 없습니다. 다시 로그인해주세요.", clearSession: true, disconnect: false, immediate: true);
                 return;
             }
 
@@ -58,6 +63,16 @@ namespace InfinitePickaxe.Client.Core
 
         private void OnEnable()
         {
+            if (networkManager == null)
+            {
+                networkManager = NetworkManager.Instance;
+            }
+
+            if (messageHandler == null)
+            {
+                messageHandler = MessageHandler.Instance;
+            }
+
             if (messageHandler != null)
             {
                 messageHandler.OnHandshakeResult += HandleHandshakeResult;
@@ -99,7 +114,7 @@ namespace InfinitePickaxe.Client.Core
                 if (!connected)
                 {
                     Debug.LogError("서버 연결 실패");
-                    ShowConnectionError("서버 연결에 실패했습니다.");
+                    FailAndReturnToTitle("서버 연결에 실패했습니다. 다시 시도해주세요.");
                     return;
                 }
 
@@ -120,18 +135,18 @@ namespace InfinitePickaxe.Client.Core
                 else if (isHandshakeFailed)
                 {
                     Debug.LogError("핸드셰이크 실패");
-                    ShowConnectionError("인증에 실패했습니다. 다시 로그인해주세요.");
+                    FailAndReturnToTitle("인증에 실패했습니다. 다시 로그인해주세요.", clearSession: true);
                 }
                 else
                 {
                     Debug.LogError("핸드셰이크 타임아웃");
-                    ShowConnectionError("서버 응답 시간이 초과되었습니다.");
+                    FailAndReturnToTitle("서버 응답 시간이 초과되었습니다. 다시 시도해주세요.");
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogError($"서버 연결 중 오류 발생: {ex.Message}\n{ex.StackTrace}");
-                ShowConnectionError($"연결 오류: {ex.Message}");
+                FailAndReturnToTitle($"연결 오류: {ex.Message}");
             }
         }
 
@@ -162,8 +177,7 @@ namespace InfinitePickaxe.Client.Core
             // 인증 관련 에러는 로그인 화면으로 돌아가기
             if (error.ErrorCode == "AUTH_INVALID" || error.ErrorCode == "AUTH_EXPIRED")
             {
-                ShowConnectionError("세션이 만료되었습니다. 다시 로그인해주세요.");
-                ReturnToLogin();
+                FailAndReturnToTitle("세션이 만료되었습니다. 다시 로그인해주세요.", clearSession: true);
             }
         }
 
@@ -177,13 +191,12 @@ namespace InfinitePickaxe.Client.Core
             // 게임 진행 중에 연결이 끊긴 경우
             if (isHandshakeCompleted)
             {
-                ShowConnectionError("서버와의 연결이 끊어졌습니다. 재연결을 시도합니다...");
-                // NetworkManager의 auto-reconnect가 동작할 것임
+                FailAndReturnToTitle("서버와의 연결이 끊어졌습니다. 다시 접속해주세요.");
             }
             else
             {
                 // 핸드셰이크 전에 끊긴 경우
-                ShowConnectionError("서버 연결이 끊어졌습니다.");
+                FailAndReturnToTitle("서버 연결이 끊어졌습니다. 다시 시도해주세요.");
             }
         }
 
@@ -204,15 +217,32 @@ namespace InfinitePickaxe.Client.Core
         }
 
         /// <summary>
-        /// 연결 오류 메시지 표시
+        /// 세션/연결 실패 처리
         /// </summary>
-        private void ShowConnectionError(string message)
+        private void FailAndReturnToTitle(string message, bool clearSession = false, bool disconnect = true, bool immediate = true)
         {
             Debug.LogError($"연결 오류: {message}");
 
-            // TODO: 오류 모달 표시
-            // 현재는 3초 후 로그인 화면으로 돌아가기
-            Invoke(nameof(ReturnToLogin), 3f);
+            TitleController.SetReconnectNotice(message);
+
+            if (disconnect && networkManager != null && networkManager.IsConnected)
+            {
+                networkManager.Disconnect();
+            }
+
+            if (clearSession)
+            {
+                sessionService?.Clear();
+            }
+
+            if (immediate)
+            {
+                ReturnToLogin();
+            }
+            else
+            {
+                Invoke(nameof(ReturnToLogin), 3f);
+            }
         }
 
         /// <summary>
@@ -220,10 +250,6 @@ namespace InfinitePickaxe.Client.Core
         /// </summary>
         private void ReturnToLogin()
         {
-            // JWT 토큰 삭제
-            PlayerPrefs.DeleteKey("JWT_TOKEN");
-            PlayerPrefs.Save();
-
             // 네트워크 연결 종료
             if (networkManager != null && networkManager.IsConnected)
             {
@@ -251,5 +277,21 @@ namespace InfinitePickaxe.Client.Core
 #endif
 
         #endregion
+
+        private bool TryResolveSession()
+        {
+            if (sessionService != null)
+            {
+                return true;
+            }
+
+            if (ClientRuntime.TryResolve(out AuthSessionService resolved))
+            {
+                sessionService = resolved;
+                return true;
+            }
+
+            return false;
+        }
     }
 }
