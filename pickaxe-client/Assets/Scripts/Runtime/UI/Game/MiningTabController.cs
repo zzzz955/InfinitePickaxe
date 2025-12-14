@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using InfinitePickaxe.Client.Net;
+using Infinitepickaxe;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -38,6 +40,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private bool slot4Unlocked = false;
 
         private GameTabManager tabManager;
+        private MessageHandler messageHandler;
 
         protected override void Initialize()
         {
@@ -48,6 +51,13 @@ namespace InfinitePickaxe.Client.UI.Game
             if (tabManager == null)
             {
                 Debug.LogWarning("MiningTabController: GameTabManager를 찾을 수 없습니다.");
+            }
+
+            // MessageHandler 찾기
+            messageHandler = MessageHandler.Instance;
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("MiningTabController: MessageHandler를 찾을 수 없습니다.");
             }
 
             // 광물 선택 버튼 이벤트 등록
@@ -79,6 +89,36 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // 초기 UI 업데이트
             RefreshData();
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            // MessageHandler 이벤트 구독
+            if (messageHandler != null)
+            {
+                messageHandler.OnUserDataSnapshot += HandleUserDataSnapshot;
+                messageHandler.OnMiningUpdate += HandleMiningUpdate;
+                messageHandler.OnMiningComplete += HandleMiningComplete;
+                messageHandler.OnChangeMineralResponse += HandleChangeMineralResponse;
+                messageHandler.OnAllSlotsResponse += HandleAllSlotsResponse;
+            }
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+
+            // MessageHandler 이벤트 구독 해제
+            if (messageHandler != null)
+            {
+                messageHandler.OnUserDataSnapshot -= HandleUserDataSnapshot;
+                messageHandler.OnMiningUpdate -= HandleMiningUpdate;
+                messageHandler.OnMiningComplete -= HandleMiningComplete;
+                messageHandler.OnChangeMineralResponse -= HandleChangeMineralResponse;
+                messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
+            }
         }
 
         protected override void OnTabShown()
@@ -382,6 +422,122 @@ namespace InfinitePickaxe.Client.UI.Game
             Debug.Log($"MiningTabController: 광물 변경 - {mineralName} (HP: {hp}/{maxHp})");
 #endif
         }
+
+        #region Server Message Handlers
+
+        /// <summary>
+        /// 유저 데이터 스냅샷 처리
+        /// </summary>
+        private void HandleUserDataSnapshot(UserDataSnapshot snapshot)
+        {
+            // 광물 정보 업데이트
+            if (snapshot.CurrentMineralId.HasValue)
+            {
+                uint mineralId = snapshot.CurrentMineralId.Value;
+                // TODO: 광물 ID로 이름 조회 (MineralMetadata 필요)
+                currentMineralName = $"광물 #{mineralId}";
+            }
+
+            // HP 정보 업데이트
+            if (snapshot.MineralHp != null && snapshot.MineralMaxHp != null)
+            {
+                currentHP = snapshot.MineralHp.Value;
+                maxHP = snapshot.MineralMaxHp.Value;
+            }
+
+            // DPS 정보 업데이트
+            if (snapshot.TotalDps > 0)
+            {
+                currentDPS = snapshot.TotalDps;
+            }
+
+            // 슬롯 해금 정보 업데이트
+            for (int i = 0; i < snapshot.UnlockedSlots.Count && i < 4; i++)
+            {
+                bool isUnlocked = snapshot.UnlockedSlots[i];
+                switch (i)
+                {
+                    case 0: /* 슬롯 1은 항상 해금 */ break;
+                    case 1: slot2Unlocked = isUnlocked; break;
+                    case 2: slot3Unlocked = isUnlocked; break;
+                    case 3: slot4Unlocked = isUnlocked; break;
+                }
+            }
+
+            RefreshData();
+        }
+
+        /// <summary>
+        /// 채굴 진행 업데이트 처리
+        /// </summary>
+        private void HandleMiningUpdate(MiningUpdate update)
+        {
+            currentHP = update.CurrentHp;
+            maxHP = update.MaxHp;
+            currentDPS = update.TotalDps;
+
+            UpdateHPBar();
+            UpdateDPS();
+        }
+
+        /// <summary>
+        /// 채굴 완료 처리
+        /// </summary>
+        private void HandleMiningComplete(MiningComplete complete)
+        {
+            Debug.Log($"채굴 완료! 광물 #{complete.MineralId}, 획득 골드: {complete.GoldEarned}");
+
+            // 다음 광물 자동 시작 (서버에서 MiningUpdate가 올 것임)
+            // UI는 자동으로 업데이트됨
+        }
+
+        /// <summary>
+        /// 광물 변경 응답 처리
+        /// </summary>
+        private void HandleChangeMineralResponse(ChangeMineralResponse response)
+        {
+            if (response.Success)
+            {
+                uint mineralId = response.MineralId;
+                // TODO: 광물 ID로 이름 조회
+                currentMineralName = $"광물 #{mineralId}";
+                currentHP = response.MineralHp;
+                maxHP = response.MineralMaxHp;
+
+                RefreshData();
+
+                CloseModal(mineralSelectModal);
+            }
+            else
+            {
+                Debug.LogWarning($"광물 변경 실패: {response.ErrorCode}");
+            }
+        }
+
+        /// <summary>
+        /// 모든 슬롯 정보 응답 처리
+        /// </summary>
+        private void HandleAllSlotsResponse(AllSlotsResponse response)
+        {
+            // 총 DPS 업데이트
+            currentDPS = response.TotalDps;
+
+            // 슬롯별 해금 정보 업데이트
+            foreach (var slot in response.Slots)
+            {
+                switch (slot.SlotIndex)
+                {
+                    case 1: /* 슬롯 1은 항상 해금 */ break;
+                    case 2: slot2Unlocked = slot.IsUnlocked; break;
+                    case 3: slot3Unlocked = slot.IsUnlocked; break;
+                    case 4: slot4Unlocked = slot.IsUnlocked; break;
+                }
+            }
+
+            RefreshData();
+        }
+
+        #endregion
 
         #region Unity Editor Helper
 #if UNITY_EDITOR

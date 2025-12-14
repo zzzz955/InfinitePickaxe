@@ -59,7 +59,6 @@ namespace InfinitePickaxe.Client.Bootstrap
                 registry.RegisterSingleton(networkSettings);
                 registry.RegisterSingleton<INetworkTransport>(transport);
                 registry.RegisterSingleton(networkClient);
-                registry.RegisterSingleton(new GameSessionState());
             });
 
             initializedHere = true;

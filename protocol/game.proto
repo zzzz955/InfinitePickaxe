@@ -4,18 +4,123 @@ package infinitepickaxe;
 
 import "google/protobuf/wrappers.proto";
 
-// 공통 Envelope: msg_type으로 메시지 구분
+// 메시지 타입 Enum
+enum MessageType {
+  UNKNOWN = 0;
+
+  // 접속/세션
+  HANDSHAKE = 1;
+  HANDSHAKE_RESULT = 2;
+  HEARTBEAT = 3;
+  HEARTBEAT_ACK = 4;
+
+  // 유저 데이터
+  USER_DATA_SNAPSHOT = 10;
+
+  // 광물
+  MINERAL_LIST_REQUEST = 20;
+  MINERAL_LIST_RESPONSE = 21;
+  CHANGE_MINERAL_REQUEST = 22;
+  CHANGE_MINERAL_RESPONSE = 23;
+
+  // 채굴
+  MINING_START = 30;
+  MINING_SYNC = 31;
+  MINING_UPDATE = 32;
+  MINING_COMPLETE = 33;
+
+  // 슬롯
+  ALL_SLOTS_REQUEST = 40;
+  ALL_SLOTS_RESPONSE = 41;
+  SLOT_UNLOCK = 42;
+  SLOT_UNLOCK_RESULT = 43;
+
+  // 강화
+  UPGRADE_REQUEST = 50;
+  UPGRADE_RESULT = 51;
+
+  // 미션
+  DAILY_MISSIONS_REQUEST = 60;
+  DAILY_MISSIONS_RESPONSE = 61;
+  MISSION_PROGRESS_UPDATE = 62;
+  MISSION_COMPLETE = 63;
+  MISSION_COMPLETE_RESULT = 64;
+  MISSION_REROLL = 65;
+  MISSION_REROLL_RESULT = 66;
+  MILESTONE_CLAIM = 67;
+  MILESTONE_CLAIM_RESULT = 68;
+
+  // 광고
+  AD_WATCH_COMPLETE = 70;
+  AD_WATCH_RESULT = 71;
+
+  // 재화
+  CURRENCY_UPDATE = 80;
+
+  // 오프라인 보상
+  OFFLINE_REWARD_REQUEST = 90;
+  OFFLINE_REWARD_RESULT = 91;
+
+  // 에러
+  ERROR_NOTIFICATION = 100;
+}
+
+// 공통 Envelope: Type으로 메시지 구분
 message Envelope {
-  string msg_type = 1;  // HANDSHAKE, HEARTBEAT, MINE_START, ...
-  uint32 version = 2;   // 프로토콜 버전
-  uint32 seq = 3;       // 시퀀스 번호 (옵션, 0이면 미사용)
-  uint64 timestamp = 4; // 클라이언트 Unix timestamp(초)
-  bytes payload = 5;    // 직렬화된 메시지 페이로드
+  MessageType type = 1;
+
+  // oneof를 사용하여 타입별 메시지를 직접 포함
+  oneof message {
+    HandshakeRequest handshake = 10;
+    HandshakeResponse handshake_result = 11;
+    Heartbeat heartbeat = 12;
+    HeartbeatAck heartbeat_ack = 13;
+
+    UserDataSnapshot user_data_snapshot = 20;
+
+    MineralListRequest mineral_list_request = 30;
+    MineralListResponse mineral_list_response = 31;
+    ChangeMineralRequest change_mineral_request = 32;
+    ChangeMineralResponse change_mineral_response = 33;
+
+    MiningStart mining_start = 40;
+    MiningSync mining_sync = 41;
+    MiningUpdate mining_update = 42;
+    MiningComplete mining_complete = 43;
+
+    AllSlotsRequest all_slots_request = 50;
+    AllSlotsResponse all_slots_response = 51;
+    SlotUnlock slot_unlock = 52;
+    SlotUnlockResult slot_unlock_result = 53;
+
+    UpgradeRequest upgrade_request = 60;
+    UpgradeResult upgrade_result = 61;
+
+    DailyMissionsRequest daily_missions_request = 70;
+    DailyMissionsResponse daily_missions_response = 71;
+    MissionProgressUpdate mission_progress_update = 72;
+    MissionComplete mission_complete = 73;
+    MissionCompleteResult mission_complete_result = 74;
+    MissionReroll mission_reroll = 75;
+    MissionRerollResult mission_reroll_result = 76;
+    MilestoneClaim milestone_claim = 77;
+    MilestoneClaimResult milestone_claim_result = 78;
+
+    AdWatchComplete ad_watch_complete = 80;
+    AdWatchResult ad_watch_result = 81;
+
+    CurrencyUpdate currency_update = 90;
+
+    OfflineRewardRequest offline_reward_request = 100;
+    OfflineRewardResult offline_reward_result = 101;
+
+    ErrorNotification error_notification = 110;
+  }
 }
 
 // -------------- 접속 / 세션 --------------
 
-message HandshakeReq {
+message HandshakeRequest {
   string jwt = 1;
   string client_version = 2;
   string device_id = 3;
@@ -50,9 +155,9 @@ message UserDataSnapshot {
   uint32 offline_bonus_hours = 12;
 }
 
-message HandshakeRes {
-  bool ok = 1;
-  string error = 2;        // INVALID_JWT, BANNED, EXPIRED ...
+message HandshakeResponse {
+  bool success = 1;
+  string message = 2;      // 성공/실패 메시지
   UserDataSnapshot snapshot = 3;
 }
 
@@ -139,9 +244,8 @@ message AllSlotsResponse {
 
 // -------------- 강화 --------------
 
-message UpgradePickaxe {
+message UpgradeRequest {
   uint32 slot_index = 1;       // 강화할 슬롯 (1-4)
-  uint32 target_level = 2;     // 목표 레벨
 }
 
 message UpgradeResult {
@@ -163,32 +267,55 @@ message UpgradeResult {
 
 // -------------- 미션 --------------
 
-message MissionClaim {
-  uint32 mission_index = 1;
-}
-
-message MissionReroll {
-  bool use_ad = 1;
+message DailyMissionsRequest {
+  // 빈 요청
 }
 
 message MissionEntry {
-  uint32 index = 1;
+  uint32 mission_id = 1;
   string type = 2;
   string description = 3;
-  uint32 target = 4;
-  uint32 current = 5;
-  uint32 reward_crystal = 6;
-  bool completed = 7;
-  bool claimed = 8;
+  uint32 required_progress = 4;
+  uint32 current_progress = 5;
+  uint64 gold_reward = 6;
+  bool is_completed = 7;
+  bool is_claimed = 8;
 }
 
-message MissionUpdate {
+message DailyMissionsResponse {
   repeated MissionEntry missions = 1;
-  bool milestone_completed_3 = 2;
-  bool milestone_completed_5 = 3;
-  bool milestone_completed_7 = 4;
-  uint32 offline_bonus_hours = 5;
-  uint64 reset_time = 6; // unix seconds
+  uint32 ads_watched_today = 2;
+  uint32 mission_rerolls_used = 3;
+}
+
+message MissionProgressUpdate {
+  uint32 mission_id = 1;
+  uint32 current_progress = 2;
+  uint32 required_progress = 3;
+  bool is_completed = 4;
+}
+
+message MissionComplete {
+  uint32 mission_id = 1;
+}
+
+message MissionCompleteResult {
+  bool success = 1;
+  uint32 mission_id = 2;
+  uint64 gold_reward = 3;
+  uint64 total_gold = 4;
+  string error_code = 5;
+}
+
+message MissionReroll {
+  // 빈 요청
+}
+
+message MissionRerollResult {
+  bool success = 1;
+  repeated MissionEntry rerolled_missions = 2;
+  uint32 rerolls_used = 3;
+  string error_code = 4;
 }
 
 // 마일스톤 보상 수령 (QuestTab)
@@ -244,22 +371,19 @@ message CurrencyUpdate {
 // -------------- 오프라인 보상 --------------
 
 message OfflineRewardRequest {
-  string request_type = 1; // "calculate" 등
+  // 빈 요청
 }
 
-message OfflineReward {
-  uint32 offline_seconds = 1;
+message OfflineRewardResult {
+  uint64 elapsed_seconds = 1;
   uint64 gold_earned = 2;
-  uint32 mining_cycles = 3;
-  uint32 mineral_id = 4;
-  double efficiency = 5;
-  uint64 new_total_gold = 6;
+  uint32 mining_count = 3;
+  uint64 total_gold = 4;
 }
 
 // -------------- 공통 에러 --------------
 
-message Error {
+message ErrorNotification {
   string error_code = 1;    // AUTH_FAILED, INVALID_PACKET, INSUFFICIENT_GOLD 등
-  string error_message = 2; // 상세 메시지
-  bytes detail = 3;         // 선택적 추가 JSON/PROTO
+  string message = 2;       // 상세 메시지
 }
