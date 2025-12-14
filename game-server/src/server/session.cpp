@@ -204,7 +204,42 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
 
     res.set_success(true);
     res.set_message("OK");
-    // TODO: UserDataSnapshot 추가 필요
+
+    // UserDataSnapshot 구성
+    auto* snapshot = res.mutable_snapshot();
+
+    // 유저 게임 데이터 조회
+    auto game_data = game_repo_.get_user_game_data(user_id_);
+    snapshot->mutable_gold()->set_value(game_data.gold);
+    snapshot->mutable_crystal()->set_value(game_data.crystal);
+
+    // 슬롯 해금 상태
+    for (bool unlocked : game_data.unlocked_slots) {
+        snapshot->add_unlocked_slots(unlocked);
+    }
+
+    // 현재 채굴 중인 광물 (기본값: 광물 ID 1)
+    snapshot->mutable_current_mineral_id()->set_value(1);
+    snapshot->mutable_mineral_hp()->set_value(100);
+    snapshot->mutable_mineral_max_hp()->set_value(100);
+
+    // 슬롯 정보 및 총 DPS
+    auto slots_response = slot_service_.handle_all_slots(user_id_);
+    for (const auto& slot : slots_response.slots()) {
+        *snapshot->add_pickaxe_slots() = slot;
+    }
+    snapshot->set_total_dps(slots_response.total_dps());
+
+    // 서버 시간
+    snapshot->mutable_server_time()->set_value(
+        static_cast<uint64_t>(
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count()));
+
+    // 미션 및 광고 관련
+    snapshot->set_ads_watched_today(game_data.ad_count_today);
+    snapshot->set_mission_rerolls_used(game_data.mission_rerolls_used);
+    snapshot->set_offline_bonus_hours(game_data.max_offline_hours);
 
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);

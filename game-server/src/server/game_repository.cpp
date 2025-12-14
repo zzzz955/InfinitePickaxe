@@ -30,3 +30,53 @@ bool GameRepository::ensure_user_initialized(const std::string& user_id) {
         return false;
     }
 }
+
+UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
+    UserGameData data{};
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        auto row = tx.exec_params1(
+            "SELECT gold, crystal, unlocked_slots, ad_count_today, "
+            "       (2 - mission_reroll_free) + (3 - mission_reroll_ad) as mission_rerolls_used, "
+            "       max_offline_hours "
+            "FROM game_schema.user_game_data WHERE user_id = $1",
+            user_id);
+
+        data.gold = row[0].as<uint64_t>();
+        data.crystal = row[1].as<uint32_t>();
+
+        // PostgreSQL BOOLEAN[] 배열 파싱
+        auto slots_array = row[2].as<std::string>();
+        // 형식: {t,f,f,f} 또는 {true,false,false,false}
+        data.unlocked_slots.clear();
+        for (char c : slots_array) {
+            if (c == 't' || c == 'T') {
+                data.unlocked_slots.push_back(true);
+            } else if (c == 'f' || c == 'F') {
+                data.unlocked_slots.push_back(false);
+            }
+        }
+        // 항상 4개 슬롯 보장
+        while (data.unlocked_slots.size() < 4) {
+            data.unlocked_slots.push_back(false);
+        }
+
+        data.ad_count_today = row[3].as<uint32_t>();
+        data.mission_rerolls_used = row[4].as<uint32_t>();
+        data.max_offline_hours = row[5].as<uint32_t>();
+
+        tx.commit();
+    } catch (const std::exception& ex) {
+        spdlog::error("Failed to get user game data for {}: {}", user_id, ex.what());
+        // 기본값 반환
+        data.gold = 0;
+        data.crystal = 0;
+        data.unlocked_slots = {true, false, false, false};
+        data.ad_count_today = 0;
+        data.mission_rerolls_used = 0;
+        data.max_offline_hours = 3;
+    }
+    return data;
+}
