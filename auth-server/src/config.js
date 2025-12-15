@@ -9,7 +9,7 @@ export const PORT = process.env.PORT || 10000;
 export const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
 export const PROTOCOL_VERSION = process.env.PROTOCOL_VERSION || '1';
 export const META_HASH = process.env.META_HASH || '';
-export const META_FILE = process.env.META_FILE || '../metadata/meta.json';
+export const META_FILE = process.env.META_FILE || '/app/metadata/meta_bundle.json';
 export const STORE_URL = process.env.STORE_URL || '';
 
 // DB config

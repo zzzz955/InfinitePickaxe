@@ -17,6 +17,10 @@ services:
       - DB_NAME=${DB_NAME:-pickaxe_auth}
       - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID:-pickaxeclient}
       - PROTOCOL_VERSION=${PROTOCOL_VERSION}
+      - META_FILE=/app/metadata/meta_bundle.json
+      - STORE_URL=${STORE_URL:-}
+    volumes:
+      - ./metadata:/app/metadata:ro
     depends_on:
       - postgres
       - redis
@@ -65,6 +69,8 @@ services:
       - DB_POOL_SIZE={DB_POOL_SIZE:-4}
       - DB_POOL_MAX={DB_POOL_MAX:-16}
       - PROTOCOL_VERSION={PROTOCOL_VERSION}
+    volumes:
+      - ./metadata:/app/metadata:ro
     depends_on:
       - auth-server
       - postgres

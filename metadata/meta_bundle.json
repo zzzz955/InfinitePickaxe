@@ -1,0 +1,404 @@
+{
+  "ads": {
+    "reset_time_kst": "00:00",
+    "ad_types": [
+      {
+        "id": "upgrade_discount",
+        "daily_limit": 3,
+        "effect": "upgrade_cost_discount",
+        "parameters": {
+          "cost_multiplier": 75
+        }
+      },
+      {
+        "id": "mission_reroll",
+        "daily_limit": 3,
+        "effect": "mission_reroll",
+        "parameters": {
+          "apply_to_slots": "all",
+          "progress_reset_on_reroll": true
+        }
+      },
+      {
+        "id": "crystal_reward",
+        "daily_limit": 3,
+        "effect": "crystal_reward",
+        "rewards_by_view": [
+          10,
+          14,
+          18
+        ]
+      }
+    ]
+  },
+  "daily_missions": {
+    "reset_time_kst": "00:00",
+    "total_slots": 3,
+    "max_daily_assign": 7,
+    "pools": {
+      "Easy": [
+        {
+          "id": "easy_mine_10",
+          "type": "mine",
+          "target": 10,
+          "description": "광물 10회 채굴",
+          "reward_crystal": 10
+        },
+        {
+          "id": "easy_play_5m",
+          "type": "play_time",
+          "target": 300,
+          "description": "게임 접속 5분 유지",
+          "reward_crystal": 10
+        },
+        {
+          "id": "easy_upgrade_once",
+          "type": "upgrade",
+          "target": 1,
+          "description": "강화 1회 수행",
+          "reward_crystal": 10
+        }
+      ],
+      "Medium": [
+        {
+          "id": "med_gold_5000",
+          "type": "gold",
+          "target": 5000,
+          "description": "골드 5,000 획득",
+          "reward_crystal": 14
+        },
+        {
+          "id": "med_copper_3",
+          "type": "mine_mineral",
+          "target": 3,
+          "description": "구리 3회 채굴",
+          "reward_crystal": 14
+        },
+        {
+          "id": "med_pickaxe_lv8",
+          "type": "level",
+          "target": 8,
+          "description": "곡괭이 Lv 8 달성",
+          "reward_crystal": 14
+        }
+      ],
+      "Hard": [
+        {
+          "id": "hard_emerald_1",
+          "type": "mine_mineral",
+          "target": 1,
+          "description": "에메랄드 1회 채굴",
+          "reward_crystal": 18
+        },
+        {
+          "id": "hard_pickaxe_lv15",
+          "type": "level",
+          "target": 15,
+          "description": "곡괭이 Lv 15 달성",
+          "reward_crystal": 18
+        },
+        {
+          "id": "hard_gold_50000",
+          "type": "gold",
+          "target": 50000,
+          "description": "골드 50,000 획득",
+          "reward_crystal": 18
+        }
+      ]
+    },
+    "milestone_offline_bonus_hours": [
+      {
+        "completed": 3,
+        "bonus_hours": 1
+      },
+      {
+        "completed": 5,
+        "bonus_hours": 1
+      },
+      {
+        "completed": 7,
+        "bonus_hours": 1
+      }
+    ]
+  },
+  "minerals": [
+    {
+      "id": 1,
+      "name": "약한 돌",
+      "hp": 25,
+      "gold": 2,
+      "recommended_level": "Lv 0",
+      "biome": "얕은 동굴"
+    },
+    {
+      "id": 2,
+      "name": "돌",
+      "hp": 50,
+      "gold": 5,
+      "recommended_level": "Lv 0-2",
+      "biome": "얕은 동굴"
+    },
+    {
+      "id": 3,
+      "name": "석탄",
+      "hp": 300,
+      "gold": 30,
+      "recommended_level": "Lv 3-7",
+      "biome": "얕은 동굴"
+    },
+    {
+      "id": 4,
+      "name": "구리",
+      "hp": 1500,
+      "gold": 140,
+      "recommended_level": "Lv 8-12",
+      "biome": "깊은 광산"
+    },
+    {
+      "id": 5,
+      "name": "철광석",
+      "hp": 7000,
+      "gold": 630,
+      "recommended_level": "Lv 13-15",
+      "biome": "깊은 광산"
+    },
+    {
+      "id": 6,
+      "name": "금광석",
+      "hp": 30000,
+      "gold": 2610,
+      "recommended_level": "Lv 16-18",
+      "biome": "보석 광맥"
+    },
+    {
+      "id": 7,
+      "name": "에메랄드",
+      "hp": 120000,
+      "gold": 10440,
+      "recommended_level": "Lv 19+",
+      "biome": "수정 동굴"
+    }
+  ],
+  "mission_reroll": {
+    "reset_time_kst": "00:00",
+    "free_rerolls_per_day": 2,
+    "ad_rerolls_per_day": 3,
+    "apply_to_slots": true,
+    "progress_reset_on_reroll": true
+  },
+  "offline_defaults": {
+    "initial_offline_hours": 4
+  },
+  "pickaxe_levels": [
+    {
+      "level": 0,
+      "tier": "T1",
+      "appearance": "나무",
+      "attack_power": 10,
+      "attack_speed": 1,
+      "dps": 10,
+      "cost": 0,
+      "cumulative_cost": 0
+    },
+    {
+      "level": 1,
+      "tier": "T1",
+      "appearance": "나무",
+      "attack_power": 17,
+      "attack_speed": 1,
+      "dps": 17,
+      "cost": 5,
+      "cumulative_cost": 5
+    },
+    {
+      "level": 2,
+      "tier": "T1",
+      "appearance": "나무",
+      "attack_power": 28,
+      "attack_speed": 1,
+      "dps": 28,
+      "cost": 10,
+      "cumulative_cost": 15
+    },
+    {
+      "level": 3,
+      "tier": "T1",
+      "appearance": "나무",
+      "attack_power": 45,
+      "attack_speed": 1,
+      "dps": 45,
+      "cost": 20,
+      "cumulative_cost": 35
+    },
+    {
+      "level": 4,
+      "tier": "T1",
+      "appearance": "나무",
+      "attack_power": 71,
+      "attack_speed": 1,
+      "dps": 71,
+      "cost": 35,
+      "cumulative_cost": 70
+    },
+    {
+      "level": 5,
+      "tier": "T2",
+      "appearance": "돌",
+      "attack_power": 110,
+      "attack_speed": 1,
+      "dps": 110,
+      "cost": 60,
+      "cumulative_cost": 130
+    },
+    {
+      "level": 6,
+      "tier": "T2",
+      "appearance": "돌",
+      "attack_power": 168,
+      "attack_speed": 1,
+      "dps": 168,
+      "cost": 100,
+      "cumulative_cost": 230
+    },
+    {
+      "level": 7,
+      "tier": "T2",
+      "appearance": "돌",
+      "attack_power": 253,
+      "attack_speed": 1,
+      "dps": 253,
+      "cost": 170,
+      "cumulative_cost": 400
+    },
+    {
+      "level": 8,
+      "tier": "T2",
+      "appearance": "돌",
+      "attack_power": 377,
+      "attack_speed": 1,
+      "dps": 377,
+      "cost": 280,
+      "cumulative_cost": 680
+    },
+    {
+      "level": 9,
+      "tier": "T2",
+      "appearance": "돌",
+      "attack_power": 555,
+      "attack_speed": 1,
+      "dps": 555,
+      "cost": 450,
+      "cumulative_cost": 1130
+    },
+    {
+      "level": 10,
+      "tier": "T3",
+      "appearance": "철",
+      "attack_power": 804,
+      "attack_speed": 1,
+      "dps": 804,
+      "cost": 750,
+      "cumulative_cost": 1880
+    },
+    {
+      "level": 11,
+      "tier": "T3",
+      "appearance": "철",
+      "attack_power": 1152,
+      "attack_speed": 1,
+      "dps": 1152,
+      "cost": 1250,
+      "cumulative_cost": 3130
+    },
+    {
+      "level": 12,
+      "tier": "T3",
+      "appearance": "철",
+      "attack_power": 1638,
+      "attack_speed": 1,
+      "dps": 1638,
+      "cost": 2100,
+      "cumulative_cost": 5230
+    },
+    {
+      "level": 13,
+      "tier": "T3",
+      "appearance": "철",
+      "attack_power": 2310,
+      "attack_speed": 1,
+      "dps": 2310,
+      "cost": 3500,
+      "cumulative_cost": 8730
+    },
+    {
+      "level": 14,
+      "tier": "T3",
+      "appearance": "철",
+      "attack_power": 3235,
+      "attack_speed": 1,
+      "dps": 3235,
+      "cost": 5900,
+      "cumulative_cost": 14630
+    },
+    {
+      "level": 15,
+      "tier": "T4",
+      "appearance": "금",
+      "attack_power": 4497,
+      "attack_speed": 1,
+      "dps": 4497,
+      "cost": 10000,
+      "cumulative_cost": 24630
+    },
+    {
+      "level": 16,
+      "tier": "T4",
+      "appearance": "금",
+      "attack_power": 6208,
+      "attack_speed": 1,
+      "dps": 6208,
+      "cost": 17000,
+      "cumulative_cost": 41630
+    },
+    {
+      "level": 17,
+      "tier": "T4",
+      "appearance": "금",
+      "attack_power": 8524,
+      "attack_speed": 1,
+      "dps": 8524,
+      "cost": 29000,
+      "cumulative_cost": 70630
+    },
+    {
+      "level": 18,
+      "tier": "T4",
+      "appearance": "금",
+      "attack_power": 11653,
+      "attack_speed": 1,
+      "dps": 11653,
+      "cost": 50000,
+      "cumulative_cost": 120630
+    },
+    {
+      "level": 19,
+      "tier": "T4",
+      "appearance": "금",
+      "attack_power": 15851,
+      "attack_speed": 1,
+      "dps": 15851,
+      "cost": 85000,
+      "cumulative_cost": 205630
+    }
+  ],
+  "upgrade_rules": {
+    "min_rate": 3000,
+    "bonus_rate": 1000,
+    "base_rate_by_tier": {
+      "1": 10000,
+      "2": 9500,
+      "3": 9000,
+      "4": 8500
+    }
+  }
+}

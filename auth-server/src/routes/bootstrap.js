@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { PROTOCOL_VERSION, META_HASH, META_FILE, STORE_URL } from '../config.js';
 
@@ -9,28 +10,38 @@ const router = Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function buildMetaResponse() {
-  if (!META_HASH) return null;
+let metaCache = null;
+
+function getMetaInfo() {
+  if (metaCache) return metaCache;
 
   try {
     const filePath = path.resolve(process.cwd(), META_FILE);
     const data = fs.readFileSync(filePath);
-    const base64 = data.toString('base64');
-    return {
-      hash: META_HASH,
+    const computedHash = crypto.createHash('sha256').update(data).digest('hex');
+    const hash = META_HASH || computedHash;
+    metaCache = {
+      hash,
       size_bytes: data.length,
-      download_url: null,
-      data: base64
+      base64: data.toString('base64')
     };
+    return metaCache;
   } catch (err) {
     console.error('[bootstrap] 메타 파일을 읽지 못했습니다:', err.message);
-    return {
-      hash: META_HASH,
-      size_bytes: 0,
-      download_url: null,
-      data: null
-    };
+    return null;
   }
+}
+
+function buildMetaResponse() {
+  const metaInfo = getMetaInfo();
+  if (!metaInfo) return null;
+
+  return {
+    hash: metaInfo.hash,
+    size_bytes: metaInfo.size_bytes,
+    download_url: null,
+    data: metaInfo.base64
+  };
 }
 
 router.post('/bootstrap', (req, res) => {
@@ -50,8 +61,9 @@ router.post('/bootstrap', (req, res) => {
     });
   }
 
+  const metaInfo = getMetaInfo();
   let meta = null;
-  if (META_HASH && META_HASH !== cachedMetaHash) {
+  if (metaInfo && metaInfo.hash !== cachedMetaHash) {
     meta = buildMetaResponse();
   }
 
