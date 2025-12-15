@@ -19,6 +19,16 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI dpsText;
         [SerializeField] private Button selectMineralButton;
 
+        [Header("Mineral Select Items")]
+        [SerializeField] private Button mineralItemNullButton;
+        [SerializeField] private Button mineralItem0Button;
+        [SerializeField] private Button mineralItem1Button;
+        [SerializeField] private Button mineralItem2Button;
+        [SerializeField] private Button mineralItem3Button;
+        [SerializeField] private Button mineralItem4Button;
+        [SerializeField] private Button mineralItem5Button;
+        [SerializeField] private Button mineralItem6Button;
+
         [Header("Pickaxe Slot References")]
         [SerializeField] private Button pickaxeSlot1Button;
         [SerializeField] private Button pickaxeSlot2Button;
@@ -38,6 +48,9 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private bool slot2Unlocked = true;
         [SerializeField] private bool slot3Unlocked = false;
         [SerializeField] private bool slot4Unlocked = false;
+
+        // 채굴 중단 요청 시 서버와 합의한 sentinel ID (0은 중단, 실제 광물 ID는 1부터 시작)
+        private const uint StopMineralId = 0;
 
         private GameTabManager tabManager;
         private MessageHandler messageHandler;
@@ -65,6 +78,9 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 selectMineralButton.onClick.AddListener(OnSelectMineralClicked);
             }
+
+            // MineralSelectModal 아이템 버튼 이벤트 등록 (null=채굴 중단, 0~6=광물 선택)
+            BindMineralSelectButtons();
 
             // 슬롯 버튼 이벤트 등록
             if (pickaxeSlot1Button != null)
@@ -306,6 +322,45 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
+        /// 광물 선택 모달 내 버튼 바인딩
+        /// </summary>
+        private void BindMineralSelectButtons()
+        {
+            if (mineralItemNullButton != null)
+            {
+                mineralItemNullButton.onClick.AddListener(() => SelectMineralNullable(null));
+            }
+            if (mineralItem0Button != null)
+            {
+                mineralItem0Button.onClick.AddListener(() => SelectMineralNullable(1));
+            }
+            if (mineralItem1Button != null)
+            {
+                mineralItem1Button.onClick.AddListener(() => SelectMineralNullable(2));
+            }
+            if (mineralItem2Button != null)
+            {
+                mineralItem2Button.onClick.AddListener(() => SelectMineralNullable(3));
+            }
+            if (mineralItem3Button != null)
+            {
+                mineralItem3Button.onClick.AddListener(() => SelectMineralNullable(4));
+            }
+            if (mineralItem4Button != null)
+            {
+                mineralItem4Button.onClick.AddListener(() => SelectMineralNullable(5));
+            }
+            if (mineralItem5Button != null)
+            {
+                mineralItem5Button.onClick.AddListener(() => SelectMineralNullable(6));
+            }
+            if (mineralItem6Button != null)
+            {
+                mineralItem6Button.onClick.AddListener(() => SelectMineralNullable(7));
+            }
+        }
+
+        /// <summary>
         /// 곡괭이 정보 모달 열기
         /// </summary>
         private void OpenPickaxeInfoModal(int slotIndex)
@@ -350,6 +405,55 @@ namespace InfinitePickaxe.Client.UI.Game
             if (modal != null)
             {
                 modal.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 광물 선택/중단 요청 (null이면 채굴 중단)
+        /// </summary>
+        /// <param name="mineralId">실제 광물 ID(1부터), null은 채굴 중단</param>
+        private void SelectMineralNullable(int? mineralId)
+        {
+            // 서버 권한: 메시지 전송만, 클라이언트는 결과 수신 후 렌더링
+            try
+            {
+                var handler = MessageHandler.Instance;
+                if (handler == null)
+                {
+                    Debug.LogError("MessageHandler 인스턴스를 찾을 수 없습니다.");
+                    return;
+                }
+
+                var envelope = new Envelope
+                {
+                    Type = MessageType.ChangeMineralRequest
+                };
+
+                if (mineralId.HasValue)
+                {
+                envelope.ChangeMineralRequest = new ChangeMineralRequest
+                {
+                    MineralId = (uint)mineralId.Value
+                };
+            }
+            else
+            {
+                // 프로토에 null 표현이 없어 StopMineralId(0)를 채굴 중단 의미로 사용 (서버와 합의된 규약)
+                envelope.ChangeMineralRequest = new ChangeMineralRequest
+                {
+                    MineralId = StopMineralId
+                };
+            }
+
+                NetworkManager.Instance.SendMessage(envelope);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"광물 선택 요청 실패: {ex.Message}");
+            }
+            finally
+            {
+                CloseModal(mineralSelectModal);
             }
         }
 
@@ -445,6 +549,15 @@ namespace InfinitePickaxe.Client.UI.Game
                 maxHP = snapshot.MineralMaxHp.Value;
             }
 
+            // 채굴 중단 상태 감지 (ID 0 또는 HP 0/0)
+            if ((snapshot.CurrentMineralId.HasValue && snapshot.CurrentMineralId.Value == StopMineralId) ||
+                (maxHP == 0))
+            {
+                currentMineralName = "채굴 중단";
+                currentHP = 0;
+                maxHP = 0;
+            }
+
             // DPS 정보 업데이트
             if (snapshot.TotalDps > 0)
             {
@@ -474,6 +587,14 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             currentHP = update.CurrentHp;
             maxHP = update.MaxHp;
+
+            // 서버가 채굴 중단 상태라면 HP 0/0으로 유지
+            if (update.MaxHp == 0)
+            {
+                currentMineralName = "채굴 중단";
+                currentHP = 0;
+                maxHP = 0;
+            }
 
             // DPS는 AllSlotsResponse에서 받은 값 유지 (TotalDps 필드 제거됨)
             // currentDPS는 슬롯 변경 시에만 업데이트됨
@@ -549,11 +670,23 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (response.Success)
             {
+                // 광물 ID 1~N: 정상 채굴, StopMineralId(0): 채굴 중단
                 uint mineralId = response.MineralId;
-                // TODO: 광물 ID로 이름 조회
-                currentMineralName = $"광물 #{mineralId}";
-                currentHP = response.MineralHp;
-                maxHP = response.MineralMaxHp;
+                bool isStop = mineralId == StopMineralId || (response.MineralHp == 0 && response.MineralMaxHp == 0);
+
+                if (isStop)
+                {
+                    currentMineralName = "채굴 중단";
+                    currentHP = 0;
+                    maxHP = 0;
+                }
+                else
+                {
+                    // TODO: 광물 ID로 이름 조회 (메타 데이터 연결 필요)
+                    currentMineralName = $"광물 #{mineralId}";
+                    currentHP = response.MineralHp;
+                    maxHP = response.MineralMaxHp;
+                }
 
                 RefreshData();
 

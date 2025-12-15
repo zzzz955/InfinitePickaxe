@@ -1,9 +1,9 @@
 [
-  {"id":0,"name":"약한 돌","hp":25,"gold":2,"recommended_level":"Lv 0","biome":"얕은 동굴"},
-  {"id":1,"name":"돌","hp":50,"gold":5,"recommended_level":"Lv 0-2","biome":"얕은 동굴"},
-  {"id":2,"name":"석탄","hp":300,"gold":30,"recommended_level":"Lv 3-7","biome":"얕은 동굴"},
-  {"id":3,"name":"구리","hp":1500,"gold":140,"recommended_level":"Lv 8-12","biome":"깊은 광산"},
-  {"id":4,"name":"철광석","hp":7000,"gold":630,"recommended_level":"Lv 13-15","biome":"깊은 광산"},
-  {"id":5,"name":"금광석","hp":30000,"gold":2610,"recommended_level":"Lv 16-18","biome":"보석 광맥"},
-  {"id":6,"name":"에메랄드","hp":120000,"gold":10440,"recommended_level":"Lv 19+","biome":"수정 동굴"}
+  {"id":1,"name":"약한 돌","hp":25,"gold":2,"recommended_level":"Lv 0","biome":"얕은 동굴"},
+  {"id":2,"name":"돌","hp":50,"gold":5,"recommended_level":"Lv 0-2","biome":"얕은 동굴"},
+  {"id":3,"name":"석탄","hp":300,"gold":30,"recommended_level":"Lv 3-7","biome":"얕은 동굴"},
+  {"id":4,"name":"구리","hp":1500,"gold":140,"recommended_level":"Lv 8-12","biome":"깊은 광산"},
+  {"id":5,"name":"철광석","hp":7000,"gold":630,"recommended_level":"Lv 13-15","biome":"깊은 광산"},
+  {"id":6,"name":"금광석","hp":30000,"gold":2610,"recommended_level":"Lv 16-18","biome":"보석 광맥"},
+  {"id":7,"name":"에메랄드","hp":120000,"gold":10440,"recommended_level":"Lv 19+","biome":"수정 동굴"}
 ]

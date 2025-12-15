@@ -243,7 +243,7 @@ namespace InfinitePickaxe.Client.Net
                     totalDamage += attack.Damage;
                 }
             }
-            // Debug.Log($"채굴 업데이트: 광물 #{update.MineralId}, HP {update.CurrentHp}/{update.MaxHp}, 공격 {attackCount}회, 총 데미지 {totalDamage}");
+            Debug.Log($"채굴 업데이트: 광물 #{update.MineralId}, HP {update.CurrentHp}/{update.MaxHp}, 공격 {attackCount}회, 총 데미지 {totalDamage}");
 #endif
             OnMiningUpdate?.Invoke(update);
         }
