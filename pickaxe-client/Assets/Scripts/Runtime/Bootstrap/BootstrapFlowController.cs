@@ -165,14 +165,19 @@ namespace InfinitePickaxe.Client.Bootstrap
             switch (resp.action)
             {
                 case "PROCEED":
-                    if (resp.meta != null)
+                if (resp.meta != null)
+                {
+                    var hasPayload = !string.IsNullOrEmpty(resp.meta.data) || !string.IsNullOrEmpty(resp.meta.download_url);
+                    if (!hasPayload)
                     {
-                        if (!ApplyMeta(resp.meta))
-                        {
-                            ShowError("메타 검증 실패", "메타데이터 해시가 일치하지 않습니다.", canRetry: true, storeUrl: null);
-                            return;
-                        }
+                        Debug.Log("Bootstrap: meta object present but no data/download_url, skipping apply.");
                     }
+                    else if (!ApplyMeta(resp.meta))
+                    {
+                        ShowError("메타 검증 실패", "메타데이터 해시가 일치하지 않습니다.", canRetry: true, storeUrl: null);
+                        return;
+                    }
+                }
                     ShowOverlay(false);
                     LoadNextScene();
                     break;
