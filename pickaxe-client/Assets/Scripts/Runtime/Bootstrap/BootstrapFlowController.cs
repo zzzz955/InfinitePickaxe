@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using InfinitePickaxe.Client.Metadata;
 using InfinitePickaxe.Client.Config;
 
 namespace InfinitePickaxe.Client.Bootstrap
@@ -36,6 +37,7 @@ namespace InfinitePickaxe.Client.Bootstrap
         [SerializeField] private Button secondaryButton;
 
         private const string MetaHashKey = "meta_hash";
+        private const string MetaFileName = "meta_bundle.json";
         private bool running;
 
         private void Awake()
@@ -165,22 +167,23 @@ namespace InfinitePickaxe.Client.Bootstrap
             switch (resp.action)
             {
                 case "PROCEED":
-                if (resp.meta != null)
                 {
-                    var hasPayload = !string.IsNullOrEmpty(resp.meta.data) || !string.IsNullOrEmpty(resp.meta.download_url);
-                    if (!hasPayload)
+                    if (resp.meta != null)
                     {
-                        Debug.Log("Bootstrap: meta object present but no data/download_url, skipping apply.");
+                        var hasPayload = !string.IsNullOrEmpty(resp.meta.data) || !string.IsNullOrEmpty(resp.meta.download_url);
+                        if (!hasPayload)
+                        {
+                            Debug.Log("Bootstrap: meta object present but no data/download_url, skipping apply.");
+                        }
+                        else if (!ApplyMeta(resp.meta))
+                        {
+                            ShowError("메타 검증 실패", "메타데이터 해시가 일치하지 않습니다.", canRetry: true, storeUrl: null);
+                            return;
+                        }
                     }
-                    else if (!ApplyMeta(resp.meta))
-                    {
-                        ShowError("메타 검증 실패", "메타데이터 해시가 일치하지 않습니다.", canRetry: true, storeUrl: null);
-                        return;
-                    }
-                }
-                    ShowOverlay(false);
-                    LoadNextScene();
+                    StartCoroutine(LoadMetaAndProceed());
                     break;
+                }
 
                 case "UPDATE_REQUIRED":
                     ShowError("업데이트 필요", string.IsNullOrEmpty(resp.message) ? "최신 버전으로 업데이트가 필요합니다." : resp.message, canRetry: false, storeUrl: resp.store_url);
@@ -258,6 +261,23 @@ namespace InfinitePickaxe.Client.Bootstrap
             if (statusText != null && message != null) statusText.text = message;
         }
 
+        private IEnumerator LoadMetaAndProceed()
+        {
+            ShowOverlay(true, "메타 데이터 로드 중...");
+
+            var path = Path.Combine(Application.persistentDataPath, "meta", MetaFileName);
+            var hash = PlayerPrefs.GetString(MetaHashKey, string.Empty);
+
+            if (!MetaRepository.LoadFromFile(path, hash))
+            {
+                ShowError("메타 로드 실패", "메타데이터를 불러올 수 없습니다.", canRetry: true, storeUrl: null);
+                yield break;
+            }
+
+            ShowOverlay(false);
+            LoadNextScene();
+        }
+
         private void ShowError(string title, string message, bool canRetry, string storeUrl)
         {
             ShowOverlay(false);
@@ -323,7 +343,7 @@ namespace InfinitePickaxe.Client.Bootstrap
         private string GetCachedMetaHash()
         {
             var cached = PlayerPrefs.GetString(MetaHashKey, string.Empty);
-            var path = Path.Combine(Application.persistentDataPath, "meta", "meta_bundle.json");
+            var path = Path.Combine(Application.persistentDataPath, "meta", MetaFileName);
             if (!File.Exists(path))
             {
                 if (!string.IsNullOrEmpty(cached))
