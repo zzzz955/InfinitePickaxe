@@ -18,7 +18,6 @@ struct UserGameData {
     uint64_t total_dps;                   // 모든 슬롯의 DPS 합계 (캐시)
     std::optional<uint32_t> current_mineral_id;  // 현재 채굴 중인 광물 ID (nullable)
     std::optional<uint64_t> current_mineral_hp;  // 현재 광물 HP (nullable)
-    uint32_t max_offline_hours;
     // ad_count_today 제거 → user_ad_counters 테이블로 이동
     // mission_rerolls_used 제거 → user_mission_daily 테이블로 이동
 };
@@ -33,6 +32,7 @@ public:
 
     // 유저 게임 데이터 조회
     UserGameData get_user_game_data(const std::string& user_id);
+    std::optional<uint32_t> add_crystal(const std::string& user_id, uint32_t delta);
 
 private:
     class ConnectionPool& pool_;

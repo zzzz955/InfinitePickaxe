@@ -130,3 +130,75 @@ bool SlotRepository::update_slot(const std::string& user_id, uint32_t slot_index
         return false;
     }
 }
+
+SlotUnlockDBResult SlotRepository::create_and_unlock_slot(const PickaxeSlot& slot, uint32_t crystal_cost) {
+    SlotUnlockDBResult result{};
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        // user_game_data 잠금 후 해금 여부/크리스탈 확인
+        auto user_row = tx.exec_params(
+            "SELECT crystal, unlocked_slots[$2] AS unlocked "
+            "FROM game_schema.user_game_data "
+            "WHERE user_id = $1 FOR UPDATE",
+            slot.user_id, static_cast<int32_t>(slot.slot_index + 1));
+
+        if (user_row.empty()) {
+            tx.abort();
+            return result;
+        }
+
+        uint32_t current_crystal = user_row[0]["crystal"].as<uint32_t>();
+        bool already_unlocked = user_row[0]["unlocked"].as<bool>();
+        if (already_unlocked) {
+            result.already_unlocked = true;
+            tx.abort();
+            return result;
+        }
+        if (current_crystal < crystal_cost) {
+            result.insufficient_crystal = true;
+            result.remaining_crystal = current_crystal;
+            tx.abort();
+            return result;
+        }
+
+        // 슬롯 생성
+        tx.exec_params(
+            "INSERT INTO game_schema.pickaxe_slots "
+            "(user_id, slot_index, level, tier, attack_power, attack_speed_x100, "
+            " critical_hit_percent, critical_damage, dps, pity_bonus) "
+            "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) "
+            "ON CONFLICT (user_id, slot_index) DO NOTHING",
+            slot.user_id, slot.slot_index, slot.level, slot.tier, slot.attack_power,
+            slot.attack_speed_x100, slot.critical_hit_percent, slot.critical_damage,
+            slot.dps, slot.pity_bonus);
+
+        // 크리스탈 차감 + 해금 플래그 + total_dps 갱신
+        auto update_row = tx.exec_params(
+            "UPDATE game_schema.user_game_data "
+            "SET crystal = crystal - $2, "
+            "    unlocked_slots[$3] = true, "
+            "    total_dps = (SELECT COALESCE(SUM(dps), 0) FROM game_schema.pickaxe_slots WHERE user_id = $1) "
+            "WHERE user_id = $1 "
+            "RETURNING crystal, total_dps",
+            slot.user_id,
+            static_cast<int64_t>(crystal_cost),
+            static_cast<int32_t>(slot.slot_index + 1));
+
+        if (update_row.empty()) {
+            tx.abort();
+            return result;
+        }
+
+        result.remaining_crystal = update_row[0]["crystal"].as<uint32_t>();
+        result.total_dps = update_row[0]["total_dps"].as<uint64_t>();
+        result.success = true;
+        tx.commit();
+        spdlog::info("create_and_unlock_slot: user={} slot={} cost={} remaining_crystal={}",
+                     slot.user_id, slot.slot_index, crystal_cost, result.remaining_crystal);
+    } catch (const std::exception& ex) {
+        spdlog::error("create_and_unlock_slot failed for user {} slot {}: {}", slot.user_id, slot.slot_index, ex.what());
+    }
+    return result;
+}

@@ -2,38 +2,38 @@
 #include "game.pb.h"
 #include "mission_repository.h"
 #include "metadata/metadata_loader.h"
+#include "game_repository.h"
+#include "offline_repository.h"
 #include <string>
 #include <vector>
 
 class MissionService {
 public:
-    MissionService(MissionRepository& repo, const MetadataLoader& meta)
-        : repo_(repo), meta_(meta) {}
+    MissionService(MissionRepository& repo, GameRepository& game_repo, OfflineRepository& offline_repo, const MetadataLoader& meta)
+        : repo_(repo), game_repo_(game_repo), offline_repo_(offline_repo), meta_(meta) {}
 
-    // 미션 목록 조회 (3개 슬롯)
     infinitepickaxe::DailyMissionsResponse get_missions(const std::string& user_id);
 
-    // 미션 진행도 업데이트
     bool update_mission_progress(const std::string& user_id, uint32_t slot_no,
                                  uint32_t new_value);
 
-    // 미션 완료 및 보상 수령
     infinitepickaxe::MissionCompleteResult claim_mission_reward(
         const std::string& user_id, uint32_t slot_no);
 
-    // 미션 리롤
     infinitepickaxe::MissionRerollResult reroll_missions(const std::string& user_id);
 
-    // 광고 카운터 조회
     std::vector<AdCounter> get_ad_counters(const std::string& user_id);
 
-    // 광고 시청 처리
-    bool process_ad_watch(const std::string& user_id, const std::string& ad_type);
+    infinitepickaxe::AdWatchResult handle_ad_watch(const std::string& user_id, const std::string& ad_type);
+
+    infinitepickaxe::MilestoneClaimResult handle_milestone_claim(
+        const std::string& user_id, uint32_t milestone_count);
 
 private:
-    // 새 미션 배정 (메타데이터에서 랜덤 선택)
     bool assign_random_mission(const std::string& user_id, uint32_t slot_no);
 
     MissionRepository& repo_;
+    GameRepository& game_repo_;
+    OfflineRepository& offline_repo_;
     const MetadataLoader& meta_;
 };

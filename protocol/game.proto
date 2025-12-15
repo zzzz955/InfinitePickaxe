@@ -163,7 +163,7 @@ message UserDataSnapshot {
   repeated AdCounter ad_counters = 10;
 
   // 미션 관련
-  uint32 offline_bonus_hours = 11;
+  uint32 current_offline_hours = 11;             // 현재 보유 오프라인 시간(시간 단위)
 }
 
 message HandshakeResponse {
@@ -299,7 +299,7 @@ message MissionEntry {
 
 message DailyMissionsResponse {
   repeated MissionEntry missions = 1;         // 최대 3개 슬롯
-  uint32 assigned_count = 2;                  // 오늘 배정된 미션 수 (최대 7)
+  uint32 completed_count = 2;                 // 오늘 완료된 미션 수
   uint32 reroll_count = 3;                    // 오늘 리롤 사용 횟수
   repeated AdCounter ad_counters = 4;         // 광고 카운터 (옵션)
 }
@@ -345,7 +345,7 @@ message MilestoneClaimResult {
   bool success = 1;
   uint32 milestone_count = 2;
   uint32 offline_hours_gained = 3;  // 오프라인 보상 시간 증가량
-  uint32 total_offline_hours = 4;   // 현재 총 오프라인 보상 시간
+  uint32 total_offline_hours = 4;   // 현재 총 오프라인 보유 시간
   string error_code = 5;
 }
 

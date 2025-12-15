@@ -92,7 +92,7 @@ void Session::read_length() {
                 return;
             }
             uint32_t len = decode_le(len_buf_);
-            if (len == 0 || len > 64 * 1024) { // 간단한 상한
+            if (len == 0 || len > 64 * 1024) { // 간단???�한
                 send_error("INVALID_LENGTH", "invalid length");
                 close();
                 return;
@@ -147,8 +147,10 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
         send_error("2001", "UNKNOWN_MESSAGE_TYPE");
     }
 
-    // 다음 프레임 대기
-    read_length();
+    // 다음 패킷을 계속 읽기 위해 루프를 이어감 (핸드셰이크는 handle_handshake 내부에서 처리)
+    if (!closed_) {
+        read_length();
+    }
 }
 
 void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
@@ -214,17 +216,17 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
     // UserDataSnapshot 구성
     auto* snapshot = res.mutable_snapshot();
 
-    // 유저 게임 데이터 조회
+    // ?��? 게임 ?�이??조회
     auto game_data = game_repo_.get_user_game_data(user_id_);
     snapshot->mutable_gold()->set_value(game_data.gold);
     snapshot->mutable_crystal()->set_value(game_data.crystal);
 
-    // 슬롯 해금 상태
+    // ?�롯 ?�금 ?�태
     for (bool unlocked : game_data.unlocked_slots) {
         snapshot->add_unlocked_slots(unlocked);
     }
 
-    // 현재 채굴 중인 광물 정보 (DB에서 조회, nullable 처리)
+    // ?�재 채굴 중인 광물 ?�보 (DB?�서 조회, nullable 처리)
     if (game_data.current_mineral_id.has_value()) {
         const auto* mineral = metadata_.mineral(game_data.current_mineral_id.value());
         snapshot->mutable_current_mineral_id()->set_value(game_data.current_mineral_id.value());
@@ -232,49 +234,53 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
         snapshot->mutable_mineral_max_hp()->set_value(mineral ? mineral->hp : 100);
     }
 
-    // 슬롯 정보 및 총 DPS
+    // ?�롯 ?�보 �?�?DPS
     auto slots_response = slot_service_.handle_all_slots(user_id_);
     for (const auto& slot : slots_response.slots()) {
         *snapshot->add_pickaxe_slots() = slot;
     }
     snapshot->set_total_dps(slots_response.total_dps());
 
-    // 서버 시간
+    // ?�버 ?�간
     snapshot->mutable_server_time()->set_value(
         static_cast<uint64_t>(
             std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now().time_since_epoch()).count()));
 
-    // 광고 카운터 추가
+    // 광고 카운??추�?
     auto ad_counters = mission_service_.get_ad_counters(user_id_);
     for (const auto& counter : ad_counters) {
         auto* ad_counter = snapshot->add_ad_counters();
         ad_counter->set_ad_type(counter.ad_type);
         ad_counter->set_ad_count(counter.ad_count);
-        // daily_limit는 하드코딩 또는 설정에서 가져올 수 있음
-        ad_counter->set_daily_limit(10);  // 예시 값
+        uint32_t limit = 0;
+        if (const auto* ad_meta = metadata_.ad_meta(counter.ad_type)) {
+            limit = ad_meta->daily_limit;
+        }
+        ad_counter->set_daily_limit(limit);
     }
 
-    snapshot->set_offline_bonus_hours(game_data.max_offline_hours);
+    auto offline_state = offline_service_.get_state(user_id_);
+    snapshot->set_current_offline_hours(offline_state.current_offline_seconds / 3600);
 
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);
     *response_env.mutable_handshake_result() = res;
     send_envelope(response_env);
 
-    // 채굴 시뮬레이션 시작 (DB에서 로드한 현재 광물로, nullable 처리)
+    // 채굴 ?��??�이???�작 (DB?�서 로드???�재 광물�? nullable 처리)
     if (game_data.current_mineral_id.has_value() && game_data.current_mineral_hp.has_value()) {
         mining_state_.current_mineral_id = game_data.current_mineral_id.value();
         mining_state_.current_hp = game_data.current_mineral_hp.value();
         const auto* current_mineral = metadata_.mineral(mining_state_.current_mineral_id);
         mining_state_.max_hp = current_mineral ? current_mineral->hp : 100;
 
-        // 광물 HP가 0이 아니면 채굴 시작
+        // 광물 HP가 0???�니�?채굴 ?�작
         if (mining_state_.current_hp > 0) {
             start_new_mineral();
         }
     } else {
-        // 광물이 없으면 기본 광물(1번)로 시작
+        // 광물???�으�?기본 광물(1�?�??�작
         mining_state_.current_mineral_id = 1;
         start_new_mineral();
     }
@@ -300,8 +306,8 @@ void Session::handle_heartbeat(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-// 서버 권위형 아키텍처로 변경되어 더 이상 사용하지 않음
-// 서버가 자동으로 채굴 시뮬레이션을 돌리고 클라이언트는 렌더링만 수행
+// ?�버 권위???�키?�처�?변경되?????�상 ?�용?��? ?�음
+// ?�버가 ?�동?�로 채굴 ?��??�이?�을 ?�리�??�라?�언?�는 ?�더링만 ?�행
 // void Session::handle_mining(const infinitepickaxe::Envelope& env) {
 //     infinitepickaxe::Envelope response_env;
 //
@@ -352,7 +358,17 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope& env) {
         return;
     }
     const auto& req = env.upgrade_request();
-    auto res = upgrade_service_.handle_upgrade(user_id_, req.slot_index(), 0);
+    // ?�재 ?�롯 ?�벨??조회??target_level = current + 1 �??�정
+    auto slot = slot_service_.get_slot(user_id_, req.slot_index());
+    infinitepickaxe::UpgradeResult res;
+    if (!slot.has_value()) {
+        res.set_success(false);
+        res.set_slot_index(req.slot_index());
+        res.set_error_code("3004"); // SLOT_NOT_FOUND
+    } else {
+        uint32_t target_level = slot->level + 1;
+        res = upgrade_service_.handle_upgrade(user_id_, req.slot_index(), target_level);
+    }
 
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::UPGRADE_RESULT);
@@ -366,6 +382,68 @@ void Session::handle_mission(const infinitepickaxe::Envelope& env) {
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::DAILY_MISSIONS_RESPONSE);
     *response_env.mutable_daily_missions_response() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_mission_progress_update(const infinitepickaxe::Envelope& env) {
+    if (!env.has_mission_progress_update()) {
+        send_error("2004", "mission_progress_update message missing");
+        return;
+    }
+    const auto& req = env.mission_progress_update();
+    mission_service_.update_mission_progress(user_id_, req.slot_no(), req.current_value());
+}
+
+void Session::handle_mission_complete(const infinitepickaxe::Envelope& env) {
+    if (!env.has_mission_complete()) {
+        send_error("2004", "mission_complete message missing");
+        return;
+    }
+    const auto& req = env.mission_complete();
+    auto res = mission_service_.claim_mission_reward(user_id_, req.slot_no());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::MISSION_COMPLETE_RESULT);
+    *response_env.mutable_mission_complete_result() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_mission_reroll(const infinitepickaxe::Envelope& env) {
+    auto res = mission_service_.reroll_missions(user_id_);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::MISSION_REROLL_RESULT);
+    *response_env.mutable_mission_reroll_result() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_ad_watch(const infinitepickaxe::Envelope& env) {
+    if (!env.has_ad_watch_complete()) {
+        send_error("2004", "ad_watch_complete message missing");
+        return;
+    }
+    const auto& req = env.ad_watch_complete();
+    auto res = mission_service_.handle_ad_watch(user_id_, req.ad_type());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::AD_WATCH_RESULT);
+    *response_env.mutable_ad_watch_result() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_milestone_claim(const infinitepickaxe::Envelope& env) {
+    if (!env.has_milestone_claim()) {
+        send_error("2004", "milestone_claim message missing");
+        return;
+    }
+
+
+    const auto& req = env.milestone_claim();
+    auto res = mission_service_.handle_milestone_claim(user_id_, req.milestone_count());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::MILESTONE_CLAIM_RESULT);
+    *response_env.mutable_milestone_claim_result() = res;
     send_envelope(response_env);
 }
 
@@ -397,7 +475,7 @@ void Session::handle_offline_reward(const infinitepickaxe::Envelope& env) {
         send_error("2004", "offline_reward_request message missing");
         return;
     }
-    auto res = offline_service_.handle_request();
+    auto res = offline_service_.handle_request(user_id_);
 
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::OFFLINE_REWARD_RESULT);
@@ -407,11 +485,16 @@ void Session::handle_offline_reward(const infinitepickaxe::Envelope& env) {
 
 void Session::init_router() {
     router_.register_handler(infinitepickaxe::HEARTBEAT, [this](const infinitepickaxe::Envelope& e) { handle_heartbeat(e); });
-    // 서버 권위형 아키텍처로 변경되어 클라이언트가 더 이상 MINING_START, MINING_SYNC를 보내지 않음
+    // ?�버 권위???�키?�처�?변경되???�라?�언?��? ???�상 MINING_START, MINING_SYNC�?보내지 ?�음
     // router_.register_handler(infinitepickaxe::MINING_START, [this](const infinitepickaxe::Envelope& e) { handle_mining(e); });
     // router_.register_handler(infinitepickaxe::MINING_SYNC, [this](const infinitepickaxe::Envelope& e) { handle_mining(e); });
     router_.register_handler(infinitepickaxe::UPGRADE_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_upgrade(e); });
     router_.register_handler(infinitepickaxe::DAILY_MISSIONS_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_mission(e); });
+    router_.register_handler(infinitepickaxe::MISSION_PROGRESS_UPDATE, [this](const infinitepickaxe::Envelope& e) { handle_mission_progress_update(e); });
+    router_.register_handler(infinitepickaxe::MISSION_COMPLETE, [this](const infinitepickaxe::Envelope& e) { handle_mission_complete(e); });
+    router_.register_handler(infinitepickaxe::MISSION_REROLL, [this](const infinitepickaxe::Envelope& e) { handle_mission_reroll(e); });
+    router_.register_handler(infinitepickaxe::AD_WATCH_COMPLETE, [this](const infinitepickaxe::Envelope& e) { handle_ad_watch(e); });
+    router_.register_handler(infinitepickaxe::MILESTONE_CLAIM, [this](const infinitepickaxe::Envelope& e) { handle_milestone_claim(e); });
     router_.register_handler(infinitepickaxe::SLOT_UNLOCK, [this](const infinitepickaxe::Envelope& e) { handle_slot_unlock(e); });
     router_.register_handler(infinitepickaxe::ALL_SLOTS_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_all_slots(e); });
     router_.register_handler(infinitepickaxe::OFFLINE_REWARD_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_offline_reward(e); });
@@ -473,37 +556,36 @@ void Session::start_auth_timer() {
     });
 }
 void Session::update_mining_tick(float delta_ms) {
-    // 인증되지 않았거나 세션이 닫혔으면 무시
+    // ?�증?��? ?�았거나 ?�션???�혔?�면 무시
     if (!authenticated_ || closed_) {
         return;
     }
 
-    // 채굴 중이 아니면 리스폰 타이머 처리
+    // 채굴 중이 ?�니�?리스???�?�머 처리
     if (!mining_state_.is_mining) {
         if (mining_state_.respawn_timer_ms > 0) {
             mining_state_.respawn_timer_ms -= delta_ms;
             if (mining_state_.respawn_timer_ms <= 0) {
-                // 5초 대기 완료 → 새 광물로 자동 시작
+                // 5�??��??�료 ????광물�??�동 ?�작
                 start_new_mineral();
             }
         }
         return;
     }
 
-    // 채굴 시뮬레이션
     std::vector<infinitepickaxe::PickaxeAttack> attacks;
 
     for (auto& slot : mining_state_.slots) {
         slot.next_attack_timer_ms -= delta_ms;
 
-        // 40ms 동안 여러 번 공격할 수 있음 (attack_speed가 매우 빠른 경우)
+        // 40ms ?�안 ?�러 �?공격?????�음 (attack_speed가 매우 빠른 경우)
         while (slot.next_attack_timer_ms <= 0) {
             infinitepickaxe::PickaxeAttack attack;
             attack.set_slot_index(slot.slot_index);
             attack.set_damage(slot.attack_power);
             attacks.push_back(attack);
 
-            // 다음 공격 시간 설정 (밀리초)
+            // ?�음 공격 ?�간 ?�정 (밀리초)
             // attack_speed = attacks per second
             // attack_interval_ms = 1000 / attack_speed
             float attack_interval_ms = 1000.0f / slot.attack_speed;
@@ -525,22 +607,21 @@ void Session::update_mining_tick(float delta_ms) {
         }
     }
 
-    // 채굴 완료 체크
+    // 채굴 ?�료 체크
     if (mining_state_.current_hp == 0) {
-        // 즉시 채굴 완료 푸시 (틱과 무관)
+        // 즉시 채굴 ?�료 ?�시 (?�과 무�?)
         handle_mining_complete_immediate();
         return;
     }
 
-    // MiningUpdate 전송 (공격이 없어도 전송 - 클라이언트 동기화)
+    // MiningUpdate ?�송 (공격???�어???�송 - ?�라?�언???�기??
     send_mining_update(attacks);
 }
 
 void Session::start_new_mineral() {
-    // 새 광물로 시작 (현재는 동일 광물 재시작)
-    // TODO: 광물 선택 로직 추가 가능
-
-    // 메타데이터에서 광물 정보 조회
+    // ??광물�??�작 (?�재???�일 광물 ?�시??
+    // TODO: 광물 ?�택 로직 추�? 가??
+    // 메�??�이?�에??광물 ?�보 조회
     const auto* mineral = metadata_.mineral(mining_state_.current_mineral_id);
     if (!mineral) {
         spdlog::error("Invalid mineral_id: {}", mining_state_.current_mineral_id);
@@ -552,7 +633,7 @@ void Session::start_new_mineral() {
     mining_state_.is_mining = true;
     mining_state_.respawn_timer_ms = 0;
 
-    // 슬롯 정보 로드 (DB에서)
+    // ?�롯 ?�보 로드 (DB?�서)
     auto slots_response = slot_service_.handle_all_slots(user_id_);
     mining_state_.slots.clear();
 
@@ -561,9 +642,9 @@ void Session::start_new_mineral() {
             SlotMiningState slot;
             slot.slot_index = slot_info.slot_index();
             slot.attack_power = slot_info.attack_power();
-            slot.attack_speed = slot_info.attack_speed_x100() / 100.0f;  // 100 → 1.0 APS
+            slot.attack_speed = slot_info.attack_speed_x100() / 100.0f;  // 100 ??1.0 APS
 
-            // 초기 공격 타이머: 랜덤하게 분산 (모든 슬롯이 동시에 공격하지 않도록)
+            // 초기 공격 ?�?�머: ?�덤?�게 분산 (모든 ?�롯???�시??공격?��? ?�도�?
             slot.next_attack_timer_ms = (float)(std::rand() % 1000) / 1000.0f * (1000.0f / slot.attack_speed);
 
             mining_state_.slots.push_back(slot);
@@ -594,10 +675,10 @@ void Session::send_mining_update(const std::vector<infinitepickaxe::PickaxeAttac
 }
 
 void Session::handle_mining_complete_immediate() {
-    // 채굴 완료 처리
+    // 채굴 ?�료 처리
     mining_state_.is_mining = false;
 
-    // 메타데이터에서 보상 조회
+    // 메�??�이?�에??보상 조회
     const auto* mineral = metadata_.mineral(mining_state_.current_mineral_id);
     if (!mineral) {
         spdlog::error("Invalid mineral_id: {}", mining_state_.current_mineral_id);
@@ -607,13 +688,12 @@ void Session::handle_mining_complete_immediate() {
     uint64_t gold_reward = mineral->reward;
     uint32_t respawn_time_sec = mineral->respawn_time;
 
-    // DB에 채굴 완료 기록 및 골드 지급
     auto completion_result = mining_service_.handle_complete(user_id_, mining_state_.current_mineral_id);
 
-    // 리스폰 타이머 시작
+    // 리스???�?�머 ?�작
     mining_state_.respawn_timer_ms = respawn_time_sec * 1000.0f;
 
-    // 클라이언트에게 MiningComplete 즉시 전송
+    // ?�라?�언?�에�?MiningComplete 즉시 ?�송
     infinitepickaxe::MiningComplete complete;
     complete.set_mineral_id(mining_state_.current_mineral_id);
     complete.set_gold_earned(completion_result.gold_earned());

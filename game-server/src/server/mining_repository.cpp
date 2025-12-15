@@ -17,11 +17,6 @@ MiningRepository::CompletionResult MiningRepository::record_completion(const std
         result.total_gold = r[0].as<int64_t>();
         result.mining_count = r[1].as<int64_t>();
 
-        tx.exec_params(
-            "INSERT INTO game_schema.mining_completions (user_id, mineral_id, gold_earned, mining_duration_seconds) "
-            "VALUES ($1, $2, $3, 0)",
-            user_id, mineral_id, static_cast<int64_t>(gold_earned));
-
         tx.commit();
     } catch (const std::exception& ex) {
         spdlog::error("record_completion failed for user {}: {}", user_id, ex.what());

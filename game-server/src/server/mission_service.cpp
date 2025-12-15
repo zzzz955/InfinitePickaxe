@@ -1,27 +1,49 @@
 #include "mission_service.h"
 #include <spdlog/spdlog.h>
-#include <random>
 #include <chrono>
+#include <random>
 
-// 미션 목록 조회 (3개 슬롯)
+namespace {
+uint32_t reward_for_ad_view(const std::vector<uint32_t>& rewards_by_view, uint32_t count) {
+    if (count == 0) return 0;
+    if (count > rewards_by_view.size()) return 0;
+    return rewards_by_view[count - 1];
+}
+} // namespace
+
+// Daily missions (3 slots)
 infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::string& user_id) {
     infinitepickaxe::DailyMissionsResponse response;
 
-    // 일일 미션 정보 조회
     auto daily_info = repo_.get_or_create_daily_mission_info(user_id);
-    response.set_assigned_count(daily_info.assigned_count);
+    response.set_completed_count(daily_info.completed_count);
     response.set_reroll_count(daily_info.reroll_count);
 
-    // 미션 슬롯 조회 (최대 3개)
     auto slots = repo_.get_all_mission_slots(user_id);
+    if (slots.size() < 3) {
+        bool changed = false;
+        std::vector<bool> has_slot(4, false);
+        for (const auto& s : slots) {
+            if (s.slot_no < has_slot.size()) has_slot[s.slot_no] = true;
+        }
+        for (uint32_t slot_no = 1; slot_no <= 3; ++slot_no) {
+            if (!has_slot[slot_no]) {
+                assign_random_mission(user_id, slot_no);
+                changed = true;
+            }
+        }
+        if (changed) {
+            slots = repo_.get_all_mission_slots(user_id);
+        }
+    }
+
     for (const auto& slot : slots) {
         auto* entry = response.add_missions();
         entry->set_slot_no(slot.slot_no);
         entry->set_mission_id(slot.mission_id);
         entry->set_mission_type(slot.mission_type);
 
-        // 메타데이터에서 description 찾기
-        std::string description = "미션";
+        std::string description = "mission";
         for (const auto& m : meta_.missions()) {
             if (m.type == slot.mission_type && m.target == slot.target_value) {
                 description = m.description;
@@ -35,7 +57,6 @@ infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::s
         entry->set_reward_crystal(slot.reward_crystal);
         entry->set_status(slot.status);
 
-        // timestamp를 Unix ms로 변환
         auto assigned_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
             slot.assigned_at.time_since_epoch()).count();
         entry->set_assigned_at(assigned_ms);
@@ -47,20 +68,23 @@ infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::s
         }
     }
 
-    // 광고 카운터 추가
+    // Ad counters
     auto ad_counters = repo_.get_all_ad_counters(user_id);
     for (const auto& counter : ad_counters) {
         auto* ad_counter = response.add_ad_counters();
         ad_counter->set_ad_type(counter.ad_type);
         ad_counter->set_ad_count(counter.ad_count);
-        // daily_limit는 하드코딩 또는 설정에서 가져올 수 있음
-        ad_counter->set_daily_limit(10);  // 예시 값
+        uint32_t limit = 0;
+        if (const auto* ad_meta = meta_.ad_meta(counter.ad_type)) {
+            limit = ad_meta->daily_limit;
+        }
+        ad_counter->set_daily_limit(limit);
     }
 
     return response;
 }
 
-// 미션 진행도 업데이트
+// Progress update
 bool MissionService::update_mission_progress(const std::string& user_id, uint32_t slot_no,
                                              uint32_t new_value) {
     auto slot_opt = repo_.get_mission_slot(user_id, slot_no);
@@ -71,13 +95,11 @@ bool MissionService::update_mission_progress(const std::string& user_id, uint32_
 
     auto& slot = slot_opt.value();
 
-    // 이미 완료되었거나 클레임된 미션은 업데이트 불가
     if (slot.status == "completed" || slot.status == "claimed") {
         spdlog::debug("update_mission_progress: mission already done user={} slot={}", user_id, slot_no);
         return false;
     }
 
-    // 목표치 달성 여부 확인
     std::string new_status = slot.status;
     if (new_value >= slot.target_value) {
         new_status = "completed";
@@ -87,12 +109,13 @@ bool MissionService::update_mission_progress(const std::string& user_id, uint32_
 
     if (success && new_status == "completed") {
         repo_.complete_mission(user_id, slot_no);
+        repo_.increment_completed_count(user_id, 1);
     }
 
     return success;
 }
 
-// 미션 완료 및 보상 수령
+// Complete mission and grant reward
 infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
     const std::string& user_id, uint32_t slot_no) {
 
@@ -108,67 +131,87 @@ infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
 
     auto& slot = slot_opt.value();
 
-    // 완료 상태 확인
     if (slot.status != "completed") {
         result.set_error_code("MISSION_NOT_COMPLETED");
         return result;
     }
 
-    // 이미 클레임했는지 확인
     if (slot.status == "claimed") {
         result.set_error_code("ALREADY_CLAIMED");
         return result;
     }
 
-    // 보상 지급 (여기서는 DB 업데이트만, 실제 크리스탈 지급은 상위 레이어에서)
-    bool claimed = repo_.claim_mission_reward(user_id, slot_no);
-    if (!claimed) {
+    if (!repo_.claim_mission_reward(user_id, slot_no)) {
         result.set_error_code("DB_ERROR");
         return result;
+    }
+
+    uint32_t total_crystal = 0;
+    if (slot.reward_crystal > 0) {
+        auto total_opt = game_repo_.add_crystal(user_id, slot.reward_crystal);
+        if (!total_opt.has_value()) {
+            result.set_error_code("DB_ERROR");
+            return result;
+        }
+        total_crystal = total_opt.value();
     }
 
     result.set_success(true);
     result.set_mission_id(slot.mission_id);
     result.set_reward_crystal(slot.reward_crystal);
-    // total_crystal은 호출자가 설정
+    result.set_total_crystal(total_crystal);
+    result.set_error_code("");
 
-    spdlog::debug("claim_mission_reward: user={} slot={} reward={}",
-                  user_id, slot_no, slot.reward_crystal);
+    spdlog::debug("claim_mission_reward: user={} slot={} reward={} total_crystal={}",
+                  user_id, slot_no, slot.reward_crystal, total_crystal);
 
     return result;
 }
 
-// 미션 리롤
+// Reroll missions
 infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::string& user_id) {
     infinitepickaxe::MissionRerollResult result;
     result.set_success(false);
 
-    // 일일 미션 정보 조회
     auto daily_info = repo_.get_or_create_daily_mission_info(user_id);
 
-    // 리롤 제한 확인 (예: 하루 3회)
-    const uint32_t MAX_REROLLS = 3;
-    if (daily_info.reroll_count >= MAX_REROLLS) {
+    const auto reroll_meta = meta_.mission_reroll();
+    const uint32_t total_limit = reroll_meta.free_rerolls_per_day + reroll_meta.ad_rerolls_per_day;
+    const uint32_t next_reroll = daily_info.reroll_count + 1;
+    if (next_reroll > total_limit) {
         result.set_error_code("REROLL_LIMIT_EXCEEDED");
         return result;
     }
 
-    // 기존 미션 슬롯 삭제
+    if (next_reroll > reroll_meta.free_rerolls_per_day) {
+        const uint32_t required_ads = next_reroll - reroll_meta.free_rerolls_per_day;
+        uint32_t ad_limit = reroll_meta.ad_rerolls_per_day;
+        if (const auto* ad_meta = meta_.ad_meta("mission_reroll")) {
+            ad_limit = ad_meta->daily_limit;
+        }
+        if (required_ads > ad_limit) {
+            result.set_error_code("AD_LIMIT_EXCEEDED");
+            return result;
+        }
+        auto ad_counter = repo_.get_or_create_ad_counter(user_id, "mission_reroll");
+        if (ad_counter.ad_count < required_ads) {
+            result.set_error_code("AD_REQUIRED");
+            return result;
+        }
+    }
+
     for (uint32_t slot_no = 1; slot_no <= 3; ++slot_no) {
         repo_.delete_mission_slot(user_id, slot_no);
     }
 
-    // 새 미션 배정
     for (uint32_t slot_no = 1; slot_no <= 3; ++slot_no) {
         if (!assign_random_mission(user_id, slot_no)) {
             spdlog::error("reroll_missions: failed to assign slot={}", slot_no);
         }
     }
 
-    // 리롤 카운트 증가
     repo_.increment_reroll_count(user_id);
 
-    // 새 미션 목록 반환
     auto slots = repo_.get_all_mission_slots(user_id);
     for (const auto& slot : slots) {
         auto* entry = result.add_rerolled_missions();
@@ -176,7 +219,7 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
         entry->set_mission_id(slot.mission_id);
         entry->set_mission_type(slot.mission_type);
 
-        std::string description = "미션";
+        std::string description = "mission";
         for (const auto& m : meta_.missions()) {
             if (m.type == slot.mission_type && m.target == slot.target_value) {
                 description = m.description;
@@ -203,24 +246,121 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
     return result;
 }
 
-// 광고 카운터 조회
 std::vector<AdCounter> MissionService::get_ad_counters(const std::string& user_id) {
     return repo_.get_all_ad_counters(user_id);
 }
 
-// 광고 시청 처리
-bool MissionService::process_ad_watch(const std::string& user_id, const std::string& ad_type) {
-    // 광고 카운터 증가
-    bool success = repo_.increment_ad_counter(user_id, ad_type);
+// Ad watch processing
+infinitepickaxe::AdWatchResult MissionService::handle_ad_watch(const std::string& user_id, const std::string& ad_type) {
+    infinitepickaxe::AdWatchResult result;
+    result.set_success(false);
+    result.set_ad_type(ad_type);
+    result.set_error_code("");
 
-    if (success) {
-        spdlog::debug("process_ad_watch: user={} ad_type={}", user_id, ad_type);
+    const auto* ad_meta = meta_.ad_meta(ad_type);
+    if (!ad_meta) {
+        result.set_error_code("INVALID_AD_TYPE");
+    } else {
+        auto counter = repo_.get_or_create_ad_counter(user_id, ad_type);
+        if (ad_meta->daily_limit > 0 && counter.ad_count >= ad_meta->daily_limit) {
+            result.set_error_code("DAILY_LIMIT_REACHED");
+        } else {
+            uint32_t next_count = counter.ad_count + 1;
+            if (!repo_.increment_ad_counter(user_id, ad_type)) {
+                result.set_error_code("DB_ERROR");
+            } else {
+                uint32_t crystal_reward = 0;
+                if (ad_meta->effect == "crystal_reward") {
+                    crystal_reward = reward_for_ad_view(ad_meta->rewards_by_view, next_count);
+                    if (crystal_reward > 0) {
+                        auto total_opt = game_repo_.add_crystal(user_id, crystal_reward);
+                        if (!total_opt.has_value()) {
+                            result.set_error_code("DB_ERROR");
+                        } else {
+                            result.set_total_crystal(total_opt.value());
+                        }
+                    }
+                }
+                result.set_crystal_earned(crystal_reward);
+                if (result.error_code().empty()) {
+                    result.set_success(true);
+                }
+            }
+        }
     }
 
-    return success;
+    auto ad_counters = repo_.get_all_ad_counters(user_id);
+    for (const auto& counter_updated : ad_counters) {
+        auto* ad_counter = result.add_ad_counters();
+        ad_counter->set_ad_type(counter_updated.ad_type);
+        ad_counter->set_ad_count(counter_updated.ad_count);
+        uint32_t limit = 0;
+        if (const auto* meta = meta_.ad_meta(counter_updated.ad_type)) {
+            limit = meta->daily_limit;
+        }
+        ad_counter->set_daily_limit(limit);
+    }
+
+    if (!result.success() && result.error_code().empty()) {
+        result.set_error_code("UNKNOWN_ERROR");
+    }
+
+    return result;
 }
 
-// private: 새 미션 배정 (메타데이터에서 랜덤 선택)
+// Milestone claim (offline bonus hours)
+infinitepickaxe::MilestoneClaimResult MissionService::handle_milestone_claim(
+    const std::string& user_id, uint32_t milestone_count) {
+
+    infinitepickaxe::MilestoneClaimResult res;
+    res.set_success(false);
+    res.set_milestone_count(milestone_count);
+
+    uint32_t bonus_hours = 0;
+    for (const auto& m : meta_.milestone_bonuses()) {
+        if (m.completed == milestone_count) {
+            bonus_hours = m.bonus_hours;
+            break;
+        }
+    }
+
+    if (bonus_hours == 0) {
+        res.set_error_code("INVALID_MILESTONE");
+        return res;
+    }
+
+    auto daily_info = repo_.get_or_create_daily_mission_info(user_id);
+    if (daily_info.completed_count < milestone_count) {
+        res.set_error_code("MILESTONE_NOT_REACHED");
+        return res;
+    }
+
+    if (repo_.has_milestone_claimed(user_id, milestone_count)) {
+        res.set_error_code("ALREADY_CLAIMED");
+        return res;
+    }
+
+    if (!repo_.insert_milestone_claim(user_id, milestone_count)) {
+        res.set_error_code("DB_ERROR");
+        return res;
+    }
+
+    uint32_t bonus_seconds = bonus_hours * 3600;
+    uint32_t initial_seconds = meta_.offline_defaults().initial_offline_seconds;
+    auto updated_seconds = offline_repo_.add_offline_seconds(user_id, bonus_seconds, initial_seconds);
+    if (!updated_seconds.has_value()) {
+        res.set_error_code("DB_ERROR");
+        return res;
+    }
+
+    res.set_success(true);
+    res.set_offline_hours_gained(bonus_hours);
+    res.set_total_offline_hours(updated_seconds.value() / 3600); // 프로토 필드가 hours 단위
+    res.set_error_code("");
+    return res;
+}
+
+// private: random mission assignment
 bool MissionService::assign_random_mission(const std::string& user_id, uint32_t slot_no) {
     const auto& missions = meta_.missions();
     if (missions.empty()) {
@@ -228,20 +368,16 @@ bool MissionService::assign_random_mission(const std::string& user_id, uint32_t 
         return false;
     }
 
-    // 랜덤 미션 선택
     static std::mt19937 rng(std::random_device{}());
     std::uniform_int_distribution<size_t> dist(0, missions.size() - 1);
     size_t idx = dist(rng);
 
     const auto& mission = missions[idx];
 
-    // 미션 배정
     bool success = repo_.assign_mission_to_slot(
         user_id, slot_no, mission.type, mission.target, mission.reward_crystal);
 
     if (success) {
-        // 일일 배정 카운트 증가
-        repo_.increment_assigned_count(user_id, 1);
         spdlog::debug("assign_random_mission: user={} slot={} type={} target={}",
                       user_id, slot_no, mission.type, mission.target);
     }

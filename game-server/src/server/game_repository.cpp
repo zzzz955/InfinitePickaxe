@@ -41,7 +41,7 @@ UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
 
         auto row = tx.exec_params1(
             "SELECT gold, crystal, unlocked_slots, total_dps, "
-            "       current_mineral_id, current_mineral_hp, max_offline_hours "
+            "       current_mineral_id, current_mineral_hp "
             "FROM game_schema.user_game_data WHERE user_id = $1",
             user_id);
 
@@ -74,8 +74,6 @@ UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
             data.current_mineral_hp = row[5].as<uint64_t>();
         }
 
-        data.max_offline_hours = row[6].as<uint32_t>();
-
         tx.commit();
     } catch (const std::exception& ex) {
         spdlog::error("Failed to get user game data for {}: {}", user_id, ex.what());
@@ -86,7 +84,25 @@ UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
         data.total_dps = 10;  // 초기 DPS
         data.current_mineral_id = std::nullopt;
         data.current_mineral_hp = std::nullopt;
-        data.max_offline_hours = 3;
     }
     return data;
+}
+
+std::optional<uint32_t> GameRepository::add_crystal(const std::string& user_id, uint32_t delta) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto row = tx.exec_params1(
+            "UPDATE game_schema.user_game_data "
+            "SET crystal = crystal + $2 "
+            "WHERE user_id = $1 "
+            "RETURNING crystal",
+            user_id, static_cast<int64_t>(delta));
+        uint32_t total = row[0].as<uint32_t>();
+        tx.commit();
+        return total;
+    } catch (const std::exception& ex) {
+        spdlog::error("add_crystal failed for user {}: {}", user_id, ex.what());
+        return std::nullopt;
+    }
 }

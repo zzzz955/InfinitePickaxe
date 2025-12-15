@@ -7,7 +7,8 @@ class OfflineService {
 public:
     OfflineService(OfflineRepository& repo, const MetadataLoader& meta)
         : repo_(repo), meta_(meta) {}
-    infinitepickaxe::OfflineRewardResult handle_request() const;
+    OfflineState get_state(const std::string& user_id);
+    infinitepickaxe::OfflineRewardResult handle_request(const std::string& user_id);
 private:
     OfflineRepository& repo_;
     const MetadataLoader& meta_;

@@ -38,7 +38,7 @@ int main() {
         OfflineRepository offline_repo(db_pool);
         MiningService mining_service(mining_repo, slot_repo, game_repo, metadata);
         UpgradeService upgrade_service(upgrade_repo, metadata);
-        MissionService mission_service(mission_repo, metadata);
+        MissionService mission_service(mission_repo, game_repo, offline_repo, metadata);
         SlotService slot_service(slot_repo, game_repo, metadata);
         OfflineService offline_service(offline_repo, metadata);
         boost::asio::io_context io;

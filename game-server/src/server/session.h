@@ -63,6 +63,11 @@ private:
     void handle_mining(const infinitepickaxe::Envelope& env);
     void handle_upgrade(const infinitepickaxe::Envelope& env);
     void handle_mission(const infinitepickaxe::Envelope& env);
+    void handle_mission_progress_update(const infinitepickaxe::Envelope& env);
+    void handle_mission_complete(const infinitepickaxe::Envelope& env);
+    void handle_mission_reroll(const infinitepickaxe::Envelope& env);
+    void handle_ad_watch(const infinitepickaxe::Envelope& env);
+    void handle_milestone_claim(const infinitepickaxe::Envelope& env);
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
     void handle_all_slots(const infinitepickaxe::Envelope& env);
     void handle_offline_reward(const infinitepickaxe::Envelope& env);

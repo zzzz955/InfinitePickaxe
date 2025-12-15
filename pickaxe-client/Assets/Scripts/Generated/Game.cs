@@ -74,113 +74,122 @@ namespace Infinitepickaxe {
             "UmVzdWx0SAASQAoSZXJyb3Jfbm90aWZpY2F0aW9uGG4gASgLMiIuaW5maW5p",
             "dGVwaWNrYXhlLkVycm9yTm90aWZpY2F0aW9uSABCCQoHbWVzc2FnZSJKChBI",
             "YW5kc2hha2VSZXF1ZXN0EgsKA2p3dBgBIAEoCRIWCg5jbGllbnRfdmVyc2lv",
-            "bhgCIAEoCRIRCglkZXZpY2VfaWQYAyABKAkihwEKD1BpY2theGVTbG90SW5m",
-            "bxISCgpzbG90X2luZGV4GAEgASgNEg0KBWxldmVsGAIgASgNEhQKDGF0dGFj",
-            "a19wb3dlchgDIAEoBBIZChFhdHRhY2tfc3BlZWRfeDEwMBgEIAEoDRILCgNk",
-            "cHMYBSABKAQSEwoLaXNfdW5sb2NrZWQYBiABKAgi/AMKEFVzZXJEYXRhU25h",
-            "cHNob3QSKgoEZ29sZBgBIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRW",
-            "YWx1ZRItCgdjcnlzdGFsGAIgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQz",
-            "MlZhbHVlEhYKDnVubG9ja2VkX3Nsb3RzGAMgAygIEjgKEmN1cnJlbnRfbWlu",
-            "ZXJhbF9pZBgEIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJWYWx1ZRIw",
-            "CgptaW5lcmFsX2hwGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZh",
-            "bHVlEjQKDm1pbmVyYWxfbWF4X2hwGAYgASgLMhwuZ29vZ2xlLnByb3RvYnVm",
-            "LlVJbnQ2NFZhbHVlEjcKDXBpY2theGVfc2xvdHMYByADKAsyIC5pbmZpbml0",
-            "ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhEKCXRvdGFsX2RwcxgIIAEoBBIx",
-            "CgtzZXJ2ZXJfdGltZRgJIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRW",
-            "YWx1ZRIZChFhZHNfd2F0Y2hlZF90b2RheRgKIAEoDRIcChRtaXNzaW9uX3Jl",
-            "cm9sbHNfdXNlZBgLIAEoDRIbChNvZmZsaW5lX2JvbnVzX2hvdXJzGAwgASgN",
-            "ImoKEUhhbmRzaGFrZVJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgSDwoHbWVz",
-            "c2FnZRgCIAEoCRIzCghzbmFwc2hvdBgDIAEoCzIhLmluZmluaXRlcGlja2F4",
-            "ZS5Vc2VyRGF0YVNuYXBzaG90IiMKCUhlYXJ0YmVhdBIWCg5jbGllbnRfdGlt",
-            "ZV9tcxgBIAEoBCImCgxIZWFydGJlYXRBY2sSFgoOc2VydmVyX3RpbWVfbXMY",
-            "ASABKAQiFAoSTWluZXJhbExpc3RSZXF1ZXN0ImcKC01pbmVyYWxJbmZvEhIK",
-            "Cm1pbmVyYWxfaWQYASABKA0SDAoEbmFtZRgCIAEoCRIOCgZtYXhfaHAYAyAB",
-            "KAQSEwoLZ29sZF9yZXdhcmQYBCABKAQSEQoJaWNvbl9uYW1lGAUgASgJIkUK",
-            "E01pbmVyYWxMaXN0UmVzcG9uc2USLgoIbWluZXJhbHMYASADKAsyHC5pbmZp",
-            "bml0ZXBpY2theGUuTWluZXJhbEluZm8iKgoUQ2hhbmdlTWluZXJhbFJlcXVl",
-            "c3QSEgoKbWluZXJhbF9pZBgBIAEoDSJ8ChVDaGFuZ2VNaW5lcmFsUmVzcG9u",
-            "c2USDwoHc3VjY2VzcxgBIAEoCBISCgptaW5lcmFsX2lkGAIgASgNEhIKCm1p",
-            "bmVyYWxfaHAYAyABKAQSFgoObWluZXJhbF9tYXhfaHAYBCABKAQSEgoKZXJy",
-            "b3JfY29kZRgFIAEoCSIzCg1QaWNrYXhlQXR0YWNrEhIKCnNsb3RfaW5kZXgY",
-            "ASABKA0SDgoGZGFtYWdlGAIgASgEIpEBCgxNaW5pbmdVcGRhdGUSEgoKbWlu",
-            "ZXJhbF9pZBgBIAEoDRISCgpjdXJyZW50X2hwGAIgASgEEg4KBm1heF9ocBgD",
-            "IAEoBBIvCgdhdHRhY2tzGAQgAygLMh4uaW5maW5pdGVwaWNrYXhlLlBpY2th",
-            "eGVBdHRhY2sSGAoQc2VydmVyX3RpbWVzdGFtcBgFIAEoBCKTAQoOTWluaW5n",
-            "Q29tcGxldGUSEgoKbWluZXJhbF9pZBgBIAEoDRITCgtnb2xkX2Vhcm5lZBgC",
-            "IAEoBBISCgp0b3RhbF9nb2xkGAMgASgEEhQKDG1pbmluZ19jb3VudBgEIAEo",
-            "BBIUCgxyZXNwYXduX3RpbWUYBSABKA0SGAoQc2VydmVyX3RpbWVzdGFtcBgG",
-            "IAEoBCIRCg9BbGxTbG90c1JlcXVlc3QiVgoQQWxsU2xvdHNSZXNwb25zZRIv",
-            "CgVzbG90cxgBIAMoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdElu",
-            "Zm8SEQoJdG90YWxfZHBzGAIgASgEIiQKDlVwZ3JhZGVSZXF1ZXN0EhIKCnNs",
-            "b3RfaW5kZXgYASABKA0iwAIKDVVwZ3JhZGVSZXN1bHQSDwoHc3VjY2VzcxgB",
-            "IAEoCBISCgpzbG90X2luZGV4GAIgASgNEhEKCW5ld19sZXZlbBgDIAEoDRIY",
-            "ChBuZXdfYXR0YWNrX3Bvd2VyGAQgASgEEh0KFW5ld19hdHRhY2tfc3BlZWRf",
-            "eDEwMBgFIAEoDRIPCgduZXdfZHBzGAYgASgEEhUKDW5ld190b3RhbF9kcHMY",
-            "ByABKAQSEgoKZ29sZF9zcGVudBgIIAEoBBIWCg5yZW1haW5pbmdfZ29sZBgJ",
-            "IAEoBBISCgplcnJvcl9jb2RlGAogASgJEhQKDGJhc2VfcmF0ZV9icBgLIAEo",
-            "DRIVCg1ib251c19yYXRlX2JwGAwgASgNEhUKDWZpbmFsX3JhdGVfYnAYDSAB",
-            "KA0SEgoKcGl0eV9ib251cxgOIAEoDSIWChREYWlseU1pc3Npb25zUmVxdWVz",
-            "dCK5AQoMTWlzc2lvbkVudHJ5EhIKCm1pc3Npb25faWQYASABKA0SDAoEdHlw",
-            "ZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIZChFyZXF1aXJlZF9wcm9n",
-            "cmVzcxgEIAEoDRIYChBjdXJyZW50X3Byb2dyZXNzGAUgASgNEhMKC2dvbGRf",
-            "cmV3YXJkGAYgASgEEhQKDGlzX2NvbXBsZXRlZBgHIAEoCBISCgppc19jbGFp",
-            "bWVkGAggASgIIoEBChVEYWlseU1pc3Npb25zUmVzcG9uc2USLwoIbWlzc2lv",
-            "bnMYASADKAsyHS5pbmZpbml0ZXBpY2theGUuTWlzc2lvbkVudHJ5EhkKEWFk",
-            "c193YXRjaGVkX3RvZGF5GAIgASgNEhwKFG1pc3Npb25fcmVyb2xsc191c2Vk",
-            "GAMgASgNInYKFU1pc3Npb25Qcm9ncmVzc1VwZGF0ZRISCgptaXNzaW9uX2lk",
-            "GAEgASgNEhgKEGN1cnJlbnRfcHJvZ3Jlc3MYAiABKA0SGQoRcmVxdWlyZWRf",
-            "cHJvZ3Jlc3MYAyABKA0SFAoMaXNfY29tcGxldGVkGAQgASgIIiUKD01pc3Np",
-            "b25Db21wbGV0ZRISCgptaXNzaW9uX2lkGAEgASgNInkKFU1pc3Npb25Db21w",
-            "bGV0ZVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhIKCm1pc3Npb25faWQYAiAB",
-            "KA0SEwoLZ29sZF9yZXdhcmQYAyABKAQSEgoKdG90YWxfZ29sZBgEIAEoBBIS",
-            "CgplcnJvcl9jb2RlGAUgASgJIg8KDU1pc3Npb25SZXJvbGwiigEKE01pc3Np",
-            "b25SZXJvbGxSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBI4ChFyZXJvbGxlZF9t",
-            "aXNzaW9ucxgCIAMoCzIdLmluZmluaXRlcGlja2F4ZS5NaXNzaW9uRW50cnkS",
-            "FAoMcmVyb2xsc191c2VkGAMgASgNEhIKCmVycm9yX2NvZGUYBCABKAkiKQoO",
-            "TWlsZXN0b25lQ2xhaW0SFwoPbWlsZXN0b25lX2NvdW50GAEgASgNIo8BChRN",
-            "aWxlc3RvbmVDbGFpbVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhcKD21pbGVz",
-            "dG9uZV9jb3VudBgCIAEoDRIcChRvZmZsaW5lX2hvdXJzX2dhaW5lZBgDIAEo",
-            "DRIbChN0b3RhbF9vZmZsaW5lX2hvdXJzGAQgASgNEhIKCmVycm9yX2NvZGUY",
-            "BSABKAkiIAoKU2xvdFVubG9jaxISCgpzbG90X2luZGV4GAEgASgNIn0KEFNs",
-            "b3RVbmxvY2tSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBISCgpzbG90X2luZGV4",
-            "GAIgASgNEhUKDWNyeXN0YWxfc3BlbnQYAyABKA0SGQoRcmVtYWluaW5nX2Ny",
-            "eXN0YWwYBCABKA0SEgoKZXJyb3JfY29kZRgFIAEoCSIiCg9BZFdhdGNoQ29t",
-            "cGxldGUSDwoHYWRfdGllchgBIAEoDSKPAQoNQWRXYXRjaFJlc3VsdBIPCgdz",
-            "dWNjZXNzGAEgASgIEg8KB2FkX3RpZXIYAiABKA0SFgoOY3J5c3RhbF9lYXJu",
-            "ZWQYAyABKA0SFQoNdG90YWxfY3J5c3RhbBgEIAEoDRIZChFhZHNfd2F0Y2hl",
-            "ZF90b2RheRgFIAEoDRISCgplcnJvcl9jb2RlGAYgASgJInsKDkN1cnJlbmN5",
-            "VXBkYXRlEioKBGdvbGQYASABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDY0",
-            "VmFsdWUSLQoHY3J5c3RhbBgCIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50",
-            "MzJWYWx1ZRIOCgZyZWFzb24YAyABKAkiFgoUT2ZmbGluZVJld2FyZFJlcXVl",
-            "c3QibQoTT2ZmbGluZVJld2FyZFJlc3VsdBIXCg9lbGFwc2VkX3NlY29uZHMY",
-            "ASABKAQSEwoLZ29sZF9lYXJuZWQYAiABKAQSFAoMbWluaW5nX2NvdW50GAMg",
-            "ASgNEhIKCnRvdGFsX2dvbGQYBCABKAQiOAoRRXJyb3JOb3RpZmljYXRpb24S",
-            "EgoKZXJyb3JfY29kZRgBIAEoCRIPCgdtZXNzYWdlGAIgASgJKokGCgtNZXNz",
-            "YWdlVHlwZRILCgdVTktOT1dOEAASDQoJSEFORFNIQUtFEAESFAoQSEFORFNI",
-            "QUtFX1JFU1VMVBACEg0KCUhFQVJUQkVBVBADEhEKDUhFQVJUQkVBVF9BQ0sQ",
-            "BBIWChJVU0VSX0RBVEFfU05BUFNIT1QQChIYChRNSU5FUkFMX0xJU1RfUkVR",
-            "VUVTVBAUEhkKFU1JTkVSQUxfTElTVF9SRVNQT05TRRAVEhoKFkNIQU5HRV9N",
-            "SU5FUkFMX1JFUVVFU1QQFhIbChdDSEFOR0VfTUlORVJBTF9SRVNQT05TRRAX",
-            "EhEKDU1JTklOR19VUERBVEUQIBITCg9NSU5JTkdfQ09NUExFVEUQIRIVChFB",
-            "TExfU0xPVFNfUkVRVUVTVBAoEhYKEkFMTF9TTE9UU19SRVNQT05TRRApEg8K",
-            "C1NMT1RfVU5MT0NLECoSFgoSU0xPVF9VTkxPQ0tfUkVTVUxUECsSEwoPVVBH",
-            "UkFERV9SRVFVRVNUEDISEgoOVVBHUkFERV9SRVNVTFQQMxIaChZEQUlMWV9N",
-            "SVNTSU9OU19SRVFVRVNUEDwSGwoXREFJTFlfTUlTU0lPTlNfUkVTUE9OU0UQ",
-            "PRIbChdNSVNTSU9OX1BST0dSRVNTX1VQREFURRA+EhQKEE1JU1NJT05fQ09N",
-            "UExFVEUQPxIbChdNSVNTSU9OX0NPTVBMRVRFX1JFU1VMVBBAEhIKDk1JU1NJ",
-            "T05fUkVST0xMEEESGQoVTUlTU0lPTl9SRVJPTExfUkVTVUxUEEISEwoPTUlM",
-            "RVNUT05FX0NMQUlNEEMSGgoWTUlMRVNUT05FX0NMQUlNX1JFU1VMVBBEEhUK",
-            "EUFEX1dBVENIX0NPTVBMRVRFEEYSEwoPQURfV0FUQ0hfUkVTVUxUEEcSEwoP",
-            "Q1VSUkVOQ1lfVVBEQVRFEFASGgoWT0ZGTElORV9SRVdBUkRfUkVRVUVTVBBa",
-            "EhkKFU9GRkxJTkVfUkVXQVJEX1JFU1VMVBBbEhYKEkVSUk9SX05PVElGSUNB",
-            "VElPThBkYgZwcm90bzM="));
+            "bhgCIAEoCRIRCglkZXZpY2VfaWQYAyABKAki4AEKD1BpY2theGVTbG90SW5m",
+            "bxISCgpzbG90X2luZGV4GAEgASgNEg0KBWxldmVsGAIgASgNEgwKBHRpZXIY",
+            "AyABKA0SFAoMYXR0YWNrX3Bvd2VyGAQgASgEEhkKEWF0dGFja19zcGVlZF94",
+            "MTAwGAUgASgNEhwKFGNyaXRpY2FsX2hpdF9wZXJjZW50GAYgASgNEhcKD2Ny",
+            "aXRpY2FsX2RhbWFnZRgHIAEoDRILCgNkcHMYCCABKAQSEgoKcGl0eV9ib251",
+            "cxgJIAEoDRITCgtpc191bmxvY2tlZBgKIAEoCCJDCglBZENvdW50ZXISDwoH",
+            "YWRfdHlwZRgBIAEoCRIQCghhZF9jb3VudBgCIAEoDRITCgtkYWlseV9saW1p",
+            "dBgDIAEoDSL2AwoQVXNlckRhdGFTbmFwc2hvdBIqCgRnb2xkGAEgASgLMhwu",
+            "Z29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZhbHVlEi0KB2NyeXN0YWwYAiABKAsy",
+            "HC5nb29nbGUucHJvdG9idWYuVUludDMyVmFsdWUSFgoOdW5sb2NrZWRfc2xv",
+            "dHMYAyADKAgSOAoSY3VycmVudF9taW5lcmFsX2lkGAQgASgLMhwuZ29vZ2xl",
+            "LnByb3RvYnVmLlVJbnQzMlZhbHVlEjAKCm1pbmVyYWxfaHAYBSABKAsyHC5n",
+            "b29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSNAoObWluZXJhbF9tYXhfaHAY",
+            "BiABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSNwoNcGlja2F4",
+            "ZV9zbG90cxgHIAMoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdElu",
+            "Zm8SEQoJdG90YWxfZHBzGAggASgEEjEKC3NlcnZlcl90aW1lGAkgASgLMhwu",
+            "Z29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZhbHVlEi8KC2FkX2NvdW50ZXJzGAog",
+            "AygLMhouaW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIdChVjdXJyZW50X29m",
+            "ZmxpbmVfaG91cnMYCyABKA0iagoRSGFuZHNoYWtlUmVzcG9uc2USDwoHc3Vj",
+            "Y2VzcxgBIAEoCBIPCgdtZXNzYWdlGAIgASgJEjMKCHNuYXBzaG90GAMgASgL",
+            "MiEuaW5maW5pdGVwaWNrYXhlLlVzZXJEYXRhU25hcHNob3QiIwoJSGVhcnRi",
+            "ZWF0EhYKDmNsaWVudF90aW1lX21zGAEgASgEIiYKDEhlYXJ0YmVhdEFjaxIW",
+            "Cg5zZXJ2ZXJfdGltZV9tcxgBIAEoBCIUChJNaW5lcmFsTGlzdFJlcXVlc3Qi",
+            "ZwoLTWluZXJhbEluZm8SEgoKbWluZXJhbF9pZBgBIAEoDRIMCgRuYW1lGAIg",
+            "ASgJEg4KBm1heF9ocBgDIAEoBBITCgtnb2xkX3Jld2FyZBgEIAEoBBIRCglp",
+            "Y29uX25hbWUYBSABKAkiRQoTTWluZXJhbExpc3RSZXNwb25zZRIuCghtaW5l",
+            "cmFscxgBIAMoCzIcLmluZmluaXRlcGlja2F4ZS5NaW5lcmFsSW5mbyIqChRD",
+            "aGFuZ2VNaW5lcmFsUmVxdWVzdBISCgptaW5lcmFsX2lkGAEgASgNInwKFUNo",
+            "YW5nZU1pbmVyYWxSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIEhIKCm1pbmVy",
+            "YWxfaWQYAiABKA0SEgoKbWluZXJhbF9ocBgDIAEoBBIWCg5taW5lcmFsX21h",
+            "eF9ocBgEIAEoBBISCgplcnJvcl9jb2RlGAUgASgJIjMKDVBpY2theGVBdHRh",
+            "Y2sSEgoKc2xvdF9pbmRleBgBIAEoDRIOCgZkYW1hZ2UYAiABKAQikQEKDE1p",
+            "bmluZ1VwZGF0ZRISCgptaW5lcmFsX2lkGAEgASgNEhIKCmN1cnJlbnRfaHAY",
+            "AiABKAQSDgoGbWF4X2hwGAMgASgEEi8KB2F0dGFja3MYBCADKAsyHi5pbmZp",
+            "bml0ZXBpY2theGUuUGlja2F4ZUF0dGFjaxIYChBzZXJ2ZXJfdGltZXN0YW1w",
+            "GAUgASgEIpMBCg5NaW5pbmdDb21wbGV0ZRISCgptaW5lcmFsX2lkGAEgASgN",
+            "EhMKC2dvbGRfZWFybmVkGAIgASgEEhIKCnRvdGFsX2dvbGQYAyABKAQSFAoM",
+            "bWluaW5nX2NvdW50GAQgASgEEhQKDHJlc3Bhd25fdGltZRgFIAEoDRIYChBz",
+            "ZXJ2ZXJfdGltZXN0YW1wGAYgASgEIhEKD0FsbFNsb3RzUmVxdWVzdCJWChBB",
+            "bGxTbG90c1Jlc3BvbnNlEi8KBXNsb3RzGAEgAygLMiAuaW5maW5pdGVwaWNr",
+            "YXhlLlBpY2theGVTbG90SW5mbxIRCgl0b3RhbF9kcHMYAiABKAQiJAoOVXBn",
+            "cmFkZVJlcXVlc3QSEgoKc2xvdF9pbmRleBgBIAEoDSKRAwoNVXBncmFkZVJl",
+            "c3VsdBIPCgdzdWNjZXNzGAEgASgIEhIKCnNsb3RfaW5kZXgYAiABKA0SEQoJ",
+            "bmV3X2xldmVsGAMgASgNEhAKCG5ld190aWVyGAQgASgNEhgKEG5ld19hdHRh",
+            "Y2tfcG93ZXIYBSABKAQSHQoVbmV3X2F0dGFja19zcGVlZF94MTAwGAYgASgN",
+            "EiAKGG5ld19jcml0aWNhbF9oaXRfcGVyY2VudBgHIAEoDRIbChNuZXdfY3Jp",
+            "dGljYWxfZGFtYWdlGAggASgNEg8KB25ld19kcHMYCSABKAQSFQoNbmV3X3Rv",
+            "dGFsX2RwcxgKIAEoBBISCgpnb2xkX3NwZW50GAsgASgEEhYKDnJlbWFpbmlu",
+            "Z19nb2xkGAwgASgEEhIKCmVycm9yX2NvZGUYDSABKAkSFAoMYmFzZV9yYXRl",
+            "X2JwGA4gASgNEhUKDWJvbnVzX3JhdGVfYnAYDyABKA0SFQoNZmluYWxfcmF0",
+            "ZV9icBgQIAEoDRISCgpwaXR5X2JvbnVzGBEgASgNIhYKFERhaWx5TWlzc2lv",
+            "bnNSZXF1ZXN0ItwBCgxNaXNzaW9uRW50cnkSDwoHc2xvdF9ubxgBIAEoDRIS",
+            "CgptaXNzaW9uX2lkGAIgASgJEhQKDG1pc3Npb25fdHlwZRgDIAEoCRITCgtk",
+            "ZXNjcmlwdGlvbhgEIAEoCRIUCgx0YXJnZXRfdmFsdWUYBSABKA0SFQoNY3Vy",
+            "cmVudF92YWx1ZRgGIAEoDRIWCg5yZXdhcmRfY3J5c3RhbBgHIAEoDRIOCgZz",
+            "dGF0dXMYCCABKAkSEwoLYXNzaWduZWRfYXQYCSABKAQSEgoKZXhwaXJlc19h",
+            "dBgKIAEoBCKoAQoVRGFpbHlNaXNzaW9uc1Jlc3BvbnNlEi8KCG1pc3Npb25z",
+            "GAEgAygLMh0uaW5maW5pdGVwaWNrYXhlLk1pc3Npb25FbnRyeRIXCg9jb21w",
+            "bGV0ZWRfY291bnQYAiABKA0SFAoMcmVyb2xsX2NvdW50GAMgASgNEi8KC2Fk",
+            "X2NvdW50ZXJzGAQgAygLMhouaW5maW5pdGVwaWNrYXhlLkFkQ291bnRlciJ5",
+            "ChVNaXNzaW9uUHJvZ3Jlc3NVcGRhdGUSDwoHc2xvdF9ubxgBIAEoDRISCgpt",
+            "aXNzaW9uX2lkGAIgASgJEhUKDWN1cnJlbnRfdmFsdWUYAyABKA0SFAoMdGFy",
+            "Z2V0X3ZhbHVlGAQgASgNEg4KBnN0YXR1cxgFIAEoCSIiCg9NaXNzaW9uQ29t",
+            "cGxldGUSDwoHc2xvdF9ubxgBIAEoDSKQAQoVTWlzc2lvbkNvbXBsZXRlUmVz",
+            "dWx0Eg8KB3N1Y2Nlc3MYASABKAgSDwoHc2xvdF9ubxgCIAEoDRISCgptaXNz",
+            "aW9uX2lkGAMgASgJEhYKDnJld2FyZF9jcnlzdGFsGAQgASgNEhUKDXRvdGFs",
+            "X2NyeXN0YWwYBSABKA0SEgoKZXJyb3JfY29kZRgGIAEoCSIPCg1NaXNzaW9u",
+            "UmVyb2xsIooBChNNaXNzaW9uUmVyb2xsUmVzdWx0Eg8KB3N1Y2Nlc3MYASAB",
+            "KAgSOAoRcmVyb2xsZWRfbWlzc2lvbnMYAiADKAsyHS5pbmZpbml0ZXBpY2th",
+            "eGUuTWlzc2lvbkVudHJ5EhQKDHJlcm9sbHNfdXNlZBgDIAEoDRISCgplcnJv",
+            "cl9jb2RlGAQgASgJIikKDk1pbGVzdG9uZUNsYWltEhcKD21pbGVzdG9uZV9j",
+            "b3VudBgBIAEoDSKPAQoUTWlsZXN0b25lQ2xhaW1SZXN1bHQSDwoHc3VjY2Vz",
+            "cxgBIAEoCBIXCg9taWxlc3RvbmVfY291bnQYAiABKA0SHAoUb2ZmbGluZV9o",
+            "b3Vyc19nYWluZWQYAyABKA0SGwoTdG90YWxfb2ZmbGluZV9ob3VycxgEIAEo",
+            "DRISCgplcnJvcl9jb2RlGAUgASgJIiAKClNsb3RVbmxvY2sSEgoKc2xvdF9p",
+            "bmRleBgBIAEoDSJ9ChBTbG90VW5sb2NrUmVzdWx0Eg8KB3N1Y2Nlc3MYASAB",
+            "KAgSEgoKc2xvdF9pbmRleBgCIAEoDRIVCg1jcnlzdGFsX3NwZW50GAMgASgN",
+            "EhkKEXJlbWFpbmluZ19jcnlzdGFsGAQgASgNEhIKCmVycm9yX2NvZGUYBSAB",
+            "KAkiIgoPQWRXYXRjaENvbXBsZXRlEg8KB2FkX3R5cGUYASABKAkipQEKDUFk",
+            "V2F0Y2hSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIPCgdhZF90eXBlGAIgASgJ",
+            "EhYKDmNyeXN0YWxfZWFybmVkGAMgASgNEhUKDXRvdGFsX2NyeXN0YWwYBCAB",
+            "KA0SLwoLYWRfY291bnRlcnMYBSADKAsyGi5pbmZpbml0ZXBpY2theGUuQWRD",
+            "b3VudGVyEhIKCmVycm9yX2NvZGUYBiABKAkiewoOQ3VycmVuY3lVcGRhdGUS",
+            "KgoEZ29sZBgBIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1ZRIt",
+            "CgdjcnlzdGFsGAIgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQzMlZhbHVl",
+            "Eg4KBnJlYXNvbhgDIAEoCSIWChRPZmZsaW5lUmV3YXJkUmVxdWVzdCJtChNP",
+            "ZmZsaW5lUmV3YXJkUmVzdWx0EhcKD2VsYXBzZWRfc2Vjb25kcxgBIAEoBBIT",
+            "Cgtnb2xkX2Vhcm5lZBgCIAEoBBIUCgxtaW5pbmdfY291bnQYAyABKA0SEgoK",
+            "dG90YWxfZ29sZBgEIAEoBCI4ChFFcnJvck5vdGlmaWNhdGlvbhISCgplcnJv",
+            "cl9jb2RlGAEgASgJEg8KB21lc3NhZ2UYAiABKAkqiQYKC01lc3NhZ2VUeXBl",
+            "EgsKB1VOS05PV04QABINCglIQU5EU0hBS0UQARIUChBIQU5EU0hBS0VfUkVT",
+            "VUxUEAISDQoJSEVBUlRCRUFUEAMSEQoNSEVBUlRCRUFUX0FDSxAEEhYKElVT",
+            "RVJfREFUQV9TTkFQU0hPVBAKEhgKFE1JTkVSQUxfTElTVF9SRVFVRVNUEBQS",
+            "GQoVTUlORVJBTF9MSVNUX1JFU1BPTlNFEBUSGgoWQ0hBTkdFX01JTkVSQUxf",
+            "UkVRVUVTVBAWEhsKF0NIQU5HRV9NSU5FUkFMX1JFU1BPTlNFEBcSEQoNTUlO",
+            "SU5HX1VQREFURRAgEhMKD01JTklOR19DT01QTEVURRAhEhUKEUFMTF9TTE9U",
+            "U19SRVFVRVNUECgSFgoSQUxMX1NMT1RTX1JFU1BPTlNFECkSDwoLU0xPVF9V",
+            "TkxPQ0sQKhIWChJTTE9UX1VOTE9DS19SRVNVTFQQKxITCg9VUEdSQURFX1JF",
+            "UVVFU1QQMhISCg5VUEdSQURFX1JFU1VMVBAzEhoKFkRBSUxZX01JU1NJT05T",
+            "X1JFUVVFU1QQPBIbChdEQUlMWV9NSVNTSU9OU19SRVNQT05TRRA9EhsKF01J",
+            "U1NJT05fUFJPR1JFU1NfVVBEQVRFED4SFAoQTUlTU0lPTl9DT01QTEVURRA/",
+            "EhsKF01JU1NJT05fQ09NUExFVEVfUkVTVUxUEEASEgoOTUlTU0lPTl9SRVJP",
+            "TEwQQRIZChVNSVNTSU9OX1JFUk9MTF9SRVNVTFQQQhITCg9NSUxFU1RPTkVf",
+            "Q0xBSU0QQxIaChZNSUxFU1RPTkVfQ0xBSU1fUkVTVUxUEEQSFQoRQURfV0FU",
+            "Q0hfQ09NUExFVEUQRhITCg9BRF9XQVRDSF9SRVNVTFQQRxITCg9DVVJSRU5D",
+            "WV9VUERBVEUQUBIaChZPRkZMSU5FX1JFV0FSRF9SRVFVRVNUEFoSGQoVT0ZG",
+            "TElORV9SRVdBUkRfUkVTVUxUEFsSFgoSRVJST1JfTk9USUZJQ0FUSU9OEGRi",
+            "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.MessageType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "AdWatchComplete", "AdWatchResult", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification" }, new[]{ "Message" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HandshakeRequest), global::Infinitepickaxe.HandshakeRequest.Parser, new[]{ "Jwt", "ClientVersion", "DeviceId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeSlotInfo), global::Infinitepickaxe.PickaxeSlotInfo.Parser, new[]{ "SlotIndex", "Level", "AttackPower", "AttackSpeedX100", "Dps", "IsUnlocked" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UserDataSnapshot), global::Infinitepickaxe.UserDataSnapshot.Parser, new[]{ "Gold", "Crystal", "UnlockedSlots", "CurrentMineralId", "MineralHp", "MineralMaxHp", "PickaxeSlots", "TotalDps", "ServerTime", "AdsWatchedToday", "MissionRerollsUsed", "OfflineBonusHours" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeSlotInfo), global::Infinitepickaxe.PickaxeSlotInfo.Parser, new[]{ "SlotIndex", "Level", "Tier", "AttackPower", "AttackSpeedX100", "CriticalHitPercent", "CriticalDamage", "Dps", "PityBonus", "IsUnlocked" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdCounter), global::Infinitepickaxe.AdCounter.Parser, new[]{ "AdType", "AdCount", "DailyLimit" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UserDataSnapshot), global::Infinitepickaxe.UserDataSnapshot.Parser, new[]{ "Gold", "Crystal", "UnlockedSlots", "CurrentMineralId", "MineralHp", "MineralMaxHp", "PickaxeSlots", "TotalDps", "ServerTime", "AdCounters", "CurrentOfflineHours" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HandshakeResponse), global::Infinitepickaxe.HandshakeResponse.Parser, new[]{ "Success", "Message", "Snapshot" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Heartbeat), global::Infinitepickaxe.Heartbeat.Parser, new[]{ "ClientTimeMs" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HeartbeatAck), global::Infinitepickaxe.HeartbeatAck.Parser, new[]{ "ServerTimeMs" }, null, null, null, null),
@@ -195,21 +204,21 @@ namespace Infinitepickaxe {
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AllSlotsRequest), global::Infinitepickaxe.AllSlotsRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AllSlotsResponse), global::Infinitepickaxe.AllSlotsResponse.Parser, new[]{ "Slots", "TotalDps" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UpgradeRequest), global::Infinitepickaxe.UpgradeRequest.Parser, new[]{ "SlotIndex" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UpgradeResult), global::Infinitepickaxe.UpgradeResult.Parser, new[]{ "Success", "SlotIndex", "NewLevel", "NewAttackPower", "NewAttackSpeedX100", "NewDps", "NewTotalDps", "GoldSpent", "RemainingGold", "ErrorCode", "BaseRateBp", "BonusRateBp", "FinalRateBp", "PityBonus" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UpgradeResult), global::Infinitepickaxe.UpgradeResult.Parser, new[]{ "Success", "SlotIndex", "NewLevel", "NewTier", "NewAttackPower", "NewAttackSpeedX100", "NewCriticalHitPercent", "NewCriticalDamage", "NewDps", "NewTotalDps", "GoldSpent", "RemainingGold", "ErrorCode", "BaseRateBp", "BonusRateBp", "FinalRateBp", "PityBonus" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.DailyMissionsRequest), global::Infinitepickaxe.DailyMissionsRequest.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionEntry), global::Infinitepickaxe.MissionEntry.Parser, new[]{ "MissionId", "Type", "Description", "RequiredProgress", "CurrentProgress", "GoldReward", "IsCompleted", "IsClaimed" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.DailyMissionsResponse), global::Infinitepickaxe.DailyMissionsResponse.Parser, new[]{ "Missions", "AdsWatchedToday", "MissionRerollsUsed" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionProgressUpdate), global::Infinitepickaxe.MissionProgressUpdate.Parser, new[]{ "MissionId", "CurrentProgress", "RequiredProgress", "IsCompleted" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionComplete), global::Infinitepickaxe.MissionComplete.Parser, new[]{ "MissionId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionCompleteResult), global::Infinitepickaxe.MissionCompleteResult.Parser, new[]{ "Success", "MissionId", "GoldReward", "TotalGold", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionEntry), global::Infinitepickaxe.MissionEntry.Parser, new[]{ "SlotNo", "MissionId", "MissionType", "Description", "TargetValue", "CurrentValue", "RewardCrystal", "Status", "AssignedAt", "ExpiresAt" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.DailyMissionsResponse), global::Infinitepickaxe.DailyMissionsResponse.Parser, new[]{ "Missions", "CompletedCount", "RerollCount", "AdCounters" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionProgressUpdate), global::Infinitepickaxe.MissionProgressUpdate.Parser, new[]{ "SlotNo", "MissionId", "CurrentValue", "TargetValue", "Status" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionComplete), global::Infinitepickaxe.MissionComplete.Parser, new[]{ "SlotNo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionCompleteResult), global::Infinitepickaxe.MissionCompleteResult.Parser, new[]{ "Success", "SlotNo", "MissionId", "RewardCrystal", "TotalCrystal", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionReroll), global::Infinitepickaxe.MissionReroll.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionRerollResult), global::Infinitepickaxe.MissionRerollResult.Parser, new[]{ "Success", "RerolledMissions", "RerollsUsed", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MilestoneClaim), global::Infinitepickaxe.MilestoneClaim.Parser, new[]{ "MilestoneCount" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MilestoneClaimResult), global::Infinitepickaxe.MilestoneClaimResult.Parser, new[]{ "Success", "MilestoneCount", "OfflineHoursGained", "TotalOfflineHours", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.SlotUnlock), global::Infinitepickaxe.SlotUnlock.Parser, new[]{ "SlotIndex" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.SlotUnlockResult), global::Infinitepickaxe.SlotUnlockResult.Parser, new[]{ "Success", "SlotIndex", "CrystalSpent", "RemainingCrystal", "ErrorCode" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdWatchComplete), global::Infinitepickaxe.AdWatchComplete.Parser, new[]{ "AdTier" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdWatchResult), global::Infinitepickaxe.AdWatchResult.Parser, new[]{ "Success", "AdTier", "CrystalEarned", "TotalCrystal", "AdsWatchedToday", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdWatchComplete), global::Infinitepickaxe.AdWatchComplete.Parser, new[]{ "AdType" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdWatchResult), global::Infinitepickaxe.AdWatchResult.Parser, new[]{ "Success", "AdType", "CrystalEarned", "TotalCrystal", "AdCounters", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.CurrencyUpdate), global::Infinitepickaxe.CurrencyUpdate.Parser, new[]{ "Gold", "Crystal", "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineRewardRequest), global::Infinitepickaxe.OfflineRewardRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineRewardResult), global::Infinitepickaxe.OfflineRewardResult.Parser, new[]{ "ElapsedSeconds", "GoldEarned", "MiningCount", "TotalGold" }, null, null, null, null),
@@ -2537,9 +2546,13 @@ namespace Infinitepickaxe {
     public PickaxeSlotInfo(PickaxeSlotInfo other) : this() {
       slotIndex_ = other.slotIndex_;
       level_ = other.level_;
+      tier_ = other.tier_;
       attackPower_ = other.attackPower_;
       attackSpeedX100_ = other.attackSpeedX100_;
+      criticalHitPercent_ = other.criticalHitPercent_;
+      criticalDamage_ = other.criticalDamage_;
       dps_ = other.dps_;
+      pityBonus_ = other.pityBonus_;
       isUnlocked_ = other.isUnlocked_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -2554,7 +2567,7 @@ namespace Infinitepickaxe {
     public const int SlotIndexFieldNumber = 1;
     private uint slotIndex_;
     /// <summary>
-    /// 1-4
+    /// 0-3
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2569,7 +2582,7 @@ namespace Infinitepickaxe {
     public const int LevelFieldNumber = 2;
     private uint level_;
     /// <summary>
-    /// 곡괭이 레벨
+    /// 곡괭이 레벨 (0-109)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2580,8 +2593,23 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "tier" field.</summary>
+    public const int TierFieldNumber = 3;
+    private uint tier_;
+    /// <summary>
+    /// 곡괭이 티어 (1-22)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint Tier {
+      get { return tier_; }
+      set {
+        tier_ = value;
+      }
+    }
+
     /// <summary>Field number for the "attack_power" field.</summary>
-    public const int AttackPowerFieldNumber = 3;
+    public const int AttackPowerFieldNumber = 4;
     private ulong attackPower_;
     /// <summary>
     /// 공격력
@@ -2596,10 +2624,10 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "attack_speed_x100" field.</summary>
-    public const int AttackSpeedX100FieldNumber = 4;
+    public const int AttackSpeedX100FieldNumber = 5;
     private uint attackSpeedX100_;
     /// <summary>
-    /// 공격속도 * 100 (예: 1.5 APS = 150)
+    /// 공격속도 * 100 (예: 1.5 APS = 150, 최대 2500)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2610,11 +2638,41 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "critical_hit_percent" field.</summary>
+    public const int CriticalHitPercentFieldNumber = 6;
+    private uint criticalHitPercent_;
+    /// <summary>
+    /// 크리티컬 확률 * 10000 (예: 500 = 5%, 범위 0-10000)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CriticalHitPercent {
+      get { return criticalHitPercent_; }
+      set {
+        criticalHitPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "critical_damage" field.</summary>
+    public const int CriticalDamageFieldNumber = 7;
+    private uint criticalDamage_;
+    /// <summary>
+    /// 크리티컬 데미지 * 100 (예: 15000 = 150%)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CriticalDamage {
+      get { return criticalDamage_; }
+      set {
+        criticalDamage_ = value;
+      }
+    }
+
     /// <summary>Field number for the "dps" field.</summary>
-    public const int DpsFieldNumber = 5;
+    public const int DpsFieldNumber = 8;
     private ulong dps_;
     /// <summary>
-    /// 이 슬롯의 DPS = (attack_power * attack_speed_x100) / 100
+    /// 이 슬롯의 DPS (크리티컬 포함 계산)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2625,8 +2683,23 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "pity_bonus" field.</summary>
+    public const int PityBonusFieldNumber = 9;
+    private uint pityBonus_;
+    /// <summary>
+    /// 천장 보너스 (0-10000, basis 10000 = 100%)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PityBonus {
+      get { return pityBonus_; }
+      set {
+        pityBonus_ = value;
+      }
+    }
+
     /// <summary>Field number for the "is_unlocked" field.</summary>
-    public const int IsUnlockedFieldNumber = 6;
+    public const int IsUnlockedFieldNumber = 10;
     private bool isUnlocked_;
     /// <summary>
     /// 슬롯 해금 여부
@@ -2657,9 +2730,13 @@ namespace Infinitepickaxe {
       }
       if (SlotIndex != other.SlotIndex) return false;
       if (Level != other.Level) return false;
+      if (Tier != other.Tier) return false;
       if (AttackPower != other.AttackPower) return false;
       if (AttackSpeedX100 != other.AttackSpeedX100) return false;
+      if (CriticalHitPercent != other.CriticalHitPercent) return false;
+      if (CriticalDamage != other.CriticalDamage) return false;
       if (Dps != other.Dps) return false;
+      if (PityBonus != other.PityBonus) return false;
       if (IsUnlocked != other.IsUnlocked) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -2670,9 +2747,13 @@ namespace Infinitepickaxe {
       int hash = 1;
       if (SlotIndex != 0) hash ^= SlotIndex.GetHashCode();
       if (Level != 0) hash ^= Level.GetHashCode();
+      if (Tier != 0) hash ^= Tier.GetHashCode();
       if (AttackPower != 0UL) hash ^= AttackPower.GetHashCode();
       if (AttackSpeedX100 != 0) hash ^= AttackSpeedX100.GetHashCode();
+      if (CriticalHitPercent != 0) hash ^= CriticalHitPercent.GetHashCode();
+      if (CriticalDamage != 0) hash ^= CriticalDamage.GetHashCode();
       if (Dps != 0UL) hash ^= Dps.GetHashCode();
+      if (PityBonus != 0) hash ^= PityBonus.GetHashCode();
       if (IsUnlocked != false) hash ^= IsUnlocked.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -2700,20 +2781,36 @@ namespace Infinitepickaxe {
         output.WriteRawTag(16);
         output.WriteUInt32(Level);
       }
-      if (AttackPower != 0UL) {
+      if (Tier != 0) {
         output.WriteRawTag(24);
+        output.WriteUInt32(Tier);
+      }
+      if (AttackPower != 0UL) {
+        output.WriteRawTag(32);
         output.WriteUInt64(AttackPower);
       }
       if (AttackSpeedX100 != 0) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteUInt32(AttackSpeedX100);
       }
+      if (CriticalHitPercent != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(CriticalHitPercent);
+      }
+      if (CriticalDamage != 0) {
+        output.WriteRawTag(56);
+        output.WriteUInt32(CriticalDamage);
+      }
       if (Dps != 0UL) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(64);
         output.WriteUInt64(Dps);
       }
+      if (PityBonus != 0) {
+        output.WriteRawTag(72);
+        output.WriteUInt32(PityBonus);
+      }
       if (IsUnlocked != false) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(80);
         output.WriteBool(IsUnlocked);
       }
       if (_unknownFields != null) {
@@ -2734,20 +2831,36 @@ namespace Infinitepickaxe {
         output.WriteRawTag(16);
         output.WriteUInt32(Level);
       }
-      if (AttackPower != 0UL) {
+      if (Tier != 0) {
         output.WriteRawTag(24);
+        output.WriteUInt32(Tier);
+      }
+      if (AttackPower != 0UL) {
+        output.WriteRawTag(32);
         output.WriteUInt64(AttackPower);
       }
       if (AttackSpeedX100 != 0) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteUInt32(AttackSpeedX100);
       }
+      if (CriticalHitPercent != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(CriticalHitPercent);
+      }
+      if (CriticalDamage != 0) {
+        output.WriteRawTag(56);
+        output.WriteUInt32(CriticalDamage);
+      }
       if (Dps != 0UL) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(64);
         output.WriteUInt64(Dps);
       }
+      if (PityBonus != 0) {
+        output.WriteRawTag(72);
+        output.WriteUInt32(PityBonus);
+      }
       if (IsUnlocked != false) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(80);
         output.WriteBool(IsUnlocked);
       }
       if (_unknownFields != null) {
@@ -2766,14 +2879,26 @@ namespace Infinitepickaxe {
       if (Level != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Level);
       }
+      if (Tier != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Tier);
+      }
       if (AttackPower != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(AttackPower);
       }
       if (AttackSpeedX100 != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(AttackSpeedX100);
       }
+      if (CriticalHitPercent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CriticalHitPercent);
+      }
+      if (CriticalDamage != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CriticalDamage);
+      }
       if (Dps != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Dps);
+      }
+      if (PityBonus != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PityBonus);
       }
       if (IsUnlocked != false) {
         size += 1 + 1;
@@ -2796,14 +2921,26 @@ namespace Infinitepickaxe {
       if (other.Level != 0) {
         Level = other.Level;
       }
+      if (other.Tier != 0) {
+        Tier = other.Tier;
+      }
       if (other.AttackPower != 0UL) {
         AttackPower = other.AttackPower;
       }
       if (other.AttackSpeedX100 != 0) {
         AttackSpeedX100 = other.AttackSpeedX100;
       }
+      if (other.CriticalHitPercent != 0) {
+        CriticalHitPercent = other.CriticalHitPercent;
+      }
+      if (other.CriticalDamage != 0) {
+        CriticalDamage = other.CriticalDamage;
+      }
       if (other.Dps != 0UL) {
         Dps = other.Dps;
+      }
+      if (other.PityBonus != 0) {
+        PityBonus = other.PityBonus;
       }
       if (other.IsUnlocked != false) {
         IsUnlocked = other.IsUnlocked;
@@ -2836,18 +2973,34 @@ namespace Infinitepickaxe {
             break;
           }
           case 24: {
-            AttackPower = input.ReadUInt64();
+            Tier = input.ReadUInt32();
             break;
           }
           case 32: {
-            AttackSpeedX100 = input.ReadUInt32();
+            AttackPower = input.ReadUInt64();
             break;
           }
           case 40: {
-            Dps = input.ReadUInt64();
+            AttackSpeedX100 = input.ReadUInt32();
             break;
           }
           case 48: {
+            CriticalHitPercent = input.ReadUInt32();
+            break;
+          }
+          case 56: {
+            CriticalDamage = input.ReadUInt32();
+            break;
+          }
+          case 64: {
+            Dps = input.ReadUInt64();
+            break;
+          }
+          case 72: {
+            PityBonus = input.ReadUInt32();
+            break;
+          }
+          case 80: {
             IsUnlocked = input.ReadBool();
             break;
           }
@@ -2879,19 +3032,316 @@ namespace Infinitepickaxe {
             break;
           }
           case 24: {
-            AttackPower = input.ReadUInt64();
+            Tier = input.ReadUInt32();
             break;
           }
           case 32: {
-            AttackSpeedX100 = input.ReadUInt32();
+            AttackPower = input.ReadUInt64();
             break;
           }
           case 40: {
-            Dps = input.ReadUInt64();
+            AttackSpeedX100 = input.ReadUInt32();
             break;
           }
           case 48: {
+            CriticalHitPercent = input.ReadUInt32();
+            break;
+          }
+          case 56: {
+            CriticalDamage = input.ReadUInt32();
+            break;
+          }
+          case 64: {
+            Dps = input.ReadUInt64();
+            break;
+          }
+          case 72: {
+            PityBonus = input.ReadUInt32();
+            break;
+          }
+          case 80: {
             IsUnlocked = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class AdCounter : pb::IMessage<AdCounter>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<AdCounter> _parser = new pb::MessageParser<AdCounter>(() => new AdCounter());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<AdCounter> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AdCounter() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AdCounter(AdCounter other) : this() {
+      adType_ = other.adType_;
+      adCount_ = other.adCount_;
+      dailyLimit_ = other.dailyLimit_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AdCounter Clone() {
+      return new AdCounter(this);
+    }
+
+    /// <summary>Field number for the "ad_type" field.</summary>
+    public const int AdTypeFieldNumber = 1;
+    private string adType_ = "";
+    /// <summary>
+    /// "upgrade_discount", "mission_reroll", "crystal_reward"
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string AdType {
+      get { return adType_; }
+      set {
+        adType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "ad_count" field.</summary>
+    public const int AdCountFieldNumber = 2;
+    private uint adCount_;
+    /// <summary>
+    /// 오늘 시청 횟수
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint AdCount {
+      get { return adCount_; }
+      set {
+        adCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "daily_limit" field.</summary>
+    public const int DailyLimitFieldNumber = 3;
+    private uint dailyLimit_;
+    /// <summary>
+    /// 일일 한도 (옵션)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint DailyLimit {
+      get { return dailyLimit_; }
+      set {
+        dailyLimit_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as AdCounter);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(AdCounter other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (AdType != other.AdType) return false;
+      if (AdCount != other.AdCount) return false;
+      if (DailyLimit != other.DailyLimit) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (AdType.Length != 0) hash ^= AdType.GetHashCode();
+      if (AdCount != 0) hash ^= AdCount.GetHashCode();
+      if (DailyLimit != 0) hash ^= DailyLimit.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (AdType.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(AdType);
+      }
+      if (AdCount != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(AdCount);
+      }
+      if (DailyLimit != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(DailyLimit);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (AdType.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(AdType);
+      }
+      if (AdCount != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(AdCount);
+      }
+      if (DailyLimit != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(DailyLimit);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (AdType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AdType);
+      }
+      if (AdCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(AdCount);
+      }
+      if (DailyLimit != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(DailyLimit);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(AdCounter other) {
+      if (other == null) {
+        return;
+      }
+      if (other.AdType.Length != 0) {
+        AdType = other.AdType;
+      }
+      if (other.AdCount != 0) {
+        AdCount = other.AdCount;
+      }
+      if (other.DailyLimit != 0) {
+        DailyLimit = other.DailyLimit;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            AdType = input.ReadString();
+            break;
+          }
+          case 16: {
+            AdCount = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            DailyLimit = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            AdType = input.ReadString();
+            break;
+          }
+          case 16: {
+            AdCount = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            DailyLimit = input.ReadUInt32();
             break;
           }
         }
@@ -2916,7 +3366,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2945,9 +3395,8 @@ namespace Infinitepickaxe {
       pickaxeSlots_ = other.pickaxeSlots_.Clone();
       totalDps_ = other.totalDps_;
       ServerTime = other.ServerTime;
-      adsWatchedToday_ = other.adsWatchedToday_;
-      missionRerollsUsed_ = other.missionRerollsUsed_;
-      offlineBonusHours_ = other.offlineBonusHours_;
+      adCounters_ = other.adCounters_.Clone();
+      currentOfflineHours_ = other.currentOfflineHours_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3084,42 +3533,32 @@ namespace Infinitepickaxe {
     }
 
 
-    /// <summary>Field number for the "ads_watched_today" field.</summary>
-    public const int AdsWatchedTodayFieldNumber = 10;
-    private uint adsWatchedToday_;
+    /// <summary>Field number for the "ad_counters" field.</summary>
+    public const int AdCountersFieldNumber = 10;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.AdCounter> _repeated_adCounters_codec
+        = pb::FieldCodec.ForMessage(82, global::Infinitepickaxe.AdCounter.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.AdCounter> adCounters_ = new pbc::RepeatedField<global::Infinitepickaxe.AdCounter>();
+    /// <summary>
+    /// 광고 카운터 (ad_type별)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.AdCounter> AdCounters {
+      get { return adCounters_; }
+    }
+
+    /// <summary>Field number for the "current_offline_hours" field.</summary>
+    public const int CurrentOfflineHoursFieldNumber = 11;
+    private uint currentOfflineHours_;
     /// <summary>
     /// 미션 관련
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint AdsWatchedToday {
-      get { return adsWatchedToday_; }
+    public uint CurrentOfflineHours {
+      get { return currentOfflineHours_; }
       set {
-        adsWatchedToday_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "mission_rerolls_used" field.</summary>
-    public const int MissionRerollsUsedFieldNumber = 11;
-    private uint missionRerollsUsed_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint MissionRerollsUsed {
-      get { return missionRerollsUsed_; }
-      set {
-        missionRerollsUsed_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "offline_bonus_hours" field.</summary>
-    public const int OfflineBonusHoursFieldNumber = 12;
-    private uint offlineBonusHours_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint OfflineBonusHours {
-      get { return offlineBonusHours_; }
-      set {
-        offlineBonusHours_ = value;
+        currentOfflineHours_ = value;
       }
     }
 
@@ -3147,9 +3586,8 @@ namespace Infinitepickaxe {
       if(!pickaxeSlots_.Equals(other.pickaxeSlots_)) return false;
       if (TotalDps != other.TotalDps) return false;
       if (ServerTime != other.ServerTime) return false;
-      if (AdsWatchedToday != other.AdsWatchedToday) return false;
-      if (MissionRerollsUsed != other.MissionRerollsUsed) return false;
-      if (OfflineBonusHours != other.OfflineBonusHours) return false;
+      if(!adCounters_.Equals(other.adCounters_)) return false;
+      if (CurrentOfflineHours != other.CurrentOfflineHours) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3166,9 +3604,8 @@ namespace Infinitepickaxe {
       hash ^= pickaxeSlots_.GetHashCode();
       if (TotalDps != 0UL) hash ^= TotalDps.GetHashCode();
       if (serverTime_ != null) hash ^= ServerTime.GetHashCode();
-      if (AdsWatchedToday != 0) hash ^= AdsWatchedToday.GetHashCode();
-      if (MissionRerollsUsed != 0) hash ^= MissionRerollsUsed.GetHashCode();
-      if (OfflineBonusHours != 0) hash ^= OfflineBonusHours.GetHashCode();
+      hash ^= adCounters_.GetHashCode();
+      if (CurrentOfflineHours != 0) hash ^= CurrentOfflineHours.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3211,17 +3648,10 @@ namespace Infinitepickaxe {
       if (serverTime_ != null) {
         _single_serverTime_codec.WriteTagAndValue(output, ServerTime);
       }
-      if (AdsWatchedToday != 0) {
-        output.WriteRawTag(80);
-        output.WriteUInt32(AdsWatchedToday);
-      }
-      if (MissionRerollsUsed != 0) {
+      adCounters_.WriteTo(output, _repeated_adCounters_codec);
+      if (CurrentOfflineHours != 0) {
         output.WriteRawTag(88);
-        output.WriteUInt32(MissionRerollsUsed);
-      }
-      if (OfflineBonusHours != 0) {
-        output.WriteRawTag(96);
-        output.WriteUInt32(OfflineBonusHours);
+        output.WriteUInt32(CurrentOfflineHours);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -3257,17 +3687,10 @@ namespace Infinitepickaxe {
       if (serverTime_ != null) {
         _single_serverTime_codec.WriteTagAndValue(ref output, ServerTime);
       }
-      if (AdsWatchedToday != 0) {
-        output.WriteRawTag(80);
-        output.WriteUInt32(AdsWatchedToday);
-      }
-      if (MissionRerollsUsed != 0) {
+      adCounters_.WriteTo(ref output, _repeated_adCounters_codec);
+      if (CurrentOfflineHours != 0) {
         output.WriteRawTag(88);
-        output.WriteUInt32(MissionRerollsUsed);
-      }
-      if (OfflineBonusHours != 0) {
-        output.WriteRawTag(96);
-        output.WriteUInt32(OfflineBonusHours);
+        output.WriteUInt32(CurrentOfflineHours);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -3302,14 +3725,9 @@ namespace Infinitepickaxe {
       if (serverTime_ != null) {
         size += _single_serverTime_codec.CalculateSizeWithTag(ServerTime);
       }
-      if (AdsWatchedToday != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(AdsWatchedToday);
-      }
-      if (MissionRerollsUsed != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MissionRerollsUsed);
-      }
-      if (OfflineBonusHours != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(OfflineBonusHours);
+      size += adCounters_.CalculateSize(_repeated_adCounters_codec);
+      if (CurrentOfflineHours != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CurrentOfflineHours);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -3358,14 +3776,9 @@ namespace Infinitepickaxe {
           ServerTime = other.ServerTime;
         }
       }
-      if (other.AdsWatchedToday != 0) {
-        AdsWatchedToday = other.AdsWatchedToday;
-      }
-      if (other.MissionRerollsUsed != 0) {
-        MissionRerollsUsed = other.MissionRerollsUsed;
-      }
-      if (other.OfflineBonusHours != 0) {
-        OfflineBonusHours = other.OfflineBonusHours;
+      adCounters_.Add(other.adCounters_);
+      if (other.CurrentOfflineHours != 0) {
+        CurrentOfflineHours = other.CurrentOfflineHours;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3441,16 +3854,12 @@ namespace Infinitepickaxe {
             }
             break;
           }
-          case 80: {
-            AdsWatchedToday = input.ReadUInt32();
+          case 82: {
+            adCounters_.AddEntriesFrom(input, _repeated_adCounters_codec);
             break;
           }
           case 88: {
-            MissionRerollsUsed = input.ReadUInt32();
-            break;
-          }
-          case 96: {
-            OfflineBonusHours = input.ReadUInt32();
+            CurrentOfflineHours = input.ReadUInt32();
             break;
           }
         }
@@ -3527,16 +3936,12 @@ namespace Infinitepickaxe {
             }
             break;
           }
-          case 80: {
-            AdsWatchedToday = input.ReadUInt32();
+          case 82: {
+            adCounters_.AddEntriesFrom(ref input, _repeated_adCounters_codec);
             break;
           }
           case 88: {
-            MissionRerollsUsed = input.ReadUInt32();
-            break;
-          }
-          case 96: {
-            OfflineBonusHours = input.ReadUInt32();
+            CurrentOfflineHours = input.ReadUInt32();
             break;
           }
         }
@@ -3561,7 +3966,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[4]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3845,7 +4250,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4043,7 +4448,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4244,7 +4649,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4405,7 +4810,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4757,7 +5162,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4947,7 +5352,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[10]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5145,7 +5550,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[11]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5503,7 +5908,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[12]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5747,7 +6152,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[13]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[14]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6085,7 +6490,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[14]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[15]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6471,7 +6876,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[15]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6632,7 +7037,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[16]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6862,7 +7267,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[17]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7063,7 +7468,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[18]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[19]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7086,8 +7491,11 @@ namespace Infinitepickaxe {
       success_ = other.success_;
       slotIndex_ = other.slotIndex_;
       newLevel_ = other.newLevel_;
+      newTier_ = other.newTier_;
       newAttackPower_ = other.newAttackPower_;
       newAttackSpeedX100_ = other.newAttackSpeedX100_;
+      newCriticalHitPercent_ = other.newCriticalHitPercent_;
+      newCriticalDamage_ = other.newCriticalDamage_;
       newDps_ = other.newDps_;
       newTotalDps_ = other.newTotalDps_;
       goldSpent_ = other.goldSpent_;
@@ -7142,8 +7550,23 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "new_tier" field.</summary>
+    public const int NewTierFieldNumber = 4;
+    private uint newTier_;
+    /// <summary>
+    /// 강화 후 티어
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint NewTier {
+      get { return newTier_; }
+      set {
+        newTier_ = value;
+      }
+    }
+
     /// <summary>Field number for the "new_attack_power" field.</summary>
-    public const int NewAttackPowerFieldNumber = 4;
+    public const int NewAttackPowerFieldNumber = 5;
     private ulong newAttackPower_;
     /// <summary>
     /// 강화 후 공격력
@@ -7158,7 +7581,7 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "new_attack_speed_x100" field.</summary>
-    public const int NewAttackSpeedX100FieldNumber = 5;
+    public const int NewAttackSpeedX100FieldNumber = 6;
     private uint newAttackSpeedX100_;
     /// <summary>
     /// 강화 후 공격속도 * 100
@@ -7172,8 +7595,38 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "new_critical_hit_percent" field.</summary>
+    public const int NewCriticalHitPercentFieldNumber = 7;
+    private uint newCriticalHitPercent_;
+    /// <summary>
+    /// 강화 후 크리티컬 확률 * 10000
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint NewCriticalHitPercent {
+      get { return newCriticalHitPercent_; }
+      set {
+        newCriticalHitPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "new_critical_damage" field.</summary>
+    public const int NewCriticalDamageFieldNumber = 8;
+    private uint newCriticalDamage_;
+    /// <summary>
+    /// 강화 후 크리티컬 데미지 * 100
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint NewCriticalDamage {
+      get { return newCriticalDamage_; }
+      set {
+        newCriticalDamage_ = value;
+      }
+    }
+
     /// <summary>Field number for the "new_dps" field.</summary>
-    public const int NewDpsFieldNumber = 6;
+    public const int NewDpsFieldNumber = 9;
     private ulong newDps_;
     /// <summary>
     /// 강화 후 이 슬롯의 DPS
@@ -7188,7 +7641,7 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "new_total_dps" field.</summary>
-    public const int NewTotalDpsFieldNumber = 7;
+    public const int NewTotalDpsFieldNumber = 10;
     private ulong newTotalDps_;
     /// <summary>
     /// 강화 후 모든 슬롯의 총 DPS
@@ -7203,7 +7656,7 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "gold_spent" field.</summary>
-    public const int GoldSpentFieldNumber = 8;
+    public const int GoldSpentFieldNumber = 11;
     private ulong goldSpent_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -7215,7 +7668,7 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "remaining_gold" field.</summary>
-    public const int RemainingGoldFieldNumber = 9;
+    public const int RemainingGoldFieldNumber = 12;
     private ulong remainingGold_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -7227,7 +7680,7 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "error_code" field.</summary>
-    public const int ErrorCodeFieldNumber = 10;
+    public const int ErrorCodeFieldNumber = 13;
     private string errorCode_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -7239,7 +7692,7 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "base_rate_bp" field.</summary>
-    public const int BaseRateBpFieldNumber = 11;
+    public const int BaseRateBpFieldNumber = 14;
     private uint baseRateBp_;
     /// <summary>
     /// 기본 확률 (basis point 10000)
@@ -7254,7 +7707,7 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "bonus_rate_bp" field.</summary>
-    public const int BonusRateBpFieldNumber = 12;
+    public const int BonusRateBpFieldNumber = 15;
     private uint bonusRateBp_;
     /// <summary>
     /// 보너스 확률
@@ -7269,7 +7722,7 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "final_rate_bp" field.</summary>
-    public const int FinalRateBpFieldNumber = 13;
+    public const int FinalRateBpFieldNumber = 16;
     private uint finalRateBp_;
     /// <summary>
     /// 최종 확률
@@ -7284,10 +7737,10 @@ namespace Infinitepickaxe {
     }
 
     /// <summary>Field number for the "pity_bonus" field.</summary>
-    public const int PityBonusFieldNumber = 14;
+    public const int PityBonusFieldNumber = 17;
     private uint pityBonus_;
     /// <summary>
-    /// 천장 보너스
+    /// 천장 보너스 (업데이트된 값)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -7316,8 +7769,11 @@ namespace Infinitepickaxe {
       if (Success != other.Success) return false;
       if (SlotIndex != other.SlotIndex) return false;
       if (NewLevel != other.NewLevel) return false;
+      if (NewTier != other.NewTier) return false;
       if (NewAttackPower != other.NewAttackPower) return false;
       if (NewAttackSpeedX100 != other.NewAttackSpeedX100) return false;
+      if (NewCriticalHitPercent != other.NewCriticalHitPercent) return false;
+      if (NewCriticalDamage != other.NewCriticalDamage) return false;
       if (NewDps != other.NewDps) return false;
       if (NewTotalDps != other.NewTotalDps) return false;
       if (GoldSpent != other.GoldSpent) return false;
@@ -7337,8 +7793,11 @@ namespace Infinitepickaxe {
       if (Success != false) hash ^= Success.GetHashCode();
       if (SlotIndex != 0) hash ^= SlotIndex.GetHashCode();
       if (NewLevel != 0) hash ^= NewLevel.GetHashCode();
+      if (NewTier != 0) hash ^= NewTier.GetHashCode();
       if (NewAttackPower != 0UL) hash ^= NewAttackPower.GetHashCode();
       if (NewAttackSpeedX100 != 0) hash ^= NewAttackSpeedX100.GetHashCode();
+      if (NewCriticalHitPercent != 0) hash ^= NewCriticalHitPercent.GetHashCode();
+      if (NewCriticalDamage != 0) hash ^= NewCriticalDamage.GetHashCode();
       if (NewDps != 0UL) hash ^= NewDps.GetHashCode();
       if (NewTotalDps != 0UL) hash ^= NewTotalDps.GetHashCode();
       if (GoldSpent != 0UL) hash ^= GoldSpent.GetHashCode();
@@ -7378,48 +7837,60 @@ namespace Infinitepickaxe {
         output.WriteRawTag(24);
         output.WriteUInt32(NewLevel);
       }
-      if (NewAttackPower != 0UL) {
+      if (NewTier != 0) {
         output.WriteRawTag(32);
+        output.WriteUInt32(NewTier);
+      }
+      if (NewAttackPower != 0UL) {
+        output.WriteRawTag(40);
         output.WriteUInt64(NewAttackPower);
       }
       if (NewAttackSpeedX100 != 0) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(48);
         output.WriteUInt32(NewAttackSpeedX100);
       }
+      if (NewCriticalHitPercent != 0) {
+        output.WriteRawTag(56);
+        output.WriteUInt32(NewCriticalHitPercent);
+      }
+      if (NewCriticalDamage != 0) {
+        output.WriteRawTag(64);
+        output.WriteUInt32(NewCriticalDamage);
+      }
       if (NewDps != 0UL) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(72);
         output.WriteUInt64(NewDps);
       }
       if (NewTotalDps != 0UL) {
-        output.WriteRawTag(56);
+        output.WriteRawTag(80);
         output.WriteUInt64(NewTotalDps);
       }
       if (GoldSpent != 0UL) {
-        output.WriteRawTag(64);
+        output.WriteRawTag(88);
         output.WriteUInt64(GoldSpent);
       }
       if (RemainingGold != 0UL) {
-        output.WriteRawTag(72);
+        output.WriteRawTag(96);
         output.WriteUInt64(RemainingGold);
       }
       if (ErrorCode.Length != 0) {
-        output.WriteRawTag(82);
+        output.WriteRawTag(106);
         output.WriteString(ErrorCode);
       }
       if (BaseRateBp != 0) {
-        output.WriteRawTag(88);
+        output.WriteRawTag(112);
         output.WriteUInt32(BaseRateBp);
       }
       if (BonusRateBp != 0) {
-        output.WriteRawTag(96);
+        output.WriteRawTag(120);
         output.WriteUInt32(BonusRateBp);
       }
       if (FinalRateBp != 0) {
-        output.WriteRawTag(104);
+        output.WriteRawTag(128, 1);
         output.WriteUInt32(FinalRateBp);
       }
       if (PityBonus != 0) {
-        output.WriteRawTag(112);
+        output.WriteRawTag(136, 1);
         output.WriteUInt32(PityBonus);
       }
       if (_unknownFields != null) {
@@ -7444,48 +7915,60 @@ namespace Infinitepickaxe {
         output.WriteRawTag(24);
         output.WriteUInt32(NewLevel);
       }
-      if (NewAttackPower != 0UL) {
+      if (NewTier != 0) {
         output.WriteRawTag(32);
+        output.WriteUInt32(NewTier);
+      }
+      if (NewAttackPower != 0UL) {
+        output.WriteRawTag(40);
         output.WriteUInt64(NewAttackPower);
       }
       if (NewAttackSpeedX100 != 0) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(48);
         output.WriteUInt32(NewAttackSpeedX100);
       }
+      if (NewCriticalHitPercent != 0) {
+        output.WriteRawTag(56);
+        output.WriteUInt32(NewCriticalHitPercent);
+      }
+      if (NewCriticalDamage != 0) {
+        output.WriteRawTag(64);
+        output.WriteUInt32(NewCriticalDamage);
+      }
       if (NewDps != 0UL) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(72);
         output.WriteUInt64(NewDps);
       }
       if (NewTotalDps != 0UL) {
-        output.WriteRawTag(56);
+        output.WriteRawTag(80);
         output.WriteUInt64(NewTotalDps);
       }
       if (GoldSpent != 0UL) {
-        output.WriteRawTag(64);
+        output.WriteRawTag(88);
         output.WriteUInt64(GoldSpent);
       }
       if (RemainingGold != 0UL) {
-        output.WriteRawTag(72);
+        output.WriteRawTag(96);
         output.WriteUInt64(RemainingGold);
       }
       if (ErrorCode.Length != 0) {
-        output.WriteRawTag(82);
+        output.WriteRawTag(106);
         output.WriteString(ErrorCode);
       }
       if (BaseRateBp != 0) {
-        output.WriteRawTag(88);
+        output.WriteRawTag(112);
         output.WriteUInt32(BaseRateBp);
       }
       if (BonusRateBp != 0) {
-        output.WriteRawTag(96);
+        output.WriteRawTag(120);
         output.WriteUInt32(BonusRateBp);
       }
       if (FinalRateBp != 0) {
-        output.WriteRawTag(104);
+        output.WriteRawTag(128, 1);
         output.WriteUInt32(FinalRateBp);
       }
       if (PityBonus != 0) {
-        output.WriteRawTag(112);
+        output.WriteRawTag(136, 1);
         output.WriteUInt32(PityBonus);
       }
       if (_unknownFields != null) {
@@ -7507,11 +7990,20 @@ namespace Infinitepickaxe {
       if (NewLevel != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NewLevel);
       }
+      if (NewTier != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NewTier);
+      }
       if (NewAttackPower != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(NewAttackPower);
       }
       if (NewAttackSpeedX100 != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NewAttackSpeedX100);
+      }
+      if (NewCriticalHitPercent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NewCriticalHitPercent);
+      }
+      if (NewCriticalDamage != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NewCriticalDamage);
       }
       if (NewDps != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(NewDps);
@@ -7535,10 +8027,10 @@ namespace Infinitepickaxe {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(BonusRateBp);
       }
       if (FinalRateBp != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FinalRateBp);
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(FinalRateBp);
       }
       if (PityBonus != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PityBonus);
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(PityBonus);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -7561,11 +8053,20 @@ namespace Infinitepickaxe {
       if (other.NewLevel != 0) {
         NewLevel = other.NewLevel;
       }
+      if (other.NewTier != 0) {
+        NewTier = other.NewTier;
+      }
       if (other.NewAttackPower != 0UL) {
         NewAttackPower = other.NewAttackPower;
       }
       if (other.NewAttackSpeedX100 != 0) {
         NewAttackSpeedX100 = other.NewAttackSpeedX100;
+      }
+      if (other.NewCriticalHitPercent != 0) {
+        NewCriticalHitPercent = other.NewCriticalHitPercent;
+      }
+      if (other.NewCriticalDamage != 0) {
+        NewCriticalDamage = other.NewCriticalDamage;
       }
       if (other.NewDps != 0UL) {
         NewDps = other.NewDps;
@@ -7626,46 +8127,58 @@ namespace Infinitepickaxe {
             break;
           }
           case 32: {
-            NewAttackPower = input.ReadUInt64();
+            NewTier = input.ReadUInt32();
             break;
           }
           case 40: {
-            NewAttackSpeedX100 = input.ReadUInt32();
+            NewAttackPower = input.ReadUInt64();
             break;
           }
           case 48: {
-            NewDps = input.ReadUInt64();
+            NewAttackSpeedX100 = input.ReadUInt32();
             break;
           }
           case 56: {
-            NewTotalDps = input.ReadUInt64();
+            NewCriticalHitPercent = input.ReadUInt32();
             break;
           }
           case 64: {
-            GoldSpent = input.ReadUInt64();
+            NewCriticalDamage = input.ReadUInt32();
             break;
           }
           case 72: {
-            RemainingGold = input.ReadUInt64();
+            NewDps = input.ReadUInt64();
             break;
           }
-          case 82: {
-            ErrorCode = input.ReadString();
+          case 80: {
+            NewTotalDps = input.ReadUInt64();
             break;
           }
           case 88: {
-            BaseRateBp = input.ReadUInt32();
+            GoldSpent = input.ReadUInt64();
             break;
           }
           case 96: {
-            BonusRateBp = input.ReadUInt32();
+            RemainingGold = input.ReadUInt64();
             break;
           }
-          case 104: {
-            FinalRateBp = input.ReadUInt32();
+          case 106: {
+            ErrorCode = input.ReadString();
             break;
           }
           case 112: {
+            BaseRateBp = input.ReadUInt32();
+            break;
+          }
+          case 120: {
+            BonusRateBp = input.ReadUInt32();
+            break;
+          }
+          case 128: {
+            FinalRateBp = input.ReadUInt32();
+            break;
+          }
+          case 136: {
             PityBonus = input.ReadUInt32();
             break;
           }
@@ -7701,46 +8214,58 @@ namespace Infinitepickaxe {
             break;
           }
           case 32: {
-            NewAttackPower = input.ReadUInt64();
+            NewTier = input.ReadUInt32();
             break;
           }
           case 40: {
-            NewAttackSpeedX100 = input.ReadUInt32();
+            NewAttackPower = input.ReadUInt64();
             break;
           }
           case 48: {
-            NewDps = input.ReadUInt64();
+            NewAttackSpeedX100 = input.ReadUInt32();
             break;
           }
           case 56: {
-            NewTotalDps = input.ReadUInt64();
+            NewCriticalHitPercent = input.ReadUInt32();
             break;
           }
           case 64: {
-            GoldSpent = input.ReadUInt64();
+            NewCriticalDamage = input.ReadUInt32();
             break;
           }
           case 72: {
-            RemainingGold = input.ReadUInt64();
+            NewDps = input.ReadUInt64();
             break;
           }
-          case 82: {
-            ErrorCode = input.ReadString();
+          case 80: {
+            NewTotalDps = input.ReadUInt64();
             break;
           }
           case 88: {
-            BaseRateBp = input.ReadUInt32();
+            GoldSpent = input.ReadUInt64();
             break;
           }
           case 96: {
-            BonusRateBp = input.ReadUInt32();
+            RemainingGold = input.ReadUInt64();
             break;
           }
-          case 104: {
-            FinalRateBp = input.ReadUInt32();
+          case 106: {
+            ErrorCode = input.ReadString();
             break;
           }
           case 112: {
+            BaseRateBp = input.ReadUInt32();
+            break;
+          }
+          case 120: {
+            BonusRateBp = input.ReadUInt32();
+            break;
+          }
+          case 128: {
+            FinalRateBp = input.ReadUInt32();
+            break;
+          }
+          case 136: {
             PityBonus = input.ReadUInt32();
             break;
           }
@@ -7769,7 +8294,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[19]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[20]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7930,7 +8455,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[20]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[21]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7950,14 +8475,16 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public MissionEntry(MissionEntry other) : this() {
+      slotNo_ = other.slotNo_;
       missionId_ = other.missionId_;
-      type_ = other.type_;
+      missionType_ = other.missionType_;
       description_ = other.description_;
-      requiredProgress_ = other.requiredProgress_;
-      currentProgress_ = other.currentProgress_;
-      goldReward_ = other.goldReward_;
-      isCompleted_ = other.isCompleted_;
-      isClaimed_ = other.isClaimed_;
+      targetValue_ = other.targetValue_;
+      currentValue_ = other.currentValue_;
+      rewardCrystal_ = other.rewardCrystal_;
+      status_ = other.status_;
+      assignedAt_ = other.assignedAt_;
+      expiresAt_ = other.expiresAt_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -7967,32 +8494,53 @@ namespace Infinitepickaxe {
       return new MissionEntry(this);
     }
 
-    /// <summary>Field number for the "mission_id" field.</summary>
-    public const int MissionIdFieldNumber = 1;
-    private uint missionId_;
+    /// <summary>Field number for the "slot_no" field.</summary>
+    public const int SlotNoFieldNumber = 1;
+    private uint slotNo_;
+    /// <summary>
+    /// 슬롯 번호 (1-3)
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint MissionId {
-      get { return missionId_; }
+    public uint SlotNo {
+      get { return slotNo_; }
       set {
-        missionId_ = value;
+        slotNo_ = value;
       }
     }
 
-    /// <summary>Field number for the "type" field.</summary>
-    public const int TypeFieldNumber = 2;
-    private string type_ = "";
+    /// <summary>Field number for the "mission_id" field.</summary>
+    public const int MissionIdFieldNumber = 2;
+    private string missionId_ = "";
+    /// <summary>
+    /// UUID (DB와 동일)
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Type {
-      get { return type_; }
+    public string MissionId {
+      get { return missionId_; }
       set {
-        type_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        missionId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "mission_type" field.</summary>
+    public const int MissionTypeFieldNumber = 3;
+    private string missionType_ = "";
+    /// <summary>
+    /// "mine", "play_time", "upgrade", "gold", "level" 등
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MissionType {
+      get { return missionType_; }
+      set {
+        missionType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
     /// <summary>Field number for the "description" field.</summary>
-    public const int DescriptionFieldNumber = 3;
+    public const int DescriptionFieldNumber = 4;
     private string description_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -8003,63 +8551,93 @@ namespace Infinitepickaxe {
       }
     }
 
-    /// <summary>Field number for the "required_progress" field.</summary>
-    public const int RequiredProgressFieldNumber = 4;
-    private uint requiredProgress_;
+    /// <summary>Field number for the "target_value" field.</summary>
+    public const int TargetValueFieldNumber = 5;
+    private uint targetValue_;
+    /// <summary>
+    /// 목표 값
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint RequiredProgress {
-      get { return requiredProgress_; }
+    public uint TargetValue {
+      get { return targetValue_; }
       set {
-        requiredProgress_ = value;
+        targetValue_ = value;
       }
     }
 
-    /// <summary>Field number for the "current_progress" field.</summary>
-    public const int CurrentProgressFieldNumber = 5;
-    private uint currentProgress_;
+    /// <summary>Field number for the "current_value" field.</summary>
+    public const int CurrentValueFieldNumber = 6;
+    private uint currentValue_;
+    /// <summary>
+    /// 현재 진행도
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint CurrentProgress {
-      get { return currentProgress_; }
+    public uint CurrentValue {
+      get { return currentValue_; }
       set {
-        currentProgress_ = value;
+        currentValue_ = value;
       }
     }
 
-    /// <summary>Field number for the "gold_reward" field.</summary>
-    public const int GoldRewardFieldNumber = 6;
-    private ulong goldReward_;
+    /// <summary>Field number for the "reward_crystal" field.</summary>
+    public const int RewardCrystalFieldNumber = 7;
+    private uint rewardCrystal_;
+    /// <summary>
+    /// 보상 크리스탈
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ulong GoldReward {
-      get { return goldReward_; }
+    public uint RewardCrystal {
+      get { return rewardCrystal_; }
       set {
-        goldReward_ = value;
+        rewardCrystal_ = value;
       }
     }
 
-    /// <summary>Field number for the "is_completed" field.</summary>
-    public const int IsCompletedFieldNumber = 7;
-    private bool isCompleted_;
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 8;
+    private string status_ = "";
+    /// <summary>
+    /// "active", "completed", "claimed"
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool IsCompleted {
-      get { return isCompleted_; }
+    public string Status {
+      get { return status_; }
       set {
-        isCompleted_ = value;
+        status_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
-    /// <summary>Field number for the "is_claimed" field.</summary>
-    public const int IsClaimedFieldNumber = 8;
-    private bool isClaimed_;
+    /// <summary>Field number for the "assigned_at" field.</summary>
+    public const int AssignedAtFieldNumber = 9;
+    private ulong assignedAt_;
+    /// <summary>
+    /// 배정 시간 (Unix timestamp ms)
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool IsClaimed {
-      get { return isClaimed_; }
+    public ulong AssignedAt {
+      get { return assignedAt_; }
       set {
-        isClaimed_ = value;
+        assignedAt_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "expires_at" field.</summary>
+    public const int ExpiresAtFieldNumber = 10;
+    private ulong expiresAt_;
+    /// <summary>
+    /// 만료 시간 (Unix timestamp ms, nullable)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong ExpiresAt {
+      get { return expiresAt_; }
+      set {
+        expiresAt_ = value;
       }
     }
 
@@ -8078,14 +8656,16 @@ namespace Infinitepickaxe {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (SlotNo != other.SlotNo) return false;
       if (MissionId != other.MissionId) return false;
-      if (Type != other.Type) return false;
+      if (MissionType != other.MissionType) return false;
       if (Description != other.Description) return false;
-      if (RequiredProgress != other.RequiredProgress) return false;
-      if (CurrentProgress != other.CurrentProgress) return false;
-      if (GoldReward != other.GoldReward) return false;
-      if (IsCompleted != other.IsCompleted) return false;
-      if (IsClaimed != other.IsClaimed) return false;
+      if (TargetValue != other.TargetValue) return false;
+      if (CurrentValue != other.CurrentValue) return false;
+      if (RewardCrystal != other.RewardCrystal) return false;
+      if (Status != other.Status) return false;
+      if (AssignedAt != other.AssignedAt) return false;
+      if (ExpiresAt != other.ExpiresAt) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -8093,14 +8673,16 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (MissionId != 0) hash ^= MissionId.GetHashCode();
-      if (Type.Length != 0) hash ^= Type.GetHashCode();
+      if (SlotNo != 0) hash ^= SlotNo.GetHashCode();
+      if (MissionId.Length != 0) hash ^= MissionId.GetHashCode();
+      if (MissionType.Length != 0) hash ^= MissionType.GetHashCode();
       if (Description.Length != 0) hash ^= Description.GetHashCode();
-      if (RequiredProgress != 0) hash ^= RequiredProgress.GetHashCode();
-      if (CurrentProgress != 0) hash ^= CurrentProgress.GetHashCode();
-      if (GoldReward != 0UL) hash ^= GoldReward.GetHashCode();
-      if (IsCompleted != false) hash ^= IsCompleted.GetHashCode();
-      if (IsClaimed != false) hash ^= IsClaimed.GetHashCode();
+      if (TargetValue != 0) hash ^= TargetValue.GetHashCode();
+      if (CurrentValue != 0) hash ^= CurrentValue.GetHashCode();
+      if (RewardCrystal != 0) hash ^= RewardCrystal.GetHashCode();
+      if (Status.Length != 0) hash ^= Status.GetHashCode();
+      if (AssignedAt != 0UL) hash ^= AssignedAt.GetHashCode();
+      if (ExpiresAt != 0UL) hash ^= ExpiresAt.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -8119,37 +8701,45 @@ namespace Infinitepickaxe {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (MissionId != 0) {
+      if (SlotNo != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(MissionId);
+        output.WriteUInt32(SlotNo);
       }
-      if (Type.Length != 0) {
+      if (MissionId.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(Type);
+        output.WriteString(MissionId);
+      }
+      if (MissionType.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(MissionType);
       }
       if (Description.Length != 0) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteString(Description);
       }
-      if (RequiredProgress != 0) {
-        output.WriteRawTag(32);
-        output.WriteUInt32(RequiredProgress);
-      }
-      if (CurrentProgress != 0) {
+      if (TargetValue != 0) {
         output.WriteRawTag(40);
-        output.WriteUInt32(CurrentProgress);
+        output.WriteUInt32(TargetValue);
       }
-      if (GoldReward != 0UL) {
+      if (CurrentValue != 0) {
         output.WriteRawTag(48);
-        output.WriteUInt64(GoldReward);
+        output.WriteUInt32(CurrentValue);
       }
-      if (IsCompleted != false) {
+      if (RewardCrystal != 0) {
         output.WriteRawTag(56);
-        output.WriteBool(IsCompleted);
+        output.WriteUInt32(RewardCrystal);
       }
-      if (IsClaimed != false) {
-        output.WriteRawTag(64);
-        output.WriteBool(IsClaimed);
+      if (Status.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(Status);
+      }
+      if (AssignedAt != 0UL) {
+        output.WriteRawTag(72);
+        output.WriteUInt64(AssignedAt);
+      }
+      if (ExpiresAt != 0UL) {
+        output.WriteRawTag(80);
+        output.WriteUInt64(ExpiresAt);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -8161,37 +8751,45 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (MissionId != 0) {
+      if (SlotNo != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(MissionId);
+        output.WriteUInt32(SlotNo);
       }
-      if (Type.Length != 0) {
+      if (MissionId.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(Type);
+        output.WriteString(MissionId);
+      }
+      if (MissionType.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(MissionType);
       }
       if (Description.Length != 0) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteString(Description);
       }
-      if (RequiredProgress != 0) {
-        output.WriteRawTag(32);
-        output.WriteUInt32(RequiredProgress);
-      }
-      if (CurrentProgress != 0) {
+      if (TargetValue != 0) {
         output.WriteRawTag(40);
-        output.WriteUInt32(CurrentProgress);
+        output.WriteUInt32(TargetValue);
       }
-      if (GoldReward != 0UL) {
+      if (CurrentValue != 0) {
         output.WriteRawTag(48);
-        output.WriteUInt64(GoldReward);
+        output.WriteUInt32(CurrentValue);
       }
-      if (IsCompleted != false) {
+      if (RewardCrystal != 0) {
         output.WriteRawTag(56);
-        output.WriteBool(IsCompleted);
+        output.WriteUInt32(RewardCrystal);
       }
-      if (IsClaimed != false) {
-        output.WriteRawTag(64);
-        output.WriteBool(IsClaimed);
+      if (Status.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(Status);
+      }
+      if (AssignedAt != 0UL) {
+        output.WriteRawTag(72);
+        output.WriteUInt64(AssignedAt);
+      }
+      if (ExpiresAt != 0UL) {
+        output.WriteRawTag(80);
+        output.WriteUInt64(ExpiresAt);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -8203,29 +8801,35 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (MissionId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MissionId);
+      if (SlotNo != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SlotNo);
       }
-      if (Type.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Type);
+      if (MissionId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MissionId);
+      }
+      if (MissionType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MissionType);
       }
       if (Description.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
       }
-      if (RequiredProgress != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RequiredProgress);
+      if (TargetValue != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TargetValue);
       }
-      if (CurrentProgress != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CurrentProgress);
+      if (CurrentValue != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CurrentValue);
       }
-      if (GoldReward != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(GoldReward);
+      if (RewardCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RewardCrystal);
       }
-      if (IsCompleted != false) {
-        size += 1 + 1;
+      if (Status.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Status);
       }
-      if (IsClaimed != false) {
-        size += 1 + 1;
+      if (AssignedAt != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(AssignedAt);
+      }
+      if (ExpiresAt != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ExpiresAt);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -8239,29 +8843,35 @@ namespace Infinitepickaxe {
       if (other == null) {
         return;
       }
-      if (other.MissionId != 0) {
+      if (other.SlotNo != 0) {
+        SlotNo = other.SlotNo;
+      }
+      if (other.MissionId.Length != 0) {
         MissionId = other.MissionId;
       }
-      if (other.Type.Length != 0) {
-        Type = other.Type;
+      if (other.MissionType.Length != 0) {
+        MissionType = other.MissionType;
       }
       if (other.Description.Length != 0) {
         Description = other.Description;
       }
-      if (other.RequiredProgress != 0) {
-        RequiredProgress = other.RequiredProgress;
+      if (other.TargetValue != 0) {
+        TargetValue = other.TargetValue;
       }
-      if (other.CurrentProgress != 0) {
-        CurrentProgress = other.CurrentProgress;
+      if (other.CurrentValue != 0) {
+        CurrentValue = other.CurrentValue;
       }
-      if (other.GoldReward != 0UL) {
-        GoldReward = other.GoldReward;
+      if (other.RewardCrystal != 0) {
+        RewardCrystal = other.RewardCrystal;
       }
-      if (other.IsCompleted != false) {
-        IsCompleted = other.IsCompleted;
+      if (other.Status.Length != 0) {
+        Status = other.Status;
       }
-      if (other.IsClaimed != false) {
-        IsClaimed = other.IsClaimed;
+      if (other.AssignedAt != 0UL) {
+        AssignedAt = other.AssignedAt;
+      }
+      if (other.ExpiresAt != 0UL) {
+        ExpiresAt = other.ExpiresAt;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -8283,35 +8893,43 @@ namespace Infinitepickaxe {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            MissionId = input.ReadUInt32();
+            SlotNo = input.ReadUInt32();
             break;
           }
           case 18: {
-            Type = input.ReadString();
+            MissionId = input.ReadString();
             break;
           }
           case 26: {
+            MissionType = input.ReadString();
+            break;
+          }
+          case 34: {
             Description = input.ReadString();
             break;
           }
-          case 32: {
-            RequiredProgress = input.ReadUInt32();
-            break;
-          }
           case 40: {
-            CurrentProgress = input.ReadUInt32();
+            TargetValue = input.ReadUInt32();
             break;
           }
           case 48: {
-            GoldReward = input.ReadUInt64();
+            CurrentValue = input.ReadUInt32();
             break;
           }
           case 56: {
-            IsCompleted = input.ReadBool();
+            RewardCrystal = input.ReadUInt32();
             break;
           }
-          case 64: {
-            IsClaimed = input.ReadBool();
+          case 66: {
+            Status = input.ReadString();
+            break;
+          }
+          case 72: {
+            AssignedAt = input.ReadUInt64();
+            break;
+          }
+          case 80: {
+            ExpiresAt = input.ReadUInt64();
             break;
           }
         }
@@ -8334,35 +8952,43 @@ namespace Infinitepickaxe {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            MissionId = input.ReadUInt32();
+            SlotNo = input.ReadUInt32();
             break;
           }
           case 18: {
-            Type = input.ReadString();
+            MissionId = input.ReadString();
             break;
           }
           case 26: {
+            MissionType = input.ReadString();
+            break;
+          }
+          case 34: {
             Description = input.ReadString();
             break;
           }
-          case 32: {
-            RequiredProgress = input.ReadUInt32();
-            break;
-          }
           case 40: {
-            CurrentProgress = input.ReadUInt32();
+            TargetValue = input.ReadUInt32();
             break;
           }
           case 48: {
-            GoldReward = input.ReadUInt64();
+            CurrentValue = input.ReadUInt32();
             break;
           }
           case 56: {
-            IsCompleted = input.ReadBool();
+            RewardCrystal = input.ReadUInt32();
             break;
           }
-          case 64: {
-            IsClaimed = input.ReadBool();
+          case 66: {
+            Status = input.ReadString();
+            break;
+          }
+          case 72: {
+            AssignedAt = input.ReadUInt64();
+            break;
+          }
+          case 80: {
+            ExpiresAt = input.ReadUInt64();
             break;
           }
         }
@@ -8387,7 +9013,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[21]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[22]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8408,8 +9034,9 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public DailyMissionsResponse(DailyMissionsResponse other) : this() {
       missions_ = other.missions_.Clone();
-      adsWatchedToday_ = other.adsWatchedToday_;
-      missionRerollsUsed_ = other.missionRerollsUsed_;
+      completedCount_ = other.completedCount_;
+      rerollCount_ = other.rerollCount_;
+      adCounters_ = other.adCounters_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -8424,34 +9051,57 @@ namespace Infinitepickaxe {
     private static readonly pb::FieldCodec<global::Infinitepickaxe.MissionEntry> _repeated_missions_codec
         = pb::FieldCodec.ForMessage(10, global::Infinitepickaxe.MissionEntry.Parser);
     private readonly pbc::RepeatedField<global::Infinitepickaxe.MissionEntry> missions_ = new pbc::RepeatedField<global::Infinitepickaxe.MissionEntry>();
+    /// <summary>
+    /// 최대 3개 슬롯
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Infinitepickaxe.MissionEntry> Missions {
       get { return missions_; }
     }
 
-    /// <summary>Field number for the "ads_watched_today" field.</summary>
-    public const int AdsWatchedTodayFieldNumber = 2;
-    private uint adsWatchedToday_;
+    /// <summary>Field number for the "completed_count" field.</summary>
+    public const int CompletedCountFieldNumber = 2;
+    private uint completedCount_;
+    /// <summary>
+    /// 오늘 완료된 미션 수
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint AdsWatchedToday {
-      get { return adsWatchedToday_; }
+    public uint CompletedCount {
+      get { return completedCount_; }
       set {
-        adsWatchedToday_ = value;
+        completedCount_ = value;
       }
     }
 
-    /// <summary>Field number for the "mission_rerolls_used" field.</summary>
-    public const int MissionRerollsUsedFieldNumber = 3;
-    private uint missionRerollsUsed_;
+    /// <summary>Field number for the "reroll_count" field.</summary>
+    public const int RerollCountFieldNumber = 3;
+    private uint rerollCount_;
+    /// <summary>
+    /// 오늘 리롤 사용 횟수
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint MissionRerollsUsed {
-      get { return missionRerollsUsed_; }
+    public uint RerollCount {
+      get { return rerollCount_; }
       set {
-        missionRerollsUsed_ = value;
+        rerollCount_ = value;
       }
+    }
+
+    /// <summary>Field number for the "ad_counters" field.</summary>
+    public const int AdCountersFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.AdCounter> _repeated_adCounters_codec
+        = pb::FieldCodec.ForMessage(34, global::Infinitepickaxe.AdCounter.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.AdCounter> adCounters_ = new pbc::RepeatedField<global::Infinitepickaxe.AdCounter>();
+    /// <summary>
+    /// 광고 카운터 (옵션)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.AdCounter> AdCounters {
+      get { return adCounters_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8470,8 +9120,9 @@ namespace Infinitepickaxe {
         return true;
       }
       if(!missions_.Equals(other.missions_)) return false;
-      if (AdsWatchedToday != other.AdsWatchedToday) return false;
-      if (MissionRerollsUsed != other.MissionRerollsUsed) return false;
+      if (CompletedCount != other.CompletedCount) return false;
+      if (RerollCount != other.RerollCount) return false;
+      if(!adCounters_.Equals(other.adCounters_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -8480,8 +9131,9 @@ namespace Infinitepickaxe {
     public override int GetHashCode() {
       int hash = 1;
       hash ^= missions_.GetHashCode();
-      if (AdsWatchedToday != 0) hash ^= AdsWatchedToday.GetHashCode();
-      if (MissionRerollsUsed != 0) hash ^= MissionRerollsUsed.GetHashCode();
+      if (CompletedCount != 0) hash ^= CompletedCount.GetHashCode();
+      if (RerollCount != 0) hash ^= RerollCount.GetHashCode();
+      hash ^= adCounters_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -8501,14 +9153,15 @@ namespace Infinitepickaxe {
       output.WriteRawMessage(this);
     #else
       missions_.WriteTo(output, _repeated_missions_codec);
-      if (AdsWatchedToday != 0) {
+      if (CompletedCount != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt32(AdsWatchedToday);
+        output.WriteUInt32(CompletedCount);
       }
-      if (MissionRerollsUsed != 0) {
+      if (RerollCount != 0) {
         output.WriteRawTag(24);
-        output.WriteUInt32(MissionRerollsUsed);
+        output.WriteUInt32(RerollCount);
       }
+      adCounters_.WriteTo(output, _repeated_adCounters_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -8520,14 +9173,15 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       missions_.WriteTo(ref output, _repeated_missions_codec);
-      if (AdsWatchedToday != 0) {
+      if (CompletedCount != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt32(AdsWatchedToday);
+        output.WriteUInt32(CompletedCount);
       }
-      if (MissionRerollsUsed != 0) {
+      if (RerollCount != 0) {
         output.WriteRawTag(24);
-        output.WriteUInt32(MissionRerollsUsed);
+        output.WriteUInt32(RerollCount);
       }
+      adCounters_.WriteTo(ref output, _repeated_adCounters_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -8539,12 +9193,13 @@ namespace Infinitepickaxe {
     public int CalculateSize() {
       int size = 0;
       size += missions_.CalculateSize(_repeated_missions_codec);
-      if (AdsWatchedToday != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(AdsWatchedToday);
+      if (CompletedCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CompletedCount);
       }
-      if (MissionRerollsUsed != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MissionRerollsUsed);
+      if (RerollCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RerollCount);
       }
+      size += adCounters_.CalculateSize(_repeated_adCounters_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -8558,12 +9213,13 @@ namespace Infinitepickaxe {
         return;
       }
       missions_.Add(other.missions_);
-      if (other.AdsWatchedToday != 0) {
-        AdsWatchedToday = other.AdsWatchedToday;
+      if (other.CompletedCount != 0) {
+        CompletedCount = other.CompletedCount;
       }
-      if (other.MissionRerollsUsed != 0) {
-        MissionRerollsUsed = other.MissionRerollsUsed;
+      if (other.RerollCount != 0) {
+        RerollCount = other.RerollCount;
       }
+      adCounters_.Add(other.adCounters_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -8588,11 +9244,15 @@ namespace Infinitepickaxe {
             break;
           }
           case 16: {
-            AdsWatchedToday = input.ReadUInt32();
+            CompletedCount = input.ReadUInt32();
             break;
           }
           case 24: {
-            MissionRerollsUsed = input.ReadUInt32();
+            RerollCount = input.ReadUInt32();
+            break;
+          }
+          case 34: {
+            adCounters_.AddEntriesFrom(input, _repeated_adCounters_codec);
             break;
           }
         }
@@ -8619,11 +9279,15 @@ namespace Infinitepickaxe {
             break;
           }
           case 16: {
-            AdsWatchedToday = input.ReadUInt32();
+            CompletedCount = input.ReadUInt32();
             break;
           }
           case 24: {
-            MissionRerollsUsed = input.ReadUInt32();
+            RerollCount = input.ReadUInt32();
+            break;
+          }
+          case 34: {
+            adCounters_.AddEntriesFrom(ref input, _repeated_adCounters_codec);
             break;
           }
         }
@@ -8648,7 +9312,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[22]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[23]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8668,10 +9332,11 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public MissionProgressUpdate(MissionProgressUpdate other) : this() {
+      slotNo_ = other.slotNo_;
       missionId_ = other.missionId_;
-      currentProgress_ = other.currentProgress_;
-      requiredProgress_ = other.requiredProgress_;
-      isCompleted_ = other.isCompleted_;
+      currentValue_ = other.currentValue_;
+      targetValue_ = other.targetValue_;
+      status_ = other.status_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -8681,51 +9346,78 @@ namespace Infinitepickaxe {
       return new MissionProgressUpdate(this);
     }
 
-    /// <summary>Field number for the "mission_id" field.</summary>
-    public const int MissionIdFieldNumber = 1;
-    private uint missionId_;
+    /// <summary>Field number for the "slot_no" field.</summary>
+    public const int SlotNoFieldNumber = 1;
+    private uint slotNo_;
+    /// <summary>
+    /// 슬롯 번호 (1-3)
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint MissionId {
+    public uint SlotNo {
+      get { return slotNo_; }
+      set {
+        slotNo_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mission_id" field.</summary>
+    public const int MissionIdFieldNumber = 2;
+    private string missionId_ = "";
+    /// <summary>
+    /// UUID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MissionId {
       get { return missionId_; }
       set {
-        missionId_ = value;
+        missionId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
-    /// <summary>Field number for the "current_progress" field.</summary>
-    public const int CurrentProgressFieldNumber = 2;
-    private uint currentProgress_;
+    /// <summary>Field number for the "current_value" field.</summary>
+    public const int CurrentValueFieldNumber = 3;
+    private uint currentValue_;
+    /// <summary>
+    /// 현재 진행도
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint CurrentProgress {
-      get { return currentProgress_; }
+    public uint CurrentValue {
+      get { return currentValue_; }
       set {
-        currentProgress_ = value;
+        currentValue_ = value;
       }
     }
 
-    /// <summary>Field number for the "required_progress" field.</summary>
-    public const int RequiredProgressFieldNumber = 3;
-    private uint requiredProgress_;
+    /// <summary>Field number for the "target_value" field.</summary>
+    public const int TargetValueFieldNumber = 4;
+    private uint targetValue_;
+    /// <summary>
+    /// 목표 값
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint RequiredProgress {
-      get { return requiredProgress_; }
+    public uint TargetValue {
+      get { return targetValue_; }
       set {
-        requiredProgress_ = value;
+        targetValue_ = value;
       }
     }
 
-    /// <summary>Field number for the "is_completed" field.</summary>
-    public const int IsCompletedFieldNumber = 4;
-    private bool isCompleted_;
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 5;
+    private string status_ = "";
+    /// <summary>
+    /// "active", "completed", "claimed"
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool IsCompleted {
-      get { return isCompleted_; }
+    public string Status {
+      get { return status_; }
       set {
-        isCompleted_ = value;
+        status_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -8744,10 +9436,11 @@ namespace Infinitepickaxe {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (SlotNo != other.SlotNo) return false;
       if (MissionId != other.MissionId) return false;
-      if (CurrentProgress != other.CurrentProgress) return false;
-      if (RequiredProgress != other.RequiredProgress) return false;
-      if (IsCompleted != other.IsCompleted) return false;
+      if (CurrentValue != other.CurrentValue) return false;
+      if (TargetValue != other.TargetValue) return false;
+      if (Status != other.Status) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -8755,10 +9448,11 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (MissionId != 0) hash ^= MissionId.GetHashCode();
-      if (CurrentProgress != 0) hash ^= CurrentProgress.GetHashCode();
-      if (RequiredProgress != 0) hash ^= RequiredProgress.GetHashCode();
-      if (IsCompleted != false) hash ^= IsCompleted.GetHashCode();
+      if (SlotNo != 0) hash ^= SlotNo.GetHashCode();
+      if (MissionId.Length != 0) hash ^= MissionId.GetHashCode();
+      if (CurrentValue != 0) hash ^= CurrentValue.GetHashCode();
+      if (TargetValue != 0) hash ^= TargetValue.GetHashCode();
+      if (Status.Length != 0) hash ^= Status.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -8777,21 +9471,25 @@ namespace Infinitepickaxe {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (MissionId != 0) {
+      if (SlotNo != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(MissionId);
+        output.WriteUInt32(SlotNo);
       }
-      if (CurrentProgress != 0) {
-        output.WriteRawTag(16);
-        output.WriteUInt32(CurrentProgress);
+      if (MissionId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(MissionId);
       }
-      if (RequiredProgress != 0) {
+      if (CurrentValue != 0) {
         output.WriteRawTag(24);
-        output.WriteUInt32(RequiredProgress);
+        output.WriteUInt32(CurrentValue);
       }
-      if (IsCompleted != false) {
+      if (TargetValue != 0) {
         output.WriteRawTag(32);
-        output.WriteBool(IsCompleted);
+        output.WriteUInt32(TargetValue);
+      }
+      if (Status.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Status);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -8803,21 +9501,25 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (MissionId != 0) {
+      if (SlotNo != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(MissionId);
+        output.WriteUInt32(SlotNo);
       }
-      if (CurrentProgress != 0) {
-        output.WriteRawTag(16);
-        output.WriteUInt32(CurrentProgress);
+      if (MissionId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(MissionId);
       }
-      if (RequiredProgress != 0) {
+      if (CurrentValue != 0) {
         output.WriteRawTag(24);
-        output.WriteUInt32(RequiredProgress);
+        output.WriteUInt32(CurrentValue);
       }
-      if (IsCompleted != false) {
+      if (TargetValue != 0) {
         output.WriteRawTag(32);
-        output.WriteBool(IsCompleted);
+        output.WriteUInt32(TargetValue);
+      }
+      if (Status.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Status);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -8829,17 +9531,20 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (MissionId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MissionId);
+      if (SlotNo != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SlotNo);
       }
-      if (CurrentProgress != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CurrentProgress);
+      if (MissionId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MissionId);
       }
-      if (RequiredProgress != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RequiredProgress);
+      if (CurrentValue != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CurrentValue);
       }
-      if (IsCompleted != false) {
-        size += 1 + 1;
+      if (TargetValue != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TargetValue);
+      }
+      if (Status.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Status);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -8853,17 +9558,20 @@ namespace Infinitepickaxe {
       if (other == null) {
         return;
       }
-      if (other.MissionId != 0) {
+      if (other.SlotNo != 0) {
+        SlotNo = other.SlotNo;
+      }
+      if (other.MissionId.Length != 0) {
         MissionId = other.MissionId;
       }
-      if (other.CurrentProgress != 0) {
-        CurrentProgress = other.CurrentProgress;
+      if (other.CurrentValue != 0) {
+        CurrentValue = other.CurrentValue;
       }
-      if (other.RequiredProgress != 0) {
-        RequiredProgress = other.RequiredProgress;
+      if (other.TargetValue != 0) {
+        TargetValue = other.TargetValue;
       }
-      if (other.IsCompleted != false) {
-        IsCompleted = other.IsCompleted;
+      if (other.Status.Length != 0) {
+        Status = other.Status;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -8885,19 +9593,23 @@ namespace Infinitepickaxe {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            MissionId = input.ReadUInt32();
+            SlotNo = input.ReadUInt32();
             break;
           }
-          case 16: {
-            CurrentProgress = input.ReadUInt32();
+          case 18: {
+            MissionId = input.ReadString();
             break;
           }
           case 24: {
-            RequiredProgress = input.ReadUInt32();
+            CurrentValue = input.ReadUInt32();
             break;
           }
           case 32: {
-            IsCompleted = input.ReadBool();
+            TargetValue = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            Status = input.ReadString();
             break;
           }
         }
@@ -8920,19 +9632,23 @@ namespace Infinitepickaxe {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            MissionId = input.ReadUInt32();
+            SlotNo = input.ReadUInt32();
             break;
           }
-          case 16: {
-            CurrentProgress = input.ReadUInt32();
+          case 18: {
+            MissionId = input.ReadString();
             break;
           }
           case 24: {
-            RequiredProgress = input.ReadUInt32();
+            CurrentValue = input.ReadUInt32();
             break;
           }
           case 32: {
-            IsCompleted = input.ReadBool();
+            TargetValue = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            Status = input.ReadString();
             break;
           }
         }
@@ -8957,7 +9673,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[23]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8977,7 +9693,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public MissionComplete(MissionComplete other) : this() {
-      missionId_ = other.missionId_;
+      slotNo_ = other.slotNo_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -8987,15 +9703,18 @@ namespace Infinitepickaxe {
       return new MissionComplete(this);
     }
 
-    /// <summary>Field number for the "mission_id" field.</summary>
-    public const int MissionIdFieldNumber = 1;
-    private uint missionId_;
+    /// <summary>Field number for the "slot_no" field.</summary>
+    public const int SlotNoFieldNumber = 1;
+    private uint slotNo_;
+    /// <summary>
+    /// 슬롯 번호 (1-3)
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint MissionId {
-      get { return missionId_; }
+    public uint SlotNo {
+      get { return slotNo_; }
       set {
-        missionId_ = value;
+        slotNo_ = value;
       }
     }
 
@@ -9014,7 +9733,7 @@ namespace Infinitepickaxe {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (MissionId != other.MissionId) return false;
+      if (SlotNo != other.SlotNo) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -9022,7 +9741,7 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (MissionId != 0) hash ^= MissionId.GetHashCode();
+      if (SlotNo != 0) hash ^= SlotNo.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -9041,9 +9760,9 @@ namespace Infinitepickaxe {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (MissionId != 0) {
+      if (SlotNo != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(MissionId);
+        output.WriteUInt32(SlotNo);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -9055,9 +9774,9 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (MissionId != 0) {
+      if (SlotNo != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(MissionId);
+        output.WriteUInt32(SlotNo);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -9069,8 +9788,8 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (MissionId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MissionId);
+      if (SlotNo != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SlotNo);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -9084,8 +9803,8 @@ namespace Infinitepickaxe {
       if (other == null) {
         return;
       }
-      if (other.MissionId != 0) {
-        MissionId = other.MissionId;
+      if (other.SlotNo != 0) {
+        SlotNo = other.SlotNo;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -9107,7 +9826,7 @@ namespace Infinitepickaxe {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            MissionId = input.ReadUInt32();
+            SlotNo = input.ReadUInt32();
             break;
           }
         }
@@ -9130,7 +9849,7 @@ namespace Infinitepickaxe {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            MissionId = input.ReadUInt32();
+            SlotNo = input.ReadUInt32();
             break;
           }
         }
@@ -9155,7 +9874,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[24]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9176,9 +9895,10 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public MissionCompleteResult(MissionCompleteResult other) : this() {
       success_ = other.success_;
+      slotNo_ = other.slotNo_;
       missionId_ = other.missionId_;
-      goldReward_ = other.goldReward_;
-      totalGold_ = other.totalGold_;
+      rewardCrystal_ = other.rewardCrystal_;
+      totalCrystal_ = other.totalCrystal_;
       errorCode_ = other.errorCode_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -9201,44 +9921,68 @@ namespace Infinitepickaxe {
       }
     }
 
-    /// <summary>Field number for the "mission_id" field.</summary>
-    public const int MissionIdFieldNumber = 2;
-    private uint missionId_;
+    /// <summary>Field number for the "slot_no" field.</summary>
+    public const int SlotNoFieldNumber = 2;
+    private uint slotNo_;
+    /// <summary>
+    /// 슬롯 번호
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint MissionId {
+    public uint SlotNo {
+      get { return slotNo_; }
+      set {
+        slotNo_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mission_id" field.</summary>
+    public const int MissionIdFieldNumber = 3;
+    private string missionId_ = "";
+    /// <summary>
+    /// UUID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MissionId {
       get { return missionId_; }
       set {
-        missionId_ = value;
+        missionId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
-    /// <summary>Field number for the "gold_reward" field.</summary>
-    public const int GoldRewardFieldNumber = 3;
-    private ulong goldReward_;
+    /// <summary>Field number for the "reward_crystal" field.</summary>
+    public const int RewardCrystalFieldNumber = 4;
+    private uint rewardCrystal_;
+    /// <summary>
+    /// 보상 크리스탈
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ulong GoldReward {
-      get { return goldReward_; }
+    public uint RewardCrystal {
+      get { return rewardCrystal_; }
       set {
-        goldReward_ = value;
+        rewardCrystal_ = value;
       }
     }
 
-    /// <summary>Field number for the "total_gold" field.</summary>
-    public const int TotalGoldFieldNumber = 4;
-    private ulong totalGold_;
+    /// <summary>Field number for the "total_crystal" field.</summary>
+    public const int TotalCrystalFieldNumber = 5;
+    private uint totalCrystal_;
+    /// <summary>
+    /// 총 크리스탈
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ulong TotalGold {
-      get { return totalGold_; }
+    public uint TotalCrystal {
+      get { return totalCrystal_; }
       set {
-        totalGold_ = value;
+        totalCrystal_ = value;
       }
     }
 
     /// <summary>Field number for the "error_code" field.</summary>
-    public const int ErrorCodeFieldNumber = 5;
+    public const int ErrorCodeFieldNumber = 6;
     private string errorCode_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -9265,9 +10009,10 @@ namespace Infinitepickaxe {
         return true;
       }
       if (Success != other.Success) return false;
+      if (SlotNo != other.SlotNo) return false;
       if (MissionId != other.MissionId) return false;
-      if (GoldReward != other.GoldReward) return false;
-      if (TotalGold != other.TotalGold) return false;
+      if (RewardCrystal != other.RewardCrystal) return false;
+      if (TotalCrystal != other.TotalCrystal) return false;
       if (ErrorCode != other.ErrorCode) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -9277,9 +10022,10 @@ namespace Infinitepickaxe {
     public override int GetHashCode() {
       int hash = 1;
       if (Success != false) hash ^= Success.GetHashCode();
-      if (MissionId != 0) hash ^= MissionId.GetHashCode();
-      if (GoldReward != 0UL) hash ^= GoldReward.GetHashCode();
-      if (TotalGold != 0UL) hash ^= TotalGold.GetHashCode();
+      if (SlotNo != 0) hash ^= SlotNo.GetHashCode();
+      if (MissionId.Length != 0) hash ^= MissionId.GetHashCode();
+      if (RewardCrystal != 0) hash ^= RewardCrystal.GetHashCode();
+      if (TotalCrystal != 0) hash ^= TotalCrystal.GetHashCode();
       if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -9303,20 +10049,24 @@ namespace Infinitepickaxe {
         output.WriteRawTag(8);
         output.WriteBool(Success);
       }
-      if (MissionId != 0) {
+      if (SlotNo != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt32(MissionId);
+        output.WriteUInt32(SlotNo);
       }
-      if (GoldReward != 0UL) {
-        output.WriteRawTag(24);
-        output.WriteUInt64(GoldReward);
+      if (MissionId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(MissionId);
       }
-      if (TotalGold != 0UL) {
+      if (RewardCrystal != 0) {
         output.WriteRawTag(32);
-        output.WriteUInt64(TotalGold);
+        output.WriteUInt32(RewardCrystal);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalCrystal);
       }
       if (ErrorCode.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(50);
         output.WriteString(ErrorCode);
       }
       if (_unknownFields != null) {
@@ -9333,20 +10083,24 @@ namespace Infinitepickaxe {
         output.WriteRawTag(8);
         output.WriteBool(Success);
       }
-      if (MissionId != 0) {
+      if (SlotNo != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt32(MissionId);
+        output.WriteUInt32(SlotNo);
       }
-      if (GoldReward != 0UL) {
-        output.WriteRawTag(24);
-        output.WriteUInt64(GoldReward);
+      if (MissionId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(MissionId);
       }
-      if (TotalGold != 0UL) {
+      if (RewardCrystal != 0) {
         output.WriteRawTag(32);
-        output.WriteUInt64(TotalGold);
+        output.WriteUInt32(RewardCrystal);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalCrystal);
       }
       if (ErrorCode.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(50);
         output.WriteString(ErrorCode);
       }
       if (_unknownFields != null) {
@@ -9362,14 +10116,17 @@ namespace Infinitepickaxe {
       if (Success != false) {
         size += 1 + 1;
       }
-      if (MissionId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MissionId);
+      if (SlotNo != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SlotNo);
       }
-      if (GoldReward != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(GoldReward);
+      if (MissionId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MissionId);
       }
-      if (TotalGold != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(TotalGold);
+      if (RewardCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RewardCrystal);
+      }
+      if (TotalCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalCrystal);
       }
       if (ErrorCode.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
@@ -9389,14 +10146,17 @@ namespace Infinitepickaxe {
       if (other.Success != false) {
         Success = other.Success;
       }
-      if (other.MissionId != 0) {
+      if (other.SlotNo != 0) {
+        SlotNo = other.SlotNo;
+      }
+      if (other.MissionId.Length != 0) {
         MissionId = other.MissionId;
       }
-      if (other.GoldReward != 0UL) {
-        GoldReward = other.GoldReward;
+      if (other.RewardCrystal != 0) {
+        RewardCrystal = other.RewardCrystal;
       }
-      if (other.TotalGold != 0UL) {
-        TotalGold = other.TotalGold;
+      if (other.TotalCrystal != 0) {
+        TotalCrystal = other.TotalCrystal;
       }
       if (other.ErrorCode.Length != 0) {
         ErrorCode = other.ErrorCode;
@@ -9425,18 +10185,22 @@ namespace Infinitepickaxe {
             break;
           }
           case 16: {
-            MissionId = input.ReadUInt32();
+            SlotNo = input.ReadUInt32();
             break;
           }
-          case 24: {
-            GoldReward = input.ReadUInt64();
+          case 26: {
+            MissionId = input.ReadString();
             break;
           }
           case 32: {
-            TotalGold = input.ReadUInt64();
+            RewardCrystal = input.ReadUInt32();
             break;
           }
-          case 42: {
+          case 40: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 50: {
             ErrorCode = input.ReadString();
             break;
           }
@@ -9464,18 +10228,22 @@ namespace Infinitepickaxe {
             break;
           }
           case 16: {
-            MissionId = input.ReadUInt32();
+            SlotNo = input.ReadUInt32();
             break;
           }
-          case 24: {
-            GoldReward = input.ReadUInt64();
+          case 26: {
+            MissionId = input.ReadString();
             break;
           }
           case 32: {
-            TotalGold = input.ReadUInt64();
+            RewardCrystal = input.ReadUInt32();
             break;
           }
-          case 42: {
+          case 40: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 50: {
             ErrorCode = input.ReadString();
             break;
           }
@@ -9504,7 +10272,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[25]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9665,7 +10433,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[26]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9966,7 +10734,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10167,7 +10935,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[28]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10244,7 +11012,7 @@ namespace Infinitepickaxe {
     public const int TotalOfflineHoursFieldNumber = 4;
     private uint totalOfflineHours_;
     /// <summary>
-    /// 현재 총 오프라인 보상 시간
+    /// 현재 총 오프라인 보유 시간
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -10519,7 +11287,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[29]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -10717,7 +11485,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[30]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11063,7 +11831,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[31]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[32]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11083,7 +11851,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public AdWatchComplete(AdWatchComplete other) : this() {
-      adTier_ = other.adTier_;
+      adType_ = other.adType_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -11093,18 +11861,18 @@ namespace Infinitepickaxe {
       return new AdWatchComplete(this);
     }
 
-    /// <summary>Field number for the "ad_tier" field.</summary>
-    public const int AdTierFieldNumber = 1;
-    private uint adTier_;
+    /// <summary>Field number for the "ad_type" field.</summary>
+    public const int AdTypeFieldNumber = 1;
+    private string adType_ = "";
     /// <summary>
-    /// 1, 2, 3
+    /// "upgrade_discount", "mission_reroll", "crystal_reward"
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint AdTier {
-      get { return adTier_; }
+    public string AdType {
+      get { return adType_; }
       set {
-        adTier_ = value;
+        adType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -11123,7 +11891,7 @@ namespace Infinitepickaxe {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (AdTier != other.AdTier) return false;
+      if (AdType != other.AdType) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -11131,7 +11899,7 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (AdTier != 0) hash ^= AdTier.GetHashCode();
+      if (AdType.Length != 0) hash ^= AdType.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -11150,9 +11918,9 @@ namespace Infinitepickaxe {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (AdTier != 0) {
-        output.WriteRawTag(8);
-        output.WriteUInt32(AdTier);
+      if (AdType.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(AdType);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -11164,9 +11932,9 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (AdTier != 0) {
-        output.WriteRawTag(8);
-        output.WriteUInt32(AdTier);
+      if (AdType.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(AdType);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -11178,8 +11946,8 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (AdTier != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(AdTier);
+      if (AdType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AdType);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -11193,8 +11961,8 @@ namespace Infinitepickaxe {
       if (other == null) {
         return;
       }
-      if (other.AdTier != 0) {
-        AdTier = other.AdTier;
+      if (other.AdType.Length != 0) {
+        AdType = other.AdType;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -11215,8 +11983,8 @@ namespace Infinitepickaxe {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
-            AdTier = input.ReadUInt32();
+          case 10: {
+            AdType = input.ReadString();
             break;
           }
         }
@@ -11238,8 +12006,8 @@ namespace Infinitepickaxe {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
-          case 8: {
-            AdTier = input.ReadUInt32();
+          case 10: {
+            AdType = input.ReadString();
             break;
           }
         }
@@ -11264,7 +12032,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[32]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[33]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11285,10 +12053,10 @@ namespace Infinitepickaxe {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public AdWatchResult(AdWatchResult other) : this() {
       success_ = other.success_;
-      adTier_ = other.adTier_;
+      adType_ = other.adType_;
       crystalEarned_ = other.crystalEarned_;
       totalCrystal_ = other.totalCrystal_;
-      adsWatchedToday_ = other.adsWatchedToday_;
+      adCounters_ = other.adCounters_.Clone();
       errorCode_ = other.errorCode_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -11311,21 +12079,27 @@ namespace Infinitepickaxe {
       }
     }
 
-    /// <summary>Field number for the "ad_tier" field.</summary>
-    public const int AdTierFieldNumber = 2;
-    private uint adTier_;
+    /// <summary>Field number for the "ad_type" field.</summary>
+    public const int AdTypeFieldNumber = 2;
+    private string adType_ = "";
+    /// <summary>
+    /// "upgrade_discount", "mission_reroll", "crystal_reward"
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint AdTier {
-      get { return adTier_; }
+    public string AdType {
+      get { return adType_; }
       set {
-        adTier_ = value;
+        adType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
     /// <summary>Field number for the "crystal_earned" field.</summary>
     public const int CrystalEarnedFieldNumber = 3;
     private uint crystalEarned_;
+    /// <summary>
+    /// 획득한 크리스탈 (crystal_reward 타입일 경우)
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public uint CrystalEarned {
@@ -11347,16 +12121,18 @@ namespace Infinitepickaxe {
       }
     }
 
-    /// <summary>Field number for the "ads_watched_today" field.</summary>
-    public const int AdsWatchedTodayFieldNumber = 5;
-    private uint adsWatchedToday_;
+    /// <summary>Field number for the "ad_counters" field.</summary>
+    public const int AdCountersFieldNumber = 5;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.AdCounter> _repeated_adCounters_codec
+        = pb::FieldCodec.ForMessage(42, global::Infinitepickaxe.AdCounter.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.AdCounter> adCounters_ = new pbc::RepeatedField<global::Infinitepickaxe.AdCounter>();
+    /// <summary>
+    /// 업데이트된 광고 카운터
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint AdsWatchedToday {
-      get { return adsWatchedToday_; }
-      set {
-        adsWatchedToday_ = value;
-      }
+    public pbc::RepeatedField<global::Infinitepickaxe.AdCounter> AdCounters {
+      get { return adCounters_; }
     }
 
     /// <summary>Field number for the "error_code" field.</summary>
@@ -11387,10 +12163,10 @@ namespace Infinitepickaxe {
         return true;
       }
       if (Success != other.Success) return false;
-      if (AdTier != other.AdTier) return false;
+      if (AdType != other.AdType) return false;
       if (CrystalEarned != other.CrystalEarned) return false;
       if (TotalCrystal != other.TotalCrystal) return false;
-      if (AdsWatchedToday != other.AdsWatchedToday) return false;
+      if(!adCounters_.Equals(other.adCounters_)) return false;
       if (ErrorCode != other.ErrorCode) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -11400,10 +12176,10 @@ namespace Infinitepickaxe {
     public override int GetHashCode() {
       int hash = 1;
       if (Success != false) hash ^= Success.GetHashCode();
-      if (AdTier != 0) hash ^= AdTier.GetHashCode();
+      if (AdType.Length != 0) hash ^= AdType.GetHashCode();
       if (CrystalEarned != 0) hash ^= CrystalEarned.GetHashCode();
       if (TotalCrystal != 0) hash ^= TotalCrystal.GetHashCode();
-      if (AdsWatchedToday != 0) hash ^= AdsWatchedToday.GetHashCode();
+      hash ^= adCounters_.GetHashCode();
       if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -11427,9 +12203,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(8);
         output.WriteBool(Success);
       }
-      if (AdTier != 0) {
-        output.WriteRawTag(16);
-        output.WriteUInt32(AdTier);
+      if (AdType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(AdType);
       }
       if (CrystalEarned != 0) {
         output.WriteRawTag(24);
@@ -11439,10 +12215,7 @@ namespace Infinitepickaxe {
         output.WriteRawTag(32);
         output.WriteUInt32(TotalCrystal);
       }
-      if (AdsWatchedToday != 0) {
-        output.WriteRawTag(40);
-        output.WriteUInt32(AdsWatchedToday);
-      }
+      adCounters_.WriteTo(output, _repeated_adCounters_codec);
       if (ErrorCode.Length != 0) {
         output.WriteRawTag(50);
         output.WriteString(ErrorCode);
@@ -11461,9 +12234,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(8);
         output.WriteBool(Success);
       }
-      if (AdTier != 0) {
-        output.WriteRawTag(16);
-        output.WriteUInt32(AdTier);
+      if (AdType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(AdType);
       }
       if (CrystalEarned != 0) {
         output.WriteRawTag(24);
@@ -11473,10 +12246,7 @@ namespace Infinitepickaxe {
         output.WriteRawTag(32);
         output.WriteUInt32(TotalCrystal);
       }
-      if (AdsWatchedToday != 0) {
-        output.WriteRawTag(40);
-        output.WriteUInt32(AdsWatchedToday);
-      }
+      adCounters_.WriteTo(ref output, _repeated_adCounters_codec);
       if (ErrorCode.Length != 0) {
         output.WriteRawTag(50);
         output.WriteString(ErrorCode);
@@ -11494,8 +12264,8 @@ namespace Infinitepickaxe {
       if (Success != false) {
         size += 1 + 1;
       }
-      if (AdTier != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(AdTier);
+      if (AdType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AdType);
       }
       if (CrystalEarned != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CrystalEarned);
@@ -11503,9 +12273,7 @@ namespace Infinitepickaxe {
       if (TotalCrystal != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalCrystal);
       }
-      if (AdsWatchedToday != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(AdsWatchedToday);
-      }
+      size += adCounters_.CalculateSize(_repeated_adCounters_codec);
       if (ErrorCode.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
       }
@@ -11524,8 +12292,8 @@ namespace Infinitepickaxe {
       if (other.Success != false) {
         Success = other.Success;
       }
-      if (other.AdTier != 0) {
-        AdTier = other.AdTier;
+      if (other.AdType.Length != 0) {
+        AdType = other.AdType;
       }
       if (other.CrystalEarned != 0) {
         CrystalEarned = other.CrystalEarned;
@@ -11533,9 +12301,7 @@ namespace Infinitepickaxe {
       if (other.TotalCrystal != 0) {
         TotalCrystal = other.TotalCrystal;
       }
-      if (other.AdsWatchedToday != 0) {
-        AdsWatchedToday = other.AdsWatchedToday;
-      }
+      adCounters_.Add(other.adCounters_);
       if (other.ErrorCode.Length != 0) {
         ErrorCode = other.ErrorCode;
       }
@@ -11562,8 +12328,8 @@ namespace Infinitepickaxe {
             Success = input.ReadBool();
             break;
           }
-          case 16: {
-            AdTier = input.ReadUInt32();
+          case 18: {
+            AdType = input.ReadString();
             break;
           }
           case 24: {
@@ -11574,8 +12340,8 @@ namespace Infinitepickaxe {
             TotalCrystal = input.ReadUInt32();
             break;
           }
-          case 40: {
-            AdsWatchedToday = input.ReadUInt32();
+          case 42: {
+            adCounters_.AddEntriesFrom(input, _repeated_adCounters_codec);
             break;
           }
           case 50: {
@@ -11605,8 +12371,8 @@ namespace Infinitepickaxe {
             Success = input.ReadBool();
             break;
           }
-          case 16: {
-            AdTier = input.ReadUInt32();
+          case 18: {
+            AdType = input.ReadString();
             break;
           }
           case 24: {
@@ -11617,8 +12383,8 @@ namespace Infinitepickaxe {
             TotalCrystal = input.ReadUInt32();
             break;
           }
-          case 40: {
-            AdsWatchedToday = input.ReadUInt32();
+          case 42: {
+            adCounters_.AddEntriesFrom(ref input, _repeated_adCounters_codec);
             break;
           }
           case 50: {
@@ -11647,7 +12413,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[33]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11941,7 +12707,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[34]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[35]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12102,7 +12868,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[35]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[36]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12411,7 +13177,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[36]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[37]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

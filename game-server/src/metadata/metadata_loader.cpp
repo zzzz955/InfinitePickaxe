@@ -5,6 +5,15 @@
 
 bool MetadataLoader::load(const std::string& base_path) {
     try {
+        pickaxe_levels_.clear();
+        minerals_.clear();
+        missions_.clear();
+        milestone_bonuses_.clear();
+        ad_types_.clear();
+        ad_types_by_id_.clear();
+        mission_reroll_ = MissionRerollMeta{};
+        offline_defaults_ = OfflineDefaults{};
+
         // pickaxe_levels.json
         {
             std::ifstream f(base_path + "/pickaxe_levels.json");
@@ -13,7 +22,6 @@ bool MetadataLoader::load(const std::string& base_path) {
             for (auto& e : j) {
                 PickaxeLevel pl;
                 pl.level = e["level"].get<uint32_t>();
-                // tier가 "T1" 포맷이면 숫자만 추출
                 if (e["tier"].is_string()) {
                     std::string t = e["tier"].get<std::string>();
                     if (!t.empty() && (t[0] == 'T' || t[0] == 't')) {
@@ -31,6 +39,7 @@ bool MetadataLoader::load(const std::string& base_path) {
                 pickaxe_levels_[pl.level] = pl;
             }
         }
+
         // minerals.json
         {
             std::ifstream f(base_path + "/minerals.json");
@@ -48,15 +57,17 @@ bool MetadataLoader::load(const std::string& base_path) {
                 }
             }
         }
+
         // daily_missions.json
         {
             std::ifstream f(base_path + "/daily_missions.json");
             nlohmann::json j;
             f >> j;
             if (j.is_array()) {
+                uint32_t idx = 0;
                 for (auto& e : j) {
                     MissionMeta m;
-                    m.index = e.value("index", 0);
+                    m.index = e.value("index", idx++);
                     m.type = e.value("type", "");
                     m.target = e.value("target", 0);
                     m.reward_crystal = e.value("reward_crystal", 0);
@@ -64,7 +75,6 @@ bool MetadataLoader::load(const std::string& base_path) {
                     missions_.push_back(m);
                 }
             } else if (j.contains("pools")) {
-                // 간단하게 풀 구조를 flatten (index 순차 증가)
                 uint32_t idx = 0;
                 for (auto& pool : j["pools"].items()) {
                     for (auto& e : pool.value()) {
@@ -75,6 +85,17 @@ bool MetadataLoader::load(const std::string& base_path) {
                         m.reward_crystal = e.value("reward_crystal", 0);
                         m.description = e.value("description", "");
                         missions_.push_back(m);
+                    }
+                }
+            }
+
+            if (j.contains("milestone_offline_bonus_hours")) {
+                for (auto& e : j["milestone_offline_bonus_hours"]) {
+                    MilestoneBonus b;
+                    b.completed = e.value("completed", 0);
+                    b.bonus_hours = e.value("bonus_hours", 0);
+                    if (b.completed > 0 && b.bonus_hours > 0) {
+                        milestone_bonuses_.push_back(b);
                     }
                 }
             }
@@ -90,7 +111,7 @@ bool MetadataLoader::load(const std::string& base_path) {
             return fallback;
         };
 
-        // upgrade_rules.json (강화)
+        // upgrade_rules.json (upgrade)
         {
             std::ifstream f(base_path + "/upgrade_rules.json");
             if (f.good()) {
@@ -106,11 +127,84 @@ bool MetadataLoader::load(const std::string& base_path) {
                     }
                 }
             } else {
-                // 기본값: T1 1.0, T2 0.95, T3 0.90, T4 0.85
                 upgrade_rules_.base_rate_by_tier[1] = 1.0;
                 upgrade_rules_.base_rate_by_tier[2] = 0.95;
                 upgrade_rules_.base_rate_by_tier[3] = 0.90;
                 upgrade_rules_.base_rate_by_tier[4] = 0.85;
+            }
+        }
+
+        // ads.json (ad types)
+        {
+            std::ifstream f(base_path + "/ads.json");
+            if (f.good()) {
+                nlohmann::json j;
+                f >> j;
+                if (j.contains("ad_types") && j["ad_types"].is_array()) {
+                    for (auto& e : j["ad_types"]) {
+                        AdTypeMeta ad;
+                        ad.id = e.value("id", "");
+                        ad.effect = e.value("effect", "");
+                        ad.daily_limit = e.value("daily_limit", 0);
+                        if (e.contains("rewards_by_view")) {
+                            for (auto& r : e["rewards_by_view"]) {
+                                ad.rewards_by_view.push_back(r.get<uint32_t>());
+                            }
+                        }
+                        if (e.contains("parameters")) {
+                            const auto& p = e["parameters"];
+                            if (p.contains("cost_multiplier")) {
+                                ad.cost_multiplier = p.value("cost_multiplier", 100);
+                            }
+                            if (p.contains("apply_to_slots")) {
+                                if (p["apply_to_slots"].is_string()) {
+                                    std::string v = p["apply_to_slots"].get<std::string>();
+                                    ad.apply_to_all_slots = (v == "all");
+                                } else {
+                                    ad.apply_to_all_slots = p.value("apply_to_slots", true);
+                                }
+                            }
+                            if (p.contains("progress_reset_on_reroll")) {
+                                ad.progress_reset_on_reroll = p.value("progress_reset_on_reroll", true);
+                            }
+                        }
+                        if (!ad.id.empty()) {
+                            ad_types_.push_back(ad);
+                            ad_types_by_id_[ad.id] = ad;
+                        }
+                    }
+                }
+            }
+        }
+
+        // offline_defaults.json
+        {
+            std::ifstream f(base_path + "/offline_defaults.json");
+            if (f.good()) {
+                nlohmann::json j;
+                f >> j;
+                uint32_t hours = j.value("initial_offline_hours", 0);
+                offline_defaults_.initial_offline_seconds = hours * 3600;
+            } else {
+                offline_defaults_.initial_offline_seconds = 0;
+            }
+        }
+
+        // mission_reroll.json
+        {
+            std::ifstream f(base_path + "/mission_reroll.json");
+            if (f.good()) {
+                nlohmann::json j;
+                f >> j;
+                mission_reroll_.free_rerolls_per_day = j.value("free_rerolls_per_day", 0);
+                mission_reroll_.ad_rerolls_per_day = j.value("ad_rerolls_per_day", 0);
+                mission_reroll_.apply_to_all_slots = j.value("apply_to_slots", true);
+                mission_reroll_.progress_reset_on_reroll = j.value("progress_reset_on_reroll", true);
+            } else {
+                mission_reroll_.free_rerolls_per_day = 2;
+                mission_reroll_.ad_rerolls_per_day = 3;
+                mission_reroll_.apply_to_all_slots = true;
+                mission_reroll_.progress_reset_on_reroll = true;
             }
         }
         return true;
@@ -128,5 +222,11 @@ const PickaxeLevel* MetadataLoader::pickaxe_level(uint32_t level) const {
 const MineralMeta* MetadataLoader::mineral(uint32_t id) const {
     auto it = minerals_.find(id);
     if (it == minerals_.end()) return nullptr;
+    return &it->second;
+}
+
+const AdTypeMeta* MetadataLoader::ad_meta(const std::string& id) const {
+    auto it = ad_types_by_id_.find(id);
+    if (it == ad_types_by_id_.end()) return nullptr;
     return &it->second;
 }

@@ -17,7 +17,7 @@ struct AdCounter {
 struct DailyMissionInfo {
     std::string user_id;
     std::chrono::system_clock::time_point mission_date;
-    uint32_t assigned_count;  // 오늘 배정된 미션 수 (최대 7)
+    uint32_t completed_count; // 오늘 완료된 미션 수
     uint32_t reroll_count;    // 오늘 리롤 사용 횟수
 };
 
@@ -55,11 +55,15 @@ public:
     // 오늘 날짜의 일일 미션 정보 조회 (없으면 생성)
     DailyMissionInfo get_or_create_daily_mission_info(const std::string& user_id);
 
-    // 배정 카운트 증가
-    bool increment_assigned_count(const std::string& user_id, uint32_t count = 1);
+    // 완료 카운트 증가
+    bool increment_completed_count(const std::string& user_id, uint32_t count = 1);
 
     // 리롤 카운트 증가
     bool increment_reroll_count(const std::string& user_id);
+
+    // === 마일스톤 청구 관련 ===
+    bool has_milestone_claimed(const std::string& user_id, uint32_t milestone_count);
+    bool insert_milestone_claim(const std::string& user_id, uint32_t milestone_count);
 
     // === 미션 슬롯 관련 ===
     // 특정 슬롯 조회

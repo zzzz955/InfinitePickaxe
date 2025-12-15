@@ -2,6 +2,7 @@
 #include <pqxx/pqxx>
 #include <spdlog/spdlog.h>
 #include <chrono>
+#include <ctime>
 #include <iomanip>
 #include <sstream>
 
@@ -120,7 +121,7 @@ DailyMissionInfo MissionRepository::get_or_create_daily_mission_info(const std::
     DailyMissionInfo info;
     info.user_id = user_id;
     info.mission_date = std::chrono::system_clock::now();
-    info.assigned_count = 0;
+    info.completed_count = 0;
     info.reroll_count = 0;
 
     try {
@@ -129,17 +130,18 @@ DailyMissionInfo MissionRepository::get_or_create_daily_mission_info(const std::
 
         // INSERT ON CONFLICT로 오늘 날짜 row 보장
         auto res = tx.exec_params(
-            "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, assigned_count, reroll_count) "
+            "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
             "VALUES ($1, CURRENT_DATE, 0, 0) "
             "ON CONFLICT (user_id, mission_date) DO UPDATE "
-            "SET assigned_count = user_mission_daily.assigned_count "
-            "RETURNING assigned_count, reroll_count, mission_date",
+            "SET completed_count = user_mission_daily.completed_count, "
+            "    reroll_count = user_mission_daily.reroll_count "
+            "RETURNING completed_count, reroll_count, mission_date",
             user_id
         );
 
         if (!res.empty()) {
             auto row = res[0];
-            info.assigned_count = row["assigned_count"].as<uint32_t>();
+            info.completed_count = row["completed_count"].as<uint32_t>();
             info.reroll_count = row["reroll_count"].as<uint32_t>();
 
             auto date_str = row["mission_date"].as<std::string>();
@@ -157,24 +159,24 @@ DailyMissionInfo MissionRepository::get_or_create_daily_mission_info(const std::
     return info;
 }
 
-bool MissionRepository::increment_assigned_count(const std::string& user_id, uint32_t count) {
+bool MissionRepository::increment_completed_count(const std::string& user_id, uint32_t count) {
     try {
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
 
         tx.exec_params(
-            "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, assigned_count, reroll_count) "
+            "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
             "VALUES ($1, CURRENT_DATE, $2, 0) "
             "ON CONFLICT (user_id, mission_date) DO UPDATE "
-            "SET assigned_count = user_mission_daily.assigned_count + $2",
+            "SET completed_count = user_mission_daily.completed_count + $2",
             user_id, count
         );
 
         tx.commit();
-        spdlog::debug("increment_assigned_count: user={} count={}", user_id, count);
+        spdlog::debug("increment_completed_count: user={} count={}", user_id, count);
         return true;
     } catch (const std::exception& ex) {
-        spdlog::error("increment_assigned_count failed: user={} error={}", user_id, ex.what());
+        spdlog::error("increment_completed_count failed: user={} error={}", user_id, ex.what());
         return false;
     }
 }
@@ -185,7 +187,7 @@ bool MissionRepository::increment_reroll_count(const std::string& user_id) {
         pqxx::work tx(*conn);
 
         tx.exec_params(
-            "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, assigned_count, reroll_count) "
+            "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
             "VALUES ($1, CURRENT_DATE, 0, 1) "
             "ON CONFLICT (user_id, mission_date) DO UPDATE "
             "SET reroll_count = user_mission_daily.reroll_count + 1",
@@ -197,6 +199,40 @@ bool MissionRepository::increment_reroll_count(const std::string& user_id) {
         return true;
     } catch (const std::exception& ex) {
         spdlog::error("increment_reroll_count failed: user={} error={}", user_id, ex.what());
+        return false;
+    }
+}
+
+bool MissionRepository::has_milestone_claimed(const std::string& user_id, uint32_t milestone_count) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto res = tx.exec_params(
+            "SELECT 1 FROM game_schema.user_milestones "
+            "WHERE user_id = $1 AND milestone_date = CURRENT_DATE AND milestone_count = $2 "
+            "LIMIT 1",
+            user_id, milestone_count);
+        tx.commit();
+        return !res.empty();
+    } catch (const std::exception& ex) {
+        spdlog::error("has_milestone_claimed failed: user={} milestone={} error={}", user_id, milestone_count, ex.what());
+        return false;
+    }
+}
+
+bool MissionRepository::insert_milestone_claim(const std::string& user_id, uint32_t milestone_count) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto res = tx.exec_params(
+            "INSERT INTO game_schema.user_milestones (user_id, milestone_date, milestone_count) "
+            "VALUES ($1, CURRENT_DATE, $2) "
+            "ON CONFLICT DO NOTHING",
+            user_id, milestone_count);
+        tx.commit();
+        return res.affected_rows() > 0;
+    } catch (const std::exception& ex) {
+        spdlog::error("insert_milestone_claim failed: user={} milestone={} error={}", user_id, milestone_count, ex.what());
         return false;
     }
 }

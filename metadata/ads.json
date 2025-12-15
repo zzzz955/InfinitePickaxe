@@ -1,0 +1,28 @@
+{
+  "reset_time_kst": "00:00",
+  "ad_types": [
+    {
+      "id": "upgrade_discount",
+      "daily_limit": 3,
+      "effect": "upgrade_cost_discount",
+      "parameters": {
+        "cost_multiplier": 75
+      }
+    },
+    {
+      "id": "mission_reroll",
+      "daily_limit": 3,
+      "effect": "mission_reroll",
+      "parameters": {
+        "apply_to_slots": "all",
+        "progress_reset_on_reroll": true
+      }
+    },
+    {
+      "id": "crystal_reward",
+      "daily_limit": 3,
+      "effect": "crystal_reward",
+      "rewards_by_view": [10, 14, 18]
+    }
+  ]
+}
