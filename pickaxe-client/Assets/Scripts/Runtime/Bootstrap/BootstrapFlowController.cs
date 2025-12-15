@@ -88,7 +88,7 @@ namespace InfinitePickaxe.Client.Bootstrap
         private IEnumerator RunBootstrap()
         {
             running = true;
-            ShowOverlay(true, "부트스트랩 중...");
+            ShowOverlay(true, "서버 연결 중...");
 
             var envConfig = LoadConfig();
             if (envConfig == null)
@@ -270,7 +270,8 @@ namespace InfinitePickaxe.Client.Bootstrap
 
             if (!MetaRepository.LoadFromFile(path, hash))
             {
-                ShowError("메타 로드 실패", "메타데이터를 불러올 수 없습니다.", canRetry: true, storeUrl: null);
+                // 메타 로드 실패 시 전체 부트스트랩을 다시 시도하여 서버로부터 재다운로드
+                ShowError("메타 로드 실패", "메타데이터를 불러올 수 없습니다.", canRetry: true, storeUrl: null, onRetry: () => StartCoroutine(RunBootstrap()));
                 yield break;
             }
 
@@ -278,7 +279,7 @@ namespace InfinitePickaxe.Client.Bootstrap
             LoadNextScene();
         }
 
-        private void ShowError(string title, string message, bool canRetry, string storeUrl)
+        private void ShowError(string title, string message, bool canRetry, string storeUrl, Action onRetry = null)
         {
             ShowOverlay(false);
             if (modalPanel != null) modalPanel.SetActive(true);
@@ -301,7 +302,14 @@ namespace InfinitePickaxe.Client.Bootstrap
                     primaryButton.onClick.AddListener(() =>
                     {
                         if (modalPanel != null) modalPanel.SetActive(false);
-                        StartCoroutine(RunBootstrap());
+                        if (onRetry != null)
+                        {
+                            onRetry();
+                        }
+                        else
+                        {
+                            StartCoroutine(RunBootstrap());
+                        }
                     });
                 }
                 else
@@ -313,14 +321,7 @@ namespace InfinitePickaxe.Client.Bootstrap
             if (secondaryButton != null)
             {
                 secondaryButton.onClick.RemoveAllListeners();
-                if (canRetry && string.IsNullOrEmpty(storeUrl))
-                {
-                    secondaryButton.onClick.AddListener(() => Application.Quit());
-                }
-                else
-                {
-                    secondaryButton.onClick.AddListener(() => Application.Quit());
-                }
+                secondaryButton.onClick.AddListener(() => Application.Quit());
             }
         }
 
