@@ -294,14 +294,14 @@ namespace InfinitePickaxe.Client.Net
 
         private void HandleDailyMissionsResponse(DailyMissionsResponse response)
         {
-            Debug.Log($"일일 미션 수신: {response.Missions.Count}개");
+            Debug.Log($"일일 미션 수신: {response.Missions.Count}개, 완료 {response.CompletedCount}, 리롤 {response.RerollCount}");
             OnDailyMissionsResponse?.Invoke(response);
         }
 
         private void HandleMissionProgressUpdate(MissionProgressUpdate update)
         {
 #if UNITY_EDITOR || DEBUG_NET
-            Debug.Log($"미션 진행도 업데이트: 미션 #{update.MissionId}, {update.CurrentProgress}/{update.RequiredProgress}");
+            Debug.Log($"미션 진행도 업데이트: 슬롯 {update.SlotNo}, {update.CurrentValue}/{update.TargetValue}, 상태 {update.Status}");
 #endif
             OnMissionProgressUpdate?.Invoke(update);
         }
@@ -310,7 +310,7 @@ namespace InfinitePickaxe.Client.Net
         {
             if (result.Success)
             {
-                Debug.Log($"미션 완료: 미션 #{result.MissionId}, 보상 골드 {result.GoldReward}");
+                Debug.Log($"미션 완료: 슬롯 {result.SlotNo}, 미션 {result.MissionId}, 보상 크리스탈 {result.RewardCrystal}, 총 크리스탈 {result.TotalCrystal}");
             }
             else
             {
@@ -349,7 +349,7 @@ namespace InfinitePickaxe.Client.Net
         {
             if (result.Success)
             {
-                Debug.Log($"광고 시청 완료: Tier {result.AdTier}, 크리스탈 {result.CrystalEarned}개 획득");
+                Debug.Log($"광고 시청 완료: 타입 {result.AdType}, 크리스탈 {result.CrystalEarned}개 획득, 총 크리스탈 {result.TotalCrystal}");
             }
             else
             {
@@ -469,11 +469,11 @@ namespace InfinitePickaxe.Client.Net
         /// <summary>
         /// 미션 완료 보상 요청
         /// </summary>
-        public void RequestMissionComplete(uint missionId)
+        public void RequestMissionComplete(uint slotNo)
         {
             var request = new MissionComplete
             {
-                MissionId = missionId
+                SlotNo = slotNo
             };
             var envelope = new Envelope
             {
@@ -517,11 +517,11 @@ namespace InfinitePickaxe.Client.Net
         /// <summary>
         /// 광고 시청 완료 알림
         /// </summary>
-        public void NotifyAdWatchComplete(uint adTier)
+        public void NotifyAdWatchComplete(string adType)
         {
             var request = new AdWatchComplete
             {
-                AdTier = adTier
+                AdType = adType
             };
             var envelope = new Envelope
             {
