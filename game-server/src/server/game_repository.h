@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <optional>
 
 struct DbConfig {
     std::string host;
@@ -13,12 +14,13 @@ struct DbConfig {
 struct UserGameData {
     uint64_t gold;
     uint32_t crystal;
-    std::vector<bool> unlocked_slots;  // 4개
-    uint32_t current_mineral_id;       // 현재 채굴 중인 광물 ID
-    uint64_t current_mineral_hp;       // 현재 광물 HP
-    uint32_t ad_count_today;
-    uint32_t mission_rerolls_used;  // mission_reroll_free + mission_reroll_ad의 사용량
+    std::vector<bool> unlocked_slots;     // 4개
+    uint64_t total_dps;                   // 모든 슬롯의 DPS 합계 (캐시)
+    std::optional<uint32_t> current_mineral_id;  // 현재 채굴 중인 광물 ID (nullable)
+    std::optional<uint64_t> current_mineral_hp;  // 현재 광물 HP (nullable)
     uint32_t max_offline_hours;
+    // ad_count_today 제거 → user_ad_counters 테이블로 이동
+    // mission_rerolls_used 제거 → user_mission_daily 테이블로 이동
 };
 
 // 게임 데이터 접근을 담당하는 리포지토리

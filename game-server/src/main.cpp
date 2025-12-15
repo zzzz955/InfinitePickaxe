@@ -36,7 +36,7 @@ int main() {
         MissionRepository mission_repo(db_pool);
         SlotRepository slot_repo(db_pool);
         OfflineRepository offline_repo(db_pool);
-        MiningService mining_service(mining_repo, slot_repo, metadata);
+        MiningService mining_service(mining_repo, slot_repo, game_repo, metadata);
         UpgradeService upgrade_service(upgrade_repo, metadata);
         MissionService mission_service(mission_repo, metadata);
         SlotService slot_service(slot_repo, game_repo, metadata);

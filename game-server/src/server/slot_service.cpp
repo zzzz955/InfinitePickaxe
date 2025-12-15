@@ -49,7 +49,8 @@ infinitepickaxe::SlotUnlockResult SlotService::handle_unlock(const std::string& 
     }
 
     // 슬롯 생성 (레벨 0, 기본 스탯)
-    bool created = repo_.create_slot(user_id, slot_index, 0, 1, 10, 100, 10);
+    // critical_hit_percent=500 (5%), critical_damage=15000 (150%)
+    bool created = repo_.create_slot(user_id, slot_index, 0, 1, 10, 100, 500, 15000, 10);
 
     if (created) {
         res.set_success(true);

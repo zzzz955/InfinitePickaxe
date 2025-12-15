@@ -79,12 +79,7 @@ infinitepickaxe::MiningComplete MiningService::handle_complete(const std::string
 }
 
 uint64_t MiningService::calculate_user_dps(const std::string& user_id) const {
-    auto slots = slot_repo_.get_user_slots(user_id);
-    uint64_t total_dps = 0;
-
-    for (const auto& slot : slots) {
-        total_dps += slot.dps;
-    }
-
-    return total_dps;
+    // total_dps 캐시를 활용하여 성능 최적화
+    auto game_data = game_repo_.get_user_game_data(user_id);
+    return game_data.total_dps;
 }

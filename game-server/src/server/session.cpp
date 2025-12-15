@@ -1,5 +1,6 @@
 #include "session.h"
 #include "metadata/metadata_loader.h"
+#include "mission_repository.h"
 #include <spdlog/spdlog.h>
 #include <iostream>
 #include <cstring>
@@ -223,11 +224,13 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
         snapshot->add_unlocked_slots(unlocked);
     }
 
-    // 현재 채굴 중인 광물 정보 (DB에서 조회)
-    const auto* mineral = metadata_.mineral(game_data.current_mineral_id);
-    snapshot->mutable_current_mineral_id()->set_value(game_data.current_mineral_id);
-    snapshot->mutable_mineral_hp()->set_value(game_data.current_mineral_hp);
-    snapshot->mutable_mineral_max_hp()->set_value(mineral ? mineral->hp : 100);
+    // 현재 채굴 중인 광물 정보 (DB에서 조회, nullable 처리)
+    if (game_data.current_mineral_id.has_value()) {
+        const auto* mineral = metadata_.mineral(game_data.current_mineral_id.value());
+        snapshot->mutable_current_mineral_id()->set_value(game_data.current_mineral_id.value());
+        snapshot->mutable_mineral_hp()->set_value(game_data.current_mineral_hp.value_or(0));
+        snapshot->mutable_mineral_max_hp()->set_value(mineral ? mineral->hp : 100);
+    }
 
     // 슬롯 정보 및 총 DPS
     auto slots_response = slot_service_.handle_all_slots(user_id_);
@@ -242,9 +245,16 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
             std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now().time_since_epoch()).count()));
 
-    // 미션 및 광고 관련
-    snapshot->set_ads_watched_today(game_data.ad_count_today);
-    snapshot->set_mission_rerolls_used(game_data.mission_rerolls_used);
+    // 광고 카운터 추가
+    auto ad_counters = mission_service_.get_ad_counters(user_id_);
+    for (const auto& counter : ad_counters) {
+        auto* ad_counter = snapshot->add_ad_counters();
+        ad_counter->set_ad_type(counter.ad_type);
+        ad_counter->set_ad_count(counter.ad_count);
+        // daily_limit는 하드코딩 또는 설정에서 가져올 수 있음
+        ad_counter->set_daily_limit(10);  // 예시 값
+    }
+
     snapshot->set_offline_bonus_hours(game_data.max_offline_hours);
 
     infinitepickaxe::Envelope response_env;
@@ -252,14 +262,20 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
     *response_env.mutable_handshake_result() = res;
     send_envelope(response_env);
 
-    // 채굴 시뮬레이션 시작 (DB에서 로드한 현재 광물로)
-    mining_state_.current_mineral_id = game_data.current_mineral_id;
-    mining_state_.current_hp = game_data.current_mineral_hp;
-    const auto* current_mineral = metadata_.mineral(game_data.current_mineral_id);
-    mining_state_.max_hp = current_mineral ? current_mineral->hp : 100;
+    // 채굴 시뮬레이션 시작 (DB에서 로드한 현재 광물로, nullable 처리)
+    if (game_data.current_mineral_id.has_value() && game_data.current_mineral_hp.has_value()) {
+        mining_state_.current_mineral_id = game_data.current_mineral_id.value();
+        mining_state_.current_hp = game_data.current_mineral_hp.value();
+        const auto* current_mineral = metadata_.mineral(mining_state_.current_mineral_id);
+        mining_state_.max_hp = current_mineral ? current_mineral->hp : 100;
 
-    // 광물 HP가 0이 아니면 채굴 시작
-    if (mining_state_.current_hp > 0) {
+        // 광물 HP가 0이 아니면 채굴 시작
+        if (mining_state_.current_hp > 0) {
+            start_new_mineral();
+        }
+    } else {
+        // 광물이 없으면 기본 광물(1번)로 시작
+        mining_state_.current_mineral_id = 1;
         start_new_mineral();
     }
 
@@ -345,7 +361,7 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope& env) {
 }
 
 void Session::handle_mission(const infinitepickaxe::Envelope& env) {
-    auto res = mission_service_.build_stub_update();
+    auto res = mission_service_.get_missions(user_id_);
 
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::DAILY_MISSIONS_RESPONSE);

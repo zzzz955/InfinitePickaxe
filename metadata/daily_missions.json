@@ -1,21 +1,22 @@
 {
   "reset_time_kst": "00:00",
-  "total_slots": 7,
+  "total_slots": 3,
+  "max_daily_assign": 7,
   "pools": {
     "Easy": [
-      {"id": "easy_mine_10", "description": "광물 10회 채굴", "reward_crystal": 10},
-      {"id": "easy_play_5m", "description": "게임 접속 5분 유지", "reward_crystal": 10},
-      {"id": "easy_upgrade_once", "description": "강화 1회 수행", "reward_crystal": 10}
+      {"id": "easy_mine_10", "type": "mine", "target": 10, "description": "광물 10회 채굴", "reward_crystal": 10},
+      {"id": "easy_play_5m", "type": "play_time", "target": 300, "description": "게임 접속 5분 유지", "reward_crystal": 10},
+      {"id": "easy_upgrade_once", "type": "upgrade", "target": 1, "description": "강화 1회 수행", "reward_crystal": 10}
     ],
     "Medium": [
-      {"id": "med_gold_5000", "description": "골드 5,000 획득", "reward_crystal": 14},
-      {"id": "med_copper_3", "description": "구리 3회 채굴", "reward_crystal": 14},
-      {"id": "med_pickaxe_lv8", "description": "곡괭이 Lv 8 달성", "reward_crystal": 14}
+      {"id": "med_gold_5000", "type": "gold", "target": 5000, "description": "골드 5,000 획득", "reward_crystal": 14},
+      {"id": "med_copper_3", "type": "mine_mineral", "target": 3, "description": "구리 3회 채굴", "reward_crystal": 14},
+      {"id": "med_pickaxe_lv8", "type": "level", "target": 8, "description": "곡괭이 Lv 8 달성", "reward_crystal": 14}
     ],
     "Hard": [
-      {"id": "hard_emerald_1", "description": "에메랄드 1회 채굴", "reward_crystal": 18},
-      {"id": "hard_pickaxe_lv15", "description": "곡괭이 Lv 15 달성", "reward_crystal": 18},
-      {"id": "hard_gold_50000", "description": "골드 50,000 획득", "reward_crystal": 18}
+      {"id": "hard_emerald_1", "type": "mine_mineral", "target": 1, "description": "에메랄드 1회 채굴", "reward_crystal": 18},
+      {"id": "hard_pickaxe_lv15", "type": "level", "target": 15, "description": "곡괭이 Lv 15 달성", "reward_crystal": 18},
+      {"id": "hard_gold_50000", "type": "gold", "target": 50000, "description": "골드 50,000 획득", "reward_crystal": 18}
     ]
   },
   "milestone_offline_bonus_hours": [

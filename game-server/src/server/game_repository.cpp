@@ -15,15 +15,17 @@ bool GameRepository::ensure_user_initialized(const std::string& user_id) {
             "INSERT INTO game_schema.user_game_data (user_id) VALUES ($1) "
             "ON CONFLICT (user_id) DO NOTHING",
             user_id);
-        // 슬롯 0번 생성: 레벨 0, 공격력 10, 공격속도 1.0 (100)
+        // 슬롯 0번 생성: 레벨 0, 티어 1, 공격력 10, 공격속도 1.0 (100)
+        // 크리티컬 확률 5% (500), 크리티컬 데미지 150% (15000)
         tx.exec_params(
             "INSERT INTO game_schema.pickaxe_slots "
-            "(user_id, slot_index, level, tier, attack_power, attack_speed_x100, dps) "
-            "VALUES ($1, 0, 0, 1, 10, 100, 10) "
+            "(user_id, slot_index, level, tier, attack_power, attack_speed_x100, "
+            " critical_hit_percent, critical_damage, dps) "
+            "VALUES ($1, 0, 0, 1, 10, 100, 500, 15000, 10) "
             "ON CONFLICT (user_id, slot_index) DO NOTHING",
             user_id);
         tx.commit();
-        spdlog::debug("User {} initialized with slot 0 (attack_power=10, attack_speed=1.0)", user_id);
+        spdlog::debug("User {} initialized with slot 0 (attack_power=10, crit=5%)", user_id);
         return true;
     } catch (const std::exception& ex) {
         spdlog::error("DB init failed for user {}: {}", user_id, ex.what());
@@ -38,10 +40,8 @@ UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
         pqxx::work tx(*conn);
 
         auto row = tx.exec_params1(
-            "SELECT gold, crystal, unlocked_slots, current_mineral_id, current_mineral_hp, "
-            "       ad_count_today, "
-            "       (2 - mission_reroll_free) + (3 - mission_reroll_ad) as mission_rerolls_used, "
-            "       max_offline_hours "
+            "SELECT gold, crystal, unlocked_slots, total_dps, "
+            "       current_mineral_id, current_mineral_hp, max_offline_hours "
             "FROM game_schema.user_game_data WHERE user_id = $1",
             user_id);
 
@@ -64,11 +64,17 @@ UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
             data.unlocked_slots.push_back(false);
         }
 
-        data.current_mineral_id = row[3].as<uint32_t>();
-        data.current_mineral_hp = row[4].as<uint64_t>();
-        data.ad_count_today = row[5].as<uint32_t>();
-        data.mission_rerolls_used = row[6].as<uint32_t>();
-        data.max_offline_hours = row[7].as<uint32_t>();
+        data.total_dps = row[3].as<uint64_t>();
+
+        // current_mineral_id, current_mineral_hp는 nullable
+        if (!row[4].is_null()) {
+            data.current_mineral_id = row[4].as<uint32_t>();
+        }
+        if (!row[5].is_null()) {
+            data.current_mineral_hp = row[5].as<uint64_t>();
+        }
+
+        data.max_offline_hours = row[6].as<uint32_t>();
 
         tx.commit();
     } catch (const std::exception& ex) {
@@ -77,10 +83,9 @@ UserGameData GameRepository::get_user_game_data(const std::string& user_id) {
         data.gold = 0;
         data.crystal = 0;
         data.unlocked_slots = {true, false, false, false};
-        data.current_mineral_id = 1;
-        data.current_mineral_hp = 100;
-        data.ad_count_today = 0;
-        data.mission_rerolls_used = 0;
+        data.total_dps = 10;  // 초기 DPS
+        data.current_mineral_id = std::nullopt;
+        data.current_mineral_hp = std::nullopt;
         data.max_offline_hours = 3;
     }
     return data;

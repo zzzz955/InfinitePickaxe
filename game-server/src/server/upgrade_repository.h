@@ -14,10 +14,13 @@ public:
         bool invalid_target{false};
         uint64_t remaining_gold{0};
         uint32_t final_level{0};
+        uint32_t final_tier{1};
         uint64_t final_attack_power{0};
         uint32_t final_attack_speed_x100{100};
+        uint32_t final_critical_hit_percent{500};   // 기본 5%
+        uint32_t final_critical_damage{15000};      // 기본 150%
         uint64_t final_dps{0};
-        uint32_t tier{1};
+        uint64_t final_total_dps{0};  // 모든 슬롯의 총 DPS
         uint32_t pity_bonus{0}; // basis 10000
         double base_rate{0.0};
         double bonus_rate{0.0};

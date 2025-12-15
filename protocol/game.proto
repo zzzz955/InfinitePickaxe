@@ -127,12 +127,22 @@ message HandshakeRequest {
 }
 
 message PickaxeSlotInfo {
-  uint32 slot_index = 1;           // 1-4
-  uint32 level = 2;                // 곡괭이 레벨
-  uint64 attack_power = 3;         // 공격력
-  uint32 attack_speed_x100 = 4;    // 공격속도 * 100 (예: 1.5 APS = 150)
-  uint64 dps = 5;                  // 이 슬롯의 DPS = (attack_power * attack_speed_x100) / 100
-  bool is_unlocked = 6;            // 슬롯 해금 여부
+  uint32 slot_index = 1;           // 0-3
+  uint32 level = 2;                // 곡괭이 레벨 (0-109)
+  uint32 tier = 3;                 // 곡괭이 티어 (1-22)
+  uint64 attack_power = 4;         // 공격력
+  uint32 attack_speed_x100 = 5;    // 공격속도 * 100 (예: 1.5 APS = 150, 최대 2500)
+  uint32 critical_hit_percent = 6; // 크리티컬 확률 * 10000 (예: 500 = 5%, 범위 0-10000)
+  uint32 critical_damage = 7;      // 크리티컬 데미지 * 100 (예: 15000 = 150%)
+  uint64 dps = 8;                  // 이 슬롯의 DPS (크리티컬 포함 계산)
+  uint32 pity_bonus = 9;           // 천장 보너스 (0-10000, basis 10000 = 100%)
+  bool is_unlocked = 10;           // 슬롯 해금 여부
+}
+
+message AdCounter {
+  string ad_type = 1;              // "upgrade_discount", "mission_reroll", "crystal_reward"
+  uint32 ad_count = 2;             // 오늘 시청 횟수
+  uint32 daily_limit = 3;          // 일일 한도 (옵션)
 }
 
 message UserDataSnapshot {
@@ -149,10 +159,11 @@ message UserDataSnapshot {
 
   google.protobuf.UInt64Value server_time = 9;
 
+  // 광고 카운터 (ad_type별)
+  repeated AdCounter ad_counters = 10;
+
   // 미션 관련
-  uint32 ads_watched_today = 10;
-  uint32 mission_rerolls_used = 11;
-  uint32 offline_bonus_hours = 12;
+  uint32 offline_bonus_hours = 11;
 }
 
 message HandshakeResponse {
@@ -251,17 +262,20 @@ message UpgradeResult {
   bool success = 1;
   uint32 slot_index = 2;
   uint32 new_level = 3;
-  uint64 new_attack_power = 4;        // 강화 후 공격력
-  uint32 new_attack_speed_x100 = 5;   // 강화 후 공격속도 * 100
-  uint64 new_dps = 6;                 // 강화 후 이 슬롯의 DPS
-  uint64 new_total_dps = 7;           // 강화 후 모든 슬롯의 총 DPS
-  uint64 gold_spent = 8;
-  uint64 remaining_gold = 9;
-  string error_code = 10;
-  uint32 base_rate_bp = 11;           // 기본 확률 (basis point 10000)
-  uint32 bonus_rate_bp = 12;          // 보너스 확률
-  uint32 final_rate_bp = 13;          // 최종 확률
-  uint32 pity_bonus = 14;             // 천장 보너스
+  uint32 new_tier = 4;                     // 강화 후 티어
+  uint64 new_attack_power = 5;             // 강화 후 공격력
+  uint32 new_attack_speed_x100 = 6;        // 강화 후 공격속도 * 100
+  uint32 new_critical_hit_percent = 7;     // 강화 후 크리티컬 확률 * 10000
+  uint32 new_critical_damage = 8;          // 강화 후 크리티컬 데미지 * 100
+  uint64 new_dps = 9;                      // 강화 후 이 슬롯의 DPS
+  uint64 new_total_dps = 10;               // 강화 후 모든 슬롯의 총 DPS
+  uint64 gold_spent = 11;
+  uint64 remaining_gold = 12;
+  string error_code = 13;
+  uint32 base_rate_bp = 14;                // 기본 확률 (basis point 10000)
+  uint32 bonus_rate_bp = 15;               // 보너스 확률
+  uint32 final_rate_bp = 16;               // 최종 확률
+  uint32 pity_bonus = 17;                  // 천장 보너스 (업데이트된 값)
 }
 
 // -------------- 미션 --------------
@@ -271,39 +285,44 @@ message DailyMissionsRequest {
 }
 
 message MissionEntry {
-  uint32 mission_id = 1;
-  string type = 2;
-  string description = 3;
-  uint32 required_progress = 4;
-  uint32 current_progress = 5;
-  uint64 gold_reward = 6;
-  bool is_completed = 7;
-  bool is_claimed = 8;
+  uint32 slot_no = 1;              // 슬롯 번호 (1-3)
+  string mission_id = 2;           // UUID (DB와 동일)
+  string mission_type = 3;         // "mine", "play_time", "upgrade", "gold", "level" 등
+  string description = 4;
+  uint32 target_value = 5;         // 목표 값
+  uint32 current_value = 6;        // 현재 진행도
+  uint32 reward_crystal = 7;       // 보상 크리스탈
+  string status = 8;               // "active", "completed", "claimed"
+  uint64 assigned_at = 9;          // 배정 시간 (Unix timestamp ms)
+  uint64 expires_at = 10;          // 만료 시간 (Unix timestamp ms, nullable)
 }
 
 message DailyMissionsResponse {
-  repeated MissionEntry missions = 1;
-  uint32 ads_watched_today = 2;
-  uint32 mission_rerolls_used = 3;
+  repeated MissionEntry missions = 1;         // 최대 3개 슬롯
+  uint32 assigned_count = 2;                  // 오늘 배정된 미션 수 (최대 7)
+  uint32 reroll_count = 3;                    // 오늘 리롤 사용 횟수
+  repeated AdCounter ad_counters = 4;         // 광고 카운터 (옵션)
 }
 
 message MissionProgressUpdate {
-  uint32 mission_id = 1;
-  uint32 current_progress = 2;
-  uint32 required_progress = 3;
-  bool is_completed = 4;
+  uint32 slot_no = 1;              // 슬롯 번호 (1-3)
+  string mission_id = 2;           // UUID
+  uint32 current_value = 3;        // 현재 진행도
+  uint32 target_value = 4;         // 목표 값
+  string status = 5;               // "active", "completed", "claimed"
 }
 
 message MissionComplete {
-  uint32 mission_id = 1;
+  uint32 slot_no = 1;              // 슬롯 번호 (1-3)
 }
 
 message MissionCompleteResult {
   bool success = 1;
-  uint32 mission_id = 2;
-  uint64 gold_reward = 3;
-  uint64 total_gold = 4;
-  string error_code = 5;
+  uint32 slot_no = 2;              // 슬롯 번호
+  string mission_id = 3;           // UUID
+  uint32 reward_crystal = 4;       // 보상 크리스탈
+  uint32 total_crystal = 5;        // 총 크리스탈
+  string error_code = 6;
 }
 
 message MissionReroll {
@@ -347,15 +366,15 @@ message SlotUnlockResult {
 // -------------- 광고 시청 --------------
 
 message AdWatchComplete {
-  uint32 ad_tier = 1;  // 1, 2, 3
+  string ad_type = 1;  // "upgrade_discount", "mission_reroll", "crystal_reward"
 }
 
 message AdWatchResult {
   bool success = 1;
-  uint32 ad_tier = 2;
-  uint32 crystal_earned = 3;
+  string ad_type = 2;                   // "upgrade_discount", "mission_reroll", "crystal_reward"
+  uint32 crystal_earned = 3;            // 획득한 크리스탈 (crystal_reward 타입일 경우)
   uint32 total_crystal = 4;
-  uint32 ads_watched_today = 5;
+  repeated AdCounter ad_counters = 5;   // 업데이트된 광고 카운터
   string error_code = 6;
 }
 

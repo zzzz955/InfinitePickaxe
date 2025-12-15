@@ -3,12 +3,13 @@
 #include <string>
 #include "mining_repository.h"
 #include "slot_repository.h"
+#include "game_repository.h"
 #include "metadata/metadata_loader.h"
 
 class MiningService {
 public:
-    MiningService(MiningRepository& repo, SlotRepository& slot_repo, const MetadataLoader& meta)
-        : repo_(repo), slot_repo_(slot_repo), meta_(meta) {}
+    MiningService(MiningRepository& repo, SlotRepository& slot_repo, GameRepository& game_repo, const MetadataLoader& meta)
+        : repo_(repo), slot_repo_(slot_repo), game_repo_(game_repo), meta_(meta) {}
 
     // 서버 권위형 아키텍처로 변경되어 더 이상 사용하지 않음
     // infinitepickaxe::MiningUpdate handle_start(const std::string& user_id, uint32_t mineral_id) const;
@@ -17,10 +18,11 @@ public:
     infinitepickaxe::MiningComplete handle_complete(const std::string& user_id, uint32_t mineral_id) const;
 
 private:
-    // 유저의 총 DPS 계산 (모든 슬롯 합계)
+    // 유저의 총 DPS 계산 (total_dps 캐시 활용)
     uint64_t calculate_user_dps(const std::string& user_id) const;
 
     MiningRepository& repo_;
     SlotRepository& slot_repo_;
+    GameRepository& game_repo_;
     const MetadataLoader& meta_;
 };

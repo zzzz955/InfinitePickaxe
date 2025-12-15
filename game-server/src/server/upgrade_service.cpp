@@ -26,9 +26,13 @@ infinitepickaxe::UpgradeResult UpgradeService::handle_upgrade(const std::string&
 
     res.set_success(repo_result.success);
     res.set_new_level(repo_result.final_level);
+    res.set_new_tier(repo_result.final_tier);
     res.set_new_attack_power(repo_result.final_attack_power);
     res.set_new_attack_speed_x100(repo_result.final_attack_speed_x100);
+    res.set_new_critical_hit_percent(repo_result.final_critical_hit_percent);
+    res.set_new_critical_damage(repo_result.final_critical_damage);
     res.set_new_dps(repo_result.final_dps);
+    res.set_new_total_dps(repo_result.final_total_dps);
     res.set_gold_spent(repo_result.insufficient_gold ? 0 : cost);
     res.set_remaining_gold(repo_result.remaining_gold);
     auto to_bp = [](double v) { return static_cast<uint32_t>(std::lround(v * 10000.0)); };
