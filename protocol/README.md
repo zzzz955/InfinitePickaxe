@@ -4,3 +4,6 @@
 
 - 전송: TCP length-prefix(4바이트) + `Envelope` protobuf 메시지
 - 메시지: MVP 기준 (Handshake, Heartbeat, Mining*, Upgrade, Mission, SlotUnlock, OfflineReward, Error)
+
+## 인증 서버 부트스트랩
+- stateless HTTP/JSON API는 `auth_api.md`에 명세
