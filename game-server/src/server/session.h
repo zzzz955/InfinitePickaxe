@@ -62,6 +62,7 @@ private:
     void handle_heartbeat(const infinitepickaxe::Envelope& env);
     void handle_mining(const infinitepickaxe::Envelope& env);
     void handle_upgrade(const infinitepickaxe::Envelope& env);
+    void handle_change_mineral(const infinitepickaxe::Envelope& env);
     void handle_mission(const infinitepickaxe::Envelope& env);
     void handle_mission_progress_update(const infinitepickaxe::Envelope& env);
     void handle_mission_complete(const infinitepickaxe::Envelope& env);

@@ -2144,7 +2144,7 @@ GameObject:
   - component: {fileID: 74802551}
   - component: {fileID: 74802550}
   m_Layer: 0
-  m_Name: MineralItem_6
+  m_Name: MineralItem_7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5440,7 +5440,7 @@ GameObject:
   - component: {fileID: 309421459}
   - component: {fileID: 309421458}
   m_Layer: 0
-  m_Name: MineralItem_2
+  m_Name: MineralItem_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6253,7 +6253,7 @@ GameObject:
   - component: {fileID: 386628248}
   - component: {fileID: 386628247}
   m_Layer: 0
-  m_Name: MineralItem_4
+  m_Name: MineralItem_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7217,6 +7217,14 @@ MonoBehaviour:
   mineHPText: {fileID: 1716544607}
   dpsText: {fileID: 723331547}
   selectMineralButton: {fileID: 1438385306}
+  mineralItemNullButton: {fileID: 667431834}
+  mineralItem1Button: {fileID: 467740784}
+  mineralItem2Button: {fileID: 1685476340}
+  mineralItem3Button: {fileID: 95138054}
+  mineralItem4Button: {fileID: 923695599}
+  mineralItem5Button: {fileID: 883459762}
+  mineralItem6Button: {fileID: 1591711018}
+  mineralItem7Button: {fileID: 556949095}
   pickaxeSlot1Button: {fileID: 134596189}
   pickaxeSlot2Button: {fileID: 1260559869}
   pickaxeSlot3Button: {fileID: 1333426428}
@@ -7231,6 +7239,15 @@ MonoBehaviour:
   slot2Unlocked: 1
   slot3Unlocked: 0
   slot4Unlocked: 0
+  mineralNames:
+  - "\uCC44\uAD74 \uC911\uB2E8"
+  - "\uC57D\uD55C \uB3CC"
+  - "\uB3CC"
+  - "\uC11D\uD0C4"
+  - "\uAD6C\uB9AC"
+  - "\uCCA0\uAD11\uC11D"
+  - "\uAE08\uAD11\uC11D"
+  - "\uC5D0\uBA54\uB784\uB4DC"
 --- !u!114 &475111734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7941,7 +7958,7 @@ GameObject:
   - component: {fileID: 531768579}
   - component: {fileID: 531768578}
   m_Layer: 0
-  m_Name: MineralItem_0
+  m_Name: MineralItem_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8180,7 +8197,7 @@ GameObject:
   - component: {fileID: 553490273}
   - component: {fileID: 553490272}
   m_Layer: 0
-  m_Name: MineralItem_5
+  m_Name: MineralItem_6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8470,7 +8487,7 @@ GameObject:
   - component: {fileID: 594286960}
   - component: {fileID: 594286959}
   m_Layer: 0
-  m_Name: MineralItem_1
+  m_Name: MineralItem_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11285,7 +11302,7 @@ GameObject:
   - component: {fileID: 744921883}
   - component: {fileID: 744921882}
   m_Layer: 0
-  m_Name: MineralItem_3
+  m_Name: MineralItem_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12128,7 +12145,7 @@ GameObject:
   - component: {fileID: 820621640}
   - component: {fileID: 820621639}
   m_Layer: 0
-  m_Name: MineralItem_null
+  m_Name: MineralItem_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

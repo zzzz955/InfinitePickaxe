@@ -10,9 +10,9 @@
 | highest_pickaxe_level | INTEGER | DEFAULT 0 | 최고 레벨 |
 | unlocked_slots | BOOLEAN[4] | DEFAULT [T,F,F,F] | 슬롯 해금 |
 | total_dps | BIGINT | DEFAULT 10, CHECK >=0 | DPS 캐시 |
-| current_mineral_id | INTEGER | NULL 허용 | 현재 광물 ID |
-| current_mineral_hp | BIGINT | NULL 허용 | 현재 광물 HP |
-| max_offline_hours | INTEGER | DEFAULT 3 | 오프라인 최대 |
+| current_mineral_id | INTEGER | DEFAULT 0 | 현재 광물 ID(0=미선택) |
+| current_mineral_hp | BIGINT | DEFAULT 0 | 현재 광물 HP |
+| max_offline_hours | INTEGER | 삭제 | (스키마에서 제거됨) |
 | cheat_score | INTEGER | DEFAULT 0 | 치트 탐지 |
 | created_at | TIMESTAMP | DEFAULT now | 생성 |
 | updated_at | TIMESTAMP | DEFAULT now | 업데이트 |
@@ -51,7 +51,7 @@
 | --- | --- | --- | --- |
 | user_id | UUID | PK part |  |
 | mission_date | DATE | PK part, DEFAULT CURRENT_DATE | 기준 일자 |
-| assigned_count | INTEGER | DEFAULT 0, CHECK 0-7 | 하루 배정 수 |
+| assigned_count | 삭제 |  |  |
 | reroll_count | INTEGER | DEFAULT 0, CHECK >=0 | 리롤 횟수 |
 | created_at | TIMESTAMP | DEFAULT now |  |
 | updated_at | TIMESTAMP | DEFAULT now |  |

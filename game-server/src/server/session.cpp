@@ -8,32 +8,35 @@
 #include <cmath>
 #include <cstdlib>
 
-namespace {
-uint32_t decode_le(const std::array<uint8_t,4>& buf) {
-    return static_cast<uint32_t>(buf[0]) |
-           (static_cast<uint32_t>(buf[1]) << 8) |
-           (static_cast<uint32_t>(buf[2]) << 16) |
-           (static_cast<uint32_t>(buf[3]) << 24);
-}
+namespace
+{
+    uint32_t decode_le(const std::array<uint8_t, 4> &buf)
+    {
+        return static_cast<uint32_t>(buf[0]) |
+               (static_cast<uint32_t>(buf[1]) << 8) |
+               (static_cast<uint32_t>(buf[2]) << 16) |
+               (static_cast<uint32_t>(buf[3]) << 24);
+    }
 
-std::array<uint8_t,4> encode_le(uint32_t v) {
-    return {static_cast<uint8_t>(v & 0xFF),
-            static_cast<uint8_t>((v >> 8) & 0xFF),
-            static_cast<uint8_t>((v >> 16) & 0xFF),
-            static_cast<uint8_t>((v >> 24) & 0xFF)};
-}
+    std::array<uint8_t, 4> encode_le(uint32_t v)
+    {
+        return {static_cast<uint8_t>(v & 0xFF),
+                static_cast<uint8_t>((v >> 8) & 0xFF),
+                static_cast<uint8_t>((v >> 16) & 0xFF),
+                static_cast<uint8_t>((v >> 24) & 0xFF)};
+    }
 } // namespace
 
 Session::Session(boost::asio::ip::tcp::socket socket,
-                 AuthService& auth_service,
-                 GameRepository& game_repo,
-                 MiningService& mining_service,
-                 UpgradeService& upgrade_service,
-                 MissionService& mission_service,
-                 SlotService& slot_service,
-                 OfflineService& offline_service,
+                 AuthService &auth_service,
+                 GameRepository &game_repo,
+                 MiningService &mining_service,
+                 UpgradeService &upgrade_service,
+                 MissionService &mission_service,
+                 SlotService &slot_service,
+                 OfflineService &offline_service,
                  std::shared_ptr<SessionRegistry> registry,
-                 const MetadataLoader& metadata)
+                 const MetadataLoader &metadata)
     : socket_(std::move(socket)),
       auth_service_(auth_service),
       game_repo_(game_repo),
@@ -44,21 +47,27 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       offline_service_(offline_service),
       auth_timer_(socket_.get_executor()),
       registry_(std::move(registry)),
-      metadata_(metadata) {
+      metadata_(metadata)
+{
     init_router();
 }
 
-void Session::start() {
-    try {
+void Session::start()
+{
+    try
+    {
         client_ip_ = socket_.remote_endpoint().address().to_string();
-    } catch (...) {
+    }
+    catch (...)
+    {
         client_ip_.clear();
     }
     start_auth_timer();
     read_length();
 }
 
-void Session::notify_duplicate_and_close() {
+void Session::notify_duplicate_and_close()
+{
     infinitepickaxe::ErrorNotification err;
     err.set_error_code("1006");
     err.set_message("DUPLICATE_SESSION");
@@ -75,94 +84,113 @@ void Session::notify_duplicate_and_close() {
     auto self = shared_from_this();
     std::array<boost::asio::const_buffer, 2> bufs = {
         boost::asio::buffer(len_enc),
-        boost::asio::buffer(body)
-    };
+        boost::asio::buffer(body)};
     boost::asio::async_write(socket_, bufs,
-        [this, self](boost::system::error_code /*ec*/, std::size_t /*written*/) {
-            close();
-        });
+                             [this, self](boost::system::error_code /*ec*/, std::size_t /*written*/)
+                             {
+                                 close();
+                             });
 }
 
-void Session::read_length() {
+void Session::read_length()
+{
     auto self = shared_from_this();
     boost::asio::async_read(socket_, boost::asio::buffer(len_buf_),
-        [this, self](boost::system::error_code ec, std::size_t /*len*/) {
-            if (ec) {
-                close();
-                return;
-            }
-            uint32_t len = decode_le(len_buf_);
-            if (len == 0 || len > 64 * 1024) { // 간단???�한
-                send_error("INVALID_LENGTH", "invalid length");
-                close();
-                return;
-            }
-            payload_buf_.resize(len);
-            read_payload(len);
-        });
+                            [this, self](boost::system::error_code ec, std::size_t /*len*/)
+                            {
+                                if (ec)
+                                {
+                                    close();
+                                    return;
+                                }
+                                uint32_t len = decode_le(len_buf_);
+                                if (len == 0 || len > 64 * 1024)
+                                { // 간단???�한
+                                    send_error("INVALID_LENGTH", "invalid length");
+                                    close();
+                                    return;
+                                }
+                                payload_buf_.resize(len);
+                                read_payload(len);
+                            });
 }
 
-void Session::read_payload(std::size_t length) {
+void Session::read_payload(std::size_t length)
+{
     auto self = shared_from_this();
     boost::asio::async_read(socket_, boost::asio::buffer(payload_buf_.data(), length),
-        [this, self](boost::system::error_code ec, std::size_t /*len*/) {
-            if (ec) {
-                close();
-                return;
-            }
-            infinitepickaxe::Envelope env;
-            if (!env.ParseFromArray(payload_buf_.data(), static_cast<int>(payload_buf_.size()))) {
-                send_error("INVALID_ENVELOPE", "parse failed");
-                close();
-                return;
-            }
-            dispatch_envelope(env);
-        });
+                            [this, self](boost::system::error_code ec, std::size_t /*len*/)
+                            {
+                                if (ec)
+                                {
+                                    close();
+                                    return;
+                                }
+                                infinitepickaxe::Envelope env;
+                                if (!env.ParseFromArray(payload_buf_.data(), static_cast<int>(payload_buf_.size())))
+                                {
+                                    send_error("INVALID_ENVELOPE", "parse failed");
+                                    close();
+                                    return;
+                                }
+                                dispatch_envelope(env);
+                            });
 }
 
-bool Session::is_expired() const {
-    if (expires_at_.time_since_epoch().count() == 0) return false;
+bool Session::is_expired() const
+{
+    if (expires_at_.time_since_epoch().count() == 0)
+        return false;
     return std::chrono::system_clock::now() >= expires_at_;
 }
 
-void Session::dispatch_envelope(const infinitepickaxe::Envelope& env) {
-    if (is_expired()) {
+void Session::dispatch_envelope(const infinitepickaxe::Envelope &env)
+{
+    if (is_expired())
+    {
         send_error("1003", "session expired");
         close();
         return;
     }
 
-    if (env.type() == infinitepickaxe::HANDSHAKE) {
+    if (env.type() == infinitepickaxe::HANDSHAKE)
+    {
         handle_handshake(env);
         return;
     }
 
-    if (!authenticated_) {
+    if (!authenticated_)
+    {
         send_error("1001", "handshake required");
         close();
         return;
     }
 
-    if (!router_.dispatch(env)) {
+    if (!router_.dispatch(env))
+    {
         send_error("2001", "UNKNOWN_MESSAGE_TYPE");
     }
 
     // 다음 패킷을 계속 읽기 위해 루프를 이어감 (핸드셰이크는 handle_handshake 내부에서 처리)
-    if (!closed_) {
+    if (!closed_)
+    {
         read_length();
     }
 }
 
-void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
-    if (!env.has_handshake()) {
+void Session::handle_handshake(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_handshake())
+    {
         send_error("2004", "handshake message missing");
         return;
     }
-    const auto& req = env.handshake();
+    const auto &req = env.handshake();
     VerifyResult vr = auth_service_.verify_and_cache(req.jwt(), client_ip_);
 
     infinitepickaxe::HandshakeResponse res;
-    if (!vr.valid || vr.is_banned) {
+    if (!vr.valid || vr.is_banned)
+    {
         res.set_success(false);
         res.set_message(vr.is_banned ? "BANNED" : "AUTH_FAILED");
 
@@ -174,7 +202,8 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
         return;
     }
     auto now = std::chrono::system_clock::now();
-    if (vr.expires_at.time_since_epoch().count() != 0 && now >= vr.expires_at) {
+    if (vr.expires_at.time_since_epoch().count() != 0 && now >= vr.expires_at)
+    {
         res.set_success(false);
         res.set_message("TOKEN_EXPIRED");
 
@@ -185,7 +214,8 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
         close();
         return;
     }
-    if (!game_repo_.ensure_user_initialized(vr.user_id)) {
+    if (!game_repo_.ensure_user_initialized(vr.user_id))
+    {
         res.set_success(false);
         res.set_message("USER_INIT_FAILED");
 
@@ -204,8 +234,10 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
     boost::system::error_code timer_ec;
     auth_timer_.cancel(timer_ec);
 
-    if (registry_) {
-        if (auto previous = registry_->replace_session(user_id_, shared_from_this())) {
+    if (registry_)
+    {
+        if (auto previous = registry_->replace_session(user_id_, shared_from_this()))
+        {
             previous->notify_duplicate_and_close();
         }
     }
@@ -214,47 +246,53 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
     res.set_message("OK");
 
     // UserDataSnapshot 구성
-    auto* snapshot = res.mutable_snapshot();
+    auto *snapshot = res.mutable_snapshot();
 
-    // ?��? 게임 ?�이??조회
+    // ?��? 게임 ?�이??조회
     auto game_data = game_repo_.get_user_game_data(user_id_);
     snapshot->mutable_gold()->set_value(game_data.gold);
     snapshot->mutable_crystal()->set_value(game_data.crystal);
 
-    // ?�롯 ?�금 ?�태
-    for (bool unlocked : game_data.unlocked_slots) {
+    // ?�롯 ?�금 ?�태
+    for (bool unlocked : game_data.unlocked_slots)
+    {
         snapshot->add_unlocked_slots(unlocked);
     }
 
-    // ?�재 채굴 중인 광물 ?�보 (DB?�서 조회, nullable 처리)
-    if (game_data.current_mineral_id.has_value()) {
-        const auto* mineral = metadata_.mineral(game_data.current_mineral_id.value());
+    // ?�재 채굴 중인 광물 ?�보 (DB?�서 조회, nullable 처리)
+    if (game_data.current_mineral_id.has_value() && game_data.current_mineral_id.value() > 0)
+    {
+        const auto *mineral = metadata_.mineral(game_data.current_mineral_id.value());
         snapshot->mutable_current_mineral_id()->set_value(game_data.current_mineral_id.value());
         snapshot->mutable_mineral_hp()->set_value(game_data.current_mineral_hp.value_or(0));
         snapshot->mutable_mineral_max_hp()->set_value(mineral ? mineral->hp : 100);
     }
 
-    // ?�롯 ?�보 �?�?DPS
+    // ?�롯 ?�보 �?�?DPS
     auto slots_response = slot_service_.handle_all_slots(user_id_);
-    for (const auto& slot : slots_response.slots()) {
+    for (const auto &slot : slots_response.slots())
+    {
         *snapshot->add_pickaxe_slots() = slot;
     }
     snapshot->set_total_dps(slots_response.total_dps());
 
-    // ?�버 ?�간
+    // ?�버 ?�간
     snapshot->mutable_server_time()->set_value(
         static_cast<uint64_t>(
             std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::system_clock::now().time_since_epoch()).count()));
+                std::chrono::system_clock::now().time_since_epoch())
+                .count()));
 
-    // 광고 카운??추�?
+    // 광고 카운??추�?
     auto ad_counters = mission_service_.get_ad_counters(user_id_);
-    for (const auto& counter : ad_counters) {
-        auto* ad_counter = snapshot->add_ad_counters();
+    for (const auto &counter : ad_counters)
+    {
+        auto *ad_counter = snapshot->add_ad_counters();
         ad_counter->set_ad_type(counter.ad_type);
         ad_counter->set_ad_count(counter.ad_count);
         uint32_t limit = 0;
-        if (const auto* ad_meta = metadata_.ad_meta(counter.ad_type)) {
+        if (const auto *ad_meta = metadata_.ad_meta(counter.ad_type))
+        {
             limit = ad_meta->daily_limit;
         }
         ad_counter->set_daily_limit(limit);
@@ -268,28 +306,40 @@ void Session::handle_handshake(const infinitepickaxe::Envelope& env) {
     *response_env.mutable_handshake_result() = res;
     send_envelope(response_env);
 
-    // 채굴 ?��??�이???�작 (DB?�서 로드???�재 광물�? nullable 처리)
-    if (game_data.current_mineral_id.has_value() && game_data.current_mineral_hp.has_value()) {
+    // 채굴 ?��??�이???�작 (DB?�서 로드???�재 광물�? nullable 처리)
+    if (game_data.current_mineral_id.has_value() && game_data.current_mineral_id.value() > 0 && game_data.current_mineral_hp.has_value())
+    {
         mining_state_.current_mineral_id = game_data.current_mineral_id.value();
         mining_state_.current_hp = game_data.current_mineral_hp.value();
-        const auto* current_mineral = metadata_.mineral(mining_state_.current_mineral_id);
-        mining_state_.max_hp = current_mineral ? current_mineral->hp : 100;
+        const auto *current_mineral = metadata_.mineral(mining_state_.current_mineral_id);
+        mining_state_.max_hp = current_mineral ? current_mineral->hp : 0;
 
-        // 광물 HP가 0???�니�?채굴 ?�작
-        if (mining_state_.current_hp > 0) {
+        // ?? HP? 0???�?�??? ?�?
+        if (mining_state_.current_hp > 0 && mining_state_.max_hp > 0)
+        {
             start_new_mineral();
         }
-    } else {
-        // 광물???�으�?기본 광물(1�?�??�작
-        mining_state_.current_mineral_id = 1;
-        start_new_mineral();
+        else
+        {
+            mining_state_.is_mining = false;
+        }
+    }
+    else
+    {
+        // ??? ???? ?? ?? ?? ?? ??? ???
+        mining_state_.current_mineral_id = 0;
+        mining_state_.current_hp = 0;
+        mining_state_.max_hp = 0;
+        mining_state_.is_mining = false;
     }
 
     read_length();
 }
 
-void Session::handle_heartbeat(const infinitepickaxe::Envelope& env) {
-    if (!env.has_heartbeat()) {
+void Session::handle_heartbeat(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_heartbeat())
+    {
         send_error("2004", "heartbeat message missing");
         return;
     }
@@ -298,7 +348,8 @@ void Session::handle_heartbeat(const infinitepickaxe::Envelope& env) {
     ack.set_server_time_ms(
         static_cast<uint64_t>(
             std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::system_clock::now().time_since_epoch()).count()));
+                std::chrono::system_clock::now().time_since_epoch())
+                .count()));
 
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::HEARTBEAT_ACK);
@@ -306,66 +357,25 @@ void Session::handle_heartbeat(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-// ?�버 권위???�키?�처�?변경되?????�상 ?�용?��? ?�음
-// ?�버가 ?�동?�로 채굴 ?��??�이?�을 ?�리�??�라?�언?�는 ?�더링만 ?�행
-// void Session::handle_mining(const infinitepickaxe::Envelope& env) {
-//     infinitepickaxe::Envelope response_env;
-//
-//     if (env.type() == infinitepickaxe::MINING_START) {
-//         if (!env.has_mining_start()) {
-//             send_error("2004", "mining_start message missing");
-//             return;
-//         }
-//         const auto& req = env.mining_start();
-//         auto upd = mining_service_.handle_start(user_id_, req.mineral_id());
-//
-//         response_env.set_type(infinitepickaxe::MINING_UPDATE);
-//         *response_env.mutable_mining_update() = upd;
-//         send_envelope(response_env);
-//
-//     } else if (env.type() == infinitepickaxe::MINING_SYNC) {
-//         if (!env.has_mining_sync()) {
-//             send_error("2004", "mining_sync message missing");
-//             return;
-//         }
-//         const auto& req = env.mining_sync();
-//         auto upd = mining_service_.handle_sync(user_id_, req.mineral_id(), req.client_hp());
-//
-//         response_env.set_type(infinitepickaxe::MINING_UPDATE);
-//         *response_env.mutable_mining_update() = upd;
-//         send_envelope(response_env);
-//
-//     } else if (env.type() == infinitepickaxe::MINING_COMPLETE) {
-//         if (!env.has_mining_complete()) {
-//             send_error("2004", "mining_complete message missing");
-//             return;
-//         }
-//         const auto& req = env.mining_complete();
-//         auto res = mining_service_.handle_complete(user_id_, req.mineral_id());
-//
-//         response_env.set_type(infinitepickaxe::MINING_COMPLETE);
-//         *response_env.mutable_mining_complete() = res;
-//         send_envelope(response_env);
-//
-//     } else {
-//         send_error("NOT_IMPLEMENTED", "unknown mining message type");
-//     }
-// }
-
-void Session::handle_upgrade(const infinitepickaxe::Envelope& env) {
-    if (!env.has_upgrade_request()) {
+void Session::handle_upgrade(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_upgrade_request())
+    {
         send_error("2004", "upgrade_request message missing");
         return;
     }
-    const auto& req = env.upgrade_request();
-    // ?�재 ?�롯 ?�벨??조회??target_level = current + 1 �??�정
+    const auto &req = env.upgrade_request();
+    // ?�재 ?�롯 ?�벨??조회??target_level = current + 1 �??�정
     auto slot = slot_service_.get_slot(user_id_, req.slot_index());
     infinitepickaxe::UpgradeResult res;
-    if (!slot.has_value()) {
+    if (!slot.has_value())
+    {
         res.set_success(false);
         res.set_slot_index(req.slot_index());
         res.set_error_code("3004"); // SLOT_NOT_FOUND
-    } else {
+    }
+    else
+    {
         uint32_t target_level = slot->level + 1;
         res = upgrade_service_.handle_upgrade(user_id_, req.slot_index(), target_level);
     }
@@ -376,7 +386,75 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-void Session::handle_mission(const infinitepickaxe::Envelope& env) {
+void Session::handle_change_mineral(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_change_mineral_request())
+    {
+        send_error("2004", "change_mineral_request message missing");
+        return;
+    }
+    const auto &req = env.change_mineral_request();
+
+    infinitepickaxe::ChangeMineralResponse res;
+    res.set_success(false);
+    res.set_error_code("");
+
+    uint32_t mineral_id = req.mineral_id();
+    uint64_t hp = 0;
+
+    if (mineral_id == 0)
+    {
+        // ?? ??
+        hp = 0;
+    }
+    else
+    {
+        const auto *mineral = metadata_.mineral(mineral_id);
+        if (!mineral)
+        {
+            res.set_error_code("INVALID_MINERAL");
+        }
+        else
+        {
+            hp = mineral->hp;
+        }
+    }
+
+    if (res.error_code().empty())
+    {
+        if (!game_repo_.set_current_mineral(user_id_, mineral_id, hp))
+        {
+            res.set_error_code("DB_ERROR");
+        }
+        else
+        {
+            mining_state_.current_mineral_id = mineral_id;
+            mining_state_.current_hp = hp;
+            mining_state_.max_hp = hp;
+            mining_state_.respawn_timer_ms = 0;
+            mining_state_.is_mining = false;
+            start_new_mineral();
+
+            res.set_success(true);
+            res.set_mineral_id(mineral_id);
+            res.set_mineral_hp(hp);
+            res.set_mineral_max_hp(hp);
+        }
+    }
+
+    if (!res.success() && res.error_code().empty())
+    {
+        res.set_error_code("UNKNOWN_ERROR");
+    }
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::CHANGE_MINERAL_RESPONSE);
+    *response_env.mutable_change_mineral_response() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_mission(const infinitepickaxe::Envelope &env)
+{
     auto res = mission_service_.get_missions(user_id_);
 
     infinitepickaxe::Envelope response_env;
@@ -385,21 +463,25 @@ void Session::handle_mission(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-void Session::handle_mission_progress_update(const infinitepickaxe::Envelope& env) {
-    if (!env.has_mission_progress_update()) {
+void Session::handle_mission_progress_update(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_mission_progress_update())
+    {
         send_error("2004", "mission_progress_update message missing");
         return;
     }
-    const auto& req = env.mission_progress_update();
+    const auto &req = env.mission_progress_update();
     mission_service_.update_mission_progress(user_id_, req.slot_no(), req.current_value());
 }
 
-void Session::handle_mission_complete(const infinitepickaxe::Envelope& env) {
-    if (!env.has_mission_complete()) {
+void Session::handle_mission_complete(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_mission_complete())
+    {
         send_error("2004", "mission_complete message missing");
         return;
     }
-    const auto& req = env.mission_complete();
+    const auto &req = env.mission_complete();
     auto res = mission_service_.claim_mission_reward(user_id_, req.slot_no());
 
     infinitepickaxe::Envelope response_env;
@@ -408,7 +490,8 @@ void Session::handle_mission_complete(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-void Session::handle_mission_reroll(const infinitepickaxe::Envelope& env) {
+void Session::handle_mission_reroll(const infinitepickaxe::Envelope &env)
+{
     auto res = mission_service_.reroll_missions(user_id_);
 
     infinitepickaxe::Envelope response_env;
@@ -417,12 +500,14 @@ void Session::handle_mission_reroll(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-void Session::handle_ad_watch(const infinitepickaxe::Envelope& env) {
-    if (!env.has_ad_watch_complete()) {
+void Session::handle_ad_watch(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_ad_watch_complete())
+    {
         send_error("2004", "ad_watch_complete message missing");
         return;
     }
-    const auto& req = env.ad_watch_complete();
+    const auto &req = env.ad_watch_complete();
     auto res = mission_service_.handle_ad_watch(user_id_, req.ad_type());
 
     infinitepickaxe::Envelope response_env;
@@ -431,14 +516,15 @@ void Session::handle_ad_watch(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-void Session::handle_milestone_claim(const infinitepickaxe::Envelope& env) {
-    if (!env.has_milestone_claim()) {
+void Session::handle_milestone_claim(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_milestone_claim())
+    {
         send_error("2004", "milestone_claim message missing");
         return;
     }
 
-
-    const auto& req = env.milestone_claim();
+    const auto &req = env.milestone_claim();
     auto res = mission_service_.handle_milestone_claim(user_id_, req.milestone_count());
 
     infinitepickaxe::Envelope response_env;
@@ -447,12 +533,14 @@ void Session::handle_milestone_claim(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-void Session::handle_slot_unlock(const infinitepickaxe::Envelope& env) {
-    if (!env.has_slot_unlock()) {
+void Session::handle_slot_unlock(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_slot_unlock())
+    {
         send_error("2004", "slot_unlock message missing");
         return;
     }
-    const auto& req = env.slot_unlock();
+    const auto &req = env.slot_unlock();
     auto res = slot_service_.handle_unlock(user_id_, req.slot_index());
 
     infinitepickaxe::Envelope response_env;
@@ -461,7 +549,8 @@ void Session::handle_slot_unlock(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-void Session::handle_all_slots(const infinitepickaxe::Envelope& env) {
+void Session::handle_all_slots(const infinitepickaxe::Envelope &env)
+{
     auto res = slot_service_.handle_all_slots(user_id_);
 
     infinitepickaxe::Envelope response_env;
@@ -470,8 +559,10 @@ void Session::handle_all_slots(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-void Session::handle_offline_reward(const infinitepickaxe::Envelope& env) {
-    if (!env.has_offline_reward_request()) {
+void Session::handle_offline_reward(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_offline_reward_request())
+    {
         send_error("2004", "offline_reward_request message missing");
         return;
     }
@@ -483,24 +574,38 @@ void Session::handle_offline_reward(const infinitepickaxe::Envelope& env) {
     send_envelope(response_env);
 }
 
-void Session::init_router() {
-    router_.register_handler(infinitepickaxe::HEARTBEAT, [this](const infinitepickaxe::Envelope& e) { handle_heartbeat(e); });
-    // ?�버 권위???�키?�처�?변경되???�라?�언?��? ???�상 MINING_START, MINING_SYNC�?보내지 ?�음
+void Session::init_router()
+{
+    router_.register_handler(infinitepickaxe::HEARTBEAT, [this](const infinitepickaxe::Envelope &e)
+                             { handle_heartbeat(e); });
     // router_.register_handler(infinitepickaxe::MINING_START, [this](const infinitepickaxe::Envelope& e) { handle_mining(e); });
     // router_.register_handler(infinitepickaxe::MINING_SYNC, [this](const infinitepickaxe::Envelope& e) { handle_mining(e); });
-    router_.register_handler(infinitepickaxe::UPGRADE_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_upgrade(e); });
-    router_.register_handler(infinitepickaxe::DAILY_MISSIONS_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_mission(e); });
-    router_.register_handler(infinitepickaxe::MISSION_PROGRESS_UPDATE, [this](const infinitepickaxe::Envelope& e) { handle_mission_progress_update(e); });
-    router_.register_handler(infinitepickaxe::MISSION_COMPLETE, [this](const infinitepickaxe::Envelope& e) { handle_mission_complete(e); });
-    router_.register_handler(infinitepickaxe::MISSION_REROLL, [this](const infinitepickaxe::Envelope& e) { handle_mission_reroll(e); });
-    router_.register_handler(infinitepickaxe::AD_WATCH_COMPLETE, [this](const infinitepickaxe::Envelope& e) { handle_ad_watch(e); });
-    router_.register_handler(infinitepickaxe::MILESTONE_CLAIM, [this](const infinitepickaxe::Envelope& e) { handle_milestone_claim(e); });
-    router_.register_handler(infinitepickaxe::SLOT_UNLOCK, [this](const infinitepickaxe::Envelope& e) { handle_slot_unlock(e); });
-    router_.register_handler(infinitepickaxe::ALL_SLOTS_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_all_slots(e); });
-    router_.register_handler(infinitepickaxe::OFFLINE_REWARD_REQUEST, [this](const infinitepickaxe::Envelope& e) { handle_offline_reward(e); });
+    router_.register_handler(infinitepickaxe::UPGRADE_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_upgrade(e); });
+    router_.register_handler(infinitepickaxe::CHANGE_MINERAL_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_change_mineral(e); });
+    router_.register_handler(infinitepickaxe::DAILY_MISSIONS_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_mission(e); });
+    router_.register_handler(infinitepickaxe::MISSION_PROGRESS_UPDATE, [this](const infinitepickaxe::Envelope &e)
+                             { handle_mission_progress_update(e); });
+    router_.register_handler(infinitepickaxe::MISSION_COMPLETE, [this](const infinitepickaxe::Envelope &e)
+                             { handle_mission_complete(e); });
+    router_.register_handler(infinitepickaxe::MISSION_REROLL, [this](const infinitepickaxe::Envelope &e)
+                             { handle_mission_reroll(e); });
+    router_.register_handler(infinitepickaxe::AD_WATCH_COMPLETE, [this](const infinitepickaxe::Envelope &e)
+                             { handle_ad_watch(e); });
+    router_.register_handler(infinitepickaxe::MILESTONE_CLAIM, [this](const infinitepickaxe::Envelope &e)
+                             { handle_milestone_claim(e); });
+    router_.register_handler(infinitepickaxe::SLOT_UNLOCK, [this](const infinitepickaxe::Envelope &e)
+                             { handle_slot_unlock(e); });
+    router_.register_handler(infinitepickaxe::ALL_SLOTS_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_all_slots(e); });
+    router_.register_handler(infinitepickaxe::OFFLINE_REWARD_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_offline_reward(e); });
 }
 
-void Session::send_envelope(const infinitepickaxe::Envelope& env) {
+void Session::send_envelope(const infinitepickaxe::Envelope &env)
+{
     std::string body;
     env.SerializeToString(&body);
     auto len = static_cast<uint32_t>(body.size());
@@ -509,18 +614,20 @@ void Session::send_envelope(const infinitepickaxe::Envelope& env) {
     auto self = shared_from_this();
     std::array<boost::asio::const_buffer, 2> bufs = {
         boost::asio::buffer(len_enc),
-        boost::asio::buffer(body)
-    };
+        boost::asio::buffer(body)};
     boost::asio::async_write(socket_, bufs,
-        [this, self](boost::system::error_code ec, std::size_t /*written*/) {
-            if (ec) {
-                close();
-                return;
-            }
-        });
+                             [this, self](boost::system::error_code ec, std::size_t /*written*/)
+                             {
+                                 if (ec)
+                                 {
+                                     close();
+                                     return;
+                                 }
+                             });
 }
 
-void Session::send_error(const std::string& code, const std::string& message) {
+void Session::send_error(const std::string &code, const std::string &message)
+{
     infinitepickaxe::ErrorNotification err;
     err.set_error_code(code);
     err.set_message(message);
@@ -531,12 +638,15 @@ void Session::send_error(const std::string& code, const std::string& message) {
     send_envelope(env);
 }
 
-void Session::close() {
-    if (closed_) return;
+void Session::close()
+{
+    if (closed_)
+        return;
     closed_ = true;
     boost::system::error_code timer_ec;
     auth_timer_.cancel(timer_ec);
-    if (registry_ && !user_id_.empty()) {
+    if (registry_ && !user_id_.empty())
+    {
         registry_->remove_if_match(user_id_, this);
     }
     boost::system::error_code ignored;
@@ -544,29 +654,45 @@ void Session::close() {
     socket_.close(ignored);
 }
 
-void Session::start_auth_timer() {
+void Session::start_auth_timer()
+{
     auto self = shared_from_this();
     auth_timer_.expires_after(std::chrono::seconds(5));
-    auth_timer_.async_wait([this, self](const boost::system::error_code& ec) {
-        if (ec) return; // cancelled
-        if (!authenticated_) {
-            send_error("1007", "AUTH_TIMEOUT");
-            close();
-        }
-    });
+    auth_timer_.async_wait([this, self](const boost::system::error_code &ec)
+                           {
+                               if (ec)
+                                   return; // cancelled
+                               if (!authenticated_)
+                               {
+                                   send_error("1007", "AUTH_TIMEOUT");
+                                   close();
+                               } });
 }
-void Session::update_mining_tick(float delta_ms) {
-    // ?�증?��? ?�았거나 ?�션???�혔?�면 무시
-    if (!authenticated_ || closed_) {
+
+void Session::update_mining_tick(float delta_ms)
+{
+    // 인증되지 않았거나 세션이 닫혔으면 무시
+    if (!authenticated_ || closed_)
+    {
         return;
     }
 
-    // 채굴 중이 ?�니�?리스???�?�머 처리
-    if (!mining_state_.is_mining) {
-        if (mining_state_.respawn_timer_ms > 0) {
+    // 광물 선택이 0(중단)이면 채굴 자동 틱 중지
+    if (mining_state_.current_mineral_id == 0)
+    {
+        mining_state_.is_mining = false;
+        mining_state_.respawn_timer_ms = 0;
+        return;
+    }
+
+    // 채굴 중이 아니면 리스폰 타이머 처리
+    if (!mining_state_.is_mining)
+    {
+        if (mining_state_.respawn_timer_ms > 0)
+        {
             mining_state_.respawn_timer_ms -= delta_ms;
-            if (mining_state_.respawn_timer_ms <= 0) {
-                // 5�??��??�료 ????광물�??�동 ?�작
+            if (mining_state_.respawn_timer_ms <= 0)
+            {
                 start_new_mineral();
             }
         }
@@ -575,56 +701,66 @@ void Session::update_mining_tick(float delta_ms) {
 
     std::vector<infinitepickaxe::PickaxeAttack> attacks;
 
-    for (auto& slot : mining_state_.slots) {
+    for (auto &slot : mining_state_.slots)
+    {
         slot.next_attack_timer_ms -= delta_ms;
 
-        // 40ms ?�안 ?�러 �?공격?????�음 (attack_speed가 매우 빠른 경우)
-        while (slot.next_attack_timer_ms <= 0) {
+        // 40ms 동안 여러 번 공격할 수 있음 (attack_speed가 매우 빠른 경우)
+        while (slot.next_attack_timer_ms <= 0)
+        {
             infinitepickaxe::PickaxeAttack attack;
             attack.set_slot_index(slot.slot_index);
             attack.set_damage(slot.attack_power);
             attacks.push_back(attack);
 
-            // ?�음 공격 ?�간 ?�정 (밀리초)
-            // attack_speed = attacks per second
-            // attack_interval_ms = 1000 / attack_speed
             float attack_interval_ms = 1000.0f / slot.attack_speed;
             slot.next_attack_timer_ms += attack_interval_ms;
         }
     }
 
-    // HP 감소
     uint64_t total_damage = 0;
-    for (const auto& attack : attacks) {
+    for (const auto &attack : attacks)
+    {
         total_damage += attack.damage();
     }
 
-    if (total_damage > 0) {
-        if (mining_state_.current_hp > total_damage) {
+    if (total_damage > 0)
+    {
+        if (mining_state_.current_hp > total_damage)
+        {
             mining_state_.current_hp -= total_damage;
-        } else {
+        }
+        else
+        {
             mining_state_.current_hp = 0;
         }
     }
 
-    // 채굴 ?�료 체크
-    if (mining_state_.current_hp == 0) {
-        // 즉시 채굴 ?�료 ?�시 (?�과 무�?)
+    if (mining_state_.current_hp == 0)
+    {
         handle_mining_complete_immediate();
         return;
     }
 
-    // MiningUpdate ?�송 (공격???�어???�송 - ?�라?�언???�기??
     send_mining_update(attacks);
 }
 
-void Session::start_new_mineral() {
-    // ??광물�??�작 (?�재???�일 광물 ?�시??
-    // TODO: 광물 ?�택 로직 추�? 가??
-    // 메�??�이?�에??광물 ?�보 조회
-    const auto* mineral = metadata_.mineral(mining_state_.current_mineral_id);
-    if (!mineral) {
+void Session::start_new_mineral()
+{
+    // 새 광물로 시작
+    if (mining_state_.current_mineral_id == 0)
+    {
+        // 채굴 중단 상태
+        mining_state_.is_mining = false;
+        mining_state_.respawn_timer_ms = 0;
+        return;
+    }
+
+    const auto *mineral = metadata_.mineral(mining_state_.current_mineral_id);
+    if (!mineral)
+    {
         spdlog::error("Invalid mineral_id: {}", mining_state_.current_mineral_id);
+        mining_state_.is_mining = false;
         return;
     }
 
@@ -633,20 +769,18 @@ void Session::start_new_mineral() {
     mining_state_.is_mining = true;
     mining_state_.respawn_timer_ms = 0;
 
-    // ?�롯 ?�보 로드 (DB?�서)
     auto slots_response = slot_service_.handle_all_slots(user_id_);
     mining_state_.slots.clear();
 
-    for (const auto& slot_info : slots_response.slots()) {
-        if (slot_info.is_unlocked() && slot_info.level() > 0) {
+    for (const auto &slot_info : slots_response.slots())
+    {
+        if (slot_info.is_unlocked())
+        {
             SlotMiningState slot;
             slot.slot_index = slot_info.slot_index();
             slot.attack_power = slot_info.attack_power();
-            slot.attack_speed = slot_info.attack_speed_x100() / 100.0f;  // 100 ??1.0 APS
-
-            // 초기 공격 ?�?�머: ?�덤?�게 분산 (모든 ?�롯???�시??공격?��? ?�도�?
+            slot.attack_speed = slot_info.attack_speed_x100() / 100.0f; // 100 → 1.0 APS
             slot.next_attack_timer_ms = (float)(std::rand() % 1000) / 1000.0f * (1000.0f / slot.attack_speed);
-
             mining_state_.slots.push_back(slot);
         }
     }
@@ -655,16 +789,19 @@ void Session::start_new_mineral() {
                  user_id_, mining_state_.current_mineral_id, mining_state_.current_hp, mining_state_.slots.size());
 }
 
-void Session::send_mining_update(const std::vector<infinitepickaxe::PickaxeAttack>& attacks) {
+void Session::send_mining_update(const std::vector<infinitepickaxe::PickaxeAttack> &attacks)
+{
     infinitepickaxe::MiningUpdate update;
     update.set_mineral_id(mining_state_.current_mineral_id);
     update.set_current_hp(mining_state_.current_hp);
     update.set_max_hp(mining_state_.max_hp);
     update.set_server_timestamp(static_cast<uint64_t>(
         std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count()));
+            std::chrono::system_clock::now().time_since_epoch())
+            .count()));
 
-    for (const auto& attack : attacks) {
+    for (const auto &attack : attacks)
+    {
         *update.add_attacks() = attack;
     }
 
@@ -674,13 +811,13 @@ void Session::send_mining_update(const std::vector<infinitepickaxe::PickaxeAttac
     send_envelope(env);
 }
 
-void Session::handle_mining_complete_immediate() {
-    // 채굴 ?�료 처리
+void Session::handle_mining_complete_immediate()
+{
     mining_state_.is_mining = false;
 
-    // 메�??�이?�에??보상 조회
-    const auto* mineral = metadata_.mineral(mining_state_.current_mineral_id);
-    if (!mineral) {
+    const auto *mineral = metadata_.mineral(mining_state_.current_mineral_id);
+    if (!mineral)
+    {
         spdlog::error("Invalid mineral_id: {}", mining_state_.current_mineral_id);
         return;
     }
@@ -689,11 +826,8 @@ void Session::handle_mining_complete_immediate() {
     uint32_t respawn_time_sec = mineral->respawn_time;
 
     auto completion_result = mining_service_.handle_complete(user_id_, mining_state_.current_mineral_id);
-
-    // 리스???�?�머 ?�작
     mining_state_.respawn_timer_ms = respawn_time_sec * 1000.0f;
 
-    // ?�라?�언?�에�?MiningComplete 즉시 ?�송
     infinitepickaxe::MiningComplete complete;
     complete.set_mineral_id(mining_state_.current_mineral_id);
     complete.set_gold_earned(completion_result.gold_earned());
@@ -702,7 +836,8 @@ void Session::handle_mining_complete_immediate() {
     complete.set_respawn_time(respawn_time_sec);
     complete.set_server_timestamp(static_cast<uint64_t>(
         std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count()));
+            std::chrono::system_clock::now().time_since_epoch())
+            .count()));
 
     infinitepickaxe::Envelope env;
     env.set_type(infinitepickaxe::MINING_COMPLETE);

@@ -21,13 +21,13 @@ namespace InfinitePickaxe.Client.UI.Game
 
         [Header("Mineral Select Items")]
         [SerializeField] private Button mineralItemNullButton;
-        [SerializeField] private Button mineralItem0Button;
         [SerializeField] private Button mineralItem1Button;
         [SerializeField] private Button mineralItem2Button;
         [SerializeField] private Button mineralItem3Button;
         [SerializeField] private Button mineralItem4Button;
         [SerializeField] private Button mineralItem5Button;
         [SerializeField] private Button mineralItem6Button;
+        [SerializeField] private Button mineralItem7Button;
 
         [Header("Pickaxe Slot References")]
         [SerializeField] private Button pickaxeSlot1Button;
@@ -52,12 +52,32 @@ namespace InfinitePickaxe.Client.UI.Game
         // 채굴 중단 요청 시 서버와 합의한 sentinel ID (0은 중단, 실제 광물 ID는 1부터 시작)
         private const uint StopMineralId = 0;
 
+        // 메타 기반 광물 이름 테이블 (인덱스=ID). 필요 시 인스펙터에서 교체/확장 가능.
+        [SerializeField] private string[] mineralNames = new[]
+        {
+            "채굴 중단",   // 0
+            "약한 돌",     // 1
+            "돌",         // 2
+            "석탄",       // 3
+            "구리",       // 4
+            "철광석",     // 5
+            "금광석",     // 6
+            "에메랄드"    // 7
+        };
+
+        private bool hasServerState = false;
+
         private GameTabManager tabManager;
         private MessageHandler messageHandler;
 
         protected override void Initialize()
         {
             base.Initialize();
+
+            // 초기값을 채굴 중단 상태로 설정해 fallback 노출을 피함
+            currentMineralName = GetMineralName(StopMineralId);
+            currentHP = 0;
+            maxHP = 0;
 
             // GameTabManager 찾기
             tabManager = FindObjectOfType<GameTabManager>();
@@ -150,6 +170,7 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         public override void RefreshData()
         {
+            // 서버 상태를 받은 뒤에만 렌더링되도록 기본 상태는 채굴 중단을 표시
             UpdateMineInfo();
             UpdateHPBar();
             UpdateDPS();
@@ -330,33 +351,33 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 mineralItemNullButton.onClick.AddListener(() => SelectMineralNullable(null));
             }
-            if (mineralItem0Button != null)
-            {
-                mineralItem0Button.onClick.AddListener(() => SelectMineralNullable(1));
-            }
             if (mineralItem1Button != null)
             {
-                mineralItem1Button.onClick.AddListener(() => SelectMineralNullable(2));
+                mineralItem1Button.onClick.AddListener(() => SelectMineralNullable(1));
             }
             if (mineralItem2Button != null)
             {
-                mineralItem2Button.onClick.AddListener(() => SelectMineralNullable(3));
+                mineralItem2Button.onClick.AddListener(() => SelectMineralNullable(2));
             }
             if (mineralItem3Button != null)
             {
-                mineralItem3Button.onClick.AddListener(() => SelectMineralNullable(4));
+                mineralItem3Button.onClick.AddListener(() => SelectMineralNullable(3));
             }
             if (mineralItem4Button != null)
             {
-                mineralItem4Button.onClick.AddListener(() => SelectMineralNullable(5));
+                mineralItem4Button.onClick.AddListener(() => SelectMineralNullable(4));
             }
             if (mineralItem5Button != null)
             {
-                mineralItem5Button.onClick.AddListener(() => SelectMineralNullable(6));
+                mineralItem5Button.onClick.AddListener(() => SelectMineralNullable(5));
             }
             if (mineralItem6Button != null)
             {
-                mineralItem6Button.onClick.AddListener(() => SelectMineralNullable(7));
+                mineralItem6Button.onClick.AddListener(() => SelectMineralNullable(6));
+            }
+            if (mineralItem7Button != null)
+            {
+                mineralItem7Button.onClick.AddListener(() => SelectMineralNullable(7));
             }
         }
 
@@ -534,12 +555,13 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void HandleUserDataSnapshot(UserDataSnapshot snapshot)
         {
+            hasServerState = true;
+
             // 광물 정보 업데이트
             if (snapshot.CurrentMineralId.HasValue)
             {
                 uint mineralId = snapshot.CurrentMineralId.Value;
-                // TODO: 광물 ID로 이름 조회 (MineralMetadata 필요)
-                currentMineralName = $"광물 #{mineralId}";
+                currentMineralName = GetMineralName(mineralId);
             }
 
             // HP 정보 업데이트
@@ -553,7 +575,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if ((snapshot.CurrentMineralId.HasValue && snapshot.CurrentMineralId.Value == StopMineralId) ||
                 (maxHP == 0))
             {
-                currentMineralName = "채굴 중단";
+                currentMineralName = GetMineralName(StopMineralId);
                 currentHP = 0;
                 maxHP = 0;
             }
@@ -587,11 +609,12 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             currentHP = update.CurrentHp;
             maxHP = update.MaxHp;
+            currentMineralName = GetMineralName(update.MineralId);
 
             // 서버가 채굴 중단 상태라면 HP 0/0으로 유지
             if (update.MaxHp == 0)
             {
-                currentMineralName = "채굴 중단";
+                currentMineralName = GetMineralName(StopMineralId);
                 currentHP = 0;
                 maxHP = 0;
             }
@@ -676,14 +699,13 @@ namespace InfinitePickaxe.Client.UI.Game
 
                 if (isStop)
                 {
-                    currentMineralName = "채굴 중단";
+                    currentMineralName = GetMineralName(StopMineralId);
                     currentHP = 0;
                     maxHP = 0;
                 }
                 else
                 {
-                    // TODO: 광물 ID로 이름 조회 (메타 데이터 연결 필요)
-                    currentMineralName = $"광물 #{mineralId}";
+                    currentMineralName = GetMineralName(mineralId);
                     currentHP = response.MineralHp;
                     maxHP = response.MineralMaxHp;
                 }
@@ -719,6 +741,21 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             RefreshData();
+        }
+
+        private string GetMineralName(uint mineralId)
+        {
+            if (mineralId == StopMineralId)
+            {
+                return mineralNames != null && mineralNames.Length > 0 ? mineralNames[0] : "채굴 중단";
+            }
+
+            if (mineralNames != null && mineralId < mineralNames.Length && !string.IsNullOrEmpty(mineralNames[mineralId]))
+            {
+                return mineralNames[mineralId];
+            }
+
+            return $"광물 #{mineralId}";
         }
 
         #endregion
