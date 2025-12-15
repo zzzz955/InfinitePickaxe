@@ -7,6 +7,10 @@ export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 export const REFRESH_EXPIRES_DAYS = parseInt(process.env.REFRESH_EXPIRES_DAYS || '14', 10);
 export const PORT = process.env.PORT || 10000;
 export const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
+export const PROTOCOL_VERSION = process.env.PROTOCOL_VERSION || '1';
+export const META_HASH = process.env.META_HASH || '';
+export const META_FILE = process.env.META_FILE || '../metadata/meta.json';
+export const STORE_URL = process.env.STORE_URL || '';
 
 // DB config
 export const DB_HOST = process.env.DB_HOST || 'localhost';
