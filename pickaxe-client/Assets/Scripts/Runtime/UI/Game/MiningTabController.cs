@@ -15,6 +15,8 @@ namespace InfinitePickaxe.Client.UI.Game
         [Header("Mining UI References")]
         [SerializeField] private TextMeshProUGUI mineInfoText;
         [SerializeField] private Slider mineHPSlider;
+        [SerializeField] private Image mineHPSliderFill;
+        [SerializeField] private Image mineHPSliderBackground;
         [SerializeField] private TextMeshProUGUI mineHPText;
         [SerializeField] private TextMeshProUGUI dpsText;
         [SerializeField] private Button selectMineralButton;
@@ -52,6 +54,9 @@ namespace InfinitePickaxe.Client.UI.Game
         // 채굴 중단 요청 시 서버와 합의한 sentinel ID (0은 중단, 실제 광물 ID는 1부터 시작)
         private const uint StopMineralId = 0;
 
+        // 런타임 기본 스프라이트 캐시 (빈 스프라이트일 때 fillAmount가 먹지 않는 문제 회피)
+        private static Sprite runtimeDefaultSprite;
+
         // 메타 기반 광물 이름 테이블 (인덱스=ID). 필요 시 인스펙터에서 교체/확장 가능.
         [SerializeField] private string[] mineralNames = new[]
         {
@@ -69,6 +74,25 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private GameTabManager tabManager;
         private MessageHandler messageHandler;
+        private bool isRespawning = false;
+        private bool hpLayoutFixed = false;
+        [SerializeField] private float hpSliderDefaultWidth = 800f;
+        [SerializeField] private float hpSliderDefaultHeight = 50f;
+
+        [Header("HP Bar Animation")]
+        [SerializeField] private float fillLerpSpeed = 6f;
+        [SerializeField] private float colorLerpSpeed = 4f;
+        [SerializeField] private float pulseSpeed = 2f;
+        [SerializeField] private float pulsePeriodSeconds = 0f; // 0이면 pulseSpeed 사용, 양수면 주기(초) 기반
+        [SerializeField] private float pulseAmplitude = 0.08f;
+        [SerializeField] private Color lowColor = Color.red;
+        [SerializeField] private Color midColor = Color.yellow;
+        [SerializeField] private Color highColor = Color.green;
+
+        private float targetFillNormalized = 1f;
+        private float displayedFillNormalized = 1f;
+        private float safeMaxForDisplay = 1f;
+        private Color currentFillColor = Color.green;
 
         protected override void Initialize()
         {
@@ -170,6 +194,7 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         public override void RefreshData()
         {
+            // targetFillNormalized는 Animate에서 부드럽게 따라감
             // 서버 상태를 받은 뒤에만 렌더링되도록 기본 상태는 채굴 중단을 표시
             UpdateMineInfo();
             UpdateHPBar();
@@ -183,7 +208,8 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (mineInfoText != null)
             {
-                mineInfoText.text = $"채굴 중: {currentMineralName}";
+                var status = isRespawning ? "(리스폰 중)" : "";
+                mineInfoText.text = $"채굴 중: {currentMineralName} {status}";
             }
         }
 
@@ -192,17 +218,196 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void UpdateHPBar()
         {
+            // Fill/Background RectTransform이 0x0이면 슬라이더가 안 보이므로 한 번 강제 리레이아웃
+            FixHpSliderLayout();
+
+            safeMaxForDisplay = Mathf.Max(1f, maxHP);
             if (mineHPSlider != null)
             {
-                mineHPSlider.maxValue = maxHP;
-                mineHPSlider.value = currentHP;
+                mineHPSlider.minValue = 0f;
+                mineHPSlider.maxValue = safeMaxForDisplay;
+                mineHPSlider.wholeNumbers = false;
+                mineHPSlider.SetValueWithoutNotify(Mathf.Clamp(currentHP, 0f, safeMaxForDisplay));
+                // 슬라이더 오브젝트 자체 사이즈가 0이라면 디폴트 크기로 보정
+                var rt = mineHPSlider.GetComponent<RectTransform>();
+                if (rt != null && (rt.sizeDelta.x <= 0 || rt.sizeDelta.y <= 0))
+                {
+                    rt.sizeDelta = new Vector2(hpSliderDefaultWidth, hpSliderDefaultHeight);
+                }
             }
+
+            targetFillNormalized = safeMaxForDisplay > 0 ? Mathf.Clamp01(currentHP / safeMaxForDisplay) : 0f;
+            // displayedFillNormalized는 Animate에서 따라감 (Update에서 실행)
 
             if (mineHPText != null)
             {
                 var hpPercent = maxHP > 0 ? (currentHP / maxHP * 100f) : 0f;
                 mineHPText.text = $"HP: {currentHP:F0}/{maxHP:F0} ({hpPercent:F1}%)";
+
+                // 색상 변경: 70%+ 연두, 30~70% 노랑, 0~30% 빨강
+                Color target = Color.green;
+                if (hpPercent < 30f)
+                    target = Color.red;
+                else if (hpPercent < 70f)
+                    target = Color.yellow;
+                mineHPText.color = target;
+
+                if (mineHPSliderFill != null)
+                {
+                    mineHPSliderFill.color = target;
+                }
+                if (mineHPSliderBackground != null)
+                {
+                    mineHPSliderBackground.color = Color.black;
+                }
             }
+        }
+
+        private void Update()
+        {
+            AnimateHPBar();
+        }
+
+        private void AnimateHPBar()
+        {
+            // 부드러운 채움 값 보간
+            displayedFillNormalized = Mathf.Lerp(displayedFillNormalized, targetFillNormalized, Time.deltaTime * fillLerpSpeed);
+            displayedFillNormalized = Mathf.Clamp01(displayedFillNormalized);
+
+            if (mineHPSliderFill != null)
+            {
+                mineHPSliderFill.fillAmount = displayedFillNormalized;
+            }
+
+            // 부드러운 색상 보간 + 펄스
+            Color targetColor = EvaluateHPGradient(displayedFillNormalized);
+            currentFillColor = Color.Lerp(currentFillColor, targetColor, Time.deltaTime * colorLerpSpeed);
+
+            float omega = pulseSpeed;
+            if (pulsePeriodSeconds > 0.0001f)
+            {
+                float freq = 1f / pulsePeriodSeconds;
+                omega = freq * 2f * Mathf.PI;
+            }
+            float pulse = 1f + Mathf.Sin(Time.time * omega) * pulseAmplitude;
+            float clampedPulse = Mathf.Clamp(pulse, 0.25f, 2f);
+            Color pulsed = currentFillColor * clampedPulse;
+            pulsed.a = currentFillColor.a;
+
+            if (mineHPSliderFill != null)
+            {
+                mineHPSliderFill.color = pulsed;
+            }
+
+            if (mineHPSliderBackground != null)
+            {
+                // 배경은 펄스 없이 어둡게 고정
+                var bgBase = new Color(currentFillColor.r * 0.3f, currentFillColor.g * 0.3f, currentFillColor.b * 0.3f, mineHPSliderBackground.color.a);
+                mineHPSliderBackground.color = bgBase;
+            }
+
+            if (mineHPText != null)
+            {
+                mineHPText.color = pulsed;
+            }
+        }
+
+        private Color EvaluateHPGradient(float normalized)
+        {
+            // 0~0.5: red -> yellow, 0.5~1: yellow -> green
+            if (normalized < 0.5f)
+            {
+                float t = normalized / 0.5f;
+                return Color.Lerp(lowColor, midColor, t);
+            }
+            else
+            {
+                float t = (normalized - 0.5f) / 0.5f;
+                return Color.Lerp(midColor, highColor, t);
+            }
+        }
+
+        private void FixHpSliderLayout()
+        {
+            if (hpLayoutFixed) return;
+
+            // Fill Image도 함께 수정 (위와 같은 오브젝트일 수 있음)
+            if (mineHPSliderFill != null)
+            {
+                // fillAmount 기반으로만 표현되도록 타입 강제
+                mineHPSliderFill.type = Image.Type.Filled;
+                mineHPSliderFill.fillMethod = Image.FillMethod.Horizontal;
+                mineHPSliderFill.fillOrigin = (int)Image.OriginHorizontal.Left;
+                mineHPSliderFill.fillCenter = true;
+                // Sprite가 비어 있으면 런타임 생성 스프라이트로 설정 (빈 스프라이트는 fillAmount가 적용되지 않음)
+                if (mineHPSliderFill.sprite == null)
+                {
+                    mineHPSliderFill.sprite = GetRuntimeDefaultSprite();
+                }
+                var rt = mineHPSliderFill.rectTransform;
+                rt.anchorMin = new Vector2(0f, 0f);
+                rt.anchorMax = new Vector2(1f, 1f);
+                rt.pivot = new Vector2(0.5f, 0.5f);
+                rt.anchoredPosition = Vector2.zero;
+                rt.sizeDelta = Vector2.zero; // 앵커 스트레치 모드에서는 sizeDelta를 0으로
+            }
+            // Slider가 fillRect를 조정하지 않도록 분리 (값 컨테이너 역할만 유지)
+            if (mineHPSlider != null)
+            {
+                mineHPSlider.fillRect = null;
+
+                // 상위 LayoutGroup/ContentSizeFitter가 sizeDelta를 0으로 덮어쓰는 경우를 막기 위해
+                // LayoutElement로 선호 크기를 강제한다.
+                var layout = mineHPSlider.GetComponent<LayoutElement>();
+                if (layout == null)
+                {
+                    layout = mineHPSlider.gameObject.AddComponent<LayoutElement>();
+                }
+                layout.preferredWidth = Mathf.Max(1f, hpSliderDefaultWidth);
+                layout.preferredHeight = Mathf.Max(1f, hpSliderDefaultHeight);
+                layout.minWidth = 0f;
+                layout.minHeight = Mathf.Max(1f, hpSliderDefaultHeight);
+                layout.flexibleWidth = 0f;
+                layout.flexibleHeight = 0f;
+            }
+
+            // Background 수정
+            if (mineHPSliderBackground != null)
+            {
+                if (mineHPSliderBackground.sprite == null)
+                {
+                    mineHPSliderBackground.sprite = GetRuntimeDefaultSprite();
+                }
+                var rt = mineHPSliderBackground.rectTransform;
+                rt.anchorMin = new Vector2(0f, 0f);
+                rt.anchorMax = new Vector2(1f, 1f);
+                rt.pivot = new Vector2(0.5f, 0.5f);
+                rt.anchoredPosition = Vector2.zero;
+                rt.sizeDelta = Vector2.zero; // 앵커 스트레치 모드에서는 sizeDelta를 0으로
+            }
+
+            // Slider 자체 크기 확인
+            if (mineHPSlider != null)
+            {
+                var sliderRt = mineHPSlider.GetComponent<RectTransform>();
+                if (sliderRt != null)
+                {
+                    Debug.Log($"Slider RectTransform: anchorMin={sliderRt.anchorMin}, anchorMax={sliderRt.anchorMax}, sizeDelta={sliderRt.sizeDelta}");
+                }
+            }
+
+            hpLayoutFixed = true;
+        }
+
+        private static Sprite GetRuntimeDefaultSprite()
+        {
+            if (runtimeDefaultSprite != null) return runtimeDefaultSprite;
+
+            // Texture2D.whiteTexture는 16x16이므로 그대로 사용
+            var tex = Texture2D.whiteTexture;
+            runtimeDefaultSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            runtimeDefaultSprite.name = "RuntimeWhiteSprite";
+            return runtimeDefaultSprite;
         }
 
         /// <summary>
@@ -617,6 +822,11 @@ namespace InfinitePickaxe.Client.UI.Game
                 currentMineralName = GetMineralName(StopMineralId);
                 currentHP = 0;
                 maxHP = 0;
+                isRespawning = true;
+            }
+            else
+            {
+                isRespawning = false;
             }
 
             // DPS는 AllSlotsResponse에서 받은 값 유지 (TotalDps 필드 제거됨)
@@ -631,6 +841,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 }
             }
 
+            UpdateMineInfo();
             UpdateHPBar();
             // UpdateDPS()는 호출하지 않음 (DPS는 슬롯 정보 변경 시에만 업데이트)
         }
@@ -642,8 +853,13 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             Debug.Log($"채굴 완료! 광물 #{complete.MineralId}, 획득 골드: {complete.GoldEarned}");
 
-            // 다음 광물 자동 시작 (서버에서 MiningUpdate가 올 것임)
-            // UI는 자동으로 업데이트됨
+            // 다음 광물 자동 시작 (서버에서 MiningUpdate가 올 것임) 전까지 리스폰 상태 표시
+            isRespawning = true;
+            currentHP = 0;
+            UpdateMineInfo();
+            UpdateHPBar();
+
+            // 재화 갱신: 서버가 total_gold를 내려주므로 상단 재화도 반영
         }
 
         /// <summary>
@@ -702,12 +918,14 @@ namespace InfinitePickaxe.Client.UI.Game
                     currentMineralName = GetMineralName(StopMineralId);
                     currentHP = 0;
                     maxHP = 0;
+                    isRespawning = false;
                 }
                 else
                 {
                     currentMineralName = GetMineralName(mineralId);
                     currentHP = response.MineralHp;
                     maxHP = response.MineralMaxHp;
+                    isRespawning = false;
                 }
 
                 RefreshData();
@@ -758,34 +976,6 @@ namespace InfinitePickaxe.Client.UI.Game
             return $"광물 #{mineralId}";
         }
 
-        #endregion
-
-        #region Unity Editor Helper
-#if UNITY_EDITOR
-        [ContextMenu("테스트: HP 50% 감소")]
-        private void TestReduceHP()
-        {
-            currentHP = maxHP * 0.5f;
-            RefreshData();
-        }
-
-        [ContextMenu("테스트: 채굴 완료")]
-        private void TestMiningComplete()
-        {
-            currentHP = 0f;
-            RefreshData();
-        }
-
-        [ContextMenu("테스트: 새 광물 시작")]
-        private void TestNewMineral()
-        {
-            currentMineralName = "구리";
-            maxHP = 1500f;
-            currentHP = maxHP;
-            currentDPS = 253f;
-            RefreshData();
-        }
-#endif
         #endregion
     }
 }

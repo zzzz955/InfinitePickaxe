@@ -73,8 +73,6 @@ infinitepickaxe::MiningComplete MiningService::handle_complete(const std::string
     comp.set_respawn_time(respawn);
     comp.set_server_timestamp(static_cast<uint64_t>(std::time(nullptr)));
 
-    spdlog::info("Mining completed: user={} mineral={} gold_earned={} total_gold={}",
-                 user_id, mineral_id, reward, res.total_gold);
     return comp;
 }
 

@@ -296,6 +296,7 @@ GameObject:
   - component: {fileID: 100021}
   - component: {fileID: 100022}
   - component: {fileID: 100024}
+  - component: {fileID: 100025}
   m_Layer: 5
   m_Name: TopBar
   m_TagString: Untagged
@@ -383,6 +384,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100020}
   m_CullTransparentMesh: 1
+--- !u!114 &100025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59eb04bf10cc51a43b3d3660ea4151c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldText: {fileID: 100028}
+  crystalText: {fileID: 1874681209}
 --- !u!224 &100026
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7214,6 +7229,8 @@ MonoBehaviour:
   initializeOnAwake: 1
   mineInfoText: {fileID: 133178133}
   mineHPSlider: {fileID: 616678143}
+  mineHPSliderFill: {fileID: 1267651138}
+  mineHPSliderBackground: {fileID: 616678144}
   mineHPText: {fileID: 1716544607}
   dpsText: {fileID: 723331547}
   selectMineralButton: {fileID: 1438385306}
@@ -7248,6 +7265,16 @@ MonoBehaviour:
   - "\uCCA0\uAD11\uC11D"
   - "\uAE08\uAD11\uC11D"
   - "\uC5D0\uBA54\uB784\uB4DC"
+  hpSliderDefaultWidth: 800
+  hpSliderDefaultHeight: 50
+  fillLerpSpeed: 6
+  colorLerpSpeed: 4
+  pulseSpeed: 1.5
+  pulsePeriodSeconds: 2
+  pulseAmplitude: 0.2
+  lowColor: {r: 1, g: 0, b: 0, a: 1}
+  midColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  highColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &475111734
 MonoBehaviour:
   m_ObjectHideFlags: 0
