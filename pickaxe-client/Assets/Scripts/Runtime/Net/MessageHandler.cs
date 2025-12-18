@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Infinitepickaxe;
+using InfinitePickaxe.Client.Core;
 
 namespace InfinitePickaxe.Client.Net
 {
@@ -222,12 +223,17 @@ namespace InfinitePickaxe.Client.Net
         private void HandleHandshakeResult(HandshakeResponse result)
         {
             Debug.Log($"핸드셰이크 결과: {(result.Success ? "성공" : "실패")} - {result.Message}");
+            if (result?.Snapshot != null)
+            {
+                PickaxeStateCache.Instance.UpdateFromSnapshot(result.Snapshot);
+            }
             OnHandshakeResult?.Invoke(result);
         }
 
         private void HandleUserDataSnapshot(UserDataSnapshot snapshot)
         {
             Debug.Log($"유저 데이터 스냅샷 수신: Gold={snapshot.Gold ?? 0}, Crystal={snapshot.Crystal ?? 0}");
+            PickaxeStateCache.Instance.UpdateFromSnapshot(snapshot);
             OnUserDataSnapshot?.Invoke(snapshot);
         }
 
@@ -294,12 +300,17 @@ namespace InfinitePickaxe.Client.Net
             {
                 Debug.LogWarning($"강화 실패: {result.ErrorCode}");
             }
+            if (result?.Success == true)
+            {
+                PickaxeStateCache.Instance.UpdateFromUpgradeResult(result);
+            }
             OnUpgradeResult?.Invoke(result);
         }
 
         private void HandleAllSlotsResponse(AllSlotsResponse response)
         {
             Debug.Log($"슬롯 정보 수신: {response.Slots.Count}개, Total DPS {response.TotalDps}");
+            PickaxeStateCache.Instance.UpdateFromAllSlots(response);
             OnAllSlotsResponse?.Invoke(response);
         }
 

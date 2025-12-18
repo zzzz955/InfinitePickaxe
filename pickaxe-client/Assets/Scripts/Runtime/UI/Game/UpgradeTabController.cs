@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using InfinitePickaxe.Client.Net;
 using Infinitepickaxe;
 using InfinitePickaxe.Client.Metadata;
+using InfinitePickaxe.Client.Core;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -35,7 +36,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [Header("Visual")]
         [SerializeField] private Color lockedSlotColor = new Color(0.35f, 0.35f, 0.35f, 0.8f);
         [SerializeField] private Color unlockedSlotColor = Color.white;
-        [SerializeField] private Color selectedSlotColor = new Color(0.9f, 0.9f, 1f, 1f);
+        [SerializeField] private Color selectedSlotColor = new Color(0.8f, 0.8f, 0.9f, 1f);
         [SerializeField] private List<TierSprite> pickaxeTierSprites = new List<TierSprite>();
 
         [Header("Upgrade Data (display)")]
@@ -47,6 +48,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private readonly Dictionary<uint, PickaxeSlotInfo> slotInfos = new Dictionary<uint, PickaxeSlotInfo>();
         private MessageHandler messageHandler;
+        private PickaxeStateCache pickaxeCache;
         // 서버 프로토 기준 슬롯 인덱스(0~3)
         private uint selectedSlotIndex = 0;
         private ulong currentGold;
@@ -56,6 +58,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private readonly UpgradeMetaResolver metaResolver = new UpgradeMetaResolver();
         private Sprite runtimeWhiteSprite;
         private bool subscribed;
+        private bool cacheSubscribed;
 
         protected override void Initialize()
         {
@@ -70,6 +73,8 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             base.OnEnable();
             SubscribeEvents();
+            SubscribeCache();
+            SyncSlotsFromCache();
             RequestAllSlotsIfNeeded();
             RefreshData();
         }
@@ -144,8 +149,31 @@ namespace InfinitePickaxe.Client.UI.Game
             subscribed = true;
         }
 
+        private void SubscribeCache()
+        {
+            if (cacheSubscribed) return;
+            pickaxeCache = PickaxeStateCache.Instance;
+            if (pickaxeCache != null)
+            {
+                pickaxeCache.OnChanged += HandleCacheChanged;
+                cacheSubscribed = true;
+            }
+        }
+
+        private void HandleCacheChanged()
+        {
+            SyncSlotsFromCache();
+            RefreshData();
+        }
+
         private void OnDestroy()
         {
+            if (cacheSubscribed && pickaxeCache != null)
+            {
+                pickaxeCache.OnChanged -= HandleCacheChanged;
+                cacheSubscribed = false;
+            }
+
             if (!subscribed || messageHandler == null) return;
 
             messageHandler.OnHandshakeResult -= HandleHandshake;
@@ -180,8 +208,8 @@ namespace InfinitePickaxe.Client.UI.Game
                 hasGoldInfo = true;
             }
 
-            MergeSlotInfos(snapshot.PickaxeSlots);
-            hasSlotData = true;
+            pickaxeCache?.UpdateFromSnapshot(snapshot);
+            SyncSlotsFromCache();
             RefreshData();
         }
 
@@ -189,8 +217,8 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (response == null) return;
 
-            MergeSlotInfos(response.Slots);
-            hasSlotData = true;
+            pickaxeCache?.UpdateFromAllSlots(response);
+            SyncSlotsFromCache();
             RefreshData();
         }
 
@@ -216,24 +244,11 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (result.Success)
             {
-                var updated = new PickaxeSlotInfo
-                {
-                    SlotIndex = result.SlotIndex,
-                    Level = result.NewLevel,
-                    Tier = result.NewTier,
-                    AttackPower = result.NewAttackPower,
-                    AttackSpeedX100 = result.NewAttackSpeedX100,
-                    CriticalHitPercent = result.NewCriticalHitPercent,
-                    CriticalDamage = result.NewCriticalDamage,
-                    Dps = result.NewDps,
-                    PityBonus = result.PityBonus,
-                    IsUnlocked = true
-                };
-
-                slotInfos[result.SlotIndex] = updated;
-
                 currentGold = result.RemainingGold;
                 hasGoldInfo = true;
+
+                pickaxeCache?.UpdateFromUpgradeResult(result);
+                SyncSlotsFromCache();
 
                 // 성공 직후 현재 슬롯 상태/재화/UI 재계산
                 RefreshData();
@@ -484,6 +499,22 @@ namespace InfinitePickaxe.Client.UI.Game
             }
         }
 
+        private void SyncSlotsFromCache()
+        {
+            if (pickaxeCache == null) return;
+
+            slotInfos.Clear();
+            foreach (var kvp in pickaxeCache.Slots)
+            {
+                if (kvp.Value != null)
+                {
+                    slotInfos[kvp.Key] = kvp.Value;
+                }
+            }
+
+            hasSlotData = slotInfos.Count > 0;
+        }
+
         private void MergeSlotInfos(IEnumerable<PickaxeSlotInfo> slots)
         {
             if (slots == null) return;
@@ -519,7 +550,7 @@ namespace InfinitePickaxe.Client.UI.Game
                     PityBonus = 0,
                     IsUnlocked = true
                 };
-                slotInfos[1] = created;
+                slotInfos[slotIndex] = created;
                 return created;
             }
 
@@ -538,7 +569,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void RequestAllSlotsIfNeeded()
         {
-            if (slotInfos.Count == 0 && messageHandler != null)
+            if (slotInfos.Count == 0 && (pickaxeCache == null || pickaxeCache.Slots.Count == 0) && messageHandler != null)
             {
                 messageHandler.RequestAllSlots();
             }
