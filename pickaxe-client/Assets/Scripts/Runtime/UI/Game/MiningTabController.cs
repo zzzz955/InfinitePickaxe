@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using InfinitePickaxe.Client.Net;
 using Infinitepickaxe;
+using System.Collections.Generic;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -36,6 +37,10 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button pickaxeSlot2Button;
         [SerializeField] private Button pickaxeSlot3Button;
         [SerializeField] private Button pickaxeSlot4Button;
+        [SerializeField] private TextMeshProUGUI slot1LevelText;
+        [SerializeField] private TextMeshProUGUI slot2LevelText;
+        [SerializeField] private TextMeshProUGUI slot3LevelText;
+        [SerializeField] private TextMeshProUGUI slot4LevelText;
 
         [Header("Modal References")]
         [SerializeField] private GameObject pickaxeInfoModal;
@@ -78,6 +83,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private bool hpLayoutFixed = false;
         [SerializeField] private float hpSliderDefaultWidth = 800f;
         [SerializeField] private float hpSliderDefaultHeight = 50f;
+        private readonly Dictionary<uint, PickaxeSlotInfo> slotInfos = new Dictionary<uint, PickaxeSlotInfo>();
 
         [Header("HP Bar Animation")]
         [SerializeField] private float fillLerpSpeed = 6f;
@@ -129,26 +135,42 @@ namespace InfinitePickaxe.Client.UI.Game
             // 슬롯 버튼 이벤트 등록
             if (pickaxeSlot1Button != null)
             {
-                pickaxeSlot1Button.onClick.AddListener(() => OnPickaxeSlotClicked(1));
+                pickaxeSlot1Button.onClick.AddListener(() => OnPickaxeSlotClicked(0));
             }
             if (pickaxeSlot2Button != null)
             {
-                pickaxeSlot2Button.onClick.AddListener(() => OnPickaxeSlotClicked(2));
+                pickaxeSlot2Button.onClick.AddListener(() => OnPickaxeSlotClicked(1));
             }
             if (pickaxeSlot3Button != null)
             {
-                pickaxeSlot3Button.onClick.AddListener(() => OnPickaxeSlotClicked(3));
+                pickaxeSlot3Button.onClick.AddListener(() => OnPickaxeSlotClicked(2));
             }
             if (pickaxeSlot4Button != null)
             {
-                pickaxeSlot4Button.onClick.AddListener(() => OnPickaxeSlotClicked(4));
+                pickaxeSlot4Button.onClick.AddListener(() => OnPickaxeSlotClicked(3));
             }
+
+            AutoBindLevelTexts();
 
             // 모달 닫기 버튼 이벤트 등록
             SetupModalCloseButtons();
 
             // 초기 UI 업데이트
             RefreshData();
+        }
+
+        private void OnDestroy()
+        {
+            // 중복 해제 방지: OnDisable에서도 수행하지만 안전하게 한 번 더 수행
+            if (messageHandler != null)
+            {
+                messageHandler.OnUserDataSnapshot -= HandleUserDataSnapshot;
+                messageHandler.OnMiningUpdate -= HandleMiningUpdate;
+                messageHandler.OnMiningComplete -= HandleMiningComplete;
+                messageHandler.OnChangeMineralResponse -= HandleChangeMineralResponse;
+                messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
+                messageHandler.OnUpgradeResult -= HandleUpgradeResult;
+            }
         }
 
         protected override void OnEnable()
@@ -163,6 +185,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 messageHandler.OnMiningComplete += HandleMiningComplete;
                 messageHandler.OnChangeMineralResponse += HandleChangeMineralResponse;
                 messageHandler.OnAllSlotsResponse += HandleAllSlotsResponse;
+                messageHandler.OnUpgradeResult += HandleUpgradeResult;
             }
         }
 
@@ -178,6 +201,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 messageHandler.OnMiningComplete -= HandleMiningComplete;
                 messageHandler.OnChangeMineralResponse -= HandleChangeMineralResponse;
                 messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
+                messageHandler.OnUpgradeResult -= HandleUpgradeResult;
             }
         }
 
@@ -187,6 +211,37 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // 탭이 표시될 때마다 데이터 갱신
             RefreshData();
+            AutoBindLevelTexts();
+        }
+
+        private void AutoBindLevelTexts()
+        {
+            if (slot1LevelText == null)
+                slot1LevelText = FindLevelText("Slot1");
+            if (slot2LevelText == null)
+                slot2LevelText = FindLevelText("Slot2");
+            if (slot3LevelText == null)
+                slot3LevelText = FindLevelText("Slot3");
+            if (slot4LevelText == null)
+                slot4LevelText = FindLevelText("Slot4");
+        }
+
+        private TextMeshProUGUI FindLevelText(string slotName)
+        {
+            var go = GameObject.Find($"{slotName}/LevelText");
+            if (go != null)
+            {
+                return go.GetComponent<TextMeshProUGUI>();
+            }
+
+            var slot = GameObject.Find(slotName);
+            if (slot != null)
+            {
+                var t = slot.transform.Find("LevelText");
+                if (t != null) return t.GetComponent<TextMeshProUGUI>();
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -199,6 +254,7 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateMineInfo();
             UpdateHPBar();
             UpdateDPS();
+            UpdateSlotLevels();
         }
 
         /// <summary>
@@ -437,10 +493,10 @@ namespace InfinitePickaxe.Client.UI.Game
             // 슬롯 해금 여부 확인
             bool isUnlocked = slotIndex switch
             {
-                1 => true, // 슬롯 1은 항상 해금
-                2 => slot2Unlocked,
-                3 => slot3Unlocked,
-                4 => slot4Unlocked,
+                0 => true, // 슬롯 0은 항상 해금
+                1 => slot2Unlocked,
+                2 => slot3Unlocked,
+                3 => slot4Unlocked,
                 _ => false
             };
 
@@ -951,14 +1007,59 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 switch (slot.SlotIndex)
                 {
-                    case 1: /* 슬롯 1은 항상 해금 */ break;
-                    case 2: slot2Unlocked = slot.IsUnlocked; break;
-                    case 3: slot3Unlocked = slot.IsUnlocked; break;
-                    case 4: slot4Unlocked = slot.IsUnlocked; break;
+                    case 0: /* 슬롯 0은 항상 해금 */ break;
+                    case 1: slot2Unlocked = slot.IsUnlocked; break;
+                    case 2: slot3Unlocked = slot.IsUnlocked; break;
+                    case 3: slot4Unlocked = slot.IsUnlocked; break;
                 }
             }
 
             RefreshData();
+        }
+
+        private void HandleUpgradeResult(UpgradeResult result)
+        {
+            if (result == null) return;
+            if (result.Success && result.NewTotalDps > 0)
+            {
+                currentDPS = result.NewTotalDps;
+                // 슬롯 캐시 업데이트
+                var info = new PickaxeSlotInfo
+                {
+                    SlotIndex = result.SlotIndex,
+                    Level = result.NewLevel,
+                    Tier = result.NewTier,
+                    AttackPower = result.NewAttackPower,
+                    AttackSpeedX100 = result.NewAttackSpeedX100,
+                    CriticalHitPercent = result.NewCriticalHitPercent,
+                    CriticalDamage = result.NewCriticalDamage,
+                    Dps = result.NewDps,
+                    PityBonus = result.PityBonus,
+                    IsUnlocked = true
+                };
+                slotInfos[result.SlotIndex] = info;
+                RefreshData();
+            }
+        }
+
+        private void UpdateSlotLevels()
+        {
+            if (slotInfos.TryGetValue(0, out var s0) && slot1LevelText != null)
+            {
+                slot1LevelText.text = $"Lv {s0.Level}";
+            }
+            if (slotInfos.TryGetValue(1, out var s1) && slot2LevelText != null)
+            {
+                slot2LevelText.text = $"Lv {s1.Level}";
+            }
+            if (slotInfos.TryGetValue(2, out var s2) && slot3LevelText != null)
+            {
+                slot3LevelText.text = $"Lv {s2.Level}";
+            }
+            if (slotInfos.TryGetValue(3, out var s3) && slot4LevelText != null)
+            {
+                slot4LevelText.text = $"Lv {s3.Level}";
+            }
         }
 
         private string GetMineralName(uint mineralId)

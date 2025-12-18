@@ -159,6 +159,11 @@ namespace InfinitePickaxe.Client.Core
             {
                 Debug.Log($"핸드셰이크 성공: {result.Message}");
                 isHandshakeCompleted = true;
+                // 최초 게임 진입 시 슬롯/강화 상태를 조회해 UI가 바로 그릴 수 있도록 요청
+                if (messageHandler != null)
+                {
+                    messageHandler.RequestAllSlots();
+                }
             }
             else
             {
