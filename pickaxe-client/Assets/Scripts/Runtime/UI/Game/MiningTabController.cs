@@ -112,6 +112,12 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Color midColor = Color.yellow;
         [SerializeField] private Color highColor = Color.green;
 
+        [Header("Pickaxe Swing Animation")]
+        [SerializeField] private float restAngle = 0f; // 기본 이미지를 그대로 두기 위해 0도
+        [SerializeField] private float swingDownDegrees = 170f; // 양수 회전으로 내려치기
+        [SerializeField] private float swingDuration = 1.0f; // 공격속도 1.0초 기준
+        [SerializeField, Range(0.1f, 0.9f)] private float swingDownPortion = 0.35f;
+
         [Header("Damage Text (Floating)")]
         [SerializeField] private RectTransform damageTextRoot;
         [SerializeField] private TextMeshProUGUI damageTextPrefab;
@@ -128,6 +134,8 @@ namespace InfinitePickaxe.Client.UI.Game
         private Color currentFillColor = Color.green;
         private readonly List<DamageTextEntry> activeDamageTexts = new List<DamageTextEntry>();
         private readonly Queue<TextMeshProUGUI> damageTextPool = new Queue<TextMeshProUGUI>();
+        private readonly PickaxeSwingState[] swingStates = new PickaxeSwingState[4];
+        private readonly bool[] swingDirections = new bool[4];
 
         protected override void Initialize()
         {
@@ -439,6 +447,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void Update()
         {
             AnimateHPBar();
+            UpdatePickaxeSwings();
             UpdateDamageTextAnimations();
         }
 
@@ -643,6 +652,51 @@ namespace InfinitePickaxe.Client.UI.Game
                 {
                     activeDamageTexts[i] = entry;
                 }
+            }
+        }
+
+        private void UpdatePickaxeSwings()
+        {
+            float dt = Time.deltaTime;
+            for (int i = 0; i < swingStates.Length; i++)
+            {
+                var state = swingStates[i];
+                if (!state.Active)
+                {
+                    ApplyPickaxeAngle((uint)i, restAngle);
+                    continue;
+                }
+
+                state.Elapsed += dt;
+                float t = Mathf.Clamp01(state.Elapsed / state.Duration);
+                float downPortion = Mathf.Clamp(swingDownPortion, 0.1f, 0.9f);
+
+                float angle;
+                if (t <= downPortion)
+                {
+                    // 빠르게 내려치는 구간 (ease-out)
+                    float td = t / downPortion;
+                    float easeOut = 1f - Mathf.Pow(1f - td, 2f);
+                    angle = Mathf.Lerp(restAngle, restAngle + swingDownDegrees, easeOut);
+                }
+                else
+                {
+                    // 천천히 원위치로 복귀 (ease-in-out)
+                    float tu = (t - downPortion) / (1f - downPortion);
+                    float easeInOut = tu < 0.5f
+                        ? 2f * tu * tu
+                        : 1f - Mathf.Pow(-2f * tu + 2f, 2f) / 2f;
+                    angle = Mathf.Lerp(restAngle + swingDownDegrees, restAngle, easeInOut);
+                }
+
+                ApplyPickaxeAngle((uint)i, angle);
+
+                if (t >= 1f)
+                {
+                    state.Active = false;
+                }
+
+                swingStates[i] = state;
             }
         }
 
@@ -1209,6 +1263,7 @@ namespace InfinitePickaxe.Client.UI.Game
             // - 사운드 재생
 
             ShowDamageText(damage, isCritical);
+            StartPickaxeSwing(slotIndex);
 
 #if UNITY_EDITOR || DEBUG_MINING
             Debug.Log($"곡괭이 공격: 슬롯 {slotIndex}, 데미지 {damage}, 크리티컬={isCritical}");
@@ -1422,6 +1477,48 @@ namespace InfinitePickaxe.Client.UI.Game
             damageTextPool.Enqueue(entry.Text);
         }
 
+        private void StartPickaxeSwing(uint slotIndex)
+        {
+            if (slotIndex >= swingStates.Length) return;
+
+            float duration = Mathf.Max(0.03f, swingDuration);
+            if (slotInfos.TryGetValue(slotIndex, out var info) && info.AttackSpeedX100 > 0)
+            {
+                float speedMul = info.AttackSpeedX100 / 100f;
+                duration = Mathf.Max(0.03f, swingDuration / speedMul);
+            }
+
+            swingStates[slotIndex] = new PickaxeSwingState
+            {
+                Active = true,
+                Elapsed = 0f,
+                Duration = duration
+            };
+
+            ApplyPickaxeAngle(slotIndex, restAngle);
+        }
+
+        private void ApplyPickaxeAngle(uint slotIndex, float angle)
+        {
+            var img = GetSlotImage(slotIndex);
+            if (img == null) return;
+
+            var rt = img.rectTransform;
+            rt.localRotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
+        private Image GetSlotImage(uint slotIndex)
+        {
+            return slotIndex switch
+            {
+                0 => pickaxeSlot1Image,
+                1 => pickaxeSlot2Image,
+                2 => pickaxeSlot3Image,
+                3 => pickaxeSlot4Image,
+                _ => null
+            };
+        }
+
         private struct DamageTextEntry
         {
             public TextMeshProUGUI Text;
@@ -1430,6 +1527,13 @@ namespace InfinitePickaxe.Client.UI.Game
             public float Lifetime;
             public float RiseSpeed;
             public float StartAlpha;
+        }
+
+        private struct PickaxeSwingState
+        {
+            public bool Active;
+            public float Elapsed;
+            public float Duration;
         }
 
         #endregion
