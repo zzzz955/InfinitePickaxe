@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.U2D;
 using TMPro;
 using InfinitePickaxe.Client.Net;
 using Infinitepickaxe;
 using System.Collections.Generic;
 using InfinitePickaxe.Client.Core;
+using InfinitePickaxe.Client.UI.Common;
+using InfinitePickaxe.Client.Metadata;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -43,6 +46,15 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI slot3LevelText;
         [SerializeField] private TextMeshProUGUI slot4LevelText;
 
+        [Header("Sprites / Atlases")]
+        [SerializeField] private Image currentMineralImage;
+        [SerializeField] private Image pickaxeSlot1Image;
+        [SerializeField] private Image pickaxeSlot2Image;
+        [SerializeField] private Image pickaxeSlot3Image;
+        [SerializeField] private Image pickaxeSlot4Image;
+        [SerializeField] private SpriteAtlas mineralSpriteAtlas;
+        [SerializeField] private SpriteAtlas pickaxeSpriteAtlas;
+
         [Header("Modal References")]
         [SerializeField] private GameObject pickaxeInfoModal;
         [SerializeField] private GameObject lockedSlotModal;
@@ -56,6 +68,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private bool slot2Unlocked = true;
         [SerializeField] private bool slot3Unlocked = false;
         [SerializeField] private bool slot4Unlocked = false;
+        private uint currentMineralId = StopMineralId;
 
         // 채굴 중단 요청 시 서버와 합의한 sentinel ID (0은 중단, 실제 광물 ID는 1부터 시작)
         private const uint StopMineralId = 0;
@@ -87,6 +100,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private float hpSliderDefaultHeight = 50f;
         private readonly Dictionary<uint, PickaxeSlotInfo> slotInfos = new Dictionary<uint, PickaxeSlotInfo>();
         private PickaxeStateCache pickaxeCache;
+        private readonly PickaxeTierResolver tierResolver = new PickaxeTierResolver();
 
         [Header("HP Bar Animation")]
         [SerializeField] private float fillLerpSpeed = 6f;
@@ -119,8 +133,13 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             base.Initialize();
 
+            // 아틀라스 등록 (어디에서든 공용으로 사용)
+            SpriteAtlasCache.RegisterMineralAtlas(mineralSpriteAtlas);
+            SpriteAtlasCache.RegisterPickaxeAtlas(pickaxeSpriteAtlas);
+
             // 초기값을 채굴 중단 상태로 설정해 fallback 노출을 피함
             currentMineralName = GetMineralName(StopMineralId);
+            currentMineralId = StopMineralId;
             currentHP = 0;
             maxHP = 0;
 
@@ -166,6 +185,7 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             AutoBindLevelTexts();
+            AutoBindSlotImages();
 
             // 모달 닫기 버튼 이벤트 등록
             SetupModalCloseButtons();
@@ -301,6 +321,25 @@ namespace InfinitePickaxe.Client.UI.Game
                 slot4LevelText = FindLevelText("Slot4");
         }
 
+        private void AutoBindSlotImages()
+        {
+            if (pickaxeSlot1Image == null)
+                pickaxeSlot1Image = GetButtonImage(pickaxeSlot1Button);
+            if (pickaxeSlot2Image == null)
+                pickaxeSlot2Image = GetButtonImage(pickaxeSlot2Button);
+            if (pickaxeSlot3Image == null)
+                pickaxeSlot3Image = GetButtonImage(pickaxeSlot3Button);
+            if (pickaxeSlot4Image == null)
+                pickaxeSlot4Image = GetButtonImage(pickaxeSlot4Button);
+        }
+
+        private Image GetButtonImage(Button button)
+        {
+            if (button == null) return null;
+            if (button.targetGraphic is Image target) return target;
+            return button.GetComponent<Image>();
+        }
+
         private TextMeshProUGUI FindLevelText(string slotName)
         {
             var go = GameObject.Find($"{slotName}/LevelText");
@@ -328,8 +367,11 @@ namespace InfinitePickaxe.Client.UI.Game
             // 서버 상태를 받은 뒤에만 렌더링되도록 기본 상태는 채굴 중단을 표시
             UpdateMineInfo();
             UpdateHPBar();
+            UpdateMineralSprite();
             UpdateDPS();
             UpdateSlotLevels();
+            UpdatePickaxeSlotSprites();
+            UpdateMineralSelectIcons();
         }
 
         /// <summary>
@@ -457,6 +499,114 @@ namespace InfinitePickaxe.Client.UI.Game
                 float t = (normalized - 0.5f) / 0.5f;
                 return Color.Lerp(midColor, highColor, t);
             }
+        }
+
+        private void UpdateMineralSprite()
+        {
+            if (currentMineralImage == null) return;
+
+            var sprite = SpriteAtlasCache.GetMineralSprite(currentMineralId);
+            currentMineralImage.sprite = sprite;
+            currentMineralImage.enabled = sprite != null;
+            // UI에서 이미지가 뒤집히거나 타일링되지 않도록 기본 설정 보정
+            currentMineralImage.type = Image.Type.Simple;
+            currentMineralImage.preserveAspect = true;
+            var scale = currentMineralImage.rectTransform.localScale;
+            currentMineralImage.rectTransform.localScale = new Vector3(Mathf.Abs(scale.x), Mathf.Abs(scale.y), 1f);
+        }
+
+        private void UpdatePickaxeSlotSprites()
+        {
+            UpdatePickaxeSlotSprite(pickaxeSlot1Image, 0);
+            UpdatePickaxeSlotSprite(pickaxeSlot2Image, 1);
+            UpdatePickaxeSlotSprite(pickaxeSlot3Image, 2);
+            UpdatePickaxeSlotSprite(pickaxeSlot4Image, 3);
+        }
+
+        private void UpdatePickaxeSlotSprite(Image targetImage, uint slotIndex)
+        {
+            if (targetImage == null) return;
+
+            uint tier = 1;
+            uint level = 0;
+            bool unlocked = slotIndex switch
+            {
+                0 => true,
+                1 => slot2Unlocked,
+                2 => slot3Unlocked,
+                3 => slot4Unlocked,
+                _ => false
+            };
+
+            if (slotInfos.TryGetValue(slotIndex, out var slotInfo))
+            {
+                tier = slotInfo.Tier;
+                level = slotInfo.Level;
+                unlocked = slotInfo.IsUnlocked;
+            }
+
+            // 메타에 정의된 레벨별 티어가 더 높다면 그것을 사용
+            tier = tierResolver.ResolveTier(slotIndex, level, tier);
+
+            if (!SpriteAtlasCache.TryGetPickaxeSprite(tier, out var sprite))
+            {
+                sprite = SpriteAtlasCache.GetFallbackSprite();
+            }
+
+            targetImage.sprite = sprite;
+            targetImage.color = unlocked ? Color.white : new Color(1f, 1f, 1f, 0.45f);
+        }
+
+        private void UpdateMineralSelectIcons()
+        {
+            SetMineralIcon(mineralItemNullButton, 0);
+            SetMineralIcon(mineralItem1Button, 1);
+            SetMineralIcon(mineralItem2Button, 2);
+            SetMineralIcon(mineralItem3Button, 3);
+            SetMineralIcon(mineralItem4Button, 4);
+            SetMineralIcon(mineralItem5Button, 5);
+            SetMineralIcon(mineralItem6Button, 6);
+            SetMineralIcon(mineralItem7Button, 7);
+        }
+
+        private void SetMineralIcon(Button button, uint mineralId)
+        {
+            if (button == null) return;
+            if (!SpriteAtlasCache.TryGetMineralSprite(mineralId, out var sprite)) return;
+
+            // 우선순위: 같은 아이템 루트(버튼의 부모 포함) 하위의 "Icon" 이름을 가진 Image
+            Image img = null;
+            Transform itemRoot = button.transform.parent != null ? button.transform.parent : button.transform;
+
+            var icon = button.transform.Find("Icon");
+            if (icon == null && itemRoot != null)
+            {
+                icon = itemRoot.Find("Icon");
+            }
+            if (icon != null)
+            {
+                img = icon.GetComponent<Image>();
+            }
+
+            if (img == null && itemRoot != null)
+            {
+                var images = itemRoot.GetComponentsInChildren<Image>(true);
+                foreach (var childImg in images)
+                {
+                    if (childImg.gameObject == button.gameObject) continue; // 버튼 자기 자신은 제외
+                    if (childImg.name.Contains("Icon")) { img = childImg; break; }
+                }
+            }
+
+            // 버튼의 타겟 그래픽이나 자기 Image에는 스프라이트를 넣지 않는다.
+            if (img == null) return;
+
+            img.sprite = sprite;
+            img.enabled = true;
+            img.type = Image.Type.Simple;
+            img.preserveAspect = true;
+            var s = img.rectTransform.localScale;
+            img.rectTransform.localScale = new Vector3(Mathf.Abs(s.x), Mathf.Abs(s.y), 1f);
         }
 
         private void UpdateDamageTextAnimations()
@@ -909,9 +1059,11 @@ namespace InfinitePickaxe.Client.UI.Game
         /// <param name="mineralName">광물 이름</param>
         /// <param name="hp">현재 HP</param>
         /// <param name="maxHp">최대 HP</param>
-        public void SetCurrentMineral(string mineralName, float hp, float maxHp)
+        /// <param name="mineralId">광물 ID (기본=채굴 중단)</param>
+        public void SetCurrentMineral(string mineralName, float hp, float maxHp, uint mineralId = StopMineralId)
         {
             currentMineralName = mineralName;
+            currentMineralId = mineralId;
             currentHP = hp;
             maxHP = maxHp;
 
@@ -939,6 +1091,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (snapshot.CurrentMineralId.HasValue)
             {
                 uint mineralId = snapshot.CurrentMineralId.Value;
+                currentMineralId = mineralId;
                 currentMineralName = GetMineralName(mineralId);
             }
 
@@ -954,6 +1107,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 (maxHP == 0))
             {
                 currentMineralName = GetMineralName(StopMineralId);
+                currentMineralId = StopMineralId;
                 currentHP = 0;
                 maxHP = 0;
             }
@@ -984,12 +1138,14 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             currentHP = update.CurrentHp;
             maxHP = update.MaxHp;
+            currentMineralId = update.MineralId;
             currentMineralName = GetMineralName(update.MineralId);
 
             // 서버가 채굴 중단 상태라면 HP 0/0으로 유지
             if (update.MaxHp == 0)
             {
                 currentMineralName = GetMineralName(StopMineralId);
+                currentMineralId = StopMineralId;
                 currentHP = 0;
                 maxHP = 0;
                 isRespawning = true;
@@ -1013,6 +1169,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             UpdateMineInfo();
             UpdateHPBar();
+            UpdateMineralSprite();
             // UpdateDPS()는 호출하지 않음 (DPS는 슬롯 정보 변경 시에만 업데이트)
         }
 
@@ -1028,6 +1185,7 @@ namespace InfinitePickaxe.Client.UI.Game
             currentHP = 0;
             UpdateMineInfo();
             UpdateHPBar();
+            UpdateMineralSprite();
 
             // 재화 갱신: 서버가 total_gold를 내려주므로 상단 재화도 반영
         }
@@ -1088,6 +1246,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (isStop)
                 {
                     currentMineralName = GetMineralName(StopMineralId);
+                    currentMineralId = StopMineralId;
                     currentHP = 0;
                     maxHP = 0;
                     isRespawning = false;
@@ -1095,6 +1254,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 else
                 {
                     currentMineralName = GetMineralName(mineralId);
+                    currentMineralId = mineralId;
                     currentHP = response.MineralHp;
                     maxHP = response.MineralMaxHp;
                     isRespawning = false;

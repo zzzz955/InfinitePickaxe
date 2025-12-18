@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.U2D;
 using InfinitePickaxe.Client.Net;
 using Infinitepickaxe;
 using InfinitePickaxe.Client.Metadata;
 using InfinitePickaxe.Client.Core;
+using InfinitePickaxe.Client.UI.Common;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -39,6 +41,9 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Color selectedSlotColor = new Color(0.8f, 0.8f, 0.9f, 1f);
         [SerializeField] private List<TierSprite> pickaxeTierSprites = new List<TierSprite>();
 
+        [Header("Sprites / Atlases")]
+        [SerializeField] private SpriteAtlas pickaxeSpriteAtlas;
+
         [Header("Upgrade Data (display)")]
         [SerializeField] private uint currentLevel;
         [SerializeField] private ulong currentAttack;
@@ -56,6 +61,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private bool hasSlotData;
         private bool upgradeInProgress;
         private readonly UpgradeMetaResolver metaResolver = new UpgradeMetaResolver();
+        private readonly PickaxeTierResolver tierResolver = new PickaxeTierResolver();
         private Sprite runtimeWhiteSprite;
         private bool subscribed;
         private bool cacheSubscribed;
@@ -63,6 +69,7 @@ namespace InfinitePickaxe.Client.UI.Game
         protected override void Initialize()
         {
             base.Initialize();
+            SpriteAtlasCache.RegisterPickaxeAtlas(pickaxeSpriteAtlas);
             AutoBindReferences();
             BindSlotButtons();
             BindActionButtons();
@@ -485,7 +492,16 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void UpdatePickaxeImages(PickaxeSlotInfo slot)
         {
-            var sprite = GetSpriteForTier(slot?.Tier ?? 1);
+            uint currentTier = slot?.Tier ?? 1;
+            currentTier = tierResolver.ResolveTier(selectedSlotIndex, currentLevel, currentTier);
+
+            uint nextTier = currentTier;
+            if (metaResolver.TryGetLevel(currentLevel + 1, selectedSlotIndex, out var nextMeta) && nextMeta.Tier > 0)
+            {
+                nextTier = Math.Max(nextTier, nextMeta.Tier);
+            }
+
+            var sprite = GetSpriteForTier(currentTier);
             var color = IsSlotUnlocked(selectedSlotIndex) ? unlockedSlotColor : lockedSlotColor;
 
             if (currentPickaxeImage != null)
@@ -496,7 +512,8 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (nextPickaxeImage != null)
             {
-                nextPickaxeImage.sprite = sprite;
+                var nextSprite = GetSpriteForTier(nextTier);
+                nextPickaxeImage.sprite = nextSprite;
                 nextPickaxeImage.color = color;
             }
         }
@@ -579,6 +596,11 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private Sprite GetSpriteForTier(uint tier)
         {
+            if (SpriteAtlasCache.TryGetPickaxeSprite(tier, out var sprite))
+            {
+                return sprite;
+            }
+
             if (pickaxeTierSprites != null)
             {
                 foreach (var entry in pickaxeTierSprites)
@@ -590,14 +612,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 }
             }
 
-            if (runtimeWhiteSprite != null)
-            {
-                return runtimeWhiteSprite;
-            }
-
-            var tex = Texture2D.whiteTexture;
-            runtimeWhiteSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-            runtimeWhiteSprite.name = "RuntimeWhiteSprite";
+            runtimeWhiteSprite = SpriteAtlasCache.GetFallbackSprite();
             return runtimeWhiteSprite;
         }
 
