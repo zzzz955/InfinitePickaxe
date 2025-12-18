@@ -98,10 +98,22 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Color midColor = Color.yellow;
         [SerializeField] private Color highColor = Color.green;
 
+        [Header("Damage Text (Floating)")]
+        [SerializeField] private RectTransform damageTextRoot;
+        [SerializeField] private TextMeshProUGUI damageTextPrefab;
+        [SerializeField] private float damageTextLifetime = 0.9f;
+        [SerializeField] private float damageTextRiseSpeed = 80f;
+        [SerializeField] private Vector2 damageTextRandomOffset = new Vector2(60f, 10f);
+        [SerializeField] private Color normalDamageColor = new Color(1f, 0.95f, 0.85f, 1f);
+        [SerializeField] private Color criticalDamageColor = new Color(1f, 0.35f, 0.2f, 1f);
+        [SerializeField] private float criticalScale = 1.2f;
+
         private float targetFillNormalized = 1f;
         private float displayedFillNormalized = 1f;
         private float safeMaxForDisplay = 1f;
         private Color currentFillColor = Color.green;
+        private readonly List<DamageTextEntry> activeDamageTexts = new List<DamageTextEntry>();
+        private readonly Queue<TextMeshProUGUI> damageTextPool = new Queue<TextMeshProUGUI>();
 
         protected override void Initialize()
         {
@@ -385,6 +397,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void Update()
         {
             AnimateHPBar();
+            UpdateDamageTextAnimations();
         }
 
         private void AnimateHPBar()
@@ -443,6 +456,43 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 float t = (normalized - 0.5f) / 0.5f;
                 return Color.Lerp(midColor, highColor, t);
+            }
+        }
+
+        private void UpdateDamageTextAnimations()
+        {
+            if (activeDamageTexts.Count == 0) return;
+
+            float dt = Time.deltaTime;
+            for (int i = activeDamageTexts.Count - 1; i >= 0; i--)
+            {
+                var entry = activeDamageTexts[i];
+                entry.Elapsed += dt;
+                float t = entry.Elapsed / entry.Lifetime;
+
+                if (entry.Rect != null)
+                {
+                    var pos = entry.Rect.anchoredPosition;
+                    pos.y += entry.RiseSpeed * dt;
+                    entry.Rect.anchoredPosition = pos;
+                }
+
+                if (entry.Text != null)
+                {
+                    var c = entry.Text.color;
+                    c.a = Mathf.Lerp(entry.StartAlpha, 0f, t);
+                    entry.Text.color = c;
+                }
+
+                if (entry.Elapsed >= entry.Lifetime)
+                {
+                    RecycleDamageText(entry);
+                    activeDamageTexts.RemoveAt(i);
+                }
+                else
+                {
+                    activeDamageTexts[i] = entry;
+                }
             }
         }
 
@@ -1000,6 +1050,8 @@ namespace InfinitePickaxe.Client.UI.Game
             // - 데미지 텍스트 표시 (Floating Damage Number)
             // - 사운드 재생
 
+            ShowDamageText(damage, isCritical);
+
 #if UNITY_EDITOR || DEBUG_MINING
             Debug.Log($"곡괭이 공격: 슬롯 {slotIndex}, 데미지 {damage}, 크리티컬={isCritical}");
 #endif
@@ -1128,6 +1180,96 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             return $"광물 #{mineralId}";
+        }
+
+        private void ShowDamageText(ulong damage, bool isCritical)
+        {
+            var root = damageTextRoot;
+            if (root == null)
+            {
+                root = mineHPSliderBackground != null
+                    ? mineHPSliderBackground.rectTransform.parent as RectTransform
+                    : mineHPText?.transform.parent as RectTransform;
+            }
+
+            if (root == null) return;
+
+            var label = GetDamageTextInstance(root);
+            if (label == null) return;
+
+            label.text = damage.ToString("N0");
+            var color = isCritical ? criticalDamageColor : normalDamageColor;
+            label.color = color;
+            var scale = isCritical ? criticalScale : 1f;
+            label.rectTransform.localScale = Vector3.one * scale;
+
+            var offset = new Vector2(
+                UnityEngine.Random.Range(-damageTextRandomOffset.x, damageTextRandomOffset.x),
+                UnityEngine.Random.Range(0f, damageTextRandomOffset.y)
+            );
+            label.rectTransform.anchoredPosition = offset;
+
+            var entry = new DamageTextEntry
+            {
+                Text = label,
+                Rect = label.rectTransform,
+                Elapsed = 0f,
+                Lifetime = Mathf.Max(0.1f, damageTextLifetime),
+                RiseSpeed = damageTextRiseSpeed,
+                StartAlpha = color.a
+            };
+
+            activeDamageTexts.Add(entry);
+            label.gameObject.SetActive(true);
+        }
+
+        private TextMeshProUGUI GetDamageTextInstance(RectTransform parent)
+        {
+            TextMeshProUGUI label = null;
+            while (damageTextPool.Count > 0 && label == null)
+            {
+                label = damageTextPool.Dequeue();
+            }
+
+            if (label == null)
+            {
+                if (damageTextPrefab != null)
+                {
+                    label = Instantiate(damageTextPrefab, parent);
+                }
+                else
+                {
+                    var go = new GameObject("DamageText");
+                    go.transform.SetParent(parent, false);
+                    label = go.AddComponent<TextMeshProUGUI>();
+                    label.fontSize = 48f;
+                    label.alignment = TextAlignmentOptions.Center;
+                    label.outlineWidth = 0.15f;
+                }
+            }
+            else
+            {
+                label.transform.SetParent(parent, false);
+            }
+
+            return label;
+        }
+
+        private void RecycleDamageText(DamageTextEntry entry)
+        {
+            if (entry.Text == null) return;
+            entry.Text.gameObject.SetActive(false);
+            damageTextPool.Enqueue(entry.Text);
+        }
+
+        private struct DamageTextEntry
+        {
+            public TextMeshProUGUI Text;
+            public RectTransform Rect;
+            public float Elapsed;
+            public float Lifetime;
+            public float RiseSpeed;
+            public float StartAlpha;
         }
 
         #endregion

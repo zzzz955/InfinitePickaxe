@@ -4961,6 +4961,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 263460060}
   m_CullTransparentMesh: 1
+--- !u!1 &266649037
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 266649038}
+  m_Layer: 0
+  m_Name: MineralField
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &266649038
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266649037}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 764205686}
+  - {fileID: 1068300618}
+  m_Father: {fileID: 1650969917}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 500, y: 500}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &266930581
 GameObject:
   m_ObjectHideFlags: 0
@@ -7259,6 +7296,10 @@ MonoBehaviour:
   pickaxeSlot2Button: {fileID: 1260559869}
   pickaxeSlot3Button: {fileID: 1333426428}
   pickaxeSlot4Button: {fileID: 2030729528}
+  slot1LevelText: {fileID: 1459847631}
+  slot2LevelText: {fileID: 1695775724}
+  slot3LevelText: {fileID: 626541832}
+  slot4LevelText: {fileID: 888147709}
   pickaxeInfoModal: {fileID: 1658600329}
   lockedSlotModal: {fileID: 1627698182}
   mineralSelectModal: {fileID: 744738827}
@@ -7288,6 +7329,14 @@ MonoBehaviour:
   lowColor: {r: 1, g: 0, b: 0, a: 1}
   midColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   highColor: {r: 0, g: 1, b: 0, a: 1}
+  damageTextRoot: {fileID: 1068300618}
+  damageTextPrefab: {fileID: 3849858447405742532, guid: 8fe72207cfcf6a942a8105d3507cc06f, type: 3}
+  damageTextLifetime: 0.9
+  damageTextRiseSpeed: 80
+  damageTextRandomOffset: {x: 60, y: 10}
+  normalDamageColor: {r: 1, g: 0.95, b: 0.85, a: 1}
+  criticalDamageColor: {r: 1, g: 0.35, b: 0.2, a: 1}
+  criticalScale: 1.2
 --- !u!114 &475111734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11803,17 +11852,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 764205685}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1650969917}
+  m_Father: {fileID: 266649038}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 500, y: 500}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &764205687
 MonoBehaviour:
@@ -15591,6 +15640,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1063590475}
   m_CullTransparentMesh: 1
+--- !u!1 &1068300617
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1068300618}
+  m_Layer: 0
+  m_Name: DamageArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1068300618
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068300617}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 266649038}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 200}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1084268852
 GameObject:
   m_ObjectHideFlags: 0
@@ -23441,7 +23525,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 133178132}
-  - {fileID: 764205686}
+  - {fileID: 266649038}
   - {fileID: 1534174726}
   - {fileID: 723331546}
   - {fileID: 1438385303}
