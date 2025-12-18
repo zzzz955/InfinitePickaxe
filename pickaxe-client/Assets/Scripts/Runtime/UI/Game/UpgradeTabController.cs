@@ -210,6 +210,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             pickaxeCache?.UpdateFromSnapshot(snapshot);
             SyncSlotsFromCache();
+            hasSlotData = slotInfos.Count > 0;
             RefreshData();
         }
 
@@ -219,6 +220,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             pickaxeCache?.UpdateFromAllSlots(response);
             SyncSlotsFromCache();
+            hasSlotData = slotInfos.Count > 0;
             RefreshData();
         }
 

@@ -194,6 +194,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             SubscribeCache();
             SyncSlotsFromCache();
+            RefreshData();
         }
 
         protected override void OnDisable()
@@ -882,6 +883,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             pickaxeCache?.UpdateFromSnapshot(snapshot);
             SyncSlotsFromCache();
+            currentDPS = pickaxeCache?.TotalDps ?? currentDPS;
 
             // 광물 정보 업데이트
             if (snapshot.CurrentMineralId.HasValue)
@@ -1087,8 +1089,6 @@ namespace InfinitePickaxe.Client.UI.Game
             if (result == null) return;
             if (result.Success)
             {
-                currentDPS = result.NewTotalDps;
-
                 pickaxeCache?.UpdateFromUpgradeResult(result);
                 SyncSlotsFromCache();
                 RefreshData();
