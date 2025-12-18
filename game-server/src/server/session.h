@@ -5,6 +5,8 @@
 #include <string>
 #include <chrono>
 #include <array>
+#include <limits>
+#include <unordered_map>
 #include "auth_service.h"
 #include "game_repository.h"
 #include "game.pb.h"
@@ -21,6 +23,8 @@ struct SlotMiningState {
     uint32_t slot_index;          // 0-3
     uint64_t attack_power;        // 공격력
     float attack_speed;           // APS (attacks per second)
+    uint32_t critical_hit_percent; // 크리티컬 확률 * 10000
+    uint32_t critical_damage;      // 크리티컬 데미지 * 100
     float next_attack_timer_ms;   // 다음 공격까지 남은 시간 (밀리초)
 };
 
@@ -33,6 +37,7 @@ struct MiningState {
     std::vector<SlotMiningState> slots;  // 활성화된 슬롯들
     float respawn_timer_ms = 0.0f;       // 리스폰 대기 중일 때 (5000ms)
     std::chrono::steady_clock::time_point last_update_time;
+    uint64_t last_sent_hp = std::numeric_limits<uint64_t>::max(); // 마지막으로 전송한 HP (푸시 최소화)
 };
 
 class Session : public std::enable_shared_from_this<Session> {
@@ -83,6 +88,9 @@ private:
     void start_new_mineral();
     void send_mining_update(const std::vector<infinitepickaxe::PickaxeAttack>& attacks);
     void handle_mining_complete_immediate();
+    void apply_slot_update(uint32_t slot_index, uint64_t attack_power, float attack_speed,
+                           uint32_t critical_hit_percent, uint32_t critical_damage);
+    void refresh_slots_from_service(bool preserve_timers);
 
     boost::asio::ip::tcp::socket socket_;
     boost::asio::steady_timer auth_timer_;

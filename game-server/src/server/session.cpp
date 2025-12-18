@@ -7,6 +7,9 @@
 #include <ctime>
 #include <cmath>
 #include <cstdlib>
+#include <random>
+#include <limits>
+#include <algorithm>
 
 namespace
 {
@@ -24,6 +27,13 @@ namespace
                 static_cast<uint8_t>((v >> 8) & 0xFF),
                 static_cast<uint8_t>((v >> 16) & 0xFF),
                 static_cast<uint8_t>((v >> 24) & 0xFF)};
+    }
+
+    uint32_t roll_bp_10000()
+    {
+        static thread_local std::mt19937 rng(std::random_device{}());
+        static thread_local std::uniform_int_distribution<uint32_t> dist(0, 9999);
+        return dist(rng);
     }
 } // namespace
 
@@ -380,6 +390,13 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope &env)
         res = upgrade_service_.handle_upgrade(user_id_, req.slot_index(), target_level);
     }
 
+    if (res.success() && mining_state_.is_mining)
+    {
+        float new_attack_speed = static_cast<float>(res.new_attack_speed_x100()) / 100.0f;
+        apply_slot_update(res.slot_index(), res.new_attack_power(), new_attack_speed,
+                          res.new_critical_hit_percent(), res.new_critical_damage());
+    }
+
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::UPGRADE_RESULT);
     *response_env.mutable_upgrade_result() = res;
@@ -543,6 +560,11 @@ void Session::handle_slot_unlock(const infinitepickaxe::Envelope &env)
     const auto &req = env.slot_unlock();
     auto res = slot_service_.handle_unlock(user_id_, req.slot_index());
 
+    if (res.success() && mining_state_.is_mining)
+    {
+        refresh_slots_from_service(true);
+    }
+
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::SLOT_UNLOCK_RESULT);
     *response_env.mutable_slot_unlock_result() = res;
@@ -700,6 +722,7 @@ void Session::update_mining_tick(float delta_ms)
     }
 
     std::vector<infinitepickaxe::PickaxeAttack> attacks;
+    uint64_t total_damage = 0;
 
     for (auto &slot : mining_state_.slots)
     {
@@ -708,20 +731,27 @@ void Session::update_mining_tick(float delta_ms)
         // 40ms 동안 여러 번 공격할 수 있음 (attack_speed가 매우 빠른 경우)
         while (slot.next_attack_timer_ms <= 0)
         {
+            const float attack_speed = std::max(slot.attack_speed, 0.01f);
+            const float attack_interval_ms = 1000.0f / attack_speed;
+
+            const bool is_crit = roll_bp_10000() < slot.critical_hit_percent;
+            uint64_t damage = slot.attack_power;
+            if (is_crit)
+            {
+                damage = static_cast<uint64_t>(
+                    (static_cast<long double>(slot.attack_power) * static_cast<long double>(slot.critical_damage)) / 10000.0L);
+            }
+
             infinitepickaxe::PickaxeAttack attack;
             attack.set_slot_index(slot.slot_index);
-            attack.set_damage(slot.attack_power);
+            attack.set_damage(damage);
+            attack.set_is_critical(is_crit);
             attacks.push_back(attack);
 
-            float attack_interval_ms = 1000.0f / slot.attack_speed;
             slot.next_attack_timer_ms += attack_interval_ms;
-        }
-    }
 
-    uint64_t total_damage = 0;
-    for (const auto &attack : attacks)
-    {
-        total_damage += attack.damage();
+            total_damage += damage;
+        }
     }
 
     if (total_damage > 0)
@@ -742,7 +772,11 @@ void Session::update_mining_tick(float delta_ms)
         return;
     }
 
-    send_mining_update(attacks);
+    if (mining_state_.current_hp != mining_state_.last_sent_hp)
+    {
+        send_mining_update(attacks);
+        mining_state_.last_sent_hp = mining_state_.current_hp;
+    }
 }
 
 void Session::start_new_mineral()
@@ -768,25 +802,101 @@ void Session::start_new_mineral()
     mining_state_.max_hp = mineral->hp;
     mining_state_.is_mining = true;
     mining_state_.respawn_timer_ms = 0;
+    mining_state_.last_sent_hp = std::numeric_limits<uint64_t>::max();
+
+    refresh_slots_from_service(false);
+
+    // 초기 상태를 클라이언트에 전달 (HP 변화 알림)
+    send_mining_update({});
+    mining_state_.last_sent_hp = mining_state_.current_hp;
+
+    spdlog::info("Mining started: user={} mineral={} hp={} slots={}",
+                 user_id_, mining_state_.current_mineral_id, mining_state_.current_hp, mining_state_.slots.size());
+}
+
+void Session::refresh_slots_from_service(bool preserve_timers)
+{
+    std::unordered_map<uint32_t, float> previous_timers;
+    if (preserve_timers)
+    {
+        for (const auto &slot : mining_state_.slots)
+        {
+            previous_timers[slot.slot_index] = slot.next_attack_timer_ms;
+        }
+    }
 
     auto slots_response = slot_service_.handle_all_slots(user_id_);
     mining_state_.slots.clear();
 
     for (const auto &slot_info : slots_response.slots())
     {
-        if (slot_info.is_unlocked())
+        if (!slot_info.is_unlocked())
         {
-            SlotMiningState slot;
-            slot.slot_index = slot_info.slot_index();
-            slot.attack_power = slot_info.attack_power();
-            slot.attack_speed = slot_info.attack_speed_x100() / 100.0f; // 100 → 1.0 APS
-            slot.next_attack_timer_ms = (float)(std::rand() % 1000) / 1000.0f * (1000.0f / slot.attack_speed);
-            mining_state_.slots.push_back(slot);
+            continue;
         }
+
+        SlotMiningState slot{};
+        slot.slot_index = slot_info.slot_index();
+        slot.attack_power = slot_info.attack_power();
+        slot.attack_speed = static_cast<float>(slot_info.attack_speed_x100()) / 100.0f;
+        if (slot.attack_speed <= 0.0f)
+        {
+            slot.attack_speed = 0.01f;
+        }
+        slot.critical_hit_percent = slot_info.critical_hit_percent();
+        slot.critical_damage = slot_info.critical_damage();
+
+        float attack_interval_ms = 1000.0f / slot.attack_speed;
+        auto it = previous_timers.find(slot.slot_index);
+        if (preserve_timers && it != previous_timers.end())
+        {
+            slot.next_attack_timer_ms = std::clamp(it->second, 1.0f, attack_interval_ms);
+        }
+        else
+        {
+            slot.next_attack_timer_ms = (float)(std::rand() % 1000) / 1000.0f * attack_interval_ms;
+        }
+        mining_state_.slots.push_back(slot);
+    }
+}
+
+void Session::apply_slot_update(uint32_t slot_index, uint64_t attack_power, float attack_speed,
+                                uint32_t critical_hit_percent, uint32_t critical_damage)
+{
+    if (attack_speed <= 0.0f)
+    {
+        attack_speed = 0.01f;
     }
 
-    spdlog::info("Mining started: user={} mineral={} hp={} slots={}",
-                 user_id_, mining_state_.current_mineral_id, mining_state_.current_hp, mining_state_.slots.size());
+    auto it = std::find_if(mining_state_.slots.begin(), mining_state_.slots.end(),
+                           [slot_index](const SlotMiningState &s)
+                           { return s.slot_index == slot_index; });
+
+    if (it == mining_state_.slots.end())
+    {
+        if (!mining_state_.is_mining)
+        {
+            return;
+        }
+        SlotMiningState slot{};
+        slot.slot_index = slot_index;
+        slot.attack_power = attack_power;
+        slot.attack_speed = attack_speed;
+        slot.critical_hit_percent = critical_hit_percent;
+        slot.critical_damage = critical_damage;
+        float attack_interval_ms = 1000.0f / slot.attack_speed;
+        slot.next_attack_timer_ms = (float)(std::rand() % 1000) / 1000.0f * attack_interval_ms;
+        mining_state_.slots.push_back(slot);
+        return;
+    }
+
+    it->attack_power = attack_power;
+    it->attack_speed = attack_speed;
+    it->critical_hit_percent = critical_hit_percent;
+    it->critical_damage = critical_damage;
+
+    float attack_interval_ms = 1000.0f / it->attack_speed;
+    it->next_attack_timer_ms = std::clamp(it->next_attack_timer_ms, 1.0f, attack_interval_ms);
 }
 
 void Session::send_mining_update(const std::vector<infinitepickaxe::PickaxeAttack> &attacks)
@@ -827,6 +937,7 @@ void Session::handle_mining_complete_immediate()
 
     auto completion_result = mining_service_.handle_complete(user_id_, mining_state_.current_mineral_id);
     mining_state_.respawn_timer_ms = respawn_time_sec * 1000.0f;
+    mining_state_.last_sent_hp = mining_state_.current_hp;
 
     infinitepickaxe::MiningComplete complete;
     complete.set_mineral_id(mining_state_.current_mineral_id);

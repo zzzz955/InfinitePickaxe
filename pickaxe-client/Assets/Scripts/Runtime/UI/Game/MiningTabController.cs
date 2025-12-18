@@ -957,7 +957,7 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 foreach (var attack in update.Attacks)
                 {
-                    TriggerPickaxeAttackAnimation(attack.SlotIndex, attack.Damage);
+                    TriggerPickaxeAttackAnimation(attack.SlotIndex, attack.Damage, attack.IsCritical);
                 }
             }
 
@@ -987,7 +987,7 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         /// <param name="slotIndex">슬롯 인덱스 (0~3)</param>
         /// <param name="damage">공격 데미지</param>
-        private void TriggerPickaxeAttackAnimation(uint slotIndex, ulong damage)
+        private void TriggerPickaxeAttackAnimation(uint slotIndex, ulong damage, bool isCritical)
         {
             // TODO: 슬롯별 곡괭이 공격 애니메이션 재생
             // 예시:
@@ -1001,7 +1001,7 @@ namespace InfinitePickaxe.Client.UI.Game
             // - 사운드 재생
 
 #if UNITY_EDITOR || DEBUG_MINING
-            Debug.Log($"곡괭이 공격: 슬롯 {slotIndex}, 데미지 {damage}");
+            Debug.Log($"곡괭이 공격: 슬롯 {slotIndex}, 데미지 {damage}, 크리티컬={isCritical}");
 #endif
 
             // 임시: 슬롯 버튼 찾아서 간단한 시각 효과

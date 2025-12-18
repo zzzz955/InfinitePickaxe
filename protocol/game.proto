@@ -220,6 +220,7 @@ message ChangeMineralResponse {
 message PickaxeAttack {
   uint32 slot_index = 1;        // 0-3 (어떤 슬롯이 공격했는지)
   uint64 damage = 2;            // 이 공격으로 입힌 데미지
+  bool is_critical = 3;         // 크리티컬 여부 (true면 크리티컬)
 }
 
 // 서버 → 클라이언트: 40ms마다 전송되는 채굴 상태 업데이트
