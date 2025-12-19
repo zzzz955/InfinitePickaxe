@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <optional>
+#include "metadata/metadata_loader.h"
 
 struct DbConfig {
     std::string host;
@@ -25,7 +26,7 @@ struct UserGameData {
 // 게임 데이터 접근을 담당하는 리포지토리
 class GameRepository {
 public:
-    explicit GameRepository(class ConnectionPool& pool);
+    explicit GameRepository(class ConnectionPool& pool, const class MetadataLoader& meta);
 
     // 유저 기본 행, 슬롯 0번을 없으면 생성
     bool ensure_user_initialized(const std::string& user_id);
@@ -37,4 +38,5 @@ public:
 
 private:
     class ConnectionPool& pool_;
+    const class MetadataLoader& meta_;
 };

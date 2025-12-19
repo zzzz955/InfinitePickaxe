@@ -30,7 +30,7 @@ int main() {
         spdlog::info("Metadata loaded from {}", meta_path);
         RedisClient redis_client(cfg.redis_host, cfg.redis_port);
         AuthService auth_service(cfg.auth_host, cfg.auth_port, redis_client);
-        GameRepository game_repo(db_pool);
+        GameRepository game_repo(db_pool, metadata);
         MiningRepository mining_repo(db_pool);
         UpgradeRepository upgrade_repo(db_pool);
         MissionRepository mission_repo(db_pool);

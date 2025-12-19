@@ -1,11 +1,13 @@
 #include "game_repository.h"
 #include "connection_pool.h"
+#include "metadata/metadata_loader.h"
 #include <pqxx/pqxx>
 #include <spdlog/spdlog.h>
 #include <sstream>
+#include <cmath>
 
-GameRepository::GameRepository(ConnectionPool& pool)
-    : pool_(pool) {}
+GameRepository::GameRepository(ConnectionPool& pool, const MetadataLoader& meta)
+    : pool_(pool), meta_(meta) {}
 
 bool GameRepository::ensure_user_initialized(const std::string& user_id) {
     try {
@@ -15,17 +17,65 @@ bool GameRepository::ensure_user_initialized(const std::string& user_id) {
             "INSERT INTO game_schema.user_game_data (user_id) VALUES ($1) "
             "ON CONFLICT (user_id) DO NOTHING",
             user_id);
-        // 슬롯 0번 생성: 레벨 0, 티어 1, 공격력 10, 공격속도 1.0 (100)
-        // 크리티컬 확률 5% (500), 크리티컬 데미지 150% (15000)
-        tx.exec_params(
+
+        // 메타데이터 기반 초기 곡괭이 설정 (레벨 0만 슬롯 0에 배정)
+        uint32_t level = 0;
+        uint32_t tier = 1;
+        uint64_t attack_power = 10;
+        uint32_t attack_speed_x100 = 100;
+        constexpr uint32_t kCritPercent = 500;   // 5%
+        constexpr uint32_t kCritDamage = 15000;  // 150%
+        uint64_t dps = 10;
+
+        if (const auto* pl = meta_.pickaxe_level(0)) {
+            level = pl->level;
+            tier = pl->tier;
+            attack_power = pl->attack_power;
+            attack_speed_x100 = static_cast<uint32_t>(std::lround(pl->attack_speed * 100.0));
+            if (attack_speed_x100 == 0) {
+                attack_speed_x100 = 1;
+            }
+            double attack_speed = static_cast<double>(attack_speed_x100) / 100.0;
+            double crit_rate = static_cast<double>(kCritPercent) / 10000.0;
+            double crit_mult = static_cast<double>(kCritDamage) / 10000.0;
+            double expected_dps = static_cast<double>(attack_power) * attack_speed *
+                                  (1.0 + crit_rate * (crit_mult - 1.0));
+            dps = static_cast<uint64_t>(std::llround(expected_dps));
+            if (dps == 0) {
+                dps = pl->dps;
+            }
+        } else {
+            spdlog::warn("pickaxe_level(0) missing in metadata, using defaults");
+        }
+
+        auto slot_insert = tx.exec_params(
             "INSERT INTO game_schema.pickaxe_slots "
             "(user_id, slot_index, level, tier, attack_power, attack_speed_x100, "
-            " critical_hit_percent, critical_damage, dps) "
-            "VALUES ($1, 0, 0, 1, 10, 100, 500, 15000, 10) "
-            "ON CONFLICT (user_id, slot_index) DO NOTHING",
-            user_id);
+            " critical_hit_percent, critical_damage, dps, pity_bonus) "
+            "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 0) "
+            "ON CONFLICT (user_id, slot_index) DO NOTHING RETURNING 1",
+            user_id, 0, static_cast<int32_t>(level), static_cast<int32_t>(tier),
+            static_cast<int64_t>(attack_power), static_cast<int32_t>(attack_speed_x100),
+            static_cast<int32_t>(kCritPercent), static_cast<int32_t>(kCritDamage),
+            static_cast<int64_t>(dps));
+
+        const bool inserted_slot = !slot_insert.empty();
+
+        if (inserted_slot) {
+            auto total_row = tx.exec_params1(
+                "SELECT COALESCE(SUM(dps), 0) FROM game_schema.pickaxe_slots WHERE user_id = $1",
+                user_id);
+            uint64_t total_dps = total_row[0].as<int64_t>();
+
+            tx.exec_params(
+                "UPDATE game_schema.user_game_data "
+                "SET total_dps = $2, highest_pickaxe_level = GREATEST(highest_pickaxe_level, $3) "
+                "WHERE user_id = $1",
+                user_id, static_cast<int64_t>(total_dps), static_cast<int32_t>(level));
+        }
         tx.commit();
-        spdlog::debug("User {} initialized with slot 0 (attack_power=10, crit=5%)", user_id);
+        spdlog::debug("User {} initialized with slot 0 (level={}, tier={}, ap={}, as_x100={}, dps={})",
+                      user_id, level, tier, attack_power, attack_speed_x100, dps);
         return true;
     } catch (const std::exception& ex) {
         spdlog::error("DB init failed for user {}: {}", user_id, ex.what());

@@ -1269,7 +1269,7 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void HandleMiningComplete(MiningComplete complete)
         {
-            Debug.Log($"채굴 완료! 광물 #{complete.MineralId}, 획득 골드: {complete.GoldEarned}");
+            // Debug.Log($"채굴 완료! 광물 #{complete.MineralId}, 획득 골드: {complete.GoldEarned}");
 
             // 다음 광물 자동 시작 (서버에서 MiningUpdate가 올 것임) 전까지 리스폰 상태 표시
             isPreparingMineral = false;
