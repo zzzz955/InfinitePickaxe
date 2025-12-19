@@ -149,39 +149,41 @@ namespace Infinitepickaxe {
             "Q2xhaW1SZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIXCg9taWxlc3RvbmVfY291",
             "bnQYAiABKA0SHAoUb2ZmbGluZV9ob3Vyc19nYWluZWQYAyABKA0SGwoTdG90",
             "YWxfb2ZmbGluZV9ob3VycxgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJIiAK",
-            "ClNsb3RVbmxvY2sSEgoKc2xvdF9pbmRleBgBIAEoDSJ9ChBTbG90VW5sb2Nr",
-            "UmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSEgoKc2xvdF9pbmRleBgCIAEoDRIV",
-            "Cg1jcnlzdGFsX3NwZW50GAMgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQg",
-            "ASgNEhIKCmVycm9yX2NvZGUYBSABKAkiIgoPQWRXYXRjaENvbXBsZXRlEg8K",
-            "B2FkX3R5cGUYASABKAkipQEKDUFkV2F0Y2hSZXN1bHQSDwoHc3VjY2VzcxgB",
-            "IAEoCBIPCgdhZF90eXBlGAIgASgJEhYKDmNyeXN0YWxfZWFybmVkGAMgASgN",
-            "EhUKDXRvdGFsX2NyeXN0YWwYBCABKA0SLwoLYWRfY291bnRlcnMYBSADKAsy",
-            "Gi5pbmZpbml0ZXBpY2theGUuQWRDb3VudGVyEhIKCmVycm9yX2NvZGUYBiAB",
-            "KAkiewoOQ3VycmVuY3lVcGRhdGUSKgoEZ29sZBgBIAEoCzIcLmdvb2dsZS5w",
-            "cm90b2J1Zi5VSW50NjRWYWx1ZRItCgdjcnlzdGFsGAIgASgLMhwuZ29vZ2xl",
-            "LnByb3RvYnVmLlVJbnQzMlZhbHVlEg4KBnJlYXNvbhgDIAEoCSIWChRPZmZs",
-            "aW5lUmV3YXJkUmVxdWVzdCJtChNPZmZsaW5lUmV3YXJkUmVzdWx0EhcKD2Vs",
-            "YXBzZWRfc2Vjb25kcxgBIAEoBBITCgtnb2xkX2Vhcm5lZBgCIAEoBBIUCgxt",
-            "aW5pbmdfY291bnQYAyABKA0SEgoKdG90YWxfZ29sZBgEIAEoBCI4ChFFcnJv",
-            "ck5vdGlmaWNhdGlvbhISCgplcnJvcl9jb2RlGAEgASgJEg8KB21lc3NhZ2UY",
-            "AiABKAkqiQYKC01lc3NhZ2VUeXBlEgsKB1VOS05PV04QABINCglIQU5EU0hB",
-            "S0UQARIUChBIQU5EU0hBS0VfUkVTVUxUEAISDQoJSEVBUlRCRUFUEAMSEQoN",
-            "SEVBUlRCRUFUX0FDSxAEEhYKElVTRVJfREFUQV9TTkFQU0hPVBAKEhgKFE1J",
-            "TkVSQUxfTElTVF9SRVFVRVNUEBQSGQoVTUlORVJBTF9MSVNUX1JFU1BPTlNF",
-            "EBUSGgoWQ0hBTkdFX01JTkVSQUxfUkVRVUVTVBAWEhsKF0NIQU5HRV9NSU5F",
-            "UkFMX1JFU1BPTlNFEBcSEQoNTUlOSU5HX1VQREFURRAgEhMKD01JTklOR19D",
-            "T01QTEVURRAhEhUKEUFMTF9TTE9UU19SRVFVRVNUECgSFgoSQUxMX1NMT1RT",
-            "X1JFU1BPTlNFECkSDwoLU0xPVF9VTkxPQ0sQKhIWChJTTE9UX1VOTE9DS19S",
-            "RVNVTFQQKxITCg9VUEdSQURFX1JFUVVFU1QQMhISCg5VUEdSQURFX1JFU1VM",
-            "VBAzEhoKFkRBSUxZX01JU1NJT05TX1JFUVVFU1QQPBIbChdEQUlMWV9NSVNT",
-            "SU9OU19SRVNQT05TRRA9EhsKF01JU1NJT05fUFJPR1JFU1NfVVBEQVRFED4S",
-            "FAoQTUlTU0lPTl9DT01QTEVURRA/EhsKF01JU1NJT05fQ09NUExFVEVfUkVT",
-            "VUxUEEASEgoOTUlTU0lPTl9SRVJPTEwQQRIZChVNSVNTSU9OX1JFUk9MTF9S",
-            "RVNVTFQQQhITCg9NSUxFU1RPTkVfQ0xBSU0QQxIaChZNSUxFU1RPTkVfQ0xB",
-            "SU1fUkVTVUxUEEQSFQoRQURfV0FUQ0hfQ09NUExFVEUQRhITCg9BRF9XQVRD",
-            "SF9SRVNVTFQQRxITCg9DVVJSRU5DWV9VUERBVEUQUBIaChZPRkZMSU5FX1JF",
-            "V0FSRF9SRVFVRVNUEFoSGQoVT0ZGTElORV9SRVdBUkRfUkVTVUxUEFsSFgoS",
-            "RVJST1JfTk9USUZJQ0FUSU9OEGRiBnByb3RvMw=="));
+            "ClNsb3RVbmxvY2sSEgoKc2xvdF9pbmRleBgBIAEoDSLEAQoQU2xvdFVubG9j",
+            "a1Jlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhIKCnNsb3RfaW5kZXgYAiABKA0S",
+            "FQoNY3J5c3RhbF9zcGVudBgDIAEoDRIZChFyZW1haW5pbmdfY3J5c3RhbBgE",
+            "IAEoDRISCgplcnJvcl9jb2RlGAUgASgJEjIKCG5ld19zbG90GAYgASgLMiAu",
+            "aW5maW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIRCgl0b3RhbF9kcHMY",
+            "ByABKAQiIgoPQWRXYXRjaENvbXBsZXRlEg8KB2FkX3R5cGUYASABKAkipQEK",
+            "DUFkV2F0Y2hSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIPCgdhZF90eXBlGAIg",
+            "ASgJEhYKDmNyeXN0YWxfZWFybmVkGAMgASgNEhUKDXRvdGFsX2NyeXN0YWwY",
+            "BCABKA0SLwoLYWRfY291bnRlcnMYBSADKAsyGi5pbmZpbml0ZXBpY2theGUu",
+            "QWRDb3VudGVyEhIKCmVycm9yX2NvZGUYBiABKAkiewoOQ3VycmVuY3lVcGRh",
+            "dGUSKgoEZ29sZBgBIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1",
+            "ZRItCgdjcnlzdGFsGAIgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQzMlZh",
+            "bHVlEg4KBnJlYXNvbhgDIAEoCSIWChRPZmZsaW5lUmV3YXJkUmVxdWVzdCJt",
+            "ChNPZmZsaW5lUmV3YXJkUmVzdWx0EhcKD2VsYXBzZWRfc2Vjb25kcxgBIAEo",
+            "BBITCgtnb2xkX2Vhcm5lZBgCIAEoBBIUCgxtaW5pbmdfY291bnQYAyABKA0S",
+            "EgoKdG90YWxfZ29sZBgEIAEoBCI4ChFFcnJvck5vdGlmaWNhdGlvbhISCgpl",
+            "cnJvcl9jb2RlGAEgASgJEg8KB21lc3NhZ2UYAiABKAkqiQYKC01lc3NhZ2VU",
+            "eXBlEgsKB1VOS05PV04QABINCglIQU5EU0hBS0UQARIUChBIQU5EU0hBS0Vf",
+            "UkVTVUxUEAISDQoJSEVBUlRCRUFUEAMSEQoNSEVBUlRCRUFUX0FDSxAEEhYK",
+            "ElVTRVJfREFUQV9TTkFQU0hPVBAKEhgKFE1JTkVSQUxfTElTVF9SRVFVRVNU",
+            "EBQSGQoVTUlORVJBTF9MSVNUX1JFU1BPTlNFEBUSGgoWQ0hBTkdFX01JTkVS",
+            "QUxfUkVRVUVTVBAWEhsKF0NIQU5HRV9NSU5FUkFMX1JFU1BPTlNFEBcSEQoN",
+            "TUlOSU5HX1VQREFURRAgEhMKD01JTklOR19DT01QTEVURRAhEhUKEUFMTF9T",
+            "TE9UU19SRVFVRVNUECgSFgoSQUxMX1NMT1RTX1JFU1BPTlNFECkSDwoLU0xP",
+            "VF9VTkxPQ0sQKhIWChJTTE9UX1VOTE9DS19SRVNVTFQQKxITCg9VUEdSQURF",
+            "X1JFUVVFU1QQMhISCg5VUEdSQURFX1JFU1VMVBAzEhoKFkRBSUxZX01JU1NJ",
+            "T05TX1JFUVVFU1QQPBIbChdEQUlMWV9NSVNTSU9OU19SRVNQT05TRRA9EhsK",
+            "F01JU1NJT05fUFJPR1JFU1NfVVBEQVRFED4SFAoQTUlTU0lPTl9DT01QTEVU",
+            "RRA/EhsKF01JU1NJT05fQ09NUExFVEVfUkVTVUxUEEASEgoOTUlTU0lPTl9S",
+            "RVJPTEwQQRIZChVNSVNTSU9OX1JFUk9MTF9SRVNVTFQQQhITCg9NSUxFU1RP",
+            "TkVfQ0xBSU0QQxIaChZNSUxFU1RPTkVfQ0xBSU1fUkVTVUxUEEQSFQoRQURf",
+            "V0FUQ0hfQ09NUExFVEUQRhITCg9BRF9XQVRDSF9SRVNVTFQQRxITCg9DVVJS",
+            "RU5DWV9VUERBVEUQUBIaChZPRkZMSU5FX1JFV0FSRF9SRVFVRVNUEFoSGQoV",
+            "T0ZGTElORV9SRVdBUkRfUkVTVUxUEFsSFgoSRVJST1JfTk9USUZJQ0FUSU9O",
+            "EGRiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.MessageType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -216,7 +218,7 @@ namespace Infinitepickaxe {
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MilestoneClaim), global::Infinitepickaxe.MilestoneClaim.Parser, new[]{ "MilestoneCount" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MilestoneClaimResult), global::Infinitepickaxe.MilestoneClaimResult.Parser, new[]{ "Success", "MilestoneCount", "OfflineHoursGained", "TotalOfflineHours", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.SlotUnlock), global::Infinitepickaxe.SlotUnlock.Parser, new[]{ "SlotIndex" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.SlotUnlockResult), global::Infinitepickaxe.SlotUnlockResult.Parser, new[]{ "Success", "SlotIndex", "CrystalSpent", "RemainingCrystal", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.SlotUnlockResult), global::Infinitepickaxe.SlotUnlockResult.Parser, new[]{ "Success", "SlotIndex", "CrystalSpent", "RemainingCrystal", "ErrorCode", "NewSlot", "TotalDps" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdWatchComplete), global::Infinitepickaxe.AdWatchComplete.Parser, new[]{ "AdType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdWatchResult), global::Infinitepickaxe.AdWatchResult.Parser, new[]{ "Success", "AdType", "CrystalEarned", "TotalCrystal", "AdCounters", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.CurrencyUpdate), global::Infinitepickaxe.CurrencyUpdate.Parser, new[]{ "Gold", "Crystal", "Reason" }, null, null, null, null),
@@ -11550,6 +11552,8 @@ namespace Infinitepickaxe {
       crystalSpent_ = other.crystalSpent_;
       remainingCrystal_ = other.remainingCrystal_;
       errorCode_ = other.errorCode_;
+      newSlot_ = other.newSlot_ != null ? other.newSlot_.Clone() : null;
+      totalDps_ = other.totalDps_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -11619,6 +11623,36 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "new_slot" field.</summary>
+    public const int NewSlotFieldNumber = 6;
+    private global::Infinitepickaxe.PickaxeSlotInfo newSlot_;
+    /// <summary>
+    /// 해금된 슬롯 정보 (성공 시)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.PickaxeSlotInfo NewSlot {
+      get { return newSlot_; }
+      set {
+        newSlot_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_dps" field.</summary>
+    public const int TotalDpsFieldNumber = 7;
+    private ulong totalDps_;
+    /// <summary>
+    /// 해금 후 총 DPS
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong TotalDps {
+      get { return totalDps_; }
+      set {
+        totalDps_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -11639,6 +11673,8 @@ namespace Infinitepickaxe {
       if (CrystalSpent != other.CrystalSpent) return false;
       if (RemainingCrystal != other.RemainingCrystal) return false;
       if (ErrorCode != other.ErrorCode) return false;
+      if (!object.Equals(NewSlot, other.NewSlot)) return false;
+      if (TotalDps != other.TotalDps) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -11651,6 +11687,8 @@ namespace Infinitepickaxe {
       if (CrystalSpent != 0) hash ^= CrystalSpent.GetHashCode();
       if (RemainingCrystal != 0) hash ^= RemainingCrystal.GetHashCode();
       if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (newSlot_ != null) hash ^= NewSlot.GetHashCode();
+      if (TotalDps != 0UL) hash ^= TotalDps.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -11689,6 +11727,14 @@ namespace Infinitepickaxe {
         output.WriteRawTag(42);
         output.WriteString(ErrorCode);
       }
+      if (newSlot_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(NewSlot);
+      }
+      if (TotalDps != 0UL) {
+        output.WriteRawTag(56);
+        output.WriteUInt64(TotalDps);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -11719,6 +11765,14 @@ namespace Infinitepickaxe {
         output.WriteRawTag(42);
         output.WriteString(ErrorCode);
       }
+      if (newSlot_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(NewSlot);
+      }
+      if (TotalDps != 0UL) {
+        output.WriteRawTag(56);
+        output.WriteUInt64(TotalDps);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -11743,6 +11797,12 @@ namespace Infinitepickaxe {
       }
       if (ErrorCode.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (newSlot_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(NewSlot);
+      }
+      if (TotalDps != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(TotalDps);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -11770,6 +11830,15 @@ namespace Infinitepickaxe {
       }
       if (other.ErrorCode.Length != 0) {
         ErrorCode = other.ErrorCode;
+      }
+      if (other.newSlot_ != null) {
+        if (newSlot_ == null) {
+          NewSlot = new global::Infinitepickaxe.PickaxeSlotInfo();
+        }
+        NewSlot.MergeFrom(other.NewSlot);
+      }
+      if (other.TotalDps != 0UL) {
+        TotalDps = other.TotalDps;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -11810,6 +11879,17 @@ namespace Infinitepickaxe {
             ErrorCode = input.ReadString();
             break;
           }
+          case 50: {
+            if (newSlot_ == null) {
+              NewSlot = new global::Infinitepickaxe.PickaxeSlotInfo();
+            }
+            input.ReadMessage(NewSlot);
+            break;
+          }
+          case 56: {
+            TotalDps = input.ReadUInt64();
+            break;
+          }
         }
       }
     #endif
@@ -11847,6 +11927,17 @@ namespace Infinitepickaxe {
           }
           case 42: {
             ErrorCode = input.ReadString();
+            break;
+          }
+          case 50: {
+            if (newSlot_ == null) {
+              NewSlot = new global::Infinitepickaxe.PickaxeSlotInfo();
+            }
+            input.ReadMessage(NewSlot);
+            break;
+          }
+          case 56: {
+            TotalDps = input.ReadUInt64();
             break;
           }
         }

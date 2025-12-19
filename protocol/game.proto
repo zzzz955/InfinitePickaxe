@@ -362,6 +362,8 @@ message SlotUnlockResult {
   uint32 crystal_spent = 3;
   uint32 remaining_crystal = 4;
   string error_code = 5;
+  PickaxeSlotInfo new_slot = 6;   // 해금된 슬롯 정보 (성공 시)
+  uint64 total_dps = 7;           // 해금 후 총 DPS
 }
 
 // -------------- 광고 시청 --------------
