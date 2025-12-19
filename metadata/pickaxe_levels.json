@@ -3,9 +3,9 @@
     "level": 0,
     "tier": "T1",
     "appearance": "나무",
-    "attack_power": 10,
+    "attack_power": 2,
     "attack_speed": 1,
-    "dps": 10,
+    "dps": 2,
     "cost": 0,
     "cumulative_cost": 0
   },
@@ -13,9 +13,9 @@
     "level": 1,
     "tier": "T1",
     "appearance": "나무",
-    "attack_power": 17,
+    "attack_power": 3,
     "attack_speed": 1,
-    "dps": 17,
+    "dps": 3,
     "cost": 5,
     "cumulative_cost": 5
   },
@@ -23,9 +23,9 @@
     "level": 2,
     "tier": "T1",
     "appearance": "나무",
-    "attack_power": 28,
+    "attack_power": 4,
     "attack_speed": 1,
-    "dps": 28,
+    "dps": 4,
     "cost": 10,
     "cumulative_cost": 15
   },
@@ -33,170 +33,1070 @@
     "level": 3,
     "tier": "T1",
     "appearance": "나무",
-    "attack_power": 45,
+    "attack_power": 5,
     "attack_speed": 1,
-    "dps": 45,
-    "cost": 20,
-    "cumulative_cost": 35
+    "dps": 5,
+    "cost": 15,
+    "cumulative_cost": 30
   },
   {
     "level": 4,
     "tier": "T1",
     "appearance": "나무",
-    "attack_power": 71,
+    "attack_power": 6,
     "attack_speed": 1,
-    "dps": 71,
-    "cost": 35,
-    "cumulative_cost": 70
+    "dps": 6,
+    "cost": 20,
+    "cumulative_cost": 50
   },
   {
     "level": 5,
     "tier": "T2",
     "appearance": "돌",
-    "attack_power": 110,
+    "attack_power": 9,
     "attack_speed": 1,
-    "dps": 110,
-    "cost": 60,
-    "cumulative_cost": 130
+    "dps": 9,
+    "cost": 40,
+    "cumulative_cost": 90
   },
   {
     "level": 6,
     "tier": "T2",
     "appearance": "돌",
-    "attack_power": 168,
+    "attack_power": 12,
     "attack_speed": 1,
-    "dps": 168,
-    "cost": 100,
-    "cumulative_cost": 230
+    "dps": 12,
+    "cost": 50,
+    "cumulative_cost": 140
   },
   {
     "level": 7,
     "tier": "T2",
     "appearance": "돌",
-    "attack_power": 253,
+    "attack_power": 15,
     "attack_speed": 1,
-    "dps": 253,
-    "cost": 170,
-    "cumulative_cost": 400
+    "dps": 15,
+    "cost": 60,
+    "cumulative_cost": 200
   },
   {
     "level": 8,
     "tier": "T2",
     "appearance": "돌",
-    "attack_power": 377,
+    "attack_power": 18,
     "attack_speed": 1,
-    "dps": 377,
-    "cost": 280,
-    "cumulative_cost": 680
+    "dps": 18,
+    "cost": 70,
+    "cumulative_cost": 270
   },
   {
     "level": 9,
     "tier": "T2",
     "appearance": "돌",
-    "attack_power": 555,
+    "attack_power": 21,
     "attack_speed": 1,
-    "dps": 555,
-    "cost": 450,
-    "cumulative_cost": 1130
+    "dps": 21,
+    "cost": 80,
+    "cumulative_cost": 350
   },
   {
     "level": 10,
     "tier": "T3",
-    "appearance": "철",
-    "attack_power": 804,
+    "appearance": "구리",
+    "attack_power": 31,
     "attack_speed": 1,
-    "dps": 804,
-    "cost": 750,
-    "cumulative_cost": 1880
+    "dps": 31,
+    "cost": 160,
+    "cumulative_cost": 510
   },
   {
     "level": 11,
     "tier": "T3",
-    "appearance": "철",
-    "attack_power": 1152,
+    "appearance": "구리",
+    "attack_power": 38,
     "attack_speed": 1,
-    "dps": 1152,
-    "cost": 1250,
-    "cumulative_cost": 3130
+    "dps": 38,
+    "cost": 180,
+    "cumulative_cost": 690
   },
   {
     "level": 12,
     "tier": "T3",
-    "appearance": "철",
-    "attack_power": 1638,
+    "appearance": "구리",
+    "attack_power": 45,
     "attack_speed": 1,
-    "dps": 1638,
-    "cost": 2100,
-    "cumulative_cost": 5230
+    "dps": 45,
+    "cost": 200,
+    "cumulative_cost": 890
   },
   {
     "level": 13,
     "tier": "T3",
-    "appearance": "철",
-    "attack_power": 2310,
+    "appearance": "구리",
+    "attack_power": 52,
     "attack_speed": 1,
-    "dps": 2310,
-    "cost": 3500,
-    "cumulative_cost": 8730
+    "dps": 52,
+    "cost": 220,
+    "cumulative_cost": 1110
   },
   {
     "level": 14,
     "tier": "T3",
-    "appearance": "철",
-    "attack_power": 3235,
+    "appearance": "구리",
+    "attack_power": 59,
     "attack_speed": 1,
-    "dps": 3235,
-    "cost": 5900,
-    "cumulative_cost": 14630
+    "dps": 59,
+    "cost": 240,
+    "cumulative_cost": 1350
   },
   {
     "level": 15,
     "tier": "T4",
-    "appearance": "금",
-    "attack_power": 4497,
+    "appearance": "철",
+    "attack_power": 31,
     "attack_speed": 1,
-    "dps": 4497,
-    "cost": 10000,
-    "cumulative_cost": 24630
+    "dps": 31,
+    "cost": 160,
+    "cumulative_cost": 510
   },
   {
     "level": 16,
     "tier": "T4",
-    "appearance": "금",
-    "attack_power": 6208,
+    "appearance": "철",
+    "attack_power": 46,
     "attack_speed": 1,
-    "dps": 6208,
-    "cost": 17000,
-    "cumulative_cost": 41630
+    "dps": 46,
+    "cost": 200,
+    "cumulative_cost": 710
   },
   {
     "level": 17,
     "tier": "T4",
-    "appearance": "금",
-    "attack_power": 8524,
+    "appearance": "철",
+    "attack_power": 61,
     "attack_speed": 1,
-    "dps": 8524,
-    "cost": 29000,
-    "cumulative_cost": 70630
+    "dps": 61,
+    "cost": 240,
+    "cumulative_cost": 950
   },
   {
     "level": 18,
     "tier": "T4",
-    "appearance": "금",
-    "attack_power": 11653,
+    "appearance": "철",
+    "attack_power": 76,
     "attack_speed": 1,
-    "dps": 11653,
-    "cost": 50000,
-    "cumulative_cost": 120630
+    "dps": 76,
+    "cost": 280,
+    "cumulative_cost": 1230
   },
   {
     "level": 19,
     "tier": "T4",
-    "appearance": "금",
-    "attack_power": 15851,
+    "appearance": "철",
+    "attack_power": 91,
     "attack_speed": 1,
-    "dps": 15851,
-    "cost": 85000,
-    "cumulative_cost": 205630
+    "dps": 91,
+    "cost": 320,
+    "cumulative_cost": 1550
+  },
+  {
+    "level": 20,
+    "tier": "T5",
+    "appearance": "금",
+    "attack_power": 136,
+    "attack_speed": 1,
+    "dps": 136,
+    "cost": 640,
+    "cumulative_cost": 2190
+  },
+  {
+    "level": 21,
+    "tier": "T5",
+    "appearance": "금",
+    "attack_power": 167,
+    "attack_speed": 1,
+    "dps": 167,
+    "cost": 720,
+    "cumulative_cost": 2910
+  },
+  {
+    "level": 22,
+    "tier": "T5",
+    "appearance": "금",
+    "attack_power": 198,
+    "attack_speed": 1,
+    "dps": 198,
+    "cost": 800,
+    "cumulative_cost": 3710
+  },
+  {
+    "level": 23,
+    "tier": "T5",
+    "appearance": "금",
+    "attack_power": 229,
+    "attack_speed": 1,
+    "dps": 229,
+    "cost": 880,
+    "cumulative_cost": 4590
+  },
+  {
+    "level": 24,
+    "tier": "T5",
+    "appearance": "금",
+    "attack_power": 260,
+    "attack_speed": 1,
+    "dps": 260,
+    "cost": 960,
+    "cumulative_cost": 5550
+  },
+  {
+    "level": 25,
+    "tier": "T6",
+    "appearance": "미스릴",
+    "attack_power": 390,
+    "attack_speed": 1,
+    "dps": 390,
+    "cost": 1920,
+    "cumulative_cost": 7470
+  },
+  {
+    "level": 26,
+    "tier": "T6",
+    "appearance": "미스릴",
+    "attack_power": 453,
+    "attack_speed": 1,
+    "dps": 453,
+    "cost": 2080,
+    "cumulative_cost": 9550
+  },
+  {
+    "level": 27,
+    "tier": "T6",
+    "appearance": "미스릴",
+    "attack_power": 516,
+    "attack_speed": 1,
+    "dps": 516,
+    "cost": 2240,
+    "cumulative_cost": 11790
+  },
+  {
+    "level": 28,
+    "tier": "T6",
+    "appearance": "미스릴",
+    "attack_power": 579,
+    "attack_speed": 1,
+    "dps": 579,
+    "cost": 2400,
+    "cumulative_cost": 14190
+  },
+  {
+    "level": 29,
+    "tier": "T6",
+    "appearance": "미스릴",
+    "attack_power": 642,
+    "attack_speed": 1,
+    "dps": 642,
+    "cost": 2560,
+    "cumulative_cost": 16750
+  },
+  {
+    "level": 30,
+    "tier": "T7",
+    "appearance": "적철",
+    "attack_power": 963,
+    "attack_speed": 1,
+    "dps": 963,
+    "cost": 5120,
+    "cumulative_cost": 21870
+  },
+  {
+    "level": 31,
+    "tier": "T7",
+    "appearance": "적철",
+    "attack_power": 1090,
+    "attack_speed": 1,
+    "dps": 1090,
+    "cost": 5440,
+    "cumulative_cost": 27310
+  },
+  {
+    "level": 32,
+    "tier": "T7",
+    "appearance": "적철",
+    "attack_power": 1217,
+    "attack_speed": 1,
+    "dps": 1217,
+    "cost": 5760,
+    "cumulative_cost": 33070
+  },
+  {
+    "level": 33,
+    "tier": "T7",
+    "appearance": "적철",
+    "attack_power": 1344,
+    "attack_speed": 1,
+    "dps": 1344,
+    "cost": 6080,
+    "cumulative_cost": 39150
+  },
+  {
+    "level": 34,
+    "tier": "T7",
+    "appearance": "적철",
+    "attack_power": 1471,
+    "attack_speed": 1,
+    "dps": 1471,
+    "cost": 6400,
+    "cumulative_cost": 45550
+  },
+  {
+    "level": 35,
+    "tier": "T8",
+    "appearance": "티타늄",
+    "attack_power": 2206,
+    "attack_speed": 1,
+    "dps": 2206,
+    "cost": 12800,
+    "cumulative_cost": 58350
+  },
+  {
+    "level": 36,
+    "tier": "T8",
+    "appearance": "티타늄",
+    "attack_power": 2461,
+    "attack_speed": 1,
+    "dps": 2461,
+    "cost": 13440,
+    "cumulative_cost": 71790
+  },
+  {
+    "level": 37,
+    "tier": "T8",
+    "appearance": "티타늄",
+    "attack_power": 2716,
+    "attack_speed": 1,
+    "dps": 2716,
+    "cost": 14080,
+    "cumulative_cost": 85870
+  },
+  {
+    "level": 38,
+    "tier": "T8",
+    "appearance": "티타늄",
+    "attack_power": 2971,
+    "attack_speed": 1,
+    "dps": 2971,
+    "cost": 14720,
+    "cumulative_cost": 100590
+  },
+  {
+    "level": 39,
+    "tier": "T8",
+    "appearance": "티타늄",
+    "attack_power": 3226,
+    "attack_speed": 1,
+    "dps": 3226,
+    "cost": 15360,
+    "cumulative_cost": 115950
+  },
+  {
+    "level": 40,
+    "tier": "T9",
+    "appearance": "다이아몬드",
+    "attack_power": 4839,
+    "attack_speed": 1,
+    "dps": 4839,
+    "cost": 30720,
+    "cumulative_cost": 146670
+  },
+  {
+    "level": 41,
+    "tier": "T9",
+    "appearance": "다이아몬드",
+    "attack_power": 5350,
+    "attack_speed": 1,
+    "dps": 5350,
+    "cost": 32000,
+    "cumulative_cost": 178670
+  },
+  {
+    "level": 42,
+    "tier": "T9",
+    "appearance": "다이아몬드",
+    "attack_power": 5861,
+    "attack_speed": 1,
+    "dps": 5861,
+    "cost": 33280,
+    "cumulative_cost": 211950
+  },
+  {
+    "level": 43,
+    "tier": "T9",
+    "appearance": "다이아몬드",
+    "attack_power": 6372,
+    "attack_speed": 1,
+    "dps": 6372,
+    "cost": 34560,
+    "cumulative_cost": 246510
+  },
+  {
+    "level": 44,
+    "tier": "T9",
+    "appearance": "다이아몬드",
+    "attack_power": 6883,
+    "attack_speed": 1,
+    "dps": 6883,
+    "cost": 35840,
+    "cumulative_cost": 282350
+  },
+  {
+    "level": 45,
+    "tier": "T10",
+    "appearance": "흑요석",
+    "attack_power": 10324,
+    "attack_speed": 1,
+    "dps": 10324,
+    "cost": 71680,
+    "cumulative_cost": 354030
+  },
+  {
+    "level": 46,
+    "tier": "T10",
+    "appearance": "흑요석",
+    "attack_power": 11347,
+    "attack_speed": 1,
+    "dps": 11347,
+    "cost": 74240,
+    "cumulative_cost": 428270
+  },
+  {
+    "level": 47,
+    "tier": "T10",
+    "appearance": "흑요석",
+    "attack_power": 12370,
+    "attack_speed": 1,
+    "dps": 12370,
+    "cost": 76800,
+    "cumulative_cost": 505070
+  },
+  {
+    "level": 48,
+    "tier": "T10",
+    "appearance": "흑요석",
+    "attack_power": 13393,
+    "attack_speed": 1,
+    "dps": 13393,
+    "cost": 79360,
+    "cumulative_cost": 584430
+  },
+  {
+    "level": 49,
+    "tier": "T10",
+    "appearance": "흑요석",
+    "attack_power": 14416,
+    "attack_speed": 1,
+    "dps": 14416,
+    "cost": 81920,
+    "cumulative_cost": 666350
+  },
+  {
+    "level": 50,
+    "tier": "T11",
+    "appearance": "오리하르콘",
+    "attack_power": 21624,
+    "attack_speed": 1,
+    "dps": 21624,
+    "cost": 163840,
+    "cumulative_cost": 830190
+  },
+  {
+    "level": 51,
+    "tier": "T11",
+    "appearance": "오리하르콘",
+    "attack_power": 23671,
+    "attack_speed": 1,
+    "dps": 23671,
+    "cost": 168960,
+    "cumulative_cost": 999150
+  },
+  {
+    "level": 52,
+    "tier": "T11",
+    "appearance": "오리하르콘",
+    "attack_power": 25718,
+    "attack_speed": 1,
+    "dps": 25718,
+    "cost": 174080,
+    "cumulative_cost": 1173230
+  },
+  {
+    "level": 53,
+    "tier": "T11",
+    "appearance": "오리하르콘",
+    "attack_power": 27765,
+    "attack_speed": 1,
+    "dps": 27765,
+    "cost": 179200,
+    "cumulative_cost": 1352430
+  },
+  {
+    "level": 54,
+    "tier": "T11",
+    "appearance": "오리하르콘",
+    "attack_power": 29812,
+    "attack_speed": 1,
+    "dps": 29812,
+    "cost": 184320,
+    "cumulative_cost": 1536750
+  },
+  {
+    "level": 55,
+    "tier": "T12",
+    "appearance": "토파즈",
+    "attack_power": 44718,
+    "attack_speed": 1,
+    "dps": 44718,
+    "cost": 368640,
+    "cumulative_cost": 1905390
+  },
+  {
+    "level": 56,
+    "tier": "T12",
+    "appearance": "토파즈",
+    "attack_power": 48813,
+    "attack_speed": 1,
+    "dps": 48813,
+    "cost": 378880,
+    "cumulative_cost": 2284270
+  },
+  {
+    "level": 57,
+    "tier": "T12",
+    "appearance": "토파즈",
+    "attack_power": 52908,
+    "attack_speed": 1,
+    "dps": 52908,
+    "cost": 389120,
+    "cumulative_cost": 2673390
+  },
+  {
+    "level": 58,
+    "tier": "T12",
+    "appearance": "토파즈",
+    "attack_power": 57003,
+    "attack_speed": 1,
+    "dps": 57003,
+    "cost": 399360,
+    "cumulative_cost": 3072750
+  },
+  {
+    "level": 59,
+    "tier": "T12",
+    "appearance": "토파즈",
+    "attack_power": 61098,
+    "attack_speed": 1,
+    "dps": 61098,
+    "cost": 409600,
+    "cumulative_cost": 3482350
+  },
+  {
+    "level": 60,
+    "tier": "T13",
+    "appearance": "문스톤",
+    "attack_power": 91647,
+    "attack_speed": 1,
+    "dps": 91647,
+    "cost": 819200,
+    "cumulative_cost": 4301550
+  },
+  {
+    "level": 61,
+    "tier": "T13",
+    "appearance": "문스톤",
+    "attack_power": 99838,
+    "attack_speed": 1,
+    "dps": 99838,
+    "cost": 839680,
+    "cumulative_cost": 5141230
+  },
+  {
+    "level": 62,
+    "tier": "T13",
+    "appearance": "문스톤",
+    "attack_power": 108029,
+    "attack_speed": 1,
+    "dps": 108029,
+    "cost": 860160,
+    "cumulative_cost": 6001390
+  },
+  {
+    "level": 63,
+    "tier": "T13",
+    "appearance": "문스톤",
+    "attack_power": 116220,
+    "attack_speed": 1,
+    "dps": 116220,
+    "cost": 880640,
+    "cumulative_cost": 6882030
+  },
+  {
+    "level": 64,
+    "tier": "T13",
+    "appearance": "문스톤",
+    "attack_power": 124411,
+    "attack_speed": 1,
+    "dps": 124411,
+    "cost": 901120,
+    "cumulative_cost": 7783150
+  },
+  {
+    "level": 65,
+    "tier": "T14",
+    "appearance": "샤투카이트",
+    "attack_power": 186616,
+    "attack_speed": 1,
+    "dps": 186616,
+    "cost": 1802240,
+    "cumulative_cost": 9585390
+  },
+  {
+    "level": 66,
+    "tier": "T14",
+    "appearance": "샤투카이트",
+    "attack_power": 202999,
+    "attack_speed": 1,
+    "dps": 202999,
+    "cost": 1843200,
+    "cumulative_cost": 11428590
+  },
+  {
+    "level": 67,
+    "tier": "T14",
+    "appearance": "샤투카이트",
+    "attack_power": 219382,
+    "attack_speed": 1,
+    "dps": 219382,
+    "cost": 1884160,
+    "cumulative_cost": 13312750
+  },
+  {
+    "level": 68,
+    "tier": "T14",
+    "appearance": "샤투카이트",
+    "attack_power": 235765,
+    "attack_speed": 1,
+    "dps": 235765,
+    "cost": 1925120,
+    "cumulative_cost": 15237870
+  },
+  {
+    "level": 69,
+    "tier": "T14",
+    "appearance": "샤투카이트",
+    "attack_power": 252148,
+    "attack_speed": 1,
+    "dps": 252148,
+    "cost": 1966080,
+    "cumulative_cost": 17203950
+  },
+  {
+    "level": 70,
+    "tier": "T15",
+    "appearance": "썬스톤",
+    "attack_power": 378222,
+    "attack_speed": 1,
+    "dps": 378222,
+    "cost": 3932160,
+    "cumulative_cost": 21136110
+  },
+  {
+    "level": 71,
+    "tier": "T15",
+    "appearance": "썬스톤",
+    "attack_power": 410989,
+    "attack_speed": 1,
+    "dps": 410989,
+    "cost": 4014080,
+    "cumulative_cost": 25150190
+  },
+  {
+    "level": 72,
+    "tier": "T15",
+    "appearance": "썬스톤",
+    "attack_power": 443756,
+    "attack_speed": 1,
+    "dps": 443756,
+    "cost": 4096000,
+    "cumulative_cost": 29246190
+  },
+  {
+    "level": 73,
+    "tier": "T15",
+    "appearance": "썬스톤",
+    "attack_power": 476523,
+    "attack_speed": 1,
+    "dps": 476523,
+    "cost": 4177920,
+    "cumulative_cost": 33424110
+  },
+  {
+    "level": 74,
+    "tier": "T15",
+    "appearance": "썬스톤",
+    "attack_power": 509290,
+    "attack_speed": 1,
+    "dps": 509290,
+    "cost": 4259840,
+    "cumulative_cost": 37683950
+  },
+  {
+    "level": 75,
+    "tier": "T16",
+    "appearance": "아마조나이트",
+    "attack_power": 763935,
+    "attack_speed": 1,
+    "dps": 763935,
+    "cost": 8519680,
+    "cumulative_cost": 46203630
+  },
+  {
+    "level": 76,
+    "tier": "T16",
+    "appearance": "아마조나이트",
+    "attack_power": 829470,
+    "attack_speed": 1,
+    "dps": 829470,
+    "cost": 8683520,
+    "cumulative_cost": 54887150
+  },
+  {
+    "level": 77,
+    "tier": "T16",
+    "appearance": "아마조나이트",
+    "attack_power": 895005,
+    "attack_speed": 1,
+    "dps": 895005,
+    "cost": 8847360,
+    "cumulative_cost": 63734510
+  },
+  {
+    "level": 78,
+    "tier": "T16",
+    "appearance": "아마조나이트",
+    "attack_power": 960540,
+    "attack_speed": 1,
+    "dps": 960540,
+    "cost": 9011200,
+    "cumulative_cost": 72745710
+  },
+  {
+    "level": 79,
+    "tier": "T16",
+    "appearance": "아마조나이트",
+    "attack_power": 1026075,
+    "attack_speed": 1,
+    "dps": 1026075,
+    "cost": 9175040,
+    "cumulative_cost": 81920750
+  },
+  {
+    "level": 80,
+    "tier": "T17",
+    "appearance": "용암석",
+    "attack_power": 1539112,
+    "attack_speed": 1,
+    "dps": 1539112,
+    "cost": 18350080,
+    "cumulative_cost": 100270830
+  },
+  {
+    "level": 81,
+    "tier": "T17",
+    "appearance": "용암석",
+    "attack_power": 1670183,
+    "attack_speed": 1,
+    "dps": 1670183,
+    "cost": 18677760,
+    "cumulative_cost": 118948590
+  },
+  {
+    "level": 82,
+    "tier": "T17",
+    "appearance": "용암석",
+    "attack_power": 1801254,
+    "attack_speed": 1,
+    "dps": 1801254,
+    "cost": 19005440,
+    "cumulative_cost": 137954030
+  },
+  {
+    "level": 83,
+    "tier": "T17",
+    "appearance": "용암석",
+    "attack_power": 1932325,
+    "attack_speed": 1,
+    "dps": 1932325,
+    "cost": 19333120,
+    "cumulative_cost": 157287150
+  },
+  {
+    "level": 84,
+    "tier": "T17",
+    "appearance": "용암석",
+    "attack_power": 2063396,
+    "attack_speed": 1,
+    "dps": 2063396,
+    "cost": 19660800,
+    "cumulative_cost": 176947950
+  },
+  {
+    "level": 85,
+    "tier": "T18",
+    "appearance": "빙결석",
+    "attack_power": 3095094,
+    "attack_speed": 1,
+    "dps": 3095094,
+    "cost": 39321600,
+    "cumulative_cost": 216269550
+  },
+  {
+    "level": 86,
+    "tier": "T18",
+    "appearance": "빙결석",
+    "attack_power": 3357237,
+    "attack_speed": 1,
+    "dps": 3357237,
+    "cost": 39976960,
+    "cumulative_cost": 256246510
+  },
+  {
+    "level": 87,
+    "tier": "T18",
+    "appearance": "빙결석",
+    "attack_power": 3619380,
+    "attack_speed": 1,
+    "dps": 3619380,
+    "cost": 40632320,
+    "cumulative_cost": 296878830
+  },
+  {
+    "level": 88,
+    "tier": "T18",
+    "appearance": "빙결석",
+    "attack_power": 3881523,
+    "attack_speed": 1,
+    "dps": 3881523,
+    "cost": 41287680,
+    "cumulative_cost": 338166510
+  },
+  {
+    "level": 89,
+    "tier": "T18",
+    "appearance": "빙결석",
+    "attack_power": 4143666,
+    "attack_speed": 1,
+    "dps": 4143666,
+    "cost": 41943040,
+    "cumulative_cost": 380109550
+  },
+  {
+    "level": 90,
+    "tier": "T19",
+    "appearance": "우뢰석",
+    "attack_power": 6215499,
+    "attack_speed": 1,
+    "dps": 6215499,
+    "cost": 83886080,
+    "cumulative_cost": 463995630
+  },
+  {
+    "level": 91,
+    "tier": "T19",
+    "appearance": "우뢰석",
+    "attack_power": 6739786,
+    "attack_speed": 1,
+    "dps": 6739786,
+    "cost": 85196800,
+    "cumulative_cost": 549192430
+  },
+  {
+    "level": 92,
+    "tier": "T19",
+    "appearance": "우뢰석",
+    "attack_power": 7264073,
+    "attack_speed": 1,
+    "dps": 7264073,
+    "cost": 86507520,
+    "cumulative_cost": 635699950
+  },
+  {
+    "level": 93,
+    "tier": "T19",
+    "appearance": "우뢰석",
+    "attack_power": 7788360,
+    "attack_speed": 1,
+    "dps": 7788360,
+    "cost": 87818240,
+    "cumulative_cost": 723518190
+  },
+  {
+    "level": 94,
+    "tier": "T19",
+    "appearance": "우뢰석",
+    "attack_power": 8312647,
+    "attack_speed": 1,
+    "dps": 8312647,
+    "cost": 89128960,
+    "cumulative_cost": 812647150
+  },
+  {
+    "level": 95,
+    "tier": "T20",
+    "appearance": "천상석",
+    "attack_power": 12468970,
+    "attack_speed": 1,
+    "dps": 12468970,
+    "cost": 178257920,
+    "cumulative_cost": 990905070
+  },
+  {
+    "level": 96,
+    "tier": "T20",
+    "appearance": "천상석",
+    "attack_power": 13517545,
+    "attack_speed": 1,
+    "dps": 13517545,
+    "cost": 180879360,
+    "cumulative_cost": 1171784430
+  },
+  {
+    "level": 97,
+    "tier": "T20",
+    "appearance": "천상석",
+    "attack_power": 14566120,
+    "attack_speed": 1,
+    "dps": 14566120,
+    "cost": 183500800,
+    "cumulative_cost": 1355285230
+  },
+  {
+    "level": 98,
+    "tier": "T20",
+    "appearance": "천상석",
+    "attack_power": 15614695,
+    "attack_speed": 1,
+    "dps": 15614695,
+    "cost": 186122240,
+    "cumulative_cost": 1541407470
+  },
+  {
+    "level": 99,
+    "tier": "T20",
+    "appearance": "천상석",
+    "attack_power": 16663270,
+    "attack_speed": 1,
+    "dps": 16663270,
+    "cost": 188743680,
+    "cumulative_cost": 1730151150
+  },
+  {
+    "level": 100,
+    "tier": "T21",
+    "appearance": "행성파괴",
+    "attack_power": 24994905,
+    "attack_speed": 1,
+    "dps": 24994905,
+    "cost": 377487360,
+    "cumulative_cost": 2107638510
+  },
+  {
+    "level": 101,
+    "tier": "T21",
+    "appearance": "행성파괴",
+    "attack_power": 27092056,
+    "attack_speed": 1,
+    "dps": 27092056,
+    "cost": 382730240,
+    "cumulative_cost": 2490368750
+  },
+  {
+    "level": 102,
+    "tier": "T21",
+    "appearance": "행성파괴",
+    "attack_power": 29189207,
+    "attack_speed": 1,
+    "dps": 29189207,
+    "cost": 387973120,
+    "cumulative_cost": 2878341870
+  },
+  {
+    "level": 103,
+    "tier": "T21",
+    "appearance": "행성파괴",
+    "attack_power": 31286358,
+    "attack_speed": 1,
+    "dps": 31286358,
+    "cost": 393216000,
+    "cumulative_cost": 3271557870
+  },
+  {
+    "level": 104,
+    "tier": "T21",
+    "appearance": "행성파괴",
+    "attack_power": 33383509,
+    "attack_speed": 1,
+    "dps": 33383509,
+    "cost": 398458880,
+    "cumulative_cost": 3670016750
+  },
+  {
+    "level": 105,
+    "tier": "T22",
+    "appearance": "초신성",
+    "attack_power": 50075263,
+    "attack_speed": 1,
+    "dps": 50075263,
+    "cost": 796917760,
+    "cumulative_cost": 4466934510
+  },
+  {
+    "level": 106,
+    "tier": "T22",
+    "appearance": "초신성",
+    "attack_power": 54269566,
+    "attack_speed": 1,
+    "dps": 54269566,
+    "cost": 807403520,
+    "cumulative_cost": 5274338030
+  },
+  {
+    "level": 107,
+    "tier": "T22",
+    "appearance": "초신성",
+    "attack_power": 58463869,
+    "attack_speed": 1,
+    "dps": 58463869,
+    "cost": 817889280,
+    "cumulative_cost": 6092227310
+  },
+  {
+    "level": 108,
+    "tier": "T22",
+    "appearance": "초신성",
+    "attack_power": 62658172,
+    "attack_speed": 1,
+    "dps": 62658172,
+    "cost": 828375040,
+    "cumulative_cost": 6920602350
+  },
+  {
+    "level": 109,
+    "tier": "T22",
+    "appearance": "초신성",
+    "attack_power": 66852475,
+    "attack_speed": 1,
+    "dps": 66852475,
+    "cost": 838860800,
+    "cumulative_cost": 7759463150
   }
 ]
