@@ -23,13 +23,14 @@ public:
         uint64_t final_total_dps{0};  // 모든 슬롯의 총 DPS
         uint32_t pity_bonus{0}; // basis 10000
         double base_rate{0.0};
-        double bonus_rate{0.0};
-        double final_rate{0.0};
+        double bonus_rate{0.0}; // after this attempt (pity)
+        double final_rate{0.0}; // base + bonus after this attempt
     };
 
     UpgradeAttemptResult try_upgrade_with_probability(const std::string& user_id,
                                                       uint32_t slot_index,
                                                       uint32_t target_level,
+                                                      uint32_t target_tier,
                                                       uint64_t target_attack_power,
                                                       uint32_t target_attack_speed_x100,
                                                       uint64_t target_dps,

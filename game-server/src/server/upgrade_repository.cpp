@@ -1,6 +1,7 @@
 #include "upgrade_repository.h"
 #include <pqxx/pqxx>
 #include <spdlog/spdlog.h>
+#include <algorithm>
 #include <random>
 #include <cmath>
 
@@ -16,6 +17,7 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
     const std::string& user_id,
     uint32_t slot_index,
     uint32_t target_level,
+    uint32_t target_tier,
     uint64_t target_attack_power,
     uint32_t target_attack_speed_x100,
     uint64_t target_dps,
@@ -40,8 +42,8 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
         }
 
         uint32_t current_level = slot_row[0][0].as<uint32_t>();
-        uint32_t tier = slot_row[0][1].as<uint32_t>();
-        uint32_t current_pity = slot_row[0][2].as<uint32_t>();
+        uint32_t current_tier = slot_row[0][1].as<uint32_t>();
+        uint32_t current_pity_bp = slot_row[0][2].as<uint32_t>();
         uint64_t current_attack_power = slot_row[0][3].as<int64_t>();
         uint32_t current_attack_speed_x100 = slot_row[0][4].as<uint32_t>();
         uint32_t critical_hit_percent = slot_row[0][5].as<uint32_t>();
@@ -49,7 +51,7 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
         uint64_t current_dps = slot_row[0][7].as<int64_t>();
 
         res.final_level = current_level;
-        res.final_tier = tier;
+        res.final_tier = current_tier;
         res.final_attack_power = current_attack_power;
         res.final_attack_speed_x100 = current_attack_speed_x100;
         res.final_critical_hit_percent = critical_hit_percent;
@@ -77,15 +79,15 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
             return res;
         }
 
-        // 확률 계산
-        double base_rate = clamp(std::max(rules.base_rate(tier), rules.min_rate), 0.0, 1.0);
-        double pity_rate = static_cast<double>(current_pity) / 10000.0;
-        double final_rate = clamp(base_rate + pity_rate, 0.0, 1.0);
-        double bonus_rate = rules.bonus_rate;
+        // 확률 계산 (메타데이터 티어 기준)
+        uint32_t clamped_pity_bp = std::min<uint32_t>(10000, current_pity_bp);
+        double base_rate = clamp(std::max(rules.base_rate(target_tier), rules.min_rate), 0.0, 1.0);
+        double current_bonus_rate = static_cast<double>(clamped_pity_bp) / 10000.0;
+        double attempt_final_rate = clamp(base_rate + current_bonus_rate, 0.0, 1.0);
 
         static thread_local std::mt19937 rng(std::random_device{}());
         std::uniform_real_distribution<double> dist(0.0, 1.0);
-        bool success = dist(rng) < final_rate;
+        bool success = dist(rng) < attempt_final_rate;
 
         // 골드 차감
         auto gold_update = tx.exec_params(
@@ -111,7 +113,7 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
                                   * (1.0 + crit_rate * (crit_damage_multiplier - 1.0));
 
             res.final_level = target_level;
-            res.final_tier = tier;
+            res.final_tier = target_tier;
             res.final_attack_power = target_attack_power;
             res.final_attack_speed_x100 = target_attack_speed_x100;
             res.final_critical_hit_percent = critical_hit_percent;
@@ -125,7 +127,7 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
                 "SET level = $3, tier = $4, attack_power = $5, attack_speed_x100 = $6, "
                 "    dps = $7, pity_bonus = $8, last_upgraded_at = NOW() "
                 "WHERE user_id = $1 AND slot_index = $2",
-                user_id, slot_index, target_level, tier,
+                user_id, slot_index, target_level, target_tier,
                 static_cast<int64_t>(target_attack_power), target_attack_speed_x100,
                 static_cast<int64_t>(res.final_dps), new_pity);
 
@@ -144,8 +146,8 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
                 user_id, target_level, static_cast<int64_t>(res.final_total_dps));
         } else {
             // 실패 시 기본확률 * bonus_rate 만큼 누적, 상한 10000
-            uint32_t increment = static_cast<uint32_t>(std::lround(base_rate * bonus_rate * 10000.0));
-            new_pity = std::min<uint32_t>(10000, current_pity + increment);
+            uint32_t increment = static_cast<uint32_t>(std::lround(base_rate * rules.bonus_rate * 10000.0));
+            new_pity = std::min<uint32_t>(10000, clamped_pity_bp + increment);
             tx.exec_params(
                 "UPDATE game_schema.pickaxe_slots "
                 "SET pity_bonus = $3, updated_at = NOW(), last_upgraded_at = NOW() "
@@ -158,8 +160,8 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
         res.success = success;
         res.pity_bonus = new_pity;
         res.base_rate = base_rate;
-        res.bonus_rate = bonus_rate;
-        res.final_rate = final_rate;
+        res.bonus_rate = static_cast<double>(new_pity) / 10000.0;
+        res.final_rate = clamp(res.base_rate + res.bonus_rate, 0.0, 1.0);
     } catch (const std::exception& ex) {
         spdlog::error("try_upgrade_with_probability failed for user {} slot {}: {}", user_id, slot_index, ex.what());
     }

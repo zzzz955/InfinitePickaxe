@@ -21,7 +21,7 @@ infinitepickaxe::UpgradeResult UpgradeService::handle_upgrade(const std::string&
 
     const auto& rules = meta_.upgrade_rules();
     auto repo_result = repo_.try_upgrade_with_probability(
-        user_id, slot_index, target_level,
+        user_id, slot_index, target_level, pl->tier,
         attack_power, attack_speed_x100, dps, cost, rules);
 
     res.set_success(repo_result.success);
@@ -37,7 +37,7 @@ infinitepickaxe::UpgradeResult UpgradeService::handle_upgrade(const std::string&
     res.set_remaining_gold(repo_result.remaining_gold);
     auto to_bp = [](double v) { return static_cast<uint32_t>(std::lround(v * 10000.0)); };
     res.set_base_rate_bp(to_bp(repo_result.base_rate));
-    res.set_bonus_rate_bp(to_bp(rules.bonus_rate));
+    res.set_bonus_rate_bp(to_bp(repo_result.bonus_rate));
     res.set_final_rate_bp(to_bp(repo_result.final_rate));
     res.set_pity_bonus(repo_result.pity_bonus);
 

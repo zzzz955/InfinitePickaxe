@@ -56,7 +56,8 @@ void Session::update_mining_tick(float delta_ms) {
 
     // 채굴 완료 체크
     if (mining_state_.current_hp == 0) {
-        // 즉시 채굴 완료 푸시 (틱과 무관)
+        // 마지막 타격까지 반영된 업데이트 전달 후 완료 통보
+        send_mining_update(attacks);
         handle_mining_complete_immediate();
         return;
     }
