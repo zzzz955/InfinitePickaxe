@@ -95,6 +95,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private GameTabManager tabManager;
         private MessageHandler messageHandler;
         private bool isRespawning = false;
+        private bool isPreparingMineral = false;
         private bool hpLayoutFixed = false;
         private bool cacheSubscribed = false;
         [SerializeField] private float hpSliderDefaultWidth = 800f;
@@ -392,7 +393,15 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (mineInfoText != null)
             {
-                var status = isRespawning ? "(리스폰 중)" : "";
+                string status = string.Empty;
+                if (isPreparingMineral)
+                {
+                    status = "(준비 중)";
+                }
+                else if (isRespawning)
+                {
+                    status = "(리스폰 중)";
+                }
                 mineInfoText.text = $"채굴 중: {currentMineralName} {status}";
             }
         }
@@ -1161,6 +1170,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void HandleUserDataSnapshot(UserDataSnapshot snapshot)
         {
             hasServerState = true;
+            isPreparingMineral = false;
 
             pickaxeCache?.UpdateFromSnapshot(snapshot);
             SyncSlotsFromCache();
@@ -1220,6 +1230,7 @@ namespace InfinitePickaxe.Client.UI.Game
             maxHP = update.MaxHp;
             currentMineralId = update.MineralId;
             currentMineralName = GetMineralName(update.MineralId);
+            isPreparingMineral = false;
 
             // 서버가 채굴 중단 상태라면 HP 0/0으로 유지
             if (update.MaxHp == 0)
@@ -1261,6 +1272,7 @@ namespace InfinitePickaxe.Client.UI.Game
             Debug.Log($"채굴 완료! 광물 #{complete.MineralId}, 획득 골드: {complete.GoldEarned}");
 
             // 다음 광물 자동 시작 (서버에서 MiningUpdate가 올 것임) 전까지 리스폰 상태 표시
+            isPreparingMineral = false;
             isRespawning = true;
             currentHP = 0;
             UpdateMineInfo();
@@ -1331,6 +1343,7 @@ namespace InfinitePickaxe.Client.UI.Game
                     currentHP = 0;
                     maxHP = 0;
                     isRespawning = false;
+                    isPreparingMineral = false;
                 }
                 else
                 {
@@ -1339,6 +1352,7 @@ namespace InfinitePickaxe.Client.UI.Game
                     currentHP = response.MineralHp;
                     maxHP = response.MineralMaxHp;
                     isRespawning = false;
+                    isPreparingMineral = true; // 서버의 첫 MiningUpdate가 도착하기 전까지 준비 상태
                 }
 
                 RefreshData();
@@ -1348,6 +1362,7 @@ namespace InfinitePickaxe.Client.UI.Game
             else
             {
                 Debug.LogWarning($"광물 변경 실패: {response.ErrorCode}");
+                isPreparingMineral = false;
             }
         }
 

@@ -50,6 +50,9 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private ulong nextAttack;
         [SerializeField] private ulong upgradeCost;
         [SerializeField] private float upgradeChancePercent = 100f;
+        [SerializeField] private uint baseRateBp;
+        [SerializeField] private uint pityBonusBp;
+        [SerializeField] private uint finalRateBp;
 
         private readonly Dictionary<uint, PickaxeSlotInfo> slotInfos = new Dictionary<uint, PickaxeSlotInfo>();
         private MessageHandler messageHandler;
@@ -329,6 +332,9 @@ namespace InfinitePickaxe.Client.UI.Game
                 UpdateLevelPlaceholder();
                 UpdateAttackPlaceholder();
                 UpdateCostText();
+                baseRateBp = 0;
+                pityBonusBp = 0;
+                finalRateBp = 0;
                 UpdateChanceText();
                 if (upgradeButton != null) upgradeButton.interactable = false;
                 return;
@@ -344,11 +350,17 @@ namespace InfinitePickaxe.Client.UI.Game
                 nextAttack = 0;
                 upgradeCost = 0;
                 upgradeChancePercent = 0f;
+                baseRateBp = 0;
+                pityBonusBp = 0;
+                finalRateBp = 0;
             }
             else if (slot != null)
             {
                 currentLevel = slot.Level;
                 currentAttack = slot.AttackPower;
+                baseRateBp = 0;
+                pityBonusBp = slot.PityBonus;
+                finalRateBp = 0;
 
                 if (currentAttack == 0 && metaResolver.TryGetLevel(slot.Level, selectedSlotIndex, out var curMeta))
                 {
@@ -358,8 +370,11 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (metaResolver.TryGetLevel(slot.Level + 1, selectedSlotIndex, out var nextMeta))
                 {
                     upgradeCost = nextMeta.Cost;
-                    upgradeChancePercent = nextMeta.SuccessRatePercent;
                     nextAttack = nextMeta.AttackPower > 0 ? nextMeta.AttackPower : Math.Max(currentAttack, slot.AttackPower);
+                    if (nextMeta.Tier > 0)
+                    {
+                        baseRateBp = metaResolver.GetBaseRateBpForTier(nextMeta.Tier);
+                    }
                 }
                 else
                 {
@@ -367,6 +382,16 @@ namespace InfinitePickaxe.Client.UI.Game
                     upgradeChancePercent = 0f;
                     nextAttack = Math.Max(currentAttack, slot.AttackPower);
                 }
+
+                // 메타에 티어가 없으면 슬롯/레벨 기반으로 티어 계산
+                if (baseRateBp == 0)
+                {
+                    var tier = tierResolver.ResolveTier(selectedSlotIndex, slot.Level, slot.Tier);
+                    baseRateBp = metaResolver.GetBaseRateBpForTier(tier);
+                }
+
+                finalRateBp = metaResolver.ClampRateBp(baseRateBp + pityBonusBp);
+                upgradeChancePercent = finalRateBp / 100f;
             }
 
             UpdateLevelText(unlocked);
@@ -441,16 +466,24 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (upgradeChanceText == null) return;
 
+            if (finalRateBp > 0)
+            {
+                float finalPercent = finalRateBp / 100f;
+                float basePercent = baseRateBp / 100f;
+                float pityPercent = pityBonusBp / 100f;
+                upgradeChanceText.text = $"강화 확률: {finalPercent:F2}% (기본 {basePercent:F2}% + 피티 {pityPercent:F2}%)";
+                return;
+            }
+
             if (upgradeChancePercent > 0f)
             {
                 upgradeChanceText.text = $"강화 확률: {upgradeChancePercent:F2}%";
+                return;
             }
-            else
-            {
-                upgradeChanceText.text = metaResolver.HasRows
-                    ? "강화 확률: 정보 없음"
-                    : "강화 확률: 메타 없음";
-            }
+
+            upgradeChanceText.text = metaResolver.HasRows
+                ? "강화 확률: 정보 없음"
+                : "강화 확률: 메타 없음";
         }
 
         private void UpdateButtonState()
@@ -632,6 +665,7 @@ namespace InfinitePickaxe.Client.UI.Game
             private readonly List<MetaRow> rows = new List<MetaRow>();
             private readonly Dictionary<uint, uint> baseRateByTierBp = new Dictionary<uint, uint>();
             private uint minRateBp;
+            private uint bonusRateBp;
 
             public bool HasRows => rows.Count > 0;
 
@@ -691,6 +725,11 @@ namespace InfinitePickaxe.Client.UI.Game
                     minRateBp = minRate;
                 }
 
+                if (TryGetUIntValue(rulesDict, new[] { "bonus_rate", "bonus_rate_bp", "bonusRateBp" }, out var bonus))
+                {
+                    bonusRateBp = bonus;
+                }
+
                 if (rulesDict.TryGetValue("base_rate_by_tier", out var baseObj) && baseObj is Dictionary<string, object> tierDict)
                 {
                     foreach (var kv in tierDict)
@@ -701,6 +740,28 @@ namespace InfinitePickaxe.Client.UI.Game
                         }
                     }
                 }
+            }
+
+            public uint GetBaseRateBpForTier(uint tier)
+            {
+                EnsureInitialized();
+                if (baseRateByTierBp.TryGetValue(tier, out var rate))
+                {
+                    return rate;
+                }
+
+                return minRateBp;
+            }
+
+            public uint GetBonusRateBp()
+            {
+                EnsureInitialized();
+                return bonusRateBp;
+            }
+
+            public uint ClampRateBp(uint rateBp)
+            {
+                return Math.Min(rateBp, 10000u);
             }
 
             private void TryAddFromKey(IReadOnlyDictionary<string, object> data, string key)
