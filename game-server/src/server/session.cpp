@@ -773,6 +773,9 @@ void Session::update_mining_tick(float delta_ms)
 
     if (mining_state_.current_hp == 0)
     {
+        // 마지막 타격 결과를 클라이언트에 반영 후 완료 통보
+        send_mining_update(attacks);
+        mining_state_.last_sent_hp = mining_state_.current_hp;
         handle_mining_complete_immediate();
         return;
     }
