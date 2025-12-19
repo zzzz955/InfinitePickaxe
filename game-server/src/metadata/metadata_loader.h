@@ -19,6 +19,8 @@ struct MineralMeta {
     uint64_t hp;
     uint64_t reward;
     uint32_t respawn_time; // seconds
+    uint64_t recommended_min_dps{0};
+    uint64_t recommended_max_dps{0};
 };
 
 struct MissionMeta {

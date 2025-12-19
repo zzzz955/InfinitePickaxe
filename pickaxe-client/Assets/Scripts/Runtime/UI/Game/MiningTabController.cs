@@ -101,6 +101,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private readonly Dictionary<uint, PickaxeSlotInfo> slotInfos = new Dictionary<uint, PickaxeSlotInfo>();
         private PickaxeStateCache pickaxeCache;
         private readonly PickaxeTierResolver tierResolver = new PickaxeTierResolver();
+        private readonly MineralMetaResolver mineralMetaResolver = new MineralMetaResolver();
 
         [Header("HP Bar Animation")]
         [SerializeField] private float fillLerpSpeed = 6f;
@@ -1387,6 +1388,11 @@ namespace InfinitePickaxe.Client.UI.Game
             if (mineralId == StopMineralId)
             {
                 return mineralNames != null && mineralNames.Length > 0 ? mineralNames[0] : "채굴 중단";
+            }
+
+            if (mineralMetaResolver.TryGetMineral(mineralId, out var meta))
+            {
+                return meta.Name;
             }
 
             if (mineralNames != null && mineralId < mineralNames.Length && !string.IsNullOrEmpty(mineralNames[mineralId]))

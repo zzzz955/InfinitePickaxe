@@ -53,6 +53,8 @@ bool MetadataLoader::load(const std::string& base_path) {
                     mm.hp = e.value("hp", 0);
                     mm.reward = e.value("reward", e.value("gold", 0));
                     mm.respawn_time = e.value("respawn_time", 5);
+                    mm.recommended_min_dps = e.value("recommended_min_DPS", 0);
+                    mm.recommended_max_dps = e.value("recommended_max_DPS", 0);
                     minerals_[mm.id] = mm;
                 }
             }
