@@ -53,6 +53,18 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private uint baseRateBp;
         [SerializeField] private uint pityBonusBp;
         [SerializeField] private uint finalRateBp;
+        [Header("Upgrade FX")]
+        [SerializeField] private GameObject successFxImage;
+        [SerializeField] private GameObject failFxImage;
+        [SerializeField] private Color successFxColor = new Color(0.9f, 0.95f, 0.3f, 1f);
+        [SerializeField] private Color failFxColor = new Color(1f, 0.4f, 0.4f, 1f);
+        [SerializeField] private float popScale = 1.12f;
+        [SerializeField] private float popDuration = 0.2f;
+        [SerializeField] private float flashDuration = 0.25f;
+        [SerializeField] private float shakeDuration = 0.18f;
+        [SerializeField] private float shakeMagnitude = 8f;
+        [SerializeField] private float fxImageShowTime = 0.7f;
+        [SerializeField] private float fxImageFadeTime = 0.3f;
 
         private readonly Dictionary<uint, PickaxeSlotInfo> slotInfos = new Dictionary<uint, PickaxeSlotInfo>();
         private MessageHandler messageHandler;
@@ -73,6 +85,8 @@ namespace InfinitePickaxe.Client.UI.Game
         private uint lastResultBaseRateBp;
         private uint lastResultFinalRateBp;
         private uint lastResultPityBonusBp;
+        private Coroutine successFxCoroutine;
+        private Coroutine failFxCoroutine;
 
         protected override void Initialize()
         {
@@ -252,6 +266,11 @@ namespace InfinitePickaxe.Client.UI.Game
         private void HandleUpgradeResult(UpgradeResult result)
         {
             upgradeInProgress = false;
+            ulong prevSlotDps = 0;
+            if (result != null && slotInfos.TryGetValue(result.SlotIndex, out var prevSlot) && prevSlot != null)
+            {
+                prevSlotDps = prevSlot.Dps;
+            }
 
             if (result == null)
             {
@@ -288,6 +307,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 SyncSlotsFromCache();
             }
 
+            PlayUpgradeFx(result, prevSlotDps);
             RefreshData();
         }
 
@@ -525,6 +545,188 @@ namespace InfinitePickaxe.Client.UI.Game
             upgradeChanceText.text = metaResolver.HasRows
                 ? "강화 확률: 정보 없음"
                 : "강화 확률: 메타 없음";
+        }
+
+        private void PlayUpgradeFx(UpgradeResult result, ulong prevSlotDps)
+        {
+            if (upgradeButton == null || result == null) return;
+
+            var target = upgradeButton.transform as RectTransform;
+            if (target == null) return;
+
+            var color = result.Success ? successFxColor : failFxColor;
+            if (result.Success)
+            {
+                StartCoroutine(PopAndFlash(target, color, popScale, popDuration, flashDuration));
+                ShowFxImage(successFxImage, fxImageShowTime, fxImageFadeTime, ref successFxCoroutine);
+                StartCoroutine(BlinkTexts(new[]
+                {
+                    pickaxeLevelText,
+                    currentDPSText,
+                    nextDPSText,
+                    upgradeChanceText
+                }, 3, 0.08f));
+            }
+            else
+            {
+                StartCoroutine(FlashAndShake(target, color, flashDuration, shakeDuration, shakeMagnitude));
+                ShowFxImage(failFxImage, fxImageShowTime, fxImageFadeTime, ref failFxCoroutine);
+            }
+        }
+
+        private System.Collections.IEnumerator PopAndFlash(RectTransform target, Color color, float scale, float popTime, float flashTime)
+        {
+            var img = target.GetComponent<Image>();
+            Color? originalColor = img != null ? img.color : (Color?)null;
+            var originalScale = target.localScale;
+
+            float elapsed = 0f;
+            while (elapsed < popTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / popTime);
+                float s = Mathf.Lerp(1f, scale, t);
+                target.localScale = originalScale * s;
+                if (img != null) img.color = Color.Lerp(originalColor ?? color, color, t);
+                yield return null;
+            }
+
+            elapsed = 0f;
+            while (elapsed < popTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / popTime);
+                float s = Mathf.Lerp(scale, 1f, t);
+                target.localScale = originalScale * s;
+                if (img != null) img.color = Color.Lerp(color, originalColor ?? Color.white, t);
+                yield return null;
+            }
+
+            // 짧은 플래시 유지
+            if (flashTime > 0f && img != null)
+            {
+                img.color = color;
+                yield return new WaitForSeconds(flashTime);
+                if (img != null && originalColor.HasValue) img.color = originalColor.Value;
+            }
+
+            target.localScale = originalScale;
+        }
+
+        private System.Collections.IEnumerator FlashAndShake(RectTransform target, Color color, float flashTime, float shakeTime, float magnitude)
+        {
+            var img = target.GetComponent<Image>();
+            Color? originalColor = img != null ? img.color : (Color?)null;
+            var originalPos = target.anchoredPosition;
+
+            float elapsed = 0f;
+            while (elapsed < shakeTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / shakeTime);
+                float strength = Mathf.Lerp(magnitude, 0f, t);
+                var offset = new Vector2(
+                    UnityEngine.Random.Range(-strength, strength),
+                    UnityEngine.Random.Range(-strength, strength)
+                );
+                target.anchoredPosition = originalPos + offset;
+
+                if (img != null)
+                {
+                    img.color = Color.Lerp(originalColor ?? color, color, 0.5f);
+                }
+
+                yield return null;
+            }
+
+            target.anchoredPosition = originalPos;
+            if (img != null && originalColor.HasValue)
+            {
+                img.color = originalColor.Value;
+            }
+        }
+
+        private System.Collections.IEnumerator BlinkTexts(IEnumerable<TextMeshProUGUI> labels, int times, float interval)
+        {
+            if (labels == null) yield break;
+
+            var cached = new List<(TextMeshProUGUI label, Color color)>();
+            foreach (var label in labels)
+            {
+                if (label != null)
+                {
+                    cached.Add((label, label.color));
+                }
+            }
+
+            if (cached.Count == 0) yield break;
+            interval = Mathf.Max(0.02f, interval);
+            times = Mathf.Max(1, times);
+
+            for (int i = 0; i < times; i++)
+            {
+                foreach (var entry in cached)
+                {
+                    var c = entry.color;
+                    c.a = Mathf.Clamp01(c.a * 0.6f);
+                    entry.label.color = c;
+                }
+                yield return new WaitForSeconds(interval);
+
+                foreach (var entry in cached)
+                {
+                    entry.label.color = entry.color;
+                }
+                yield return new WaitForSeconds(interval);
+            }
+
+            foreach (var entry in cached)
+            {
+                entry.label.color = entry.color;
+            }
+        }
+
+        private void ShowFxImage(GameObject fxObject, float showTime, float fadeTime, ref Coroutine routine)
+        {
+            if (fxObject == null) return;
+            if (routine != null)
+            {
+                StopCoroutine(routine);
+                routine = null;
+            }
+
+            var cg = fxObject.GetComponent<CanvasGroup>();
+            if (cg == null)
+            {
+                cg = fxObject.AddComponent<CanvasGroup>();
+            }
+
+            cg.alpha = 1f;
+            fxObject.SetActive(true);
+            fxObject.transform.SetAsLastSibling();
+            routine = StartCoroutine(FadeOutFxImage(fxObject, cg, showTime, fadeTime));
+        }
+
+        private System.Collections.IEnumerator FadeOutFxImage(GameObject fxObject, CanvasGroup cg, float showTime, float fadeTime)
+        {
+            showTime = Mathf.Max(0.01f, showTime);
+            fadeTime = Mathf.Max(0.05f, fadeTime);
+
+            if (showTime > 0f)
+            {
+                yield return new WaitForSeconds(showTime);
+            }
+
+            float elapsed = 0f;
+            while (elapsed < fadeTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / fadeTime);
+                if (cg != null) cg.alpha = 1f - t;
+                yield return null;
+            }
+
+            if (cg != null) cg.alpha = 0f;
         }
 
         private void UpdateButtonState()
