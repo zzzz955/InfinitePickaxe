@@ -80,7 +80,30 @@ namespace InfinitePickaxe.Client.Core
         {
             if (result == null || !result.Success) return;
 
-            if (!slots.TryGetValue(result.SlotIndex, out var slot) || slot == null)
+            PickaxeSlotInfo slot = null;
+            if (result.NewSlot != null)
+            {
+                slot = new PickaxeSlotInfo
+                {
+                    SlotIndex = result.NewSlot.SlotIndex,
+                    Level = result.NewSlot.Level,
+                    Tier = result.NewSlot.Tier,
+                    AttackPower = result.NewSlot.AttackPower,
+                    AttackSpeedX100 = result.NewSlot.AttackSpeedX100,
+                    CriticalHitPercent = result.NewSlot.CriticalHitPercent,
+                    CriticalDamage = result.NewSlot.CriticalDamage,
+                    Dps = result.NewSlot.Dps,
+                    PityBonus = result.NewSlot.PityBonus,
+                    IsUnlocked = true
+                };
+            }
+
+            if (slot == null && slots.TryGetValue(result.SlotIndex, out var existing) && existing != null)
+            {
+                slot = existing;
+            }
+
+            if (slot == null)
             {
                 slot = new PickaxeSlotInfo
                 {
@@ -96,12 +119,10 @@ namespace InfinitePickaxe.Client.Core
                     IsUnlocked = true
                 };
             }
-            else
-            {
-                slot.IsUnlocked = true;
-            }
 
+            slot.IsUnlocked = true;
             slots[result.SlotIndex] = slot;
+            TotalDps = result.TotalDps;
             RaiseChanged();
         }
 

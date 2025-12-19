@@ -353,6 +353,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (result.Success)
             {
                 MarkSlotUnlocked(slotIndex);
+                SyncSlotsFrom(new[] { result.NewSlot });
             }
 
             RefreshData();

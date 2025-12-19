@@ -348,7 +348,7 @@ namespace InfinitePickaxe.Client.Net
 
             if (result.Success)
             {
-                Debug.Log($"슬롯 해금 성공: 슬롯 #{result.SlotIndex}, 사용 크리스탈 {result.CrystalSpent}, 남은 크리스탈 {result.RemainingCrystal}");
+                Debug.Log($"슬롯 해금 성공: 슬롯 #{result.SlotIndex}, 사용 크리스탈 {result.CrystalSpent}, 남은 크리스탈 {result.RemainingCrystal}, Total DPS {result.TotalDps}");
                 PickaxeStateCache.Instance.UpdateFromSlotUnlockResult(result);
                 // 최신 스탯 동기화를 위해 전체 슬롯 정보 재요청
                 RequestAllSlots();
