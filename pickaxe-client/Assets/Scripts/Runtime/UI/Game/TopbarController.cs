@@ -87,11 +87,11 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (goldText != null && currentGold.HasValue)
             {
-                goldText.text = currentGold.Value.ToString();
+                goldText.text = currentGold.Value.ToString("N0");
             }
             if (crystalText != null && currentCrystal.HasValue)
             {
-                crystalText.text = currentCrystal.Value.ToString();
+                crystalText.text = currentCrystal.Value.ToString("N0");
             }
         }
     }

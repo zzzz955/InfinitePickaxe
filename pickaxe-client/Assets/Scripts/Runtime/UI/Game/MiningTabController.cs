@@ -433,7 +433,9 @@ namespace InfinitePickaxe.Client.UI.Game
             if (mineHPText != null)
             {
                 var hpPercent = maxHP > 0 ? (currentHP / maxHP * 100f) : 0f;
-                mineHPText.text = $"HP: {currentHP:F0}/{maxHP:F0} ({hpPercent:F1}%)";
+                string currentHpText = currentHP.ToString("N0");
+                string maxHpText = maxHP.ToString("N0");
+                mineHPText.text = $"HP: {currentHpText}/{maxHpText} ({hpPercent:F1}%)";
 
                 // 색상 변경: 70%+ 연두, 30~70% 노랑, 0~30% 빨강
                 Color target = Color.green;
@@ -845,7 +847,8 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (dpsText != null)
             {
-                dpsText.text = $"DPS: {currentDPS:F1}";
+                var roundedDps = Mathf.FloorToInt(currentDPS);
+                dpsText.text = $"DPS: {roundedDps:N0}";
             }
         }
 
