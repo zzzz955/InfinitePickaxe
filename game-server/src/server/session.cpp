@@ -445,12 +445,17 @@ void Session::handle_change_mineral(const infinitepickaxe::Envelope &env)
         }
         else
         {
+            const bool needs_delay = (mineral_id != 0); // 광물 선택 시 항상 5초 대기 후 시작
+
             mining_state_.current_mineral_id = mineral_id;
             mining_state_.current_hp = hp;
             mining_state_.max_hp = hp;
-            mining_state_.respawn_timer_ms = 0;
             mining_state_.is_mining = false;
-            start_new_mineral();
+            mining_state_.respawn_timer_ms = needs_delay ? std::max(mining_state_.respawn_timer_ms, 5000.0f) : 0.0f; // 변경 시 5초 대기 후 시작
+            if (!needs_delay && mineral_id != 0)
+            {
+                start_new_mineral();
+            }
 
             res.set_success(true);
             res.set_mineral_id(mineral_id);
