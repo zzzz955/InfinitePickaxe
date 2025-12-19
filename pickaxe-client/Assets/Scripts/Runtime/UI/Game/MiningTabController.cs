@@ -59,6 +59,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private bool warnedMissingMineralTemplate = false;
         private bool mineralListBuilt = false;
         private int lastBuiltMineralCount = 0;
+        private bool mineralRecommendDirty = false;
 
         [Header("Mining Data")]
         [SerializeField] private string currentMineralName = "약한 돌";
@@ -580,6 +581,7 @@ namespace InfinitePickaxe.Client.UI.Game
                     if (mineralMetaResolver.TryGetMineral(tag.MineralId, out var meta))
                     {
                         UpdateMineralButtonLabel(btn.transform, meta, currentDPS);
+                        UpdateRecommendedBadge(btn.transform, meta, currentDPS);
                     }
                 }
             }
@@ -1014,6 +1016,7 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             BuildMineralSelectList();
+            mineralRecommendDirty = true; // 모달을 열 때 최신 DPS로 라벨 갱신 플래그
             UpdateMineralSelectIcons();
         }
 
@@ -1124,6 +1127,7 @@ namespace InfinitePickaxe.Client.UI.Game
             currentHP = hp;
             maxHP = maxHp;
             currentDPS = dps;
+            mineralRecommendDirty = true;
 
             RefreshData();
         }
@@ -1189,6 +1193,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // DPS 정보 업데이트
             currentDPS = snapshot.TotalDps;
+            mineralRecommendDirty = true;
 
             // 슬롯 해금 정보 업데이트
             for (int i = 0; i < snapshot.UnlockedSlots.Count && i < 4; i++)
@@ -1480,6 +1485,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 UpdateMineralButtonLabel(go.transform, meta, currentDPS);
                 UpdateMineralButtonStats(go.transform, meta);
                 UpdateMineralButtonIcon(go.transform, meta.Id);
+                UpdateRecommendedBadge(go.transform, meta, currentDPS);
                 if (btn != null) dynamicMineralButtons.Add(btn);
                 created++;
             }
@@ -1510,8 +1516,17 @@ namespace InfinitePickaxe.Client.UI.Game
             var text = nameTf.GetComponent<TextMeshProUGUI>();
             if (text == null) return;
 
+            text.text = meta.Name;
+        }
+
+        private void UpdateRecommendedBadge(Transform root, MineralMeta meta, float dps)
+        {
+            if (root == null) return;
+            var badgeTf = FindChildRecursive(root, "RecommendImage");
+            if (badgeTf == null) return;
+
             bool recommended = meta.RecommendedMinDps <= dps && dps <= meta.RecommendedMaxDps;
-            text.text = recommended ? $"{meta.Name} (추천)" : meta.Name;
+            badgeTf.gameObject.SetActive(recommended);
         }
 
         private void UpdateMineralButtonStats(Transform root, MineralMeta meta)
