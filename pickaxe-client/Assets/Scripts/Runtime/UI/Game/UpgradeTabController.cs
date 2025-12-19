@@ -78,6 +78,12 @@ namespace InfinitePickaxe.Client.UI.Game
         private readonly UpgradeMetaResolver metaResolver = new UpgradeMetaResolver();
         private readonly PickaxeTierResolver tierResolver = new PickaxeTierResolver();
         private Sprite runtimeWhiteSprite;
+        private Vector3 upgradeButtonDefaultScale = Vector3.one;
+        private Vector2 upgradeButtonDefaultPos = Vector2.zero;
+        private RectTransform upgradeButtonRect;
+        private Image upgradeButtonImage;
+        private Color? upgradeButtonDefaultColor;
+        private readonly List<(TextMeshProUGUI label, Color color)> labelDefaultColors = new List<(TextMeshProUGUI, Color)>();
         private bool subscribed;
         private bool cacheSubscribed;
         private bool hasLastResultRates;
@@ -87,6 +93,9 @@ namespace InfinitePickaxe.Client.UI.Game
         private uint lastResultPityBonusBp;
         private Coroutine successFxCoroutine;
         private Coroutine failFxCoroutine;
+        private Coroutine popFlashCoroutine;
+        private Coroutine flashShakeCoroutine;
+        private Coroutine blinkTextsCoroutine;
 
         protected override void Initialize()
         {
@@ -95,6 +104,7 @@ namespace InfinitePickaxe.Client.UI.Game
             AutoBindReferences();
             BindSlotButtons();
             BindActionButtons();
+            CacheInitialVisualState();
             RefreshData();
         }
 
@@ -112,6 +122,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             // 이벤트는 계속 구독 상태로 유지하여 탭이 비활성화되어도 데이터가 최신으로 갱신되도록 함
             base.OnDisable();
+            ResetAllFxVisuals();
         }
 
         private void AutoBindReferences()
@@ -149,6 +160,36 @@ namespace InfinitePickaxe.Client.UI.Game
                 adDiscountButton.onClick.RemoveListener(OnAdDiscountClicked);
                 adDiscountButton.onClick.AddListener(OnAdDiscountClicked);
             }
+        }
+
+        private void CacheInitialVisualState()
+        {
+            if (upgradeButton != null)
+            {
+                upgradeButtonRect = upgradeButton.transform as RectTransform;
+                if (upgradeButtonRect != null)
+                {
+                    upgradeButtonDefaultScale = upgradeButtonRect.localScale;
+                    upgradeButtonDefaultPos = upgradeButtonRect.anchoredPosition;
+                }
+                upgradeButtonImage = upgradeButton.GetComponent<Image>();
+                if (upgradeButtonImage != null)
+                {
+                    upgradeButtonDefaultColor = upgradeButtonImage.color;
+                }
+            }
+
+            labelDefaultColors.Clear();
+            CacheLabelDefault(pickaxeLevelText);
+            CacheLabelDefault(currentDPSText);
+            CacheLabelDefault(nextDPSText);
+            CacheLabelDefault(upgradeChanceText);
+        }
+
+        private void CacheLabelDefault(TextMeshProUGUI label)
+        {
+            if (label == null) return;
+            labelDefaultColors.Add((label, label.color));
         }
 
         private void SetupSlotButton(Button button, uint slotIndex)
@@ -554,12 +595,14 @@ namespace InfinitePickaxe.Client.UI.Game
             var target = upgradeButton.transform as RectTransform;
             if (target == null) return;
 
+            StopButtonFxCoroutines();
             var color = result.Success ? successFxColor : failFxColor;
             if (result.Success)
             {
-                StartCoroutine(PopAndFlash(target, color, popScale, popDuration, flashDuration));
+                StopFxImage(failFxImage, ref failFxCoroutine);
+                popFlashCoroutine = StartCoroutine(PopAndFlash(target, color, popScale, popDuration, flashDuration));
                 ShowFxImage(successFxImage, fxImageShowTime, fxImageFadeTime, ref successFxCoroutine);
-                StartCoroutine(BlinkTexts(new[]
+                blinkTextsCoroutine = StartCoroutine(BlinkTexts(new[]
                 {
                     pickaxeLevelText,
                     currentDPSText,
@@ -569,7 +612,8 @@ namespace InfinitePickaxe.Client.UI.Game
             }
             else
             {
-                StartCoroutine(FlashAndShake(target, color, flashDuration, shakeDuration, shakeMagnitude));
+                StopFxImage(successFxImage, ref successFxCoroutine);
+                flashShakeCoroutine = StartCoroutine(FlashAndShake(target, color, flashDuration, shakeDuration, shakeMagnitude));
                 ShowFxImage(failFxImage, fxImageShowTime, fxImageFadeTime, ref failFxCoroutine);
             }
         }
@@ -611,6 +655,8 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             target.localScale = originalScale;
+
+            popFlashCoroutine = null;
         }
 
         private System.Collections.IEnumerator FlashAndShake(RectTransform target, Color color, float flashTime, float shakeTime, float magnitude)
@@ -644,6 +690,8 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 img.color = originalColor.Value;
             }
+
+            flashShakeCoroutine = null;
         }
 
         private System.Collections.IEnumerator BlinkTexts(IEnumerable<TextMeshProUGUI> labels, int times, float interval)
@@ -684,6 +732,56 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 entry.label.color = entry.color;
             }
+
+            blinkTextsCoroutine = null;
+        }
+
+        private void StopButtonFxCoroutines()
+        {
+            if (popFlashCoroutine != null)
+            {
+                StopCoroutine(popFlashCoroutine);
+                popFlashCoroutine = null;
+            }
+            if (flashShakeCoroutine != null)
+            {
+                StopCoroutine(flashShakeCoroutine);
+                flashShakeCoroutine = null;
+            }
+            if (blinkTextsCoroutine != null)
+            {
+                StopCoroutine(blinkTextsCoroutine);
+                blinkTextsCoroutine = null;
+            }
+
+            RestoreButtonVisuals();
+            RestoreLabelColors();
+        }
+
+        private void RestoreButtonVisuals()
+        {
+            if (upgradeButtonRect != null)
+            {
+                upgradeButtonRect.localScale = upgradeButtonDefaultScale;
+                upgradeButtonRect.anchoredPosition = upgradeButtonDefaultPos;
+            }
+
+            if (upgradeButtonImage != null && upgradeButtonDefaultColor.HasValue)
+            {
+                upgradeButtonImage.color = upgradeButtonDefaultColor.Value;
+            }
+        }
+
+        private void RestoreLabelColors()
+        {
+            if (labelDefaultColors.Count == 0) return;
+            foreach (var entry in labelDefaultColors)
+            {
+                if (entry.label != null)
+                {
+                    entry.label.color = entry.color;
+                }
+            }
         }
 
         private void ShowFxImage(GameObject fxObject, float showTime, float fadeTime, ref Coroutine routine)
@@ -705,6 +803,32 @@ namespace InfinitePickaxe.Client.UI.Game
             fxObject.SetActive(true);
             fxObject.transform.SetAsLastSibling();
             routine = StartCoroutine(FadeOutFxImage(fxObject, cg, showTime, fadeTime));
+        }
+
+        private void StopFxImage(GameObject fxObject, ref Coroutine routine)
+        {
+            if (routine != null)
+            {
+                StopCoroutine(routine);
+                routine = null;
+            }
+
+            if (fxObject != null)
+            {
+                var cg = fxObject.GetComponent<CanvasGroup>();
+                if (cg != null)
+                {
+                    cg.alpha = 0f;
+                }
+                fxObject.SetActive(false);
+            }
+        }
+
+        private void ResetAllFxVisuals()
+        {
+            StopButtonFxCoroutines();
+            StopFxImage(successFxImage, ref successFxCoroutine);
+            StopFxImage(failFxImage, ref failFxCoroutine);
         }
 
         private System.Collections.IEnumerator FadeOutFxImage(GameObject fxObject, CanvasGroup cg, float showTime, float fadeTime)
