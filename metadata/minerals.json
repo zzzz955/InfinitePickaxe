@@ -4,6 +4,8 @@
     "name": "약한 돌",
     "hp": 5,
     "gold": 2,
+    "recommended_min_DPS": 0,
+    "recommended_max_DPS": 1,
     "biome": "평지"
   },
   {
@@ -11,6 +13,8 @@
     "name": "돌",
     "hp": 10,
     "gold": 3,
+    "recommended_min_DPS": 1,
+    "recommended_max_DPS": 2,
     "biome": "평지"
   },
   {
@@ -18,6 +22,8 @@
     "name": "구리",
     "hp": 20,
     "gold": 5,
+    "recommended_min_DPS": 2,
+    "recommended_max_DPS": 4,
     "biome": "평지"
   },
   {
@@ -25,6 +31,8 @@
     "name": "산화철",
     "hp": 50,
     "gold": 10,
+    "recommended_min_DPS": 4,
+    "recommended_max_DPS": 9,
     "biome": "평지"
   },
   {
@@ -32,6 +40,8 @@
     "name": "강철",
     "hp": 110,
     "gold": 18,
+    "recommended_min_DPS": 9,
+    "recommended_max_DPS": 16,
     "biome": "광산"
   },
   {
@@ -39,6 +49,8 @@
     "name": "흑철",
     "hp": 240,
     "gold": 32,
+    "recommended_min_DPS": 16,
+    "recommended_max_DPS": 30,
     "biome": "광산"
   },
   {
@@ -46,6 +58,8 @@
     "name": "은",
     "hp": 520,
     "gold": 56,
+    "recommended_min_DPS": 30,
+    "recommended_max_DPS": 60,
     "biome": "광산"
   },
   {
@@ -53,6 +67,8 @@
     "name": "리튬",
     "hp": 1100,
     "gold": 92,
+    "recommended_min_DPS": 60,
+    "recommended_max_DPS": 120,
     "biome": "광산"
   },
   {
@@ -60,6 +76,8 @@
     "name": "운모",
     "hp": 2400,
     "gold": 156,
+    "recommended_min_DPS": 120,
+    "recommended_max_DPS": 240,
     "biome": "광산"
   },
   {
@@ -67,6 +85,8 @@
     "name": "에메랄드",
     "hp": 5100,
     "gold": 265,
+    "recommended_min_DPS": 240,
+    "recommended_max_DPS": 510,
     "biome": "보석 광산"
   },
   {
@@ -74,6 +94,8 @@
     "name": "아쿠아마린",
     "hp": 11000,
     "gold": 440,
+    "recommended_min_DPS": 510,
+    "recommended_max_DPS": 1050,
     "biome": "보석 광산"
   },
   {
@@ -81,6 +103,8 @@
     "name": "금",
     "hp": 24000,
     "gold": 720,
+    "recommended_min_DPS": 1050,
+    "recommended_max_DPS": 2400,
     "biome": "보석 광산"
   },
   {
@@ -88,6 +112,8 @@
     "name": "다이아몬드",
     "hp": 51000,
     "gold": 1150,
+    "recommended_min_DPS": 2400,
+    "recommended_max_DPS": 5100,
     "biome": "보석 광산"
   },
   {
@@ -95,6 +121,8 @@
     "name": "석영",
     "hp": 110000,
     "gold": 1980,
+    "recommended_min_DPS": 5100,
+    "recommended_max_DPS": 11000,
     "biome": "보석 광산"
   },
   {
@@ -102,6 +130,8 @@
     "name": "감람석",
     "hp": 240000,
     "gold": 3360,
+    "recommended_min_DPS": 11000,
+    "recommended_max_DPS": 24000,
     "biome": "보석 광산"
   },
   {
@@ -109,6 +139,8 @@
     "name": "백금",
     "hp": 510000,
     "gold": 5610,
+    "recommended_min_DPS": 24000,
+    "recommended_max_DPS": 51000,
     "biome": "보석 광산"
   },
   {
@@ -116,6 +148,8 @@
     "name": "비스무트",
     "hp": 1100000,
     "gold": 9350,
+    "recommended_min_DPS": 51000,
+    "recommended_max_DPS": 110000,
     "biome": "보석 광산"
   },
   {
@@ -123,6 +157,8 @@
     "name": "오리할콘",
     "hp": 2400000,
     "gold": 15600,
+    "recommended_min_DPS": 110000,
+    "recommended_max_DPS": 240000,
     "biome": "깊은 광산"
   },
   {
@@ -130,6 +166,8 @@
     "name": "토파즈",
     "hp": 5100000,
     "gold": 25500,
+    "recommended_min_DPS": 240000,
+    "recommended_max_DPS": 510000,
     "biome": "깊은 광산"
   },
   {
@@ -137,6 +175,8 @@
     "name": "문스톤",
     "hp": 11000000,
     "gold": 41800,
+    "recommended_min_DPS": 510000,
+    "recommended_max_DPS": 1100000,
     "biome": "깊은 광산"
   },
   {
@@ -144,6 +184,8 @@
     "name": "샤투카이트",
     "hp": 24000000,
     "gold": 69600,
+    "recommended_min_DPS": 1100000,
+    "recommended_max_DPS": 2400000,
     "biome": "깊은 광산"
   },
   {
@@ -151,6 +193,8 @@
     "name": "썬스톤",
     "hp": 51000000,
     "gold": 112200,
+    "recommended_min_DPS": 2400000,
+    "recommended_max_DPS": 5100000,
     "biome": "깊은 광산"
   },
   {
@@ -158,6 +202,8 @@
     "name": "아마조나이트",
     "hp": 110000000,
     "gold": 187000,
+    "recommended_min_DPS": 5100000,
+    "recommended_max_DPS": 11000000,
     "biome": "깊은 광산"
   },
   {
@@ -165,6 +211,8 @@
     "name": "오닉스",
     "hp": 240000000,
     "gold": 312000,
+    "recommended_min_DPS": 11000000,
+    "recommended_max_DPS": 24000000,
     "biome": "깊은 광산"
   },
   {
@@ -172,6 +220,8 @@
     "name": "용암석",
     "hp": 510000000,
     "gold": 510000,
+    "recommended_min_DPS": 24000000,
+    "recommended_max_DPS": 51000000,
     "biome": "정령 광산"
   },
   {
@@ -179,6 +229,8 @@
     "name": "빙결석",
     "hp": 1100000000,
     "gold": 825000,
+    "recommended_min_DPS": 51000000,
+    "recommended_max_DPS": 110000000,
     "biome": "정령 광산"
   },
   {
@@ -186,6 +238,8 @@
     "name": "폭풍석",
     "hp": 2400000000,
     "gold": 1320000,
+    "recommended_min_DPS": 110000000,
+    "recommended_max_DPS": 240000000,
     "biome": "정령 광산"
   },
   {
@@ -193,6 +247,8 @@
     "name": "우뢰석",
     "hp": 5100000000,
     "gold": 2040000,
+    "recommended_min_DPS": 240000000,
+    "recommended_max_DPS": 510000000,
     "biome": "정령 광산"
   },
   {
@@ -200,6 +256,8 @@
     "name": "천상석",
     "hp": 11000000000,
     "gold": 3080000,
+    "recommended_min_DPS": 510000000,
+    "recommended_max_DPS": 1999999999,
     "biome": "정령 광산"
   }
 ]

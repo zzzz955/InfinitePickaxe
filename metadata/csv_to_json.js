@@ -83,7 +83,8 @@ function convertMinerals() {
     name: row.name,
     hp: parseInt(row.hp),
     gold: parseInt(row.gold),
-    recommended_level: row.recommended_level,
+    recommended_min_DPS: parseInt(row.recommended_min_DPS),
+    recommended_max_DPS: parseInt(row.recommended_max_DPS),
     biome: row.biome
   }));
 

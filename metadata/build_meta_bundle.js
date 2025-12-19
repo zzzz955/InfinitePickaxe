@@ -72,6 +72,17 @@ function readCsv(fileName) {
   });
 }
 
+function readKeyValueConfig(fileName) {
+  const rows = readCsv(fileName);
+  const config = {};
+  rows.forEach((row, idx) => {
+    const context = `${fileName} row ${idx + 2}`;
+    const key = requireField(row.key, 'key', context);
+    config[key] = row.value !== undefined ? row.value : '';
+  });
+  return config;
+}
+
 function requireSingleRow(rows, fileName) {
   if (rows.length !== 1) {
     throw new Error(`${fileName} 은(는) 단일 행이어야 합니다. 현재 ${rows.length}행`);
@@ -122,6 +133,14 @@ function toList(value, parser, context) {
     .map((item, idx) => parser(item, `${context}[${idx + 1}]`));
 }
 
+function parseJsonSafe(value, context) {
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    throw new Error(`${context} JSON 파싱 실패: ${err.message}`);
+  }
+}
+
 function writeJson(fileName, data) {
   const fullPath = path.join(metaDir, fileName);
   const body = JSON.stringify(data, null, 2);
@@ -130,25 +149,36 @@ function writeJson(fileName, data) {
 }
 
 function buildAds() {
-  const config = requireSingleRow(readCsv('ads_config.csv'), 'ads_config.csv');
+  const config = readKeyValueConfig('ads_config.csv');
 
   const adTypes = readCsv('ads.csv').map((row, idx) => {
     const context = `ads.csv row ${idx + 2}`;
-    const parameters = {};
-
-    if (row['parameters.cost_multiplier'] !== '') {
-      parameters.cost_multiplier = toNumber(row['parameters.cost_multiplier'], `${context} parameters.cost_multiplier`);
+    let parameters = {};
+    if (row.parameters) {
+      if (row.parameters.trim() !== '') {
+        parameters = parseJsonSafe(row.parameters, `${context} parameters`);
+      }
+    } else {
+      if (row['parameters.cost_multiplier'] !== undefined && row['parameters.cost_multiplier'] !== '') {
+        parameters.cost_multiplier = toNumber(row['parameters.cost_multiplier'], `${context} parameters.cost_multiplier`);
+      }
+      if (row['parameters.apply_to_slots'] !== undefined && row['parameters.apply_to_slots'] !== '') {
+        parameters.apply_to_slots = row['parameters.apply_to_slots'];
+      }
+      if (row['parameters.progress_reset_on_reroll'] !== undefined && row['parameters.progress_reset_on_reroll'] !== '') {
+        parameters.progress_reset_on_reroll = toBoolean(row['parameters.progress_reset_on_reroll'], `${context} parameters.progress_reset_on_reroll`);
+      }
     }
 
-    if (row['parameters.apply_to_slots'] !== '') {
-      parameters.apply_to_slots = row['parameters.apply_to_slots'];
+    let rewards;
+    if (row.rewards_by_view !== undefined && row.rewards_by_view !== '') {
+      const raw = String(row.rewards_by_view).trim();
+      if (raw.startsWith('[')) {
+        rewards = parseJsonSafe(raw, `${context} rewards_by_view`);
+      } else {
+        rewards = toList(raw, (v, c) => toNumber(v, c), `${context} rewards_by_view`);
+      }
     }
-
-    if (row['parameters.progress_reset_on_reroll'] !== '') {
-      parameters.progress_reset_on_reroll = toBoolean(row['parameters.progress_reset_on_reroll'], `${context} parameters.progress_reset_on_reroll`);
-    }
-
-    const rewards = toList(row.rewards_by_view, (v, c) => toNumber(v, c), `${context} rewards_by_view`);
 
     const ad = {
       id: requireField(row.id, 'id', context),
@@ -178,12 +208,12 @@ function buildAds() {
 }
 
 function buildDailyMissions() {
-  const config = requireSingleRow(readCsv('daily_missions_config.csv'), 'daily_missions_config.csv');
+  const config = readKeyValueConfig('daily_missions_config.csv');
   const pools = {};
 
-  readCsv('daily_mission_pools.csv').forEach((row, idx) => {
-    const context = `daily_mission_pools.csv row ${idx + 2}`;
-    const pool = requireField(row.pool, 'pool', context);
+  readCsv('daily_missions.csv').forEach((row, idx) => {
+    const context = `daily_missions.csv row ${idx + 2}`;
+    const pool = requireField(row.difficulty || row.pool, 'difficulty', context);
     const entry = {
       id: requireField(row.id, 'id', context),
       type: requireField(row.type, 'type', context),
@@ -199,8 +229,8 @@ function buildDailyMissions() {
     pools[pool].push(entry);
   });
 
-  const milestones = readCsv('daily_mission_milestones.csv').map((row, idx) => {
-    const context = `daily_mission_milestones.csv row ${idx + 2}`;
+  const milestones = readCsv('daily_missions_milestones.csv').map((row, idx) => {
+    const context = `daily_missions_milestones.csv row ${idx + 2}`;
 
     return {
       completed: toNumber(row.completed, `${context} completed`),
@@ -230,7 +260,8 @@ function buildMinerals() {
       name: requireField(row.name, 'name', context),
       hp: toNumber(row.hp, `${context} hp`),
       gold: toNumber(row.gold, `${context} gold`),
-      recommended_level: requireField(row.recommended_level, 'recommended_level', context),
+      recommended_min_DPS: toNumber(row.recommended_min_DPS, `${context} recommended_min_DPS`),
+      recommended_max_DPS: toNumber(row.recommended_max_DPS, `${context} recommended_max_DPS`),
       biome: requireField(row.biome, 'biome', context),
     };
   });
@@ -243,7 +274,7 @@ function buildMinerals() {
 }
 
 function buildMissionReroll() {
-  const row = requireSingleRow(readCsv('mission_reroll.csv'), 'mission_reroll.csv');
+  const row = readKeyValueConfig('mission_reroll.csv');
 
   return {
     key: 'mission_reroll',
@@ -259,7 +290,7 @@ function buildMissionReroll() {
 }
 
 function buildOfflineDefaults() {
-  const row = requireSingleRow(readCsv('offline_defaults.csv'), 'offline_defaults.csv');
+  const row = readKeyValueConfig('offline_defaults.csv');
 
   return {
     key: 'offline_defaults',
@@ -294,11 +325,11 @@ function buildPickaxeLevels() {
 }
 
 function buildUpgradeRules() {
-  const config = requireSingleRow(readCsv('upgrade_rules_config.csv'), 'upgrade_rules_config.csv');
+  const config = readKeyValueConfig('upgrade_rules_config.csv');
   const baseRateByTier = {};
 
-  readCsv('upgrade_base_rates.csv').forEach((row, idx) => {
-    const context = `upgrade_base_rates.csv row ${idx + 2}`;
+  readCsv('upgrade_rules_tier_rates.csv').forEach((row, idx) => {
+    const context = `upgrade_rules_tier_rates.csv row ${idx + 2}`;
     const tier = requireField(row.tier, 'tier', context);
 
     baseRateByTier[String(tier)] = toNumber(row.base_rate, `${context} base_rate`);

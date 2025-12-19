@@ -22,7 +22,6 @@
       "id": "crystal_reward",
       "daily_limit": 3,
       "effect": "crystal_reward",
-      "parameters": {},
       "rewards_by_view": [
         10,
         14,
