@@ -5,6 +5,7 @@ using TMPro;
 using InfinitePickaxe.Client.Net;
 using Infinitepickaxe;
 using System.Collections.Generic;
+using System.Linq;
 using InfinitePickaxe.Client.Core;
 using InfinitePickaxe.Client.UI.Common;
 using InfinitePickaxe.Client.Metadata;
@@ -28,13 +29,6 @@ namespace InfinitePickaxe.Client.UI.Game
 
         [Header("Mineral Select Items")]
         [SerializeField] private Button mineralItemNullButton;
-        [SerializeField] private Button mineralItem1Button;
-        [SerializeField] private Button mineralItem2Button;
-        [SerializeField] private Button mineralItem3Button;
-        [SerializeField] private Button mineralItem4Button;
-        [SerializeField] private Button mineralItem5Button;
-        [SerializeField] private Button mineralItem6Button;
-        [SerializeField] private Button mineralItem7Button;
 
         [Header("Pickaxe Slot References")]
         [SerializeField] private Button pickaxeSlot1Button;
@@ -59,6 +53,12 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private GameObject pickaxeInfoModal;
         [SerializeField] private GameObject lockedSlotModal;
         [SerializeField] private GameObject mineralSelectModal;
+        [Header("Mineral Select (Dynamic)")]
+        [SerializeField] private Transform mineralListContent;
+        [SerializeField] private GameObject mineralItemTemplate;
+        private bool warnedMissingMineralTemplate = false;
+        private bool mineralListBuilt = false;
+        private int lastBuiltMineralCount = 0;
 
         [Header("Mining Data")]
         [SerializeField] private string currentMineralName = "약한 돌";
@@ -102,6 +102,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private PickaxeStateCache pickaxeCache;
         private readonly PickaxeTierResolver tierResolver = new PickaxeTierResolver();
         private readonly MineralMetaResolver mineralMetaResolver = new MineralMetaResolver();
+        private readonly List<Button> dynamicMineralButtons = new List<Button>();
 
         [Header("HP Bar Animation")]
         [SerializeField] private float fillLerpSpeed = 6f;
@@ -115,7 +116,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         [Header("Pickaxe Swing Animation")]
         [SerializeField] private float restAngle = 0f; // 기본 이미지를 그대로 두기 위해 0도
-        [SerializeField] private float swingDownDegrees = 170f; // 양수 회전으로 내려치기
+        [SerializeField] private float swingDownDegrees = 135f; // 양수 회전으로 내려치기
         [SerializeField] private float swingDuration = 1.0f; // 공격속도 1.0초 기준
         [SerializeField, Range(0.1f, 0.9f)] private float swingDownPortion = 0.35f;
 
@@ -570,13 +571,38 @@ namespace InfinitePickaxe.Client.UI.Game
         private void UpdateMineralSelectIcons()
         {
             SetMineralIcon(mineralItemNullButton, 0);
-            SetMineralIcon(mineralItem1Button, 1);
-            SetMineralIcon(mineralItem2Button, 2);
-            SetMineralIcon(mineralItem3Button, 3);
-            SetMineralIcon(mineralItem4Button, 4);
-            SetMineralIcon(mineralItem5Button, 5);
-            SetMineralIcon(mineralItem6Button, 6);
-            SetMineralIcon(mineralItem7Button, 7);
+            foreach (var btn in dynamicMineralButtons)
+            {
+                if (btn == null) continue;
+                if (btn.TryGetComponent<MineralButtonTag>(out var tag))
+                {
+                    SetMineralIcon(btn, tag.MineralId);
+                    if (mineralMetaResolver.TryGetMineral(tag.MineralId, out var meta))
+                    {
+                        UpdateMineralButtonLabel(btn.transform, meta, currentDPS);
+                    }
+                }
+            }
+        }
+
+        private void ClearMineralListContent()
+        {
+            if (mineralListContent == null) return;
+            FindNullButtonInContent();
+
+            var toDestroy = new List<Transform>();
+            for (int i = 0; i < mineralListContent.childCount; i++)
+            {
+                var child = mineralListContent.GetChild(i);
+                if (mineralItemNullButton != null && child == mineralItemNullButton.transform) continue;
+                if (mineralItemTemplate != null && child == mineralItemTemplate.transform) continue;
+                toDestroy.Add(child);
+            }
+
+            foreach (var t in toDestroy)
+            {
+                Destroy(t.gameObject);
+            }
         }
 
         private void SetMineralIcon(Button button, uint mineralId)
@@ -609,6 +635,25 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             // 버튼의 타겟 그래픽이나 자기 Image에는 스프라이트를 넣지 않는다.
+            if (img == null) return;
+
+            img.sprite = sprite;
+            img.enabled = true;
+            img.type = Image.Type.Simple;
+            img.preserveAspect = true;
+            var s = img.rectTransform.localScale;
+            img.rectTransform.localScale = new Vector3(Mathf.Abs(s.x), Mathf.Abs(s.y), 1f);
+        }
+
+        private void UpdateMineralButtonIcon(Transform root, uint mineralId)
+        {
+            if (root == null) return;
+            if (!SpriteAtlasCache.TryGetMineralSprite(mineralId, out var sprite)) return;
+
+            var icon = FindChildRecursive(root, "Icon");
+            if (icon == null) return;
+
+            var img = icon.GetComponent<Image>();
             if (img == null) return;
 
             img.sprite = sprite;
@@ -930,34 +975,6 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 mineralItemNullButton.onClick.AddListener(() => SelectMineralNullable(null));
             }
-            if (mineralItem1Button != null)
-            {
-                mineralItem1Button.onClick.AddListener(() => SelectMineralNullable(1));
-            }
-            if (mineralItem2Button != null)
-            {
-                mineralItem2Button.onClick.AddListener(() => SelectMineralNullable(2));
-            }
-            if (mineralItem3Button != null)
-            {
-                mineralItem3Button.onClick.AddListener(() => SelectMineralNullable(3));
-            }
-            if (mineralItem4Button != null)
-            {
-                mineralItem4Button.onClick.AddListener(() => SelectMineralNullable(4));
-            }
-            if (mineralItem5Button != null)
-            {
-                mineralItem5Button.onClick.AddListener(() => SelectMineralNullable(5));
-            }
-            if (mineralItem6Button != null)
-            {
-                mineralItem6Button.onClick.AddListener(() => SelectMineralNullable(6));
-            }
-            if (mineralItem7Button != null)
-            {
-                mineralItem7Button.onClick.AddListener(() => SelectMineralNullable(7));
-            }
         }
 
         /// <summary>
@@ -995,6 +1012,9 @@ namespace InfinitePickaxe.Client.UI.Game
                 mineralSelectModal.SetActive(true);
                 Debug.Log("MiningTabController: 광물 선택 모달 열림");
             }
+
+            BuildMineralSelectList();
+            UpdateMineralSelectIcons();
         }
 
         /// <summary>
@@ -1403,6 +1423,133 @@ namespace InfinitePickaxe.Client.UI.Game
             return $"광물 #{mineralId}";
         }
 
+        private void BuildMineralSelectList()
+        {
+            if (mineralListBuilt && lastBuiltMineralCount > 0)
+            {
+                return; // 이미 한 번 생성 완료
+            }
+
+            if (!MetaRepository.Loaded)
+            {
+                mineralMetaResolver.Reload();
+            }
+
+            if (!EnsureMineralSelectReferences())
+            {
+                if (!warnedMissingMineralTemplate)
+                {
+                    warnedMissingMineralTemplate = true;
+                    Debug.LogWarning("MiningTabController: mineralListContent 또는 mineralItemTemplate가 설정되지 않아 광물 목록을 생성하지 않습니다. Content와 템플릿 프리팹을 인스펙터에 할당하세요.");
+                }
+                return;
+            }
+
+            if (!MetaRepository.Loaded || mineralMetaResolver.All == null || mineralMetaResolver.All.Count == 0)
+            {
+                return;
+            }
+
+            var metas = mineralMetaResolver.All
+                .GroupBy(m => m.Id)
+                .Select(g => g.First())
+                .OrderBy(m => m.Id);
+
+            int metaCount = metas.Count();
+            FindNullButtonInContent();
+            int created = 0;
+            foreach (var meta in metas)
+            {
+                var go = Instantiate(mineralItemTemplate, mineralListContent, false);
+                go.name = $"MineralItem_{meta.Id}";
+                go.SetActive(true);
+
+                var btn = go.GetComponent<Button>() ?? go.GetComponentInChildren<Button>();
+                if (btn != null)
+                {
+                    btn.onClick.RemoveAllListeners();
+                    var id = (int)meta.Id;
+                    btn.onClick.AddListener(() => SelectMineralNullable(id));
+                    if (!btn.gameObject.TryGetComponent<MineralButtonTag>(out var tag))
+                    {
+                        tag = btn.gameObject.AddComponent<MineralButtonTag>();
+                    }
+                    tag.MineralId = meta.Id;
+                }
+
+                UpdateMineralButtonLabel(go.transform, meta, currentDPS);
+                UpdateMineralButtonStats(go.transform, meta);
+                UpdateMineralButtonIcon(go.transform, meta.Id);
+                if (btn != null) dynamicMineralButtons.Add(btn);
+                created++;
+            }
+
+            if (created > 0)
+            {
+                mineralListBuilt = true;
+                lastBuiltMineralCount = created;
+                Debug.Log($"MiningTabController: 메타 광물 목록 로드됨. count={created}");
+            }
+            else
+            {
+                Debug.LogWarning($"MiningTabController: 메타 광물 목록이 비어있습니다. metaCount={metaCount}");
+            }
+
+            // 템플릿은 리스트 생성용으로만 사용하므로 숨겨둔다.
+            if (mineralItemTemplate.activeSelf)
+            {
+                mineralItemTemplate.SetActive(false);
+            }
+        }
+
+        private void UpdateMineralButtonLabel(Transform root, MineralMeta meta, float dps)
+        {
+            if (root == null) return;
+            var nameTf = FindChildRecursive(root, "Name") ?? FindChildRecursive(root, "NameText");
+            if (nameTf == null) return;
+            var text = nameTf.GetComponent<TextMeshProUGUI>();
+            if (text == null) return;
+
+            bool recommended = meta.RecommendedMinDps <= dps && dps <= meta.RecommendedMaxDps;
+            text.text = recommended ? $"{meta.Name} (추천)" : meta.Name;
+        }
+
+        private void UpdateMineralButtonStats(Transform root, MineralMeta meta)
+        {
+            if (root == null || meta == null) return;
+
+            string stats = $"HP: {meta.Hp:N0}  골드: {meta.Gold:N0}";
+
+            // StatsText 우선
+            var statsTf = FindChildRecursive(root, "StatsText");
+            if (statsTf != null)
+            {
+                var t = statsTf.GetComponent<TextMeshProUGUI>();
+                if (t != null) t.text = stats;
+            }
+
+            // HPText / GoldText 개별 적용
+            var hpTf = FindChildRecursive(root, "HPText");
+            if (hpTf == null) hpTf = FindChildRecursive(root, "HpText");
+            if (hpTf != null)
+            {
+                var t = hpTf.GetComponent<TextMeshProUGUI>();
+                if (t != null) t.text = $"HP: {meta.Hp:N0}";
+            }
+
+            var goldTf = FindChildRecursive(root, "GoldText");
+            if (goldTf != null)
+            {
+                var t = goldTf.GetComponent<TextMeshProUGUI>();
+                if (t != null) t.text = $"골드: {meta.Gold:N0}";
+            }
+        }
+
+        private bool EnsureMineralSelectReferences()
+        {
+            return mineralListContent != null && mineralItemTemplate != null;
+        }
+
         private void ShowDamageText(ulong damage, bool isCritical)
         {
             var root = damageTextRoot;
@@ -1525,6 +1672,20 @@ namespace InfinitePickaxe.Client.UI.Game
             };
         }
 
+        private Transform FindChildRecursive(Transform root, string name)
+        {
+            if (root == null || string.IsNullOrEmpty(name)) return null;
+            for (int i = 0; i < root.childCount; i++)
+            {
+                var child = root.GetChild(i);
+                if (child.name.Equals(name))
+                    return child;
+                var found = FindChildRecursive(child, name);
+                if (found != null) return found;
+            }
+            return null;
+        }
+
         private struct DamageTextEntry
         {
             public TextMeshProUGUI Text;
@@ -1542,6 +1703,50 @@ namespace InfinitePickaxe.Client.UI.Game
             public float Duration;
         }
 
+        private void EnsureNullButtonForDynamicList()
+        {
+            // 선택 해제 버튼은 씬/프리팹에 배치된 것을 사용 (자동 생성하지 않음)
+        }
+
+        private void FindNullButtonInContent()
+        {
+            if (mineralItemNullButton != null) return;
+            if (mineralListContent == null) return;
+
+            // 0번 id 태그가 있으면 사용
+            foreach (Transform child in mineralListContent)
+            {
+                var btn = child.GetComponent<Button>() ?? child.GetComponentInChildren<Button>();
+                if (btn != null && btn.TryGetComponent<MineralButtonTag>(out var tag) && tag.MineralId == 0)
+                {
+                    mineralItemNullButton = btn;
+                    return;
+                }
+            }
+
+            // 이름으로 추정
+            foreach (Transform child in mineralListContent)
+            {
+                if (child.name.Contains("0") || child.name.ToLower().Contains("stop") || child.name.ToLower().Contains("none"))
+                {
+                    var btn = child.GetComponent<Button>() ?? child.GetComponentInChildren<Button>();
+                    if (btn != null)
+                    {
+                        mineralItemNullButton = btn;
+                        return;
+                    }
+                }
+            }
+        }
+
         #endregion
+    }
+
+    /// <summary>
+    /// 동적 생성된 광물 버튼에 ID를 보관하는 태그 컴포넌트.
+    /// </summary>
+    public sealed class MineralButtonTag : MonoBehaviour
+    {
+        public uint MineralId;
     }
 }

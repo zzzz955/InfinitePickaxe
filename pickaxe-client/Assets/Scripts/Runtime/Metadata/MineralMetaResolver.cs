@@ -40,10 +40,16 @@ namespace InfinitePickaxe.Client.Metadata
                 .Select(m => m.Id);
         }
 
+        public void Reload()
+        {
+            initialized = false;
+            mineralsById.Clear();
+            InitializeFromMeta();
+        }
+
         private void InitializeFromMeta()
         {
             if (initialized) return;
-            initialized = true;
 
             if (!MetaRepository.Loaded || MetaRepository.Data == null)
             {
@@ -60,60 +66,67 @@ namespace InfinitePickaxe.Client.Metadata
                 if (entry is not Dictionary<string, object> dict)
                     continue;
 
-                if (!TryGetUInt(dict, "id", out var id))
+                if (!TryGetUInt(dict, out var id, "id", "mineral_id", "mineralId"))
                     continue;
 
                 var meta = new MineralMeta
                 {
                     Id = id,
-                    Name = TryGetString(dict, "name", out var name) ? name : $"광물 #{id}",
-                    Hp = TryGetFloat(dict, "hp", out var hp) ? hp : 0f,
-                    Gold = TryGetFloat(dict, "gold", out var gold) ? gold : 0f,
-                    RecommendedMinDps = TryGetFloat(dict, "recommended_min_DPS", out var min) ? min : 0f,
-                    RecommendedMaxDps = TryGetFloat(dict, "recommended_max_DPS", out var max) ? max : 0f,
-                    Biome = TryGetString(dict, "biome", out var biome) ? biome : string.Empty
+                    Name = TryGetString(dict, out var name, "name", "label") ? name : $"광물 #{id}",
+                    Hp = TryGetFloat(dict, out var hp, "hp", "hp_min", "min_hp", "minHp", "minHP", "mineral_hp") ? hp : 0f,
+                    Gold = TryGetFloat(dict, out var gold, "gold", "reward", "gold_reward", "goldReward", "reward_gold") ? gold : 0f,
+                    RecommendedMinDps = TryGetFloat(dict, out var min, "recommended_min_DPS", "recommended_min_dps", "recommendedMinDps", "min_dps", "minDps") ? min : 0f,
+                    RecommendedMaxDps = TryGetFloat(dict, out var max, "recommended_max_DPS", "recommended_max_dps", "recommendedMaxDps", "max_dps", "maxDps") ? max : 0f,
+                    Biome = TryGetString(dict, out var biome, "biome", "region") ? biome : string.Empty
                 };
 
                 mineralsById[id] = meta;
             }
+            initialized = true;
         }
 
-        private static bool TryGetString(Dictionary<string, object> dict, string key, out string value)
+        private static bool TryGetString(Dictionary<string, object> dict, out string value, params string[] keys)
         {
-            if (dict.TryGetValue(key, out var obj) && obj != null)
+            foreach (var key in keys)
             {
-                value = obj.ToString();
-                return true;
+                if (dict.TryGetValue(key, out var obj) && obj != null)
+                {
+                    value = obj.ToString();
+                    return true;
+                }
             }
 
             value = string.Empty;
             return false;
         }
 
-        private static bool TryGetUInt(Dictionary<string, object> dict, string key, out uint value)
+        private static bool TryGetUInt(Dictionary<string, object> dict, out uint value, params string[] keys)
         {
-            if (dict.TryGetValue(key, out var obj))
+            foreach (var key in keys)
             {
-                switch (obj)
+                if (dict.TryGetValue(key, out var obj))
                 {
-                    case uint u:
-                        value = u;
-                        return true;
-                    case int i when i >= 0:
-                        value = (uint)i;
-                        return true;
-                    case long l when l >= 0:
-                        value = (uint)Math.Min(l, uint.MaxValue);
-                        return true;
-                    case double d when d >= 0:
-                        value = (uint)d;
-                        return true;
-                    case float f when f >= 0:
-                        value = (uint)f;
-                        return true;
-                    case string s when uint.TryParse(s, out var parsed):
-                        value = parsed;
-                        return true;
+                    switch (obj)
+                    {
+                        case uint u:
+                            value = u;
+                            return true;
+                        case int i when i >= 0:
+                            value = (uint)i;
+                            return true;
+                        case long l when l >= 0:
+                            value = (uint)Math.Min(l, uint.MaxValue);
+                            return true;
+                        case double d when d >= 0:
+                            value = (uint)d;
+                            return true;
+                        case float f when f >= 0:
+                            value = (uint)f;
+                            return true;
+                        case string s when uint.TryParse(s, out var parsed):
+                            value = parsed;
+                            return true;
+                    }
                 }
             }
 
@@ -121,30 +134,33 @@ namespace InfinitePickaxe.Client.Metadata
             return false;
         }
 
-        private static bool TryGetFloat(Dictionary<string, object> dict, string key, out float value)
+        private static bool TryGetFloat(Dictionary<string, object> dict, out float value, params string[] keys)
         {
-            if (dict.TryGetValue(key, out var obj))
+            foreach (var key in keys)
             {
-                switch (obj)
+                if (dict.TryGetValue(key, out var obj))
                 {
-                    case float f:
-                        value = f;
-                        return true;
-                    case double d:
-                        value = (float)d;
-                        return true;
-                    case int i:
-                        value = i;
-                        return true;
-                    case long l:
-                        value = l;
-                        return true;
-                    case uint u:
-                        value = u;
-                        return true;
-                    case string s when float.TryParse(s, out var parsed):
-                        value = parsed;
-                        return true;
+                    switch (obj)
+                    {
+                        case float f:
+                            value = f;
+                            return true;
+                        case double d:
+                            value = (float)d;
+                            return true;
+                        case int i:
+                            value = i;
+                            return true;
+                        case long l:
+                            value = l;
+                            return true;
+                        case uint u:
+                            value = u;
+                            return true;
+                        case string s when float.TryParse(s, out var parsed):
+                            value = parsed;
+                            return true;
+                    }
                 }
             }
 
