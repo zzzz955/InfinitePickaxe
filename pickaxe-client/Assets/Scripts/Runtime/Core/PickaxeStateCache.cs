@@ -76,6 +76,35 @@ namespace InfinitePickaxe.Client.Core
             RaiseChanged();
         }
 
+        public void UpdateFromSlotUnlockResult(SlotUnlockResult result)
+        {
+            if (result == null || !result.Success) return;
+
+            if (!slots.TryGetValue(result.SlotIndex, out var slot) || slot == null)
+            {
+                slot = new PickaxeSlotInfo
+                {
+                    SlotIndex = result.SlotIndex,
+                    Level = 0,
+                    Tier = 1,
+                    AttackPower = 0,
+                    AttackSpeedX100 = 0,
+                    CriticalHitPercent = 0,
+                    CriticalDamage = 0,
+                    Dps = 0,
+                    PityBonus = 0,
+                    IsUnlocked = true
+                };
+            }
+            else
+            {
+                slot.IsUnlocked = true;
+            }
+
+            slots[result.SlotIndex] = slot;
+            RaiseChanged();
+        }
+
         private void MergeSlots(IEnumerable<PickaxeSlotInfo> list)
         {
             if (list == null) return;

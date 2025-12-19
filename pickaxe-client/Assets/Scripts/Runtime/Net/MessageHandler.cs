@@ -35,6 +35,9 @@ namespace InfinitePickaxe.Client.Net
 
         #region Events - 메시지별 이벤트
 
+        private ulong? lastGold;
+        private uint? lastCrystal;
+
         // 핸드셰이크
         public event Action<HandshakeResponse> OnHandshakeResult;
 
@@ -54,6 +57,7 @@ namespace InfinitePickaxe.Client.Net
 
         // 슬롯
         public event Action<AllSlotsResponse> OnAllSlotsResponse;
+        public event Action<SlotUnlockResult> OnSlotUnlockResult;
 
         // 미션
         public event Action<DailyMissionsResponse> OnDailyMissionsResponse;
@@ -165,6 +169,10 @@ namespace InfinitePickaxe.Client.Net
                         HandleAllSlotsResponse(envelope.AllSlotsResponse);
                         break;
 
+                    case MessageType.SlotUnlockResult:
+                        HandleSlotUnlockResult(envelope.SlotUnlockResult);
+                        break;
+
                     case MessageType.DailyMissionsResponse:
                         HandleDailyMissionsResponse(envelope.DailyMissionsResponse);
                         break;
@@ -226,6 +234,7 @@ namespace InfinitePickaxe.Client.Net
             if (result?.Snapshot != null)
             {
                 PickaxeStateCache.Instance.UpdateFromSnapshot(result.Snapshot);
+                CacheCurrency(result.Snapshot.Gold, result.Snapshot.Crystal);
             }
             OnHandshakeResult?.Invoke(result);
         }
@@ -234,6 +243,7 @@ namespace InfinitePickaxe.Client.Net
         {
             Debug.Log($"유저 데이터 스냅샷 수신: Gold={snapshot.Gold ?? 0}, Crystal={snapshot.Crystal ?? 0}");
             PickaxeStateCache.Instance.UpdateFromSnapshot(snapshot);
+            CacheCurrency(snapshot.Gold, snapshot.Crystal);
             OnUserDataSnapshot?.Invoke(snapshot);
         }
 
@@ -303,6 +313,7 @@ namespace InfinitePickaxe.Client.Net
 
             if (currencyUpdate != null)
             {
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
                 OnCurrencyUpdate?.Invoke(currencyUpdate);
             }
 
@@ -318,6 +329,38 @@ namespace InfinitePickaxe.Client.Net
             Debug.Log($"슬롯 정보 수신: {response.Slots.Count}개, Total DPS {response.TotalDps}");
             PickaxeStateCache.Instance.UpdateFromAllSlots(response);
             OnAllSlotsResponse?.Invoke(response);
+        }
+
+        private void HandleSlotUnlockResult(SlotUnlockResult result)
+        {
+            if (result == null)
+            {
+                Debug.LogWarning("슬롯 해금 결과가 null입니다.");
+                return;
+            }
+
+            var currencyUpdate = new CurrencyUpdate
+            {
+                Gold = null,
+                Crystal = result.RemainingCrystal,
+                Reason = "slot_unlock"
+            };
+
+            if (result.Success)
+            {
+                Debug.Log($"슬롯 해금 성공: 슬롯 #{result.SlotIndex}, 사용 크리스탈 {result.CrystalSpent}, 남은 크리스탈 {result.RemainingCrystal}");
+                PickaxeStateCache.Instance.UpdateFromSlotUnlockResult(result);
+                // 최신 스탯 동기화를 위해 전체 슬롯 정보 재요청
+                RequestAllSlots();
+            }
+            else
+            {
+                Debug.Log($"슬롯 해금 실패: 슬롯 #{result.SlotIndex}, 에러 {result.ErrorCode}, 남은 크리스탈 {result.RemainingCrystal}");
+            }
+
+            CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+            OnCurrencyUpdate?.Invoke(currencyUpdate);
+            OnSlotUnlockResult?.Invoke(result);
         }
 
         private void HandleDailyMissionsResponse(DailyMissionsResponse response)
@@ -389,6 +432,7 @@ namespace InfinitePickaxe.Client.Net
         private void HandleCurrencyUpdate(CurrencyUpdate update)
         {
             Debug.Log($"재화 업데이트: Gold={update.Gold ?? 0}, Crystal={update.Crystal ?? 0}, 사유={update.Reason}");
+            CacheCurrency(update.Gold, update.Crystal);
             OnCurrencyUpdate?.Invoke(update);
         }
 
@@ -481,6 +525,23 @@ namespace InfinitePickaxe.Client.Net
         }
 
         /// <summary>
+        /// 슬롯 해금 요청
+        /// </summary>
+        public void RequestSlotUnlock(uint slotIndex)
+        {
+            var request = new SlotUnlock
+            {
+                SlotIndex = slotIndex
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.SlotUnlock,
+                SlotUnlock = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
         /// 일일 미션 리스트 요청
         /// </summary>
         public void RequestDailyMissions()
@@ -557,6 +618,19 @@ namespace InfinitePickaxe.Client.Net
                 AdWatchComplete = request
             };
             NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public bool TryGetLastCurrency(out ulong? gold, out uint? crystal)
+        {
+            gold = lastGold;
+            crystal = lastCrystal;
+            return gold.HasValue || crystal.HasValue;
+        }
+
+        private void CacheCurrency(ulong? gold, uint? crystal)
+        {
+            if (gold.HasValue) lastGold = gold.Value;
+            if (crystal.HasValue) lastCrystal = crystal.Value;
         }
 
         #endregion

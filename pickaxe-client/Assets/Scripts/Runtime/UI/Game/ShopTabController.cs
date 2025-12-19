@@ -1,6 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using InfinitePickaxe.Client.Core;
+using InfinitePickaxe.Client.Net;
+using Infinitepickaxe;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -32,13 +36,28 @@ namespace InfinitePickaxe.Client.UI.Game
         [Header("Shop Data")]
         [SerializeField] private int watchedAdCount = 0;
         [SerializeField] private int maxAdCount = 3;
-        [SerializeField] private bool slot2Unlocked = true;
+        [SerializeField] private bool slot2Unlocked = false;
         [SerializeField] private bool slot3Unlocked = false;
         [SerializeField] private bool slot4Unlocked = false;
+
+        private readonly int[] slotCosts = { 0, 400, 2000, 4000 }; // 서버 슬롯 인덱스 기준 (0~3)
+        private readonly bool[] slotUnlockedStates = new bool[4];   // 서버 인덱스 기준
+        private readonly bool[] unlockInProgress = new bool[4];     // 중복 요청 방지
+
+        private uint currentCrystal;
+
+        private MessageHandler messageHandler;
+        private PickaxeStateCache pickaxeCache;
+        private bool cacheSubscribed;
 
         protected override void Initialize()
         {
             base.Initialize();
+
+            messageHandler = MessageHandler.Instance;
+            pickaxeCache = PickaxeStateCache.Instance;
+
+            slotUnlockedStates[0] = true; // 슬롯 1은 기본 해금
 
             // 광고 버튼 이벤트 등록
             if (watchAdButton1 != null)
@@ -91,6 +110,29 @@ namespace InfinitePickaxe.Client.UI.Game
             RefreshData();
         }
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            SubscribeMessageHandler();
+            SubscribeCache();
+            SyncSlotsFromCache();
+            RefreshData();
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            UnsubscribeMessageHandler();
+            UnsubscribeCache();
+        }
+
+        private void OnDestroy()
+        {
+            UnsubscribeMessageHandler();
+            UnsubscribeCache();
+        }
+
         /// <summary>
         /// 상점 UI 데이터 갱신
         /// </summary>
@@ -124,35 +166,9 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void UpdateSlotButtons()
         {
-            // 슬롯 2
-            if (unlockSlot2Button != null)
-            {
-                unlockSlot2Button.interactable = !slot2Unlocked;
-            }
-            if (slot2CostText != null)
-            {
-                slot2CostText.text = slot2Unlocked ? "해금 완료" : "슬롯 2: 400 💎";
-            }
-
-            // 슬롯 3
-            if (unlockSlot3Button != null)
-            {
-                unlockSlot3Button.interactable = !slot3Unlocked;
-            }
-            if (slot3CostText != null)
-            {
-                slot3CostText.text = slot3Unlocked ? "해금 완료" : "슬롯 3: 2,000 💎";
-            }
-
-            // 슬롯 4
-            if (unlockSlot4Button != null)
-            {
-                unlockSlot4Button.interactable = !slot4Unlocked;
-            }
-            if (slot4CostText != null)
-            {
-                slot4CostText.text = slot4Unlocked ? "해금 완료" : "슬롯 4: 4,000 💎";
-            }
+            UpdateSlotButton(unlockSlot2Button, slot2CostText, 2);
+            UpdateSlotButton(unlockSlot3Button, slot3CostText, 3);
+            UpdateSlotButton(unlockSlot4Button, slot4CostText, 4);
         }
 
         /// <summary>
@@ -167,10 +183,26 @@ namespace InfinitePickaxe.Client.UI.Game
         /// <summary>
         /// 슬롯 해금 버튼 클릭 이벤트
         /// </summary>
-        private void OnUnlockSlotClicked(int slotIndex)
+        private void OnUnlockSlotClicked(int uiSlotNumber)
         {
-            // TODO: 서버로 슬롯 해금 요청
-            Debug.Log($"ShopTabController: 슬롯 {slotIndex} 해금 버튼 클릭됨");
+            int serverSlotIndex = uiSlotNumber - 1; // 서버는 0-based
+            if (!IsValidSlotIndex(serverSlotIndex))
+            {
+                Debug.LogWarning($"ShopTabController: 잘못된 슬롯 번호 {uiSlotNumber}");
+                return;
+            }
+
+            if (!CanUnlock(serverSlotIndex))
+            {
+                RefreshData();
+                return;
+            }
+
+            unlockInProgress[serverSlotIndex] = true;
+            RefreshData();
+
+            messageHandler?.RequestSlotUnlock((uint)serverSlotIndex);
+            Debug.Log($"ShopTabController: 슬롯 {uiSlotNumber} 해금 요청 전송 (서버 인덱스 {serverSlotIndex})");
         }
 
         /// <summary>
@@ -187,6 +219,12 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         public void SetSlotUnlocked(int slotIndex, bool unlocked)
         {
+            int serverSlotIndex = slotIndex > 0 ? slotIndex - 1 : slotIndex;
+            if (IsValidSlotIndex(serverSlotIndex))
+            {
+                slotUnlockedStates[serverSlotIndex] = unlocked;
+            }
+
             switch (slotIndex)
             {
                 case 2:
@@ -211,6 +249,243 @@ namespace InfinitePickaxe.Client.UI.Game
             SetSlotUnlocked(2, true);
         }
 #endif
+        #endregion
+
+        #region Message & Cache
+
+        private void SubscribeMessageHandler()
+        {
+            if (messageHandler == null)
+            {
+                messageHandler = MessageHandler.Instance;
+            }
+            if (messageHandler == null) return;
+
+            messageHandler.OnHandshakeResult += HandleHandshake;
+            messageHandler.OnUserDataSnapshot += HandleSnapshot;
+            messageHandler.OnCurrencyUpdate += HandleCurrencyUpdate;
+            messageHandler.OnAllSlotsResponse += HandleAllSlotsResponse;
+            messageHandler.OnSlotUnlockResult += HandleSlotUnlockResult;
+
+            ApplyLastKnownCurrency();
+        }
+
+        private void UnsubscribeMessageHandler()
+        {
+            if (messageHandler == null) return;
+
+            messageHandler.OnHandshakeResult -= HandleHandshake;
+            messageHandler.OnUserDataSnapshot -= HandleSnapshot;
+            messageHandler.OnCurrencyUpdate -= HandleCurrencyUpdate;
+            messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
+            messageHandler.OnSlotUnlockResult -= HandleSlotUnlockResult;
+        }
+
+        private void SubscribeCache()
+        {
+            if (cacheSubscribed) return;
+            pickaxeCache = PickaxeStateCache.Instance;
+            if (pickaxeCache != null)
+            {
+                pickaxeCache.OnChanged += HandlePickaxeCacheChanged;
+                cacheSubscribed = true;
+            }
+        }
+
+        private void UnsubscribeCache()
+        {
+            if (!cacheSubscribed) return;
+            if (pickaxeCache != null)
+            {
+                pickaxeCache.OnChanged -= HandlePickaxeCacheChanged;
+            }
+            cacheSubscribed = false;
+        }
+
+        private void HandleHandshake(HandshakeResponse res)
+        {
+            if (res?.Snapshot != null)
+            {
+                HandleSnapshot(res.Snapshot);
+            }
+        }
+
+        private void HandleSnapshot(UserDataSnapshot snapshot)
+        {
+            if (snapshot == null) return;
+
+            if (snapshot.Crystal.HasValue)
+            {
+                currentCrystal = snapshot.Crystal.Value;
+            }
+
+            SyncSlotsFrom(snapshot.PickaxeSlots);
+            RefreshData();
+        }
+
+        private void HandleCurrencyUpdate(CurrencyUpdate update)
+        {
+            if (update == null) return;
+            if (update.Crystal.HasValue)
+            {
+                currentCrystal = update.Crystal.Value;
+                RefreshData();
+            }
+        }
+
+        private void HandleAllSlotsResponse(AllSlotsResponse response)
+        {
+            if (response == null) return;
+            SyncSlotsFrom(response.Slots);
+            RefreshData();
+        }
+
+        private void HandleSlotUnlockResult(SlotUnlockResult result)
+        {
+            if (result == null) return;
+
+            int slotIndex = (int)result.SlotIndex;
+            if (IsValidSlotIndex(slotIndex))
+            {
+                unlockInProgress[slotIndex] = false;
+            }
+
+            if (result.Success)
+            {
+                MarkSlotUnlocked(slotIndex);
+            }
+
+            RefreshData();
+        }
+
+        private void HandlePickaxeCacheChanged()
+        {
+            SyncSlotsFromCache();
+            RefreshData();
+        }
+
+        private void ApplyLastKnownCurrency()
+        {
+            if (messageHandler != null && messageHandler.TryGetLastCurrency(out var gold, out var crystal))
+            {
+                if (crystal.HasValue)
+                {
+                    currentCrystal = crystal.Value;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Slot Helpers
+
+        private void UpdateSlotButton(Button button, TextMeshProUGUI costText, int uiSlotNumber)
+        {
+            if (button == null && costText == null) return;
+
+            int serverSlotIndex = uiSlotNumber - 1;
+            bool unlocked = IsSlotUnlocked(serverSlotIndex);
+            bool pending = IsUnlockPending(serverSlotIndex);
+            int cost = GetCost(serverSlotIndex);
+            bool canAfford = currentCrystal >= cost;
+            bool interactable = !unlocked && !pending && canAfford;
+
+            if (button != null)
+            {
+                button.interactable = interactable;
+            }
+
+            if (costText != null)
+            {
+                if (unlocked)
+                {
+                    costText.text = "해금 완료";
+                }
+                else if (pending)
+                {
+                    costText.text = "해금 중...";
+                }
+                else
+                {
+                    costText.text = $"슬롯 {uiSlotNumber}: {cost:N0} 💎";
+                }
+            }
+
+            // 인스펙터에서 확인용 Legacy 필드 업데이트
+            slot2Unlocked = IsSlotUnlocked(1);
+            slot3Unlocked = IsSlotUnlocked(2);
+            slot4Unlocked = IsSlotUnlocked(3);
+        }
+
+        private bool IsValidSlotIndex(int slotIndex)
+        {
+            return slotIndex >= 0 && slotIndex < slotUnlockedStates.Length;
+        }
+
+        private bool IsSlotUnlocked(int slotIndex)
+        {
+            return IsValidSlotIndex(slotIndex) && slotUnlockedStates[slotIndex];
+        }
+
+        private bool IsUnlockPending(int slotIndex)
+        {
+            return IsValidSlotIndex(slotIndex) && unlockInProgress[slotIndex];
+        }
+
+        private int GetCost(int slotIndex)
+        {
+            if (slotIndex >= 0 && slotIndex < slotCosts.Length)
+            {
+                return slotCosts[slotIndex];
+            }
+            return 0;
+        }
+
+        private bool CanUnlock(int slotIndex)
+        {
+            return IsValidSlotIndex(slotIndex)
+                   && !IsSlotUnlocked(slotIndex)
+                   && !IsUnlockPending(slotIndex)
+                   && currentCrystal >= GetCost(slotIndex);
+        }
+
+        private void MarkSlotUnlocked(int slotIndex)
+        {
+            if (!IsValidSlotIndex(slotIndex)) return;
+            slotUnlockedStates[slotIndex] = true;
+        }
+
+        private void SyncSlotsFrom(IEnumerable<PickaxeSlotInfo> slots)
+        {
+            if (slots == null) return;
+
+            foreach (var slot in slots)
+            {
+                if (slot == null) continue;
+                if (!IsValidSlotIndex((int)slot.SlotIndex)) continue;
+                slotUnlockedStates[slot.SlotIndex] = slot.IsUnlocked;
+                if (slot.IsUnlocked)
+                {
+                    unlockInProgress[slot.SlotIndex] = false;
+                }
+            }
+        }
+
+        private void SyncSlotsFromCache()
+        {
+            slotUnlockedStates[0] = true;
+            if (pickaxeCache == null || pickaxeCache.Slots == null) return;
+
+            foreach (var kvp in pickaxeCache.Slots)
+            {
+                var slotIndex = (int)kvp.Key;
+                if (!IsValidSlotIndex(slotIndex)) continue;
+                var info = kvp.Value;
+                if (info == null) continue;
+                slotUnlockedStates[slotIndex] = info.IsUnlocked;
+            }
+        }
+
         #endregion
     }
 }
