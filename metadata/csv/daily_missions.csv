@@ -1,0 +1,10 @@
+﻿difficulty,id,type,target,description,reward_crystal
+Easy,easy_mine_10,mine,10,광물 10회 채굴,10
+Easy,easy_play_5m,play_time,300,게임 접속 5분 유지,10
+Easy,easy_upgrade_once,upgrade,1,강화 1회 수행,10
+Medium,med_gold_5000,gold,5000,"골드 5,000 획득",14
+Medium,med_copper_3,mine_mineral,3,구리 3회 채굴,14
+Medium,med_pickaxe_lv8,level,8,곡괭이 Lv 8 달성,14
+Hard,hard_emerald_1,mine_mineral,1,에메랄드 1회 채굴,18
+Hard,hard_pickaxe_lv15,level,15,곡괭이 Lv 15 달성,18
+Hard,hard_gold_50000,gold,50000,"골드 50,000 획득",18

@@ -1,0 +1,4 @@
+﻿id,daily_limit,effect,parameters,rewards_by_view
+upgrade_discount,3,upgrade_cost_discount,"{""cost_multiplier"":75}",
+mission_reroll,3,mission_reroll,"{""apply_to_slots"":""all"",""progress_reset_on_reroll"":true}",
+crystal_reward,3,crystal_reward,{},"[10,14,18]"

@@ -1,0 +1,6 @@
+﻿key,value
+reset_time_kst,00:00
+free_rerolls_per_day,2
+ad_rerolls_per_day,3
+apply_to_slots,true
+progress_reset_on_reroll,true
