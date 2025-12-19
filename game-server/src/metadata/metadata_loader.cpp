@@ -50,11 +50,11 @@ bool MetadataLoader::load(const std::string& base_path) {
                     MineralMeta mm;
                     mm.id = e.value("id", 0);
                     mm.name = e.value("name", "");
-                    mm.hp = e.value("hp", 0);
-                    mm.reward = e.value("reward", e.value("gold", 0));
-                    mm.respawn_time = e.value("respawn_time", 5);
-                    mm.recommended_min_dps = e.value("recommended_min_DPS", 0);
-                    mm.recommended_max_dps = e.value("recommended_max_DPS", 0);
+                    mm.hp = e.value<uint64_t>("hp", 0);
+                    mm.reward = e.value<uint64_t>("reward", e.value<uint64_t>("gold", 0));
+                    mm.respawn_time = e.value<uint32_t>("respawn_time", 5);
+                    mm.recommended_min_dps = e.value<uint64_t>("recommended_min_DPS", 0);
+                    mm.recommended_max_dps = e.value<uint64_t>("recommended_max_DPS", 0);
                     minerals_[mm.id] = mm;
                 }
             }
