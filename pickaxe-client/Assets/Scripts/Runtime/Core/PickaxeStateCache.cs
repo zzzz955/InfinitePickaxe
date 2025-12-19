@@ -43,7 +43,19 @@ namespace InfinitePickaxe.Client.Core
 
         public void UpdateFromUpgradeResult(UpgradeResult result)
         {
-            if (result == null || !result.Success) return;
+            if (result == null) return;
+
+            if (slots.TryGetValue(result.SlotIndex, out var existing) && existing != null)
+            {
+                existing.PityBonus = result.PityBonus;
+                slots[result.SlotIndex] = existing;
+            }
+
+            if (!result.Success)
+            {
+                RaiseChanged();
+                return;
+            }
 
             var info = new PickaxeSlotInfo
             {

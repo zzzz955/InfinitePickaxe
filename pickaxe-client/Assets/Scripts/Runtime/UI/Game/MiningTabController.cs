@@ -393,16 +393,14 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (mineInfoText != null)
             {
-                string status = string.Empty;
                 if (isPreparingMineral)
                 {
-                    status = "(준비 중)";
+                    mineInfoText.text = $"대기 중: {currentMineralName}";
+                    return;
                 }
-                else if (isRespawning)
-                {
-                    status = "(리스폰 중)";
-                }
-                mineInfoText.text = $"채굴 중: {currentMineralName} {status}";
+
+                string status = isRespawning ? " (리스폰 중)" : string.Empty;
+                mineInfoText.text = $"채굴 중: {currentMineralName}{status}";
             }
         }
 

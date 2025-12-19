@@ -153,6 +153,12 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
                 "SET pity_bonus = $3, updated_at = NOW(), last_upgraded_at = NOW() "
                 "WHERE user_id = $1 AND slot_index = $2",
                 user_id, slot_index, new_pity);
+
+            // 실패해도 최신 total_dps를 내려주기 위해 조회 (UI 실시간 반영)
+            auto total_dps_row = tx.exec_params(
+                "SELECT COALESCE(SUM(dps), 0) FROM game_schema.pickaxe_slots WHERE user_id = $1",
+                user_id);
+            res.final_total_dps = total_dps_row[0][0].as<int64_t>();
         }
 
         tx.commit();

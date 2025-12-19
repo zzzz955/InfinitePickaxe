@@ -298,9 +298,9 @@ namespace InfinitePickaxe.Client.Net
             }
             else
             {
-                Debug.LogWarning($"강화 실패: {result.ErrorCode}");
+                Debug.Log($"강화 실패: {result.ErrorCode}");
             }
-            if (result?.Success == true)
+            if (result != null)
             {
                 PickaxeStateCache.Instance.UpdateFromUpgradeResult(result);
             }

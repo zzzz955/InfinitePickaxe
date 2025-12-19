@@ -68,6 +68,11 @@ namespace InfinitePickaxe.Client.UI.Game
         private Sprite runtimeWhiteSprite;
         private bool subscribed;
         private bool cacheSubscribed;
+        private bool hasLastResultRates;
+        private uint lastResultSlot;
+        private uint lastResultBaseRateBp;
+        private uint lastResultFinalRateBp;
+        private uint lastResultPityBonusBp;
 
         protected override void Initialize()
         {
@@ -250,9 +255,16 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (result == null)
             {
+                hasLastResultRates = false;
                 RefreshData();
                 return;
             }
+
+            lastResultSlot = result.SlotIndex;
+            lastResultBaseRateBp = result.BaseRateBp;
+            lastResultFinalRateBp = result.FinalRateBp;
+            lastResultPityBonusBp = result.PityBonus;
+            hasLastResultRates = true;
 
             if (result.Success)
             {
@@ -270,7 +282,10 @@ namespace InfinitePickaxe.Client.UI.Game
             }
             else
             {
-                Debug.LogWarning($"UpgradeTabController: 강화 실패 - {result.ErrorCode}");
+                Debug.Log($"UpgradeTabController: 강화 실패 - {result.ErrorCode}");
+                // 실패 시에도 서버가 내려준 보너스/최종 확률을 즉시 반영
+                pickaxeCache?.UpdateFromUpgradeResult(result);
+                SyncSlotsFromCache();
             }
 
             RefreshData();
@@ -394,6 +409,32 @@ namespace InfinitePickaxe.Client.UI.Game
                 upgradeChancePercent = finalRateBp / 100f;
             }
 
+            // 서버가 직전에 내려준 확률 정보가 있으면 우선 사용 (즉시 반영)
+            if (hasLastResultRates && lastResultSlot == selectedSlotIndex)
+            {
+                if (lastResultBaseRateBp > 0) baseRateBp = lastResultBaseRateBp;
+                if (lastResultPityBonusBp > 0 || lastResultFinalRateBp > 0)
+                {
+                    pityBonusBp = lastResultPityBonusBp;
+                }
+
+                if (lastResultFinalRateBp > 0)
+                {
+                    finalRateBp = metaResolver.ClampRateBp(lastResultFinalRateBp);
+                }
+                else
+                {
+                    finalRateBp = metaResolver.ClampRateBp(baseRateBp + pityBonusBp);
+                }
+
+                upgradeChancePercent = finalRateBp / 100f;
+            }
+            else if (finalRateBp == 0)
+            {
+                finalRateBp = metaResolver.ClampRateBp(baseRateBp + pityBonusBp);
+                upgradeChancePercent = finalRateBp / 100f;
+            }
+
             UpdateLevelText(unlocked);
             UpdateAttackText();
             UpdateCostText();
@@ -470,8 +511,8 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 float finalPercent = finalRateBp / 100f;
                 float basePercent = baseRateBp / 100f;
-                float pityPercent = pityBonusBp / 100f;
-                upgradeChanceText.text = $"강화 확률: {finalPercent:F2}% (기본 {basePercent:F2}% + 피티 {pityPercent:F2}%)";
+                float bonusPercent = pityBonusBp / 100f;
+                upgradeChanceText.text = $"강화 확률: {finalPercent:F2}% (기본 {basePercent:F2}% + 보너스 {bonusPercent:F2}%)";
                 return;
             }
 
