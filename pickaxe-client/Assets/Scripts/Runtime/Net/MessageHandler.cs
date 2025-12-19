@@ -281,25 +281,31 @@ namespace InfinitePickaxe.Client.Net
 
         private void HandleUpgradeResult(UpgradeResult result)
         {
+            CurrencyUpdate currencyUpdate = null;
+            if (result != null)
+            {
+                currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = result.RemainingGold,
+                    Crystal = null,
+                    Reason = "upgrade"
+                };
+            }
+
             if (result.Success)
             {
                 Debug.Log($"강화 성공: 슬롯 #{result.SlotIndex}, Lv.{result.NewLevel}, DPS {result.NewDps}");
-                // 서버 응답에 포함된 남은 골드 정보가 있으면 통화 업데이트 이벤트로 중계
-                if (result.RemainingGold > 0 || result.GoldSpent > 0)
-                {
-                    var update = new CurrencyUpdate
-                    {
-                        Gold = result.RemainingGold,
-                        Crystal = null,
-                        Reason = "upgrade"
-                    };
-                    OnCurrencyUpdate?.Invoke(update);
-                }
             }
             else
             {
                 Debug.Log($"강화 실패: {result.ErrorCode}");
             }
+
+            if (currencyUpdate != null)
+            {
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+            }
+
             if (result != null)
             {
                 PickaxeStateCache.Instance.UpdateFromUpgradeResult(result);
