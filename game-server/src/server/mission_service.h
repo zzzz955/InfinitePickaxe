@@ -29,6 +29,7 @@ public:
 
     infinitepickaxe::MilestoneClaimResult handle_milestone_claim(
         const std::string& user_id, uint32_t milestone_count);
+    infinitepickaxe::MilestoneState get_milestone_state(const std::string& user_id);
 
     std::vector<infinitepickaxe::MissionProgressUpdate> handle_mining_complete(
         const std::string& user_id, uint32_t mineral_id);

@@ -96,6 +96,9 @@ private:
                            uint32_t critical_hit_percent, uint32_t critical_damage);
     void refresh_slots_from_service(bool preserve_timers);
     void send_mission_progress_updates(const std::vector<infinitepickaxe::MissionProgressUpdate>& updates);
+    void send_daily_missions_state();
+    void send_milestone_state();
+    void send_ad_counters_state();
     void flush_play_time_progress(bool force);
     void cache_mining_state();
     bool load_cached_mining_state(uint32_t& mineral_id, uint64_t& hp, uint64_t& respawn_until_ms);

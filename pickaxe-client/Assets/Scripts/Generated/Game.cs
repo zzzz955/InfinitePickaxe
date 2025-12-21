@@ -25,7 +25,7 @@ namespace Infinitepickaxe {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgpnYW1lLnByb3RvEg9pbmZpbml0ZXBpY2theGUaHmdvb2dsZS9wcm90b2J1",
-            "Zi93cmFwcGVycy5wcm90byLYEAoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
+            "Zi93cmFwcGVycy5wcm90byLTEQoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
             "LmluZmluaXRlcGlja2F4ZS5NZXNzYWdlVHlwZRI2CgloYW5kc2hha2UYCiAB",
             "KAsyIS5pbmZpbml0ZXBpY2theGUuSGFuZHNoYWtlUmVxdWVzdEgAEj4KEGhh",
             "bmRzaGFrZV9yZXN1bHQYCyABKAsyIi5pbmZpbml0ZXBpY2theGUuSGFuZHNo",
@@ -63,131 +63,143 @@ namespace Infinitepickaxe {
             "IAEoCzIkLmluZmluaXRlcGlja2F4ZS5NaXNzaW9uUmVyb2xsUmVzdWx0SAAS",
             "OgoPbWlsZXN0b25lX2NsYWltGE0gASgLMh8uaW5maW5pdGVwaWNrYXhlLk1p",
             "bGVzdG9uZUNsYWltSAASRwoWbWlsZXN0b25lX2NsYWltX3Jlc3VsdBhOIAEo",
-            "CzIlLmluZmluaXRlcGlja2F4ZS5NaWxlc3RvbmVDbGFpbVJlc3VsdEgAEj0K",
-            "EWFkX3dhdGNoX2NvbXBsZXRlGFAgASgLMiAuaW5maW5pdGVwaWNrYXhlLkFk",
-            "V2F0Y2hDb21wbGV0ZUgAEjkKD2FkX3dhdGNoX3Jlc3VsdBhRIAEoCzIeLmlu",
-            "ZmluaXRlcGlja2F4ZS5BZFdhdGNoUmVzdWx0SAASOgoPY3VycmVuY3lfdXBk",
-            "YXRlGFogASgLMh8uaW5maW5pdGVwaWNrYXhlLkN1cnJlbmN5VXBkYXRlSAAS",
-            "RwoWb2ZmbGluZV9yZXdhcmRfcmVxdWVzdBhkIAEoCzIlLmluZmluaXRlcGlj",
-            "a2F4ZS5PZmZsaW5lUmV3YXJkUmVxdWVzdEgAEkUKFW9mZmxpbmVfcmV3YXJk",
-            "X3Jlc3VsdBhlIAEoCzIkLmluZmluaXRlcGlja2F4ZS5PZmZsaW5lUmV3YXJk",
-            "UmVzdWx0SAASQAoSZXJyb3Jfbm90aWZpY2F0aW9uGG4gASgLMiIuaW5maW5p",
-            "dGVwaWNrYXhlLkVycm9yTm90aWZpY2F0aW9uSABCCQoHbWVzc2FnZSJKChBI",
-            "YW5kc2hha2VSZXF1ZXN0EgsKA2p3dBgBIAEoCRIWCg5jbGllbnRfdmVyc2lv",
-            "bhgCIAEoCRIRCglkZXZpY2VfaWQYAyABKAki4AEKD1BpY2theGVTbG90SW5m",
-            "bxISCgpzbG90X2luZGV4GAEgASgNEg0KBWxldmVsGAIgASgNEgwKBHRpZXIY",
-            "AyABKA0SFAoMYXR0YWNrX3Bvd2VyGAQgASgEEhkKEWF0dGFja19zcGVlZF94",
-            "MTAwGAUgASgNEhwKFGNyaXRpY2FsX2hpdF9wZXJjZW50GAYgASgNEhcKD2Ny",
-            "aXRpY2FsX2RhbWFnZRgHIAEoDRILCgNkcHMYCCABKAQSEgoKcGl0eV9ib251",
-            "cxgJIAEoDRITCgtpc191bmxvY2tlZBgKIAEoCCJDCglBZENvdW50ZXISDwoH",
-            "YWRfdHlwZRgBIAEoCRIQCghhZF9jb3VudBgCIAEoDRITCgtkYWlseV9saW1p",
-            "dBgDIAEoDSL2AwoQVXNlckRhdGFTbmFwc2hvdBIqCgRnb2xkGAEgASgLMhwu",
-            "Z29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZhbHVlEi0KB2NyeXN0YWwYAiABKAsy",
-            "HC5nb29nbGUucHJvdG9idWYuVUludDMyVmFsdWUSFgoOdW5sb2NrZWRfc2xv",
-            "dHMYAyADKAgSOAoSY3VycmVudF9taW5lcmFsX2lkGAQgASgLMhwuZ29vZ2xl",
-            "LnByb3RvYnVmLlVJbnQzMlZhbHVlEjAKCm1pbmVyYWxfaHAYBSABKAsyHC5n",
-            "b29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSNAoObWluZXJhbF9tYXhfaHAY",
-            "BiABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSNwoNcGlja2F4",
-            "ZV9zbG90cxgHIAMoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdElu",
-            "Zm8SEQoJdG90YWxfZHBzGAggASgEEjEKC3NlcnZlcl90aW1lGAkgASgLMhwu",
-            "Z29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZhbHVlEi8KC2FkX2NvdW50ZXJzGAog",
-            "AygLMhouaW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIdChVjdXJyZW50X29m",
-            "ZmxpbmVfaG91cnMYCyABKA0iagoRSGFuZHNoYWtlUmVzcG9uc2USDwoHc3Vj",
-            "Y2VzcxgBIAEoCBIPCgdtZXNzYWdlGAIgASgJEjMKCHNuYXBzaG90GAMgASgL",
-            "MiEuaW5maW5pdGVwaWNrYXhlLlVzZXJEYXRhU25hcHNob3QiIwoJSGVhcnRi",
-            "ZWF0EhYKDmNsaWVudF90aW1lX21zGAEgASgEIiYKDEhlYXJ0YmVhdEFjaxIW",
-            "Cg5zZXJ2ZXJfdGltZV9tcxgBIAEoBCIUChJNaW5lcmFsTGlzdFJlcXVlc3Qi",
-            "ZwoLTWluZXJhbEluZm8SEgoKbWluZXJhbF9pZBgBIAEoDRIMCgRuYW1lGAIg",
-            "ASgJEg4KBm1heF9ocBgDIAEoBBITCgtnb2xkX3Jld2FyZBgEIAEoBBIRCglp",
-            "Y29uX25hbWUYBSABKAkiRQoTTWluZXJhbExpc3RSZXNwb25zZRIuCghtaW5l",
-            "cmFscxgBIAMoCzIcLmluZmluaXRlcGlja2F4ZS5NaW5lcmFsSW5mbyIqChRD",
-            "aGFuZ2VNaW5lcmFsUmVxdWVzdBISCgptaW5lcmFsX2lkGAEgASgNInwKFUNo",
-            "YW5nZU1pbmVyYWxSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIEhIKCm1pbmVy",
-            "YWxfaWQYAiABKA0SEgoKbWluZXJhbF9ocBgDIAEoBBIWCg5taW5lcmFsX21h",
-            "eF9ocBgEIAEoBBISCgplcnJvcl9jb2RlGAUgASgJIkgKDVBpY2theGVBdHRh",
-            "Y2sSEgoKc2xvdF9pbmRleBgBIAEoDRIOCgZkYW1hZ2UYAiABKAQSEwoLaXNf",
-            "Y3JpdGljYWwYAyABKAgikQEKDE1pbmluZ1VwZGF0ZRISCgptaW5lcmFsX2lk",
-            "GAEgASgNEhIKCmN1cnJlbnRfaHAYAiABKAQSDgoGbWF4X2hwGAMgASgEEi8K",
-            "B2F0dGFja3MYBCADKAsyHi5pbmZpbml0ZXBpY2theGUuUGlja2F4ZUF0dGFj",
-            "axIYChBzZXJ2ZXJfdGltZXN0YW1wGAUgASgEIpMBCg5NaW5pbmdDb21wbGV0",
-            "ZRISCgptaW5lcmFsX2lkGAEgASgNEhMKC2dvbGRfZWFybmVkGAIgASgEEhIK",
-            "CnRvdGFsX2dvbGQYAyABKAQSFAoMbWluaW5nX2NvdW50GAQgASgEEhQKDHJl",
-            "c3Bhd25fdGltZRgFIAEoDRIYChBzZXJ2ZXJfdGltZXN0YW1wGAYgASgEIhEK",
-            "D0FsbFNsb3RzUmVxdWVzdCJWChBBbGxTbG90c1Jlc3BvbnNlEi8KBXNsb3Rz",
-            "GAEgAygLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIRCgl0",
-            "b3RhbF9kcHMYAiABKAQiJAoOVXBncmFkZVJlcXVlc3QSEgoKc2xvdF9pbmRl",
-            "eBgBIAEoDSKRAwoNVXBncmFkZVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhIK",
-            "CnNsb3RfaW5kZXgYAiABKA0SEQoJbmV3X2xldmVsGAMgASgNEhAKCG5ld190",
-            "aWVyGAQgASgNEhgKEG5ld19hdHRhY2tfcG93ZXIYBSABKAQSHQoVbmV3X2F0",
-            "dGFja19zcGVlZF94MTAwGAYgASgNEiAKGG5ld19jcml0aWNhbF9oaXRfcGVy",
-            "Y2VudBgHIAEoDRIbChNuZXdfY3JpdGljYWxfZGFtYWdlGAggASgNEg8KB25l",
-            "d19kcHMYCSABKAQSFQoNbmV3X3RvdGFsX2RwcxgKIAEoBBISCgpnb2xkX3Nw",
-            "ZW50GAsgASgEEhYKDnJlbWFpbmluZ19nb2xkGAwgASgEEhIKCmVycm9yX2Nv",
-            "ZGUYDSABKAkSFAoMYmFzZV9yYXRlX2JwGA4gASgNEhUKDWJvbnVzX3JhdGVf",
-            "YnAYDyABKA0SFQoNZmluYWxfcmF0ZV9icBgQIAEoDRISCgpwaXR5X2JvbnVz",
-            "GBEgASgNIhYKFERhaWx5TWlzc2lvbnNSZXF1ZXN0ItwBCgxNaXNzaW9uRW50",
-            "cnkSDwoHc2xvdF9ubxgBIAEoDRISCgptaXNzaW9uX2lkGAIgASgJEhQKDG1p",
-            "c3Npb25fdHlwZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIUCgx0YXJn",
-            "ZXRfdmFsdWUYBSABKA0SFQoNY3VycmVudF92YWx1ZRgGIAEoDRIWCg5yZXdh",
-            "cmRfY3J5c3RhbBgHIAEoDRIOCgZzdGF0dXMYCCABKAkSEwoLYXNzaWduZWRf",
-            "YXQYCSABKAQSEgoKZXhwaXJlc19hdBgKIAEoBCKoAQoVRGFpbHlNaXNzaW9u",
-            "c1Jlc3BvbnNlEi8KCG1pc3Npb25zGAEgAygLMh0uaW5maW5pdGVwaWNrYXhl",
-            "Lk1pc3Npb25FbnRyeRIXCg9jb21wbGV0ZWRfY291bnQYAiABKA0SFAoMcmVy",
-            "b2xsX2NvdW50GAMgASgNEi8KC2FkX2NvdW50ZXJzGAQgAygLMhouaW5maW5p",
-            "dGVwaWNrYXhlLkFkQ291bnRlciJ5ChVNaXNzaW9uUHJvZ3Jlc3NVcGRhdGUS",
-            "DwoHc2xvdF9ubxgBIAEoDRISCgptaXNzaW9uX2lkGAIgASgJEhUKDWN1cnJl",
-            "bnRfdmFsdWUYAyABKA0SFAoMdGFyZ2V0X3ZhbHVlGAQgASgNEg4KBnN0YXR1",
-            "cxgFIAEoCSIiCg9NaXNzaW9uQ29tcGxldGUSDwoHc2xvdF9ubxgBIAEoDSKQ",
-            "AQoVTWlzc2lvbkNvbXBsZXRlUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSDwoH",
-            "c2xvdF9ubxgCIAEoDRISCgptaXNzaW9uX2lkGAMgASgJEhYKDnJld2FyZF9j",
-            "cnlzdGFsGAQgASgNEhUKDXRvdGFsX2NyeXN0YWwYBSABKA0SEgoKZXJyb3Jf",
-            "Y29kZRgGIAEoCSIPCg1NaXNzaW9uUmVyb2xsIooBChNNaXNzaW9uUmVyb2xs",
-            "UmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSOAoRcmVyb2xsZWRfbWlzc2lvbnMY",
-            "AiADKAsyHS5pbmZpbml0ZXBpY2theGUuTWlzc2lvbkVudHJ5EhQKDHJlcm9s",
-            "bHNfdXNlZBgDIAEoDRISCgplcnJvcl9jb2RlGAQgASgJIikKDk1pbGVzdG9u",
-            "ZUNsYWltEhcKD21pbGVzdG9uZV9jb3VudBgBIAEoDSKPAQoUTWlsZXN0b25l",
-            "Q2xhaW1SZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIXCg9taWxlc3RvbmVfY291",
-            "bnQYAiABKA0SHAoUb2ZmbGluZV9ob3Vyc19nYWluZWQYAyABKA0SGwoTdG90",
-            "YWxfb2ZmbGluZV9ob3VycxgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJIiAK",
-            "ClNsb3RVbmxvY2sSEgoKc2xvdF9pbmRleBgBIAEoDSLEAQoQU2xvdFVubG9j",
-            "a1Jlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhIKCnNsb3RfaW5kZXgYAiABKA0S",
-            "FQoNY3J5c3RhbF9zcGVudBgDIAEoDRIZChFyZW1haW5pbmdfY3J5c3RhbBgE",
-            "IAEoDRISCgplcnJvcl9jb2RlGAUgASgJEjIKCG5ld19zbG90GAYgASgLMiAu",
-            "aW5maW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIRCgl0b3RhbF9kcHMY",
-            "ByABKAQiIgoPQWRXYXRjaENvbXBsZXRlEg8KB2FkX3R5cGUYASABKAkipQEK",
-            "DUFkV2F0Y2hSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIPCgdhZF90eXBlGAIg",
-            "ASgJEhYKDmNyeXN0YWxfZWFybmVkGAMgASgNEhUKDXRvdGFsX2NyeXN0YWwY",
-            "BCABKA0SLwoLYWRfY291bnRlcnMYBSADKAsyGi5pbmZpbml0ZXBpY2theGUu",
-            "QWRDb3VudGVyEhIKCmVycm9yX2NvZGUYBiABKAkiewoOQ3VycmVuY3lVcGRh",
-            "dGUSKgoEZ29sZBgBIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1",
-            "ZRItCgdjcnlzdGFsGAIgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQzMlZh",
-            "bHVlEg4KBnJlYXNvbhgDIAEoCSIWChRPZmZsaW5lUmV3YXJkUmVxdWVzdCJt",
-            "ChNPZmZsaW5lUmV3YXJkUmVzdWx0EhcKD2VsYXBzZWRfc2Vjb25kcxgBIAEo",
-            "BBITCgtnb2xkX2Vhcm5lZBgCIAEoBBIUCgxtaW5pbmdfY291bnQYAyABKA0S",
-            "EgoKdG90YWxfZ29sZBgEIAEoBCI4ChFFcnJvck5vdGlmaWNhdGlvbhISCgpl",
-            "cnJvcl9jb2RlGAEgASgJEg8KB21lc3NhZ2UYAiABKAkqiQYKC01lc3NhZ2VU",
-            "eXBlEgsKB1VOS05PV04QABINCglIQU5EU0hBS0UQARIUChBIQU5EU0hBS0Vf",
-            "UkVTVUxUEAISDQoJSEVBUlRCRUFUEAMSEQoNSEVBUlRCRUFUX0FDSxAEEhYK",
-            "ElVTRVJfREFUQV9TTkFQU0hPVBAKEhgKFE1JTkVSQUxfTElTVF9SRVFVRVNU",
-            "EBQSGQoVTUlORVJBTF9MSVNUX1JFU1BPTlNFEBUSGgoWQ0hBTkdFX01JTkVS",
-            "QUxfUkVRVUVTVBAWEhsKF0NIQU5HRV9NSU5FUkFMX1JFU1BPTlNFEBcSEQoN",
-            "TUlOSU5HX1VQREFURRAgEhMKD01JTklOR19DT01QTEVURRAhEhUKEUFMTF9T",
-            "TE9UU19SRVFVRVNUECgSFgoSQUxMX1NMT1RTX1JFU1BPTlNFECkSDwoLU0xP",
-            "VF9VTkxPQ0sQKhIWChJTTE9UX1VOTE9DS19SRVNVTFQQKxITCg9VUEdSQURF",
-            "X1JFUVVFU1QQMhISCg5VUEdSQURFX1JFU1VMVBAzEhoKFkRBSUxZX01JU1NJ",
-            "T05TX1JFUVVFU1QQPBIbChdEQUlMWV9NSVNTSU9OU19SRVNQT05TRRA9EhsK",
-            "F01JU1NJT05fUFJPR1JFU1NfVVBEQVRFED4SFAoQTUlTU0lPTl9DT01QTEVU",
-            "RRA/EhsKF01JU1NJT05fQ09NUExFVEVfUkVTVUxUEEASEgoOTUlTU0lPTl9S",
-            "RVJPTEwQQRIZChVNSVNTSU9OX1JFUk9MTF9SRVNVTFQQQhITCg9NSUxFU1RP",
-            "TkVfQ0xBSU0QQxIaChZNSUxFU1RPTkVfQ0xBSU1fUkVTVUxUEEQSFQoRQURf",
-            "V0FUQ0hfQ09NUExFVEUQRhITCg9BRF9XQVRDSF9SRVNVTFQQRxITCg9DVVJS",
-            "RU5DWV9VUERBVEUQUBIaChZPRkZMSU5FX1JFV0FSRF9SRVFVRVNUEFoSGQoV",
-            "T0ZGTElORV9SRVdBUkRfUkVTVUxUEFsSFgoSRVJST1JfTk9USUZJQ0FUSU9O",
-            "EGRiBnByb3RvMw=="));
+            "CzIlLmluZmluaXRlcGlja2F4ZS5NaWxlc3RvbmVDbGFpbVJlc3VsdEgAEjoK",
+            "D21pbGVzdG9uZV9zdGF0ZRhPIAEoCzIfLmluZmluaXRlcGlja2F4ZS5NaWxl",
+            "c3RvbmVTdGF0ZUgAEj0KEWFkX3dhdGNoX2NvbXBsZXRlGFAgASgLMiAuaW5m",
+            "aW5pdGVwaWNrYXhlLkFkV2F0Y2hDb21wbGV0ZUgAEjkKD2FkX3dhdGNoX3Jl",
+            "c3VsdBhRIAEoCzIeLmluZmluaXRlcGlja2F4ZS5BZFdhdGNoUmVzdWx0SAAS",
+            "PQoRYWRfY291bnRlcnNfc3RhdGUYUiABKAsyIC5pbmZpbml0ZXBpY2theGUu",
+            "QWRDb3VudGVyc1N0YXRlSAASOgoPY3VycmVuY3lfdXBkYXRlGFogASgLMh8u",
+            "aW5maW5pdGVwaWNrYXhlLkN1cnJlbmN5VXBkYXRlSAASRwoWb2ZmbGluZV9y",
+            "ZXdhcmRfcmVxdWVzdBhkIAEoCzIlLmluZmluaXRlcGlja2F4ZS5PZmZsaW5l",
+            "UmV3YXJkUmVxdWVzdEgAEkUKFW9mZmxpbmVfcmV3YXJkX3Jlc3VsdBhlIAEo",
+            "CzIkLmluZmluaXRlcGlja2F4ZS5PZmZsaW5lUmV3YXJkUmVzdWx0SAASQAoS",
+            "ZXJyb3Jfbm90aWZpY2F0aW9uGG4gASgLMiIuaW5maW5pdGVwaWNrYXhlLkVy",
+            "cm9yTm90aWZpY2F0aW9uSABCCQoHbWVzc2FnZSJKChBIYW5kc2hha2VSZXF1",
+            "ZXN0EgsKA2p3dBgBIAEoCRIWCg5jbGllbnRfdmVyc2lvbhgCIAEoCRIRCglk",
+            "ZXZpY2VfaWQYAyABKAki4AEKD1BpY2theGVTbG90SW5mbxISCgpzbG90X2lu",
+            "ZGV4GAEgASgNEg0KBWxldmVsGAIgASgNEgwKBHRpZXIYAyABKA0SFAoMYXR0",
+            "YWNrX3Bvd2VyGAQgASgEEhkKEWF0dGFja19zcGVlZF94MTAwGAUgASgNEhwK",
+            "FGNyaXRpY2FsX2hpdF9wZXJjZW50GAYgASgNEhcKD2NyaXRpY2FsX2RhbWFn",
+            "ZRgHIAEoDRILCgNkcHMYCCABKAQSEgoKcGl0eV9ib251cxgJIAEoDRITCgtp",
+            "c191bmxvY2tlZBgKIAEoCCJDCglBZENvdW50ZXISDwoHYWRfdHlwZRgBIAEo",
+            "CRIQCghhZF9jb3VudBgCIAEoDRITCgtkYWlseV9saW1pdBgDIAEoDSL2AwoQ",
+            "VXNlckRhdGFTbmFwc2hvdBIqCgRnb2xkGAEgASgLMhwuZ29vZ2xlLnByb3Rv",
+            "YnVmLlVJbnQ2NFZhbHVlEi0KB2NyeXN0YWwYAiABKAsyHC5nb29nbGUucHJv",
+            "dG9idWYuVUludDMyVmFsdWUSFgoOdW5sb2NrZWRfc2xvdHMYAyADKAgSOAoS",
+            "Y3VycmVudF9taW5lcmFsX2lkGAQgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJ",
+            "bnQzMlZhbHVlEjAKCm1pbmVyYWxfaHAYBSABKAsyHC5nb29nbGUucHJvdG9i",
+            "dWYuVUludDY0VmFsdWUSNAoObWluZXJhbF9tYXhfaHAYBiABKAsyHC5nb29n",
+            "bGUucHJvdG9idWYuVUludDY0VmFsdWUSNwoNcGlja2F4ZV9zbG90cxgHIAMo",
+            "CzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8SEQoJdG90YWxf",
+            "ZHBzGAggASgEEjEKC3NlcnZlcl90aW1lGAkgASgLMhwuZ29vZ2xlLnByb3Rv",
+            "YnVmLlVJbnQ2NFZhbHVlEi8KC2FkX2NvdW50ZXJzGAogAygLMhouaW5maW5p",
+            "dGVwaWNrYXhlLkFkQ291bnRlchIdChVjdXJyZW50X29mZmxpbmVfaG91cnMY",
+            "CyABKA0iagoRSGFuZHNoYWtlUmVzcG9uc2USDwoHc3VjY2VzcxgBIAEoCBIP",
+            "CgdtZXNzYWdlGAIgASgJEjMKCHNuYXBzaG90GAMgASgLMiEuaW5maW5pdGVw",
+            "aWNrYXhlLlVzZXJEYXRhU25hcHNob3QiIwoJSGVhcnRiZWF0EhYKDmNsaWVu",
+            "dF90aW1lX21zGAEgASgEIiYKDEhlYXJ0YmVhdEFjaxIWCg5zZXJ2ZXJfdGlt",
+            "ZV9tcxgBIAEoBCIUChJNaW5lcmFsTGlzdFJlcXVlc3QiZwoLTWluZXJhbElu",
+            "Zm8SEgoKbWluZXJhbF9pZBgBIAEoDRIMCgRuYW1lGAIgASgJEg4KBm1heF9o",
+            "cBgDIAEoBBITCgtnb2xkX3Jld2FyZBgEIAEoBBIRCglpY29uX25hbWUYBSAB",
+            "KAkiRQoTTWluZXJhbExpc3RSZXNwb25zZRIuCghtaW5lcmFscxgBIAMoCzIc",
+            "LmluZmluaXRlcGlja2F4ZS5NaW5lcmFsSW5mbyIqChRDaGFuZ2VNaW5lcmFs",
+            "UmVxdWVzdBISCgptaW5lcmFsX2lkGAEgASgNInwKFUNoYW5nZU1pbmVyYWxS",
+            "ZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIEhIKCm1pbmVyYWxfaWQYAiABKA0S",
+            "EgoKbWluZXJhbF9ocBgDIAEoBBIWCg5taW5lcmFsX21heF9ocBgEIAEoBBIS",
+            "CgplcnJvcl9jb2RlGAUgASgJIkgKDVBpY2theGVBdHRhY2sSEgoKc2xvdF9p",
+            "bmRleBgBIAEoDRIOCgZkYW1hZ2UYAiABKAQSEwoLaXNfY3JpdGljYWwYAyAB",
+            "KAgikQEKDE1pbmluZ1VwZGF0ZRISCgptaW5lcmFsX2lkGAEgASgNEhIKCmN1",
+            "cnJlbnRfaHAYAiABKAQSDgoGbWF4X2hwGAMgASgEEi8KB2F0dGFja3MYBCAD",
+            "KAsyHi5pbmZpbml0ZXBpY2theGUuUGlja2F4ZUF0dGFjaxIYChBzZXJ2ZXJf",
+            "dGltZXN0YW1wGAUgASgEIpMBCg5NaW5pbmdDb21wbGV0ZRISCgptaW5lcmFs",
+            "X2lkGAEgASgNEhMKC2dvbGRfZWFybmVkGAIgASgEEhIKCnRvdGFsX2dvbGQY",
+            "AyABKAQSFAoMbWluaW5nX2NvdW50GAQgASgEEhQKDHJlc3Bhd25fdGltZRgF",
+            "IAEoDRIYChBzZXJ2ZXJfdGltZXN0YW1wGAYgASgEIhEKD0FsbFNsb3RzUmVx",
+            "dWVzdCJWChBBbGxTbG90c1Jlc3BvbnNlEi8KBXNsb3RzGAEgAygLMiAuaW5m",
+            "aW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIRCgl0b3RhbF9kcHMYAiAB",
+            "KAQiJAoOVXBncmFkZVJlcXVlc3QSEgoKc2xvdF9pbmRleBgBIAEoDSKRAwoN",
+            "VXBncmFkZVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhIKCnNsb3RfaW5kZXgY",
+            "AiABKA0SEQoJbmV3X2xldmVsGAMgASgNEhAKCG5ld190aWVyGAQgASgNEhgK",
+            "EG5ld19hdHRhY2tfcG93ZXIYBSABKAQSHQoVbmV3X2F0dGFja19zcGVlZF94",
+            "MTAwGAYgASgNEiAKGG5ld19jcml0aWNhbF9oaXRfcGVyY2VudBgHIAEoDRIb",
+            "ChNuZXdfY3JpdGljYWxfZGFtYWdlGAggASgNEg8KB25ld19kcHMYCSABKAQS",
+            "FQoNbmV3X3RvdGFsX2RwcxgKIAEoBBISCgpnb2xkX3NwZW50GAsgASgEEhYK",
+            "DnJlbWFpbmluZ19nb2xkGAwgASgEEhIKCmVycm9yX2NvZGUYDSABKAkSFAoM",
+            "YmFzZV9yYXRlX2JwGA4gASgNEhUKDWJvbnVzX3JhdGVfYnAYDyABKA0SFQoN",
+            "ZmluYWxfcmF0ZV9icBgQIAEoDRISCgpwaXR5X2JvbnVzGBEgASgNIhYKFERh",
+            "aWx5TWlzc2lvbnNSZXF1ZXN0IqICCgxNaXNzaW9uRW50cnkSDwoHc2xvdF9u",
+            "bxgBIAEoDRISCgptaXNzaW9uX2lkGAIgASgNEhQKDG1pc3Npb25fdHlwZRgD",
+            "IAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIUCgx0YXJnZXRfdmFsdWUYBSAB",
+            "KA0SFQoNY3VycmVudF92YWx1ZRgGIAEoDRIWCg5yZXdhcmRfY3J5c3RhbBgH",
+            "IAEoDRIOCgZzdGF0dXMYCCABKAkSEwoLYXNzaWduZWRfYXQYCSABKAQSEgoK",
+            "ZXhwaXJlc19hdBgKIAEoBBISCgpkaWZmaWN1bHR5GAsgASgJEjAKCm1pbmVy",
+            "YWxfaWQYDCABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDMyVmFsdWUi9wEK",
+            "FURhaWx5TWlzc2lvbnNSZXNwb25zZRIvCghtaXNzaW9ucxgBIAMoCzIdLmlu",
+            "ZmluaXRlcGlja2F4ZS5NaXNzaW9uRW50cnkSFwoPY29tcGxldGVkX2NvdW50",
+            "GAIgASgNEhQKDHJlcm9sbF9jb3VudBgDIAEoDRIvCgthZF9jb3VudGVycxgE",
+            "IAMoCzIaLmluZmluaXRlcGlja2F4ZS5BZENvdW50ZXISFAoMcmVyb2xsc19m",
+            "cmVlGAUgASgNEhsKE3Jlcm9sbHNfdG90YWxfbGltaXQYBiABKA0SGgoScmVz",
+            "ZXRfdGltZXN0YW1wX21zGAcgASgEInkKFU1pc3Npb25Qcm9ncmVzc1VwZGF0",
+            "ZRIPCgdzbG90X25vGAEgASgNEhIKCm1pc3Npb25faWQYAiABKA0SFQoNY3Vy",
+            "cmVudF92YWx1ZRgDIAEoDRIUCgx0YXJnZXRfdmFsdWUYBCABKA0SDgoGc3Rh",
+            "dHVzGAUgASgJIiIKD01pc3Npb25Db21wbGV0ZRIPCgdzbG90X25vGAEgASgN",
+            "IpABChVNaXNzaW9uQ29tcGxldGVSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIP",
+            "CgdzbG90X25vGAIgASgNEhIKCm1pc3Npb25faWQYAyABKA0SFgoOcmV3YXJk",
+            "X2NyeXN0YWwYBCABKA0SFQoNdG90YWxfY3J5c3RhbBgFIAEoDRISCgplcnJv",
+            "cl9jb2RlGAYgASgJIg8KDU1pc3Npb25SZXJvbGwiigEKE01pc3Npb25SZXJv",
+            "bGxSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBI4ChFyZXJvbGxlZF9taXNzaW9u",
+            "cxgCIAMoCzIdLmluZmluaXRlcGlja2F4ZS5NaXNzaW9uRW50cnkSFAoMcmVy",
+            "b2xsc191c2VkGAMgASgNEhIKCmVycm9yX2NvZGUYBCABKAkiKQoOTWlsZXN0",
+            "b25lQ2xhaW0SFwoPbWlsZXN0b25lX2NvdW50GAEgASgNIr4BChRNaWxlc3Rv",
+            "bmVDbGFpbVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhcKD21pbGVzdG9uZV9j",
+            "b3VudBgCIAEoDRIcChRvZmZsaW5lX2hvdXJzX2dhaW5lZBgDIAEoDRIbChN0",
+            "b3RhbF9vZmZsaW5lX2hvdXJzGAQgASgNEhYKDnJld2FyZF9jcnlzdGFsGAUg",
+            "ASgNEhUKDXRvdGFsX2NyeXN0YWwYBiABKA0SEgoKZXJyb3JfY29kZRgHIAEo",
+            "CSJhCg5NaWxlc3RvbmVTdGF0ZRIXCg9jb21wbGV0ZWRfY291bnQYASABKA0S",
+            "GgoSY2xhaW1lZF9taWxlc3RvbmVzGAIgAygNEhoKEnJlc2V0X3RpbWVzdGFt",
+            "cF9tcxgDIAEoBCIgCgpTbG90VW5sb2NrEhIKCnNsb3RfaW5kZXgYASABKA0i",
+            "xAEKEFNsb3RVbmxvY2tSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBISCgpzbG90",
+            "X2luZGV4GAIgASgNEhUKDWNyeXN0YWxfc3BlbnQYAyABKA0SGQoRcmVtYWlu",
+            "aW5nX2NyeXN0YWwYBCABKA0SEgoKZXJyb3JfY29kZRgFIAEoCRIyCghuZXdf",
+            "c2xvdBgGIAEoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8S",
+            "EQoJdG90YWxfZHBzGAcgASgEIiIKD0FkV2F0Y2hDb21wbGV0ZRIPCgdhZF90",
+            "eXBlGAEgASgJIqUBCg1BZFdhdGNoUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgS",
+            "DwoHYWRfdHlwZRgCIAEoCRIWCg5jcnlzdGFsX2Vhcm5lZBgDIAEoDRIVCg10",
+            "b3RhbF9jcnlzdGFsGAQgASgNEi8KC2FkX2NvdW50ZXJzGAUgAygLMhouaW5m",
+            "aW5pdGVwaWNrYXhlLkFkQ291bnRlchISCgplcnJvcl9jb2RlGAYgASgJIl4K",
+            "D0FkQ291bnRlcnNTdGF0ZRIvCgthZF9jb3VudGVycxgBIAMoCzIaLmluZmlu",
+            "aXRlcGlja2F4ZS5BZENvdW50ZXISGgoScmVzZXRfdGltZXN0YW1wX21zGAIg",
+            "ASgEInsKDkN1cnJlbmN5VXBkYXRlEioKBGdvbGQYASABKAsyHC5nb29nbGUu",
+            "cHJvdG9idWYuVUludDY0VmFsdWUSLQoHY3J5c3RhbBgCIAEoCzIcLmdvb2ds",
+            "ZS5wcm90b2J1Zi5VSW50MzJWYWx1ZRIOCgZyZWFzb24YAyABKAkiFgoUT2Zm",
+            "bGluZVJld2FyZFJlcXVlc3QibQoTT2ZmbGluZVJld2FyZFJlc3VsdBIXCg9l",
+            "bGFwc2VkX3NlY29uZHMYASABKAQSEwoLZ29sZF9lYXJuZWQYAiABKAQSFAoM",
+            "bWluaW5nX2NvdW50GAMgASgNEhIKCnRvdGFsX2dvbGQYBCABKAQiOAoRRXJy",
+            "b3JOb3RpZmljYXRpb24SEgoKZXJyb3JfY29kZRgBIAEoCRIPCgdtZXNzYWdl",
+            "GAIgASgJKrUGCgtNZXNzYWdlVHlwZRILCgdVTktOT1dOEAASDQoJSEFORFNI",
+            "QUtFEAESFAoQSEFORFNIQUtFX1JFU1VMVBACEg0KCUhFQVJUQkVBVBADEhEK",
+            "DUhFQVJUQkVBVF9BQ0sQBBIWChJVU0VSX0RBVEFfU05BUFNIT1QQChIYChRN",
+            "SU5FUkFMX0xJU1RfUkVRVUVTVBAUEhkKFU1JTkVSQUxfTElTVF9SRVNQT05T",
+            "RRAVEhoKFkNIQU5HRV9NSU5FUkFMX1JFUVVFU1QQFhIbChdDSEFOR0VfTUlO",
+            "RVJBTF9SRVNQT05TRRAXEhEKDU1JTklOR19VUERBVEUQIBITCg9NSU5JTkdf",
+            "Q09NUExFVEUQIRIVChFBTExfU0xPVFNfUkVRVUVTVBAoEhYKEkFMTF9TTE9U",
+            "U19SRVNQT05TRRApEg8KC1NMT1RfVU5MT0NLECoSFgoSU0xPVF9VTkxPQ0tf",
+            "UkVTVUxUECsSEwoPVVBHUkFERV9SRVFVRVNUEDISEgoOVVBHUkFERV9SRVNV",
+            "TFQQMxIaChZEQUlMWV9NSVNTSU9OU19SRVFVRVNUEDwSGwoXREFJTFlfTUlT",
+            "U0lPTlNfUkVTUE9OU0UQPRIbChdNSVNTSU9OX1BST0dSRVNTX1VQREFURRA+",
+            "EhQKEE1JU1NJT05fQ09NUExFVEUQPxIbChdNSVNTSU9OX0NPTVBMRVRFX1JF",
+            "U1VMVBBAEhIKDk1JU1NJT05fUkVST0xMEEESGQoVTUlTU0lPTl9SRVJPTExf",
+            "UkVTVUxUEEISEwoPTUlMRVNUT05FX0NMQUlNEEMSGgoWTUlMRVNUT05FX0NM",
+            "QUlNX1JFU1VMVBBEEhMKD01JTEVTVE9ORV9TVEFURRBFEhUKEUFEX1dBVENI",
+            "X0NPTVBMRVRFEEYSEwoPQURfV0FUQ0hfUkVTVUxUEEcSFQoRQURfQ09VTlRF",
+            "UlNfU1RBVEUQSBITCg9DVVJSRU5DWV9VUERBVEUQUBIaChZPRkZMSU5FX1JF",
+            "V0FSRF9SRVFVRVNUEFoSGQoVT0ZGTElORV9SRVdBUkRfUkVTVUxUEFsSFgoS",
+            "RVJST1JfTk9USUZJQ0FUSU9OEGRiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.MessageType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "AdWatchComplete", "AdWatchResult", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification" }, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "MilestoneState", "AdWatchComplete", "AdWatchResult", "AdCountersState", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification" }, new[]{ "Message" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HandshakeRequest), global::Infinitepickaxe.HandshakeRequest.Parser, new[]{ "Jwt", "ClientVersion", "DeviceId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeSlotInfo), global::Infinitepickaxe.PickaxeSlotInfo.Parser, new[]{ "SlotIndex", "Level", "Tier", "AttackPower", "AttackSpeedX100", "CriticalHitPercent", "CriticalDamage", "Dps", "PityBonus", "IsUnlocked" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdCounter), global::Infinitepickaxe.AdCounter.Parser, new[]{ "AdType", "AdCount", "DailyLimit" }, null, null, null, null),
@@ -208,19 +220,21 @@ namespace Infinitepickaxe {
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UpgradeRequest), global::Infinitepickaxe.UpgradeRequest.Parser, new[]{ "SlotIndex" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UpgradeResult), global::Infinitepickaxe.UpgradeResult.Parser, new[]{ "Success", "SlotIndex", "NewLevel", "NewTier", "NewAttackPower", "NewAttackSpeedX100", "NewCriticalHitPercent", "NewCriticalDamage", "NewDps", "NewTotalDps", "GoldSpent", "RemainingGold", "ErrorCode", "BaseRateBp", "BonusRateBp", "FinalRateBp", "PityBonus" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.DailyMissionsRequest), global::Infinitepickaxe.DailyMissionsRequest.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionEntry), global::Infinitepickaxe.MissionEntry.Parser, new[]{ "SlotNo", "MissionId", "MissionType", "Description", "TargetValue", "CurrentValue", "RewardCrystal", "Status", "AssignedAt", "ExpiresAt" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.DailyMissionsResponse), global::Infinitepickaxe.DailyMissionsResponse.Parser, new[]{ "Missions", "CompletedCount", "RerollCount", "AdCounters" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionEntry), global::Infinitepickaxe.MissionEntry.Parser, new[]{ "SlotNo", "MissionId", "MissionType", "Description", "TargetValue", "CurrentValue", "RewardCrystal", "Status", "AssignedAt", "ExpiresAt", "Difficulty", "MineralId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.DailyMissionsResponse), global::Infinitepickaxe.DailyMissionsResponse.Parser, new[]{ "Missions", "CompletedCount", "RerollCount", "AdCounters", "RerollsFree", "RerollsTotalLimit", "ResetTimestampMs" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionProgressUpdate), global::Infinitepickaxe.MissionProgressUpdate.Parser, new[]{ "SlotNo", "MissionId", "CurrentValue", "TargetValue", "Status" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionComplete), global::Infinitepickaxe.MissionComplete.Parser, new[]{ "SlotNo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionCompleteResult), global::Infinitepickaxe.MissionCompleteResult.Parser, new[]{ "Success", "SlotNo", "MissionId", "RewardCrystal", "TotalCrystal", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionReroll), global::Infinitepickaxe.MissionReroll.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MissionRerollResult), global::Infinitepickaxe.MissionRerollResult.Parser, new[]{ "Success", "RerolledMissions", "RerollsUsed", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MilestoneClaim), global::Infinitepickaxe.MilestoneClaim.Parser, new[]{ "MilestoneCount" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MilestoneClaimResult), global::Infinitepickaxe.MilestoneClaimResult.Parser, new[]{ "Success", "MilestoneCount", "OfflineHoursGained", "TotalOfflineHours", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MilestoneClaimResult), global::Infinitepickaxe.MilestoneClaimResult.Parser, new[]{ "Success", "MilestoneCount", "OfflineHoursGained", "TotalOfflineHours", "RewardCrystal", "TotalCrystal", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MilestoneState), global::Infinitepickaxe.MilestoneState.Parser, new[]{ "CompletedCount", "ClaimedMilestones", "ResetTimestampMs" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.SlotUnlock), global::Infinitepickaxe.SlotUnlock.Parser, new[]{ "SlotIndex" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.SlotUnlockResult), global::Infinitepickaxe.SlotUnlockResult.Parser, new[]{ "Success", "SlotIndex", "CrystalSpent", "RemainingCrystal", "ErrorCode", "NewSlot", "TotalDps" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdWatchComplete), global::Infinitepickaxe.AdWatchComplete.Parser, new[]{ "AdType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdWatchResult), global::Infinitepickaxe.AdWatchResult.Parser, new[]{ "Success", "AdType", "CrystalEarned", "TotalCrystal", "AdCounters", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdCountersState), global::Infinitepickaxe.AdCountersState.Parser, new[]{ "AdCounters", "ResetTimestampMs" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.CurrencyUpdate), global::Infinitepickaxe.CurrencyUpdate.Parser, new[]{ "Gold", "Crystal", "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineRewardRequest), global::Infinitepickaxe.OfflineRewardRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineRewardResult), global::Infinitepickaxe.OfflineRewardResult.Parser, new[]{ "ElapsedSeconds", "GoldEarned", "MiningCount", "TotalGold" }, null, null, null, null),
@@ -288,11 +302,13 @@ namespace Infinitepickaxe {
     [pbr::OriginalName("MISSION_REROLL_RESULT")] MissionRerollResult = 66,
     [pbr::OriginalName("MILESTONE_CLAIM")] MilestoneClaim = 67,
     [pbr::OriginalName("MILESTONE_CLAIM_RESULT")] MilestoneClaimResult = 68,
+    [pbr::OriginalName("MILESTONE_STATE")] MilestoneState = 69,
     /// <summary>
     /// 광고
     /// </summary>
     [pbr::OriginalName("AD_WATCH_COMPLETE")] AdWatchComplete = 70,
     [pbr::OriginalName("AD_WATCH_RESULT")] AdWatchResult = 71,
+    [pbr::OriginalName("AD_COUNTERS_STATE")] AdCountersState = 72,
     /// <summary>
     /// 재화
     /// </summary>
@@ -429,11 +445,17 @@ namespace Infinitepickaxe {
         case MessageOneofCase.MilestoneClaimResult:
           MilestoneClaimResult = other.MilestoneClaimResult.Clone();
           break;
+        case MessageOneofCase.MilestoneState:
+          MilestoneState = other.MilestoneState.Clone();
+          break;
         case MessageOneofCase.AdWatchComplete:
           AdWatchComplete = other.AdWatchComplete.Clone();
           break;
         case MessageOneofCase.AdWatchResult:
           AdWatchResult = other.AdWatchResult.Clone();
+          break;
+        case MessageOneofCase.AdCountersState:
+          AdCountersState = other.AdCountersState.Clone();
           break;
         case MessageOneofCase.CurrencyUpdate:
           CurrencyUpdate = other.CurrencyUpdate.Clone();
@@ -786,6 +808,18 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "milestone_state" field.</summary>
+    public const int MilestoneStateFieldNumber = 79;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MilestoneState MilestoneState {
+      get { return messageCase_ == MessageOneofCase.MilestoneState ? (global::Infinitepickaxe.MilestoneState) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MilestoneState;
+      }
+    }
+
     /// <summary>Field number for the "ad_watch_complete" field.</summary>
     public const int AdWatchCompleteFieldNumber = 80;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -807,6 +841,18 @@ namespace Infinitepickaxe {
       set {
         message_ = value;
         messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.AdWatchResult;
+      }
+    }
+
+    /// <summary>Field number for the "ad_counters_state" field.</summary>
+    public const int AdCountersStateFieldNumber = 82;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.AdCountersState AdCountersState {
+      get { return messageCase_ == MessageOneofCase.AdCountersState ? (global::Infinitepickaxe.AdCountersState) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.AdCountersState;
       }
     }
 
@@ -888,8 +934,10 @@ namespace Infinitepickaxe {
       MissionRerollResult = 76,
       MilestoneClaim = 77,
       MilestoneClaimResult = 78,
+      MilestoneState = 79,
       AdWatchComplete = 80,
       AdWatchResult = 81,
+      AdCountersState = 82,
       CurrencyUpdate = 90,
       OfflineRewardRequest = 100,
       OfflineRewardResult = 101,
@@ -951,8 +999,10 @@ namespace Infinitepickaxe {
       if (!object.Equals(MissionRerollResult, other.MissionRerollResult)) return false;
       if (!object.Equals(MilestoneClaim, other.MilestoneClaim)) return false;
       if (!object.Equals(MilestoneClaimResult, other.MilestoneClaimResult)) return false;
+      if (!object.Equals(MilestoneState, other.MilestoneState)) return false;
       if (!object.Equals(AdWatchComplete, other.AdWatchComplete)) return false;
       if (!object.Equals(AdWatchResult, other.AdWatchResult)) return false;
+      if (!object.Equals(AdCountersState, other.AdCountersState)) return false;
       if (!object.Equals(CurrencyUpdate, other.CurrencyUpdate)) return false;
       if (!object.Equals(OfflineRewardRequest, other.OfflineRewardRequest)) return false;
       if (!object.Equals(OfflineRewardResult, other.OfflineRewardResult)) return false;
@@ -992,8 +1042,10 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.MissionRerollResult) hash ^= MissionRerollResult.GetHashCode();
       if (messageCase_ == MessageOneofCase.MilestoneClaim) hash ^= MilestoneClaim.GetHashCode();
       if (messageCase_ == MessageOneofCase.MilestoneClaimResult) hash ^= MilestoneClaimResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.MilestoneState) hash ^= MilestoneState.GetHashCode();
       if (messageCase_ == MessageOneofCase.AdWatchComplete) hash ^= AdWatchComplete.GetHashCode();
       if (messageCase_ == MessageOneofCase.AdWatchResult) hash ^= AdWatchResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.AdCountersState) hash ^= AdCountersState.GetHashCode();
       if (messageCase_ == MessageOneofCase.CurrencyUpdate) hash ^= CurrencyUpdate.GetHashCode();
       if (messageCase_ == MessageOneofCase.OfflineRewardRequest) hash ^= OfflineRewardRequest.GetHashCode();
       if (messageCase_ == MessageOneofCase.OfflineRewardResult) hash ^= OfflineRewardResult.GetHashCode();
@@ -1125,6 +1177,10 @@ namespace Infinitepickaxe {
         output.WriteRawTag(242, 4);
         output.WriteMessage(MilestoneClaimResult);
       }
+      if (messageCase_ == MessageOneofCase.MilestoneState) {
+        output.WriteRawTag(250, 4);
+        output.WriteMessage(MilestoneState);
+      }
       if (messageCase_ == MessageOneofCase.AdWatchComplete) {
         output.WriteRawTag(130, 5);
         output.WriteMessage(AdWatchComplete);
@@ -1132,6 +1188,10 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.AdWatchResult) {
         output.WriteRawTag(138, 5);
         output.WriteMessage(AdWatchResult);
+      }
+      if (messageCase_ == MessageOneofCase.AdCountersState) {
+        output.WriteRawTag(146, 5);
+        output.WriteMessage(AdCountersState);
       }
       if (messageCase_ == MessageOneofCase.CurrencyUpdate) {
         output.WriteRawTag(210, 5);
@@ -1267,6 +1327,10 @@ namespace Infinitepickaxe {
         output.WriteRawTag(242, 4);
         output.WriteMessage(MilestoneClaimResult);
       }
+      if (messageCase_ == MessageOneofCase.MilestoneState) {
+        output.WriteRawTag(250, 4);
+        output.WriteMessage(MilestoneState);
+      }
       if (messageCase_ == MessageOneofCase.AdWatchComplete) {
         output.WriteRawTag(130, 5);
         output.WriteMessage(AdWatchComplete);
@@ -1274,6 +1338,10 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.AdWatchResult) {
         output.WriteRawTag(138, 5);
         output.WriteMessage(AdWatchResult);
+      }
+      if (messageCase_ == MessageOneofCase.AdCountersState) {
+        output.WriteRawTag(146, 5);
+        output.WriteMessage(AdCountersState);
       }
       if (messageCase_ == MessageOneofCase.CurrencyUpdate) {
         output.WriteRawTag(210, 5);
@@ -1382,11 +1450,17 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.MilestoneClaimResult) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(MilestoneClaimResult);
       }
+      if (messageCase_ == MessageOneofCase.MilestoneState) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MilestoneState);
+      }
       if (messageCase_ == MessageOneofCase.AdWatchComplete) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(AdWatchComplete);
       }
       if (messageCase_ == MessageOneofCase.AdWatchResult) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(AdWatchResult);
+      }
+      if (messageCase_ == MessageOneofCase.AdCountersState) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(AdCountersState);
       }
       if (messageCase_ == MessageOneofCase.CurrencyUpdate) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(CurrencyUpdate);
@@ -1572,6 +1646,12 @@ namespace Infinitepickaxe {
           }
           MilestoneClaimResult.MergeFrom(other.MilestoneClaimResult);
           break;
+        case MessageOneofCase.MilestoneState:
+          if (MilestoneState == null) {
+            MilestoneState = new global::Infinitepickaxe.MilestoneState();
+          }
+          MilestoneState.MergeFrom(other.MilestoneState);
+          break;
         case MessageOneofCase.AdWatchComplete:
           if (AdWatchComplete == null) {
             AdWatchComplete = new global::Infinitepickaxe.AdWatchComplete();
@@ -1583,6 +1663,12 @@ namespace Infinitepickaxe {
             AdWatchResult = new global::Infinitepickaxe.AdWatchResult();
           }
           AdWatchResult.MergeFrom(other.AdWatchResult);
+          break;
+        case MessageOneofCase.AdCountersState:
+          if (AdCountersState == null) {
+            AdCountersState = new global::Infinitepickaxe.AdCountersState();
+          }
+          AdCountersState.MergeFrom(other.AdCountersState);
           break;
         case MessageOneofCase.CurrencyUpdate:
           if (CurrencyUpdate == null) {
@@ -1867,6 +1953,15 @@ namespace Infinitepickaxe {
             MilestoneClaimResult = subBuilder;
             break;
           }
+          case 634: {
+            global::Infinitepickaxe.MilestoneState subBuilder = new global::Infinitepickaxe.MilestoneState();
+            if (messageCase_ == MessageOneofCase.MilestoneState) {
+              subBuilder.MergeFrom(MilestoneState);
+            }
+            input.ReadMessage(subBuilder);
+            MilestoneState = subBuilder;
+            break;
+          }
           case 642: {
             global::Infinitepickaxe.AdWatchComplete subBuilder = new global::Infinitepickaxe.AdWatchComplete();
             if (messageCase_ == MessageOneofCase.AdWatchComplete) {
@@ -1883,6 +1978,15 @@ namespace Infinitepickaxe {
             }
             input.ReadMessage(subBuilder);
             AdWatchResult = subBuilder;
+            break;
+          }
+          case 658: {
+            global::Infinitepickaxe.AdCountersState subBuilder = new global::Infinitepickaxe.AdCountersState();
+            if (messageCase_ == MessageOneofCase.AdCountersState) {
+              subBuilder.MergeFrom(AdCountersState);
+            }
+            input.ReadMessage(subBuilder);
+            AdCountersState = subBuilder;
             break;
           }
           case 722: {
@@ -2178,6 +2282,15 @@ namespace Infinitepickaxe {
             MilestoneClaimResult = subBuilder;
             break;
           }
+          case 634: {
+            global::Infinitepickaxe.MilestoneState subBuilder = new global::Infinitepickaxe.MilestoneState();
+            if (messageCase_ == MessageOneofCase.MilestoneState) {
+              subBuilder.MergeFrom(MilestoneState);
+            }
+            input.ReadMessage(subBuilder);
+            MilestoneState = subBuilder;
+            break;
+          }
           case 642: {
             global::Infinitepickaxe.AdWatchComplete subBuilder = new global::Infinitepickaxe.AdWatchComplete();
             if (messageCase_ == MessageOneofCase.AdWatchComplete) {
@@ -2194,6 +2307,15 @@ namespace Infinitepickaxe {
             }
             input.ReadMessage(subBuilder);
             AdWatchResult = subBuilder;
+            break;
+          }
+          case 658: {
+            global::Infinitepickaxe.AdCountersState subBuilder = new global::Infinitepickaxe.AdCountersState();
+            if (messageCase_ == MessageOneofCase.AdCountersState) {
+              subBuilder.MergeFrom(AdCountersState);
+            }
+            input.ReadMessage(subBuilder);
+            AdCountersState = subBuilder;
             break;
           }
           case 722: {
@@ -8527,6 +8649,8 @@ namespace Infinitepickaxe {
       status_ = other.status_;
       assignedAt_ = other.assignedAt_;
       expiresAt_ = other.expiresAt_;
+      difficulty_ = other.difficulty_;
+      MineralId = other.MineralId;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -8553,16 +8677,16 @@ namespace Infinitepickaxe {
 
     /// <summary>Field number for the "mission_id" field.</summary>
     public const int MissionIdFieldNumber = 2;
-    private string missionId_ = "";
+    private uint missionId_;
     /// <summary>
-    /// UUID (DB와 동일)
+    /// 메타데이터 기반 미션 ID
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string MissionId {
+    public uint MissionId {
       get { return missionId_; }
       set {
-        missionId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        missionId_ = value;
       }
     }
 
@@ -8683,6 +8807,32 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "difficulty" field.</summary>
+    public const int DifficultyFieldNumber = 11;
+    private string difficulty_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Difficulty {
+      get { return difficulty_; }
+      set {
+        difficulty_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "mineral_id" field.</summary>
+    public const int MineralIdFieldNumber = 12;
+    private static readonly pb::FieldCodec<uint?> _single_mineralId_codec = pb::FieldCodec.ForStructWrapper<uint>(98);
+    private uint? mineralId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint? MineralId {
+      get { return mineralId_; }
+      set {
+        mineralId_ = value;
+      }
+    }
+
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -8708,6 +8858,8 @@ namespace Infinitepickaxe {
       if (Status != other.Status) return false;
       if (AssignedAt != other.AssignedAt) return false;
       if (ExpiresAt != other.ExpiresAt) return false;
+      if (Difficulty != other.Difficulty) return false;
+      if (MineralId != other.MineralId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -8716,7 +8868,7 @@ namespace Infinitepickaxe {
     public override int GetHashCode() {
       int hash = 1;
       if (SlotNo != 0) hash ^= SlotNo.GetHashCode();
-      if (MissionId.Length != 0) hash ^= MissionId.GetHashCode();
+      if (MissionId != 0) hash ^= MissionId.GetHashCode();
       if (MissionType.Length != 0) hash ^= MissionType.GetHashCode();
       if (Description.Length != 0) hash ^= Description.GetHashCode();
       if (TargetValue != 0) hash ^= TargetValue.GetHashCode();
@@ -8725,6 +8877,8 @@ namespace Infinitepickaxe {
       if (Status.Length != 0) hash ^= Status.GetHashCode();
       if (AssignedAt != 0UL) hash ^= AssignedAt.GetHashCode();
       if (ExpiresAt != 0UL) hash ^= ExpiresAt.GetHashCode();
+      if (Difficulty.Length != 0) hash ^= Difficulty.GetHashCode();
+      if (mineralId_ != null) hash ^= MineralId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -8747,9 +8901,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(8);
         output.WriteUInt32(SlotNo);
       }
-      if (MissionId.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(MissionId);
+      if (MissionId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(MissionId);
       }
       if (MissionType.Length != 0) {
         output.WriteRawTag(26);
@@ -8782,6 +8936,13 @@ namespace Infinitepickaxe {
       if (ExpiresAt != 0UL) {
         output.WriteRawTag(80);
         output.WriteUInt64(ExpiresAt);
+      }
+      if (Difficulty.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(Difficulty);
+      }
+      if (mineralId_ != null) {
+        _single_mineralId_codec.WriteTagAndValue(output, MineralId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -8797,9 +8958,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(8);
         output.WriteUInt32(SlotNo);
       }
-      if (MissionId.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(MissionId);
+      if (MissionId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(MissionId);
       }
       if (MissionType.Length != 0) {
         output.WriteRawTag(26);
@@ -8833,6 +8994,13 @@ namespace Infinitepickaxe {
         output.WriteRawTag(80);
         output.WriteUInt64(ExpiresAt);
       }
+      if (Difficulty.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(Difficulty);
+      }
+      if (mineralId_ != null) {
+        _single_mineralId_codec.WriteTagAndValue(ref output, MineralId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -8846,8 +9014,8 @@ namespace Infinitepickaxe {
       if (SlotNo != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SlotNo);
       }
-      if (MissionId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(MissionId);
+      if (MissionId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MissionId);
       }
       if (MissionType.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(MissionType);
@@ -8873,6 +9041,12 @@ namespace Infinitepickaxe {
       if (ExpiresAt != 0UL) {
         size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ExpiresAt);
       }
+      if (Difficulty.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Difficulty);
+      }
+      if (mineralId_ != null) {
+        size += _single_mineralId_codec.CalculateSizeWithTag(MineralId);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -8888,7 +9062,7 @@ namespace Infinitepickaxe {
       if (other.SlotNo != 0) {
         SlotNo = other.SlotNo;
       }
-      if (other.MissionId.Length != 0) {
+      if (other.MissionId != 0) {
         MissionId = other.MissionId;
       }
       if (other.MissionType.Length != 0) {
@@ -8915,6 +9089,14 @@ namespace Infinitepickaxe {
       if (other.ExpiresAt != 0UL) {
         ExpiresAt = other.ExpiresAt;
       }
+      if (other.Difficulty.Length != 0) {
+        Difficulty = other.Difficulty;
+      }
+      if (other.mineralId_ != null) {
+        if (mineralId_ == null || other.MineralId != 0) {
+          MineralId = other.MineralId;
+        }
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -8938,8 +9120,8 @@ namespace Infinitepickaxe {
             SlotNo = input.ReadUInt32();
             break;
           }
-          case 18: {
-            MissionId = input.ReadString();
+          case 16: {
+            MissionId = input.ReadUInt32();
             break;
           }
           case 26: {
@@ -8972,6 +9154,17 @@ namespace Infinitepickaxe {
           }
           case 80: {
             ExpiresAt = input.ReadUInt64();
+            break;
+          }
+          case 90: {
+            Difficulty = input.ReadString();
+            break;
+          }
+          case 98: {
+            uint? value = _single_mineralId_codec.Read(input);
+            if (mineralId_ == null || value != 0) {
+              MineralId = value;
+            }
             break;
           }
         }
@@ -8997,8 +9190,8 @@ namespace Infinitepickaxe {
             SlotNo = input.ReadUInt32();
             break;
           }
-          case 18: {
-            MissionId = input.ReadString();
+          case 16: {
+            MissionId = input.ReadUInt32();
             break;
           }
           case 26: {
@@ -9031,6 +9224,17 @@ namespace Infinitepickaxe {
           }
           case 80: {
             ExpiresAt = input.ReadUInt64();
+            break;
+          }
+          case 90: {
+            Difficulty = input.ReadString();
+            break;
+          }
+          case 98: {
+            uint? value = _single_mineralId_codec.Read(ref input);
+            if (mineralId_ == null || value != 0) {
+              MineralId = value;
+            }
             break;
           }
         }
@@ -9079,6 +9283,9 @@ namespace Infinitepickaxe {
       completedCount_ = other.completedCount_;
       rerollCount_ = other.rerollCount_;
       adCounters_ = other.adCounters_.Clone();
+      rerollsFree_ = other.rerollsFree_;
+      rerollsTotalLimit_ = other.rerollsTotalLimit_;
+      resetTimestampMs_ = other.resetTimestampMs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -9146,6 +9353,42 @@ namespace Infinitepickaxe {
       get { return adCounters_; }
     }
 
+    /// <summary>Field number for the "rerolls_free" field.</summary>
+    public const int RerollsFreeFieldNumber = 5;
+    private uint rerollsFree_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RerollsFree {
+      get { return rerollsFree_; }
+      set {
+        rerollsFree_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rerolls_total_limit" field.</summary>
+    public const int RerollsTotalLimitFieldNumber = 6;
+    private uint rerollsTotalLimit_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RerollsTotalLimit {
+      get { return rerollsTotalLimit_; }
+      set {
+        rerollsTotalLimit_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "reset_timestamp_ms" field.</summary>
+    public const int ResetTimestampMsFieldNumber = 7;
+    private ulong resetTimestampMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong ResetTimestampMs {
+      get { return resetTimestampMs_; }
+      set {
+        resetTimestampMs_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -9165,6 +9408,9 @@ namespace Infinitepickaxe {
       if (CompletedCount != other.CompletedCount) return false;
       if (RerollCount != other.RerollCount) return false;
       if(!adCounters_.Equals(other.adCounters_)) return false;
+      if (RerollsFree != other.RerollsFree) return false;
+      if (RerollsTotalLimit != other.RerollsTotalLimit) return false;
+      if (ResetTimestampMs != other.ResetTimestampMs) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -9176,6 +9422,9 @@ namespace Infinitepickaxe {
       if (CompletedCount != 0) hash ^= CompletedCount.GetHashCode();
       if (RerollCount != 0) hash ^= RerollCount.GetHashCode();
       hash ^= adCounters_.GetHashCode();
+      if (RerollsFree != 0) hash ^= RerollsFree.GetHashCode();
+      if (RerollsTotalLimit != 0) hash ^= RerollsTotalLimit.GetHashCode();
+      if (ResetTimestampMs != 0UL) hash ^= ResetTimestampMs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -9204,6 +9453,18 @@ namespace Infinitepickaxe {
         output.WriteUInt32(RerollCount);
       }
       adCounters_.WriteTo(output, _repeated_adCounters_codec);
+      if (RerollsFree != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(RerollsFree);
+      }
+      if (RerollsTotalLimit != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(RerollsTotalLimit);
+      }
+      if (ResetTimestampMs != 0UL) {
+        output.WriteRawTag(56);
+        output.WriteUInt64(ResetTimestampMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -9224,6 +9485,18 @@ namespace Infinitepickaxe {
         output.WriteUInt32(RerollCount);
       }
       adCounters_.WriteTo(ref output, _repeated_adCounters_codec);
+      if (RerollsFree != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(RerollsFree);
+      }
+      if (RerollsTotalLimit != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(RerollsTotalLimit);
+      }
+      if (ResetTimestampMs != 0UL) {
+        output.WriteRawTag(56);
+        output.WriteUInt64(ResetTimestampMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -9242,6 +9515,15 @@ namespace Infinitepickaxe {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RerollCount);
       }
       size += adCounters_.CalculateSize(_repeated_adCounters_codec);
+      if (RerollsFree != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RerollsFree);
+      }
+      if (RerollsTotalLimit != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RerollsTotalLimit);
+      }
+      if (ResetTimestampMs != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ResetTimestampMs);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -9262,6 +9544,15 @@ namespace Infinitepickaxe {
         RerollCount = other.RerollCount;
       }
       adCounters_.Add(other.adCounters_);
+      if (other.RerollsFree != 0) {
+        RerollsFree = other.RerollsFree;
+      }
+      if (other.RerollsTotalLimit != 0) {
+        RerollsTotalLimit = other.RerollsTotalLimit;
+      }
+      if (other.ResetTimestampMs != 0UL) {
+        ResetTimestampMs = other.ResetTimestampMs;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -9297,6 +9588,18 @@ namespace Infinitepickaxe {
             adCounters_.AddEntriesFrom(input, _repeated_adCounters_codec);
             break;
           }
+          case 40: {
+            RerollsFree = input.ReadUInt32();
+            break;
+          }
+          case 48: {
+            RerollsTotalLimit = input.ReadUInt32();
+            break;
+          }
+          case 56: {
+            ResetTimestampMs = input.ReadUInt64();
+            break;
+          }
         }
       }
     #endif
@@ -9330,6 +9633,18 @@ namespace Infinitepickaxe {
           }
           case 34: {
             adCounters_.AddEntriesFrom(ref input, _repeated_adCounters_codec);
+            break;
+          }
+          case 40: {
+            RerollsFree = input.ReadUInt32();
+            break;
+          }
+          case 48: {
+            RerollsTotalLimit = input.ReadUInt32();
+            break;
+          }
+          case 56: {
+            ResetTimestampMs = input.ReadUInt64();
             break;
           }
         }
@@ -9405,16 +9720,16 @@ namespace Infinitepickaxe {
 
     /// <summary>Field number for the "mission_id" field.</summary>
     public const int MissionIdFieldNumber = 2;
-    private string missionId_ = "";
+    private uint missionId_;
     /// <summary>
-    /// UUID
+    /// 메타데이터 기반 미션 ID
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string MissionId {
+    public uint MissionId {
       get { return missionId_; }
       set {
-        missionId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        missionId_ = value;
       }
     }
 
@@ -9491,7 +9806,7 @@ namespace Infinitepickaxe {
     public override int GetHashCode() {
       int hash = 1;
       if (SlotNo != 0) hash ^= SlotNo.GetHashCode();
-      if (MissionId.Length != 0) hash ^= MissionId.GetHashCode();
+      if (MissionId != 0) hash ^= MissionId.GetHashCode();
       if (CurrentValue != 0) hash ^= CurrentValue.GetHashCode();
       if (TargetValue != 0) hash ^= TargetValue.GetHashCode();
       if (Status.Length != 0) hash ^= Status.GetHashCode();
@@ -9517,9 +9832,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(8);
         output.WriteUInt32(SlotNo);
       }
-      if (MissionId.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(MissionId);
+      if (MissionId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(MissionId);
       }
       if (CurrentValue != 0) {
         output.WriteRawTag(24);
@@ -9547,9 +9862,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(8);
         output.WriteUInt32(SlotNo);
       }
-      if (MissionId.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(MissionId);
+      if (MissionId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(MissionId);
       }
       if (CurrentValue != 0) {
         output.WriteRawTag(24);
@@ -9576,8 +9891,8 @@ namespace Infinitepickaxe {
       if (SlotNo != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SlotNo);
       }
-      if (MissionId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(MissionId);
+      if (MissionId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MissionId);
       }
       if (CurrentValue != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CurrentValue);
@@ -9603,7 +9918,7 @@ namespace Infinitepickaxe {
       if (other.SlotNo != 0) {
         SlotNo = other.SlotNo;
       }
-      if (other.MissionId.Length != 0) {
+      if (other.MissionId != 0) {
         MissionId = other.MissionId;
       }
       if (other.CurrentValue != 0) {
@@ -9638,8 +9953,8 @@ namespace Infinitepickaxe {
             SlotNo = input.ReadUInt32();
             break;
           }
-          case 18: {
-            MissionId = input.ReadString();
+          case 16: {
+            MissionId = input.ReadUInt32();
             break;
           }
           case 24: {
@@ -9677,8 +9992,8 @@ namespace Infinitepickaxe {
             SlotNo = input.ReadUInt32();
             break;
           }
-          case 18: {
-            MissionId = input.ReadString();
+          case 16: {
+            MissionId = input.ReadUInt32();
             break;
           }
           case 24: {
@@ -9980,16 +10295,16 @@ namespace Infinitepickaxe {
 
     /// <summary>Field number for the "mission_id" field.</summary>
     public const int MissionIdFieldNumber = 3;
-    private string missionId_ = "";
+    private uint missionId_;
     /// <summary>
-    /// UUID
+    /// 메타데이터 기반 미션 ID
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string MissionId {
+    public uint MissionId {
       get { return missionId_; }
       set {
-        missionId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        missionId_ = value;
       }
     }
 
@@ -10065,7 +10380,7 @@ namespace Infinitepickaxe {
       int hash = 1;
       if (Success != false) hash ^= Success.GetHashCode();
       if (SlotNo != 0) hash ^= SlotNo.GetHashCode();
-      if (MissionId.Length != 0) hash ^= MissionId.GetHashCode();
+      if (MissionId != 0) hash ^= MissionId.GetHashCode();
       if (RewardCrystal != 0) hash ^= RewardCrystal.GetHashCode();
       if (TotalCrystal != 0) hash ^= TotalCrystal.GetHashCode();
       if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
@@ -10095,9 +10410,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(16);
         output.WriteUInt32(SlotNo);
       }
-      if (MissionId.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(MissionId);
+      if (MissionId != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(MissionId);
       }
       if (RewardCrystal != 0) {
         output.WriteRawTag(32);
@@ -10129,9 +10444,9 @@ namespace Infinitepickaxe {
         output.WriteRawTag(16);
         output.WriteUInt32(SlotNo);
       }
-      if (MissionId.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(MissionId);
+      if (MissionId != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(MissionId);
       }
       if (RewardCrystal != 0) {
         output.WriteRawTag(32);
@@ -10161,8 +10476,8 @@ namespace Infinitepickaxe {
       if (SlotNo != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SlotNo);
       }
-      if (MissionId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(MissionId);
+      if (MissionId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MissionId);
       }
       if (RewardCrystal != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RewardCrystal);
@@ -10191,7 +10506,7 @@ namespace Infinitepickaxe {
       if (other.SlotNo != 0) {
         SlotNo = other.SlotNo;
       }
-      if (other.MissionId.Length != 0) {
+      if (other.MissionId != 0) {
         MissionId = other.MissionId;
       }
       if (other.RewardCrystal != 0) {
@@ -10230,8 +10545,8 @@ namespace Infinitepickaxe {
             SlotNo = input.ReadUInt32();
             break;
           }
-          case 26: {
-            MissionId = input.ReadString();
+          case 24: {
+            MissionId = input.ReadUInt32();
             break;
           }
           case 32: {
@@ -10273,8 +10588,8 @@ namespace Infinitepickaxe {
             SlotNo = input.ReadUInt32();
             break;
           }
-          case 26: {
-            MissionId = input.ReadString();
+          case 24: {
+            MissionId = input.ReadUInt32();
             break;
           }
           case 32: {
@@ -11001,6 +11316,8 @@ namespace Infinitepickaxe {
       milestoneCount_ = other.milestoneCount_;
       offlineHoursGained_ = other.offlineHoursGained_;
       totalOfflineHours_ = other.totalOfflineHours_;
+      rewardCrystal_ = other.rewardCrystal_;
+      totalCrystal_ = other.totalCrystal_;
       errorCode_ = other.errorCode_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -11065,8 +11382,38 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "reward_crystal" field.</summary>
+    public const int RewardCrystalFieldNumber = 5;
+    private uint rewardCrystal_;
+    /// <summary>
+    /// 이번 수령으로 받은 크리스탈
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RewardCrystal {
+      get { return rewardCrystal_; }
+      set {
+        rewardCrystal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_crystal" field.</summary>
+    public const int TotalCrystalFieldNumber = 6;
+    private uint totalCrystal_;
+    /// <summary>
+    /// 수령 후 총 크리스탈
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalCrystal {
+      get { return totalCrystal_; }
+      set {
+        totalCrystal_ = value;
+      }
+    }
+
     /// <summary>Field number for the "error_code" field.</summary>
-    public const int ErrorCodeFieldNumber = 5;
+    public const int ErrorCodeFieldNumber = 7;
     private string errorCode_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -11096,6 +11443,8 @@ namespace Infinitepickaxe {
       if (MilestoneCount != other.MilestoneCount) return false;
       if (OfflineHoursGained != other.OfflineHoursGained) return false;
       if (TotalOfflineHours != other.TotalOfflineHours) return false;
+      if (RewardCrystal != other.RewardCrystal) return false;
+      if (TotalCrystal != other.TotalCrystal) return false;
       if (ErrorCode != other.ErrorCode) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -11108,6 +11457,8 @@ namespace Infinitepickaxe {
       if (MilestoneCount != 0) hash ^= MilestoneCount.GetHashCode();
       if (OfflineHoursGained != 0) hash ^= OfflineHoursGained.GetHashCode();
       if (TotalOfflineHours != 0) hash ^= TotalOfflineHours.GetHashCode();
+      if (RewardCrystal != 0) hash ^= RewardCrystal.GetHashCode();
+      if (TotalCrystal != 0) hash ^= TotalCrystal.GetHashCode();
       if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -11143,8 +11494,16 @@ namespace Infinitepickaxe {
         output.WriteRawTag(32);
         output.WriteUInt32(TotalOfflineHours);
       }
+      if (RewardCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(RewardCrystal);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(TotalCrystal);
+      }
       if (ErrorCode.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(58);
         output.WriteString(ErrorCode);
       }
       if (_unknownFields != null) {
@@ -11173,8 +11532,16 @@ namespace Infinitepickaxe {
         output.WriteRawTag(32);
         output.WriteUInt32(TotalOfflineHours);
       }
+      if (RewardCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(RewardCrystal);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(TotalCrystal);
+      }
       if (ErrorCode.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(58);
         output.WriteString(ErrorCode);
       }
       if (_unknownFields != null) {
@@ -11198,6 +11565,12 @@ namespace Infinitepickaxe {
       }
       if (TotalOfflineHours != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalOfflineHours);
+      }
+      if (RewardCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RewardCrystal);
+      }
+      if (TotalCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalCrystal);
       }
       if (ErrorCode.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
@@ -11225,6 +11598,12 @@ namespace Infinitepickaxe {
       }
       if (other.TotalOfflineHours != 0) {
         TotalOfflineHours = other.TotalOfflineHours;
+      }
+      if (other.RewardCrystal != 0) {
+        RewardCrystal = other.RewardCrystal;
+      }
+      if (other.TotalCrystal != 0) {
+        TotalCrystal = other.TotalCrystal;
       }
       if (other.ErrorCode.Length != 0) {
         ErrorCode = other.ErrorCode;
@@ -11264,7 +11643,15 @@ namespace Infinitepickaxe {
             TotalOfflineHours = input.ReadUInt32();
             break;
           }
-          case 42: {
+          case 40: {
+            RewardCrystal = input.ReadUInt32();
+            break;
+          }
+          case 48: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 58: {
             ErrorCode = input.ReadString();
             break;
           }
@@ -11303,8 +11690,279 @@ namespace Infinitepickaxe {
             TotalOfflineHours = input.ReadUInt32();
             break;
           }
-          case 42: {
+          case 40: {
+            RewardCrystal = input.ReadUInt32();
+            break;
+          }
+          case 48: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 58: {
             ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MilestoneState : pb::IMessage<MilestoneState>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MilestoneState> _parser = new pb::MessageParser<MilestoneState>(() => new MilestoneState());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MilestoneState> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[30]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MilestoneState() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MilestoneState(MilestoneState other) : this() {
+      completedCount_ = other.completedCount_;
+      claimedMilestones_ = other.claimedMilestones_.Clone();
+      resetTimestampMs_ = other.resetTimestampMs_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MilestoneState Clone() {
+      return new MilestoneState(this);
+    }
+
+    /// <summary>Field number for the "completed_count" field.</summary>
+    public const int CompletedCountFieldNumber = 1;
+    private uint completedCount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CompletedCount {
+      get { return completedCount_; }
+      set {
+        completedCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "claimed_milestones" field.</summary>
+    public const int ClaimedMilestonesFieldNumber = 2;
+    private static readonly pb::FieldCodec<uint> _repeated_claimedMilestones_codec
+        = pb::FieldCodec.ForUInt32(18);
+    private readonly pbc::RepeatedField<uint> claimedMilestones_ = new pbc::RepeatedField<uint>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<uint> ClaimedMilestones {
+      get { return claimedMilestones_; }
+    }
+
+    /// <summary>Field number for the "reset_timestamp_ms" field.</summary>
+    public const int ResetTimestampMsFieldNumber = 3;
+    private ulong resetTimestampMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong ResetTimestampMs {
+      get { return resetTimestampMs_; }
+      set {
+        resetTimestampMs_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MilestoneState);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MilestoneState other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (CompletedCount != other.CompletedCount) return false;
+      if(!claimedMilestones_.Equals(other.claimedMilestones_)) return false;
+      if (ResetTimestampMs != other.ResetTimestampMs) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (CompletedCount != 0) hash ^= CompletedCount.GetHashCode();
+      hash ^= claimedMilestones_.GetHashCode();
+      if (ResetTimestampMs != 0UL) hash ^= ResetTimestampMs.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (CompletedCount != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(CompletedCount);
+      }
+      claimedMilestones_.WriteTo(output, _repeated_claimedMilestones_codec);
+      if (ResetTimestampMs != 0UL) {
+        output.WriteRawTag(24);
+        output.WriteUInt64(ResetTimestampMs);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (CompletedCount != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(CompletedCount);
+      }
+      claimedMilestones_.WriteTo(ref output, _repeated_claimedMilestones_codec);
+      if (ResetTimestampMs != 0UL) {
+        output.WriteRawTag(24);
+        output.WriteUInt64(ResetTimestampMs);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (CompletedCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CompletedCount);
+      }
+      size += claimedMilestones_.CalculateSize(_repeated_claimedMilestones_codec);
+      if (ResetTimestampMs != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ResetTimestampMs);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MilestoneState other) {
+      if (other == null) {
+        return;
+      }
+      if (other.CompletedCount != 0) {
+        CompletedCount = other.CompletedCount;
+      }
+      claimedMilestones_.Add(other.claimedMilestones_);
+      if (other.ResetTimestampMs != 0UL) {
+        ResetTimestampMs = other.ResetTimestampMs;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            CompletedCount = input.ReadUInt32();
+            break;
+          }
+          case 18:
+          case 16: {
+            claimedMilestones_.AddEntriesFrom(input, _repeated_claimedMilestones_codec);
+            break;
+          }
+          case 24: {
+            ResetTimestampMs = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            CompletedCount = input.ReadUInt32();
+            break;
+          }
+          case 18:
+          case 16: {
+            claimedMilestones_.AddEntriesFrom(ref input, _repeated_claimedMilestones_codec);
+            break;
+          }
+          case 24: {
+            ResetTimestampMs = input.ReadUInt64();
             break;
           }
         }
@@ -11329,7 +11987,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[30]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11527,7 +12185,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[31]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[32]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11962,7 +12620,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[32]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[33]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12163,7 +12821,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[33]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12530,6 +13188,230 @@ namespace Infinitepickaxe {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class AdCountersState : pb::IMessage<AdCountersState>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<AdCountersState> _parser = new pb::MessageParser<AdCountersState>(() => new AdCountersState());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<AdCountersState> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[35]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AdCountersState() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AdCountersState(AdCountersState other) : this() {
+      adCounters_ = other.adCounters_.Clone();
+      resetTimestampMs_ = other.resetTimestampMs_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AdCountersState Clone() {
+      return new AdCountersState(this);
+    }
+
+    /// <summary>Field number for the "ad_counters" field.</summary>
+    public const int AdCountersFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.AdCounter> _repeated_adCounters_codec
+        = pb::FieldCodec.ForMessage(10, global::Infinitepickaxe.AdCounter.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.AdCounter> adCounters_ = new pbc::RepeatedField<global::Infinitepickaxe.AdCounter>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.AdCounter> AdCounters {
+      get { return adCounters_; }
+    }
+
+    /// <summary>Field number for the "reset_timestamp_ms" field.</summary>
+    public const int ResetTimestampMsFieldNumber = 2;
+    private ulong resetTimestampMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong ResetTimestampMs {
+      get { return resetTimestampMs_; }
+      set {
+        resetTimestampMs_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as AdCountersState);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(AdCountersState other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!adCounters_.Equals(other.adCounters_)) return false;
+      if (ResetTimestampMs != other.ResetTimestampMs) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= adCounters_.GetHashCode();
+      if (ResetTimestampMs != 0UL) hash ^= ResetTimestampMs.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      adCounters_.WriteTo(output, _repeated_adCounters_codec);
+      if (ResetTimestampMs != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(ResetTimestampMs);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      adCounters_.WriteTo(ref output, _repeated_adCounters_codec);
+      if (ResetTimestampMs != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(ResetTimestampMs);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += adCounters_.CalculateSize(_repeated_adCounters_codec);
+      if (ResetTimestampMs != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ResetTimestampMs);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(AdCountersState other) {
+      if (other == null) {
+        return;
+      }
+      adCounters_.Add(other.adCounters_);
+      if (other.ResetTimestampMs != 0UL) {
+        ResetTimestampMs = other.ResetTimestampMs;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            adCounters_.AddEntriesFrom(input, _repeated_adCounters_codec);
+            break;
+          }
+          case 16: {
+            ResetTimestampMs = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            adCounters_.AddEntriesFrom(ref input, _repeated_adCounters_codec);
+            break;
+          }
+          case 16: {
+            ResetTimestampMs = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class CurrencyUpdate : pb::IMessage<CurrencyUpdate>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -12544,7 +13426,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[34]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[36]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12838,7 +13720,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[35]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[37]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12999,7 +13881,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[36]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[38]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13308,7 +14190,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[37]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[39]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

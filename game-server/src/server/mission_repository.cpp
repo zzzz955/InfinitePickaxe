@@ -158,6 +158,27 @@ bool MissionRepository::insert_milestone_claim(const std::string& user_id, uint3
     }
 }
 
+
+std::vector<uint32_t> MissionRepository::get_claimed_milestones(const std::string& user_id) {
+    std::vector<uint32_t> milestones;
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto res = tx.exec_params(
+            "SELECT milestone_count FROM game_schema.user_milestones "
+            "WHERE user_id = $1 AND milestone_date = (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date "
+            "ORDER BY milestone_count",
+            user_id);
+        for (auto row : res) {
+            milestones.push_back(row["milestone_count"].as<uint32_t>());
+        }
+        tx.commit();
+    } catch (const std::exception& ex) {
+        spdlog::error("get_claimed_milestones failed: user={} error={}", user_id, ex.what());
+    }
+    return milestones;
+}
+
 // === 미션 슬롯 관련 ===
 
 std::optional<MissionSlot> MissionRepository::get_mission_slot(const std::string& user_id, uint32_t slot_no) {

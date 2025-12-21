@@ -13,6 +13,7 @@ public:
 
     std::vector<AdCounter> get_ad_counters(const std::string& user_id);
     AdCounter get_or_create_ad_counter(const std::string& user_id, const std::string& ad_type);
+    infinitepickaxe::AdCountersState get_ad_counters_state(const std::string& user_id);
     infinitepickaxe::AdWatchResult handle_ad_watch(const std::string& user_id, const std::string& ad_type);
 
 private:

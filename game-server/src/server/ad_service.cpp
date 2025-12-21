@@ -1,4 +1,5 @@
 #include "ad_service.h"
+#include "time_utils.h"
 #include <unordered_set>
 
 namespace {
@@ -32,6 +33,24 @@ std::vector<AdCounter> AdService::get_ad_counters(const std::string& user_id) {
 
 AdCounter AdService::get_or_create_ad_counter(const std::string& user_id, const std::string& ad_type) {
     return repo_.get_or_create_ad_counter(user_id, ad_type);
+}
+
+infinitepickaxe::AdCountersState AdService::get_ad_counters_state(const std::string& user_id) {
+    infinitepickaxe::AdCountersState state;
+    state.set_reset_timestamp_ms(kst_next_midnight_ms());
+
+    auto counters = get_ad_counters(user_id);
+    for (const auto& counter : counters) {
+        auto* ad_counter = state.add_ad_counters();
+        ad_counter->set_ad_type(counter.ad_type);
+        ad_counter->set_ad_count(counter.ad_count);
+        uint32_t limit = 0;
+        if (const auto* meta = meta_.ad_meta(counter.ad_type)) {
+            limit = meta->daily_limit;
+        }
+        ad_counter->set_daily_limit(limit);
+    }
+    return state;
 }
 
 infinitepickaxe::AdWatchResult AdService::handle_ad_watch(const std::string& user_id,
@@ -73,16 +92,9 @@ infinitepickaxe::AdWatchResult AdService::handle_ad_watch(const std::string& use
         }
     }
 
-    auto ad_counters = get_ad_counters(user_id);
-    for (const auto& counter_updated : ad_counters) {
-        auto* ad_counter = result.add_ad_counters();
-        ad_counter->set_ad_type(counter_updated.ad_type);
-        ad_counter->set_ad_count(counter_updated.ad_count);
-        uint32_t limit = 0;
-        if (const auto* meta = meta_.ad_meta(counter_updated.ad_type)) {
-            limit = meta->daily_limit;
-        }
-        ad_counter->set_daily_limit(limit);
+    auto state = get_ad_counters_state(user_id);
+    for (const auto& counter_updated : state.ad_counters()) {
+        *result.add_ad_counters() = counter_updated;
     }
 
     if (!result.success() && result.error_code().empty()) {

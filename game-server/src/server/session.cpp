@@ -341,21 +341,6 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
                 std::chrono::system_clock::now().time_since_epoch())
                 .count()));
 
-    // 광고 카운??추�?
-    auto ad_counters = ad_service_.get_ad_counters(user_id_);
-    for (const auto &counter : ad_counters)
-    {
-        auto *ad_counter = snapshot->add_ad_counters();
-        ad_counter->set_ad_type(counter.ad_type);
-        ad_counter->set_ad_count(counter.ad_count);
-        uint32_t limit = 0;
-        if (const auto *ad_meta = metadata_.ad_meta(counter.ad_type))
-        {
-            limit = ad_meta->daily_limit;
-        }
-        ad_counter->set_daily_limit(limit);
-    }
-
     auto offline_state = offline_service_.get_state(user_id_);
     snapshot->set_current_offline_hours(offline_state.current_offline_seconds / 3600);
 
@@ -364,11 +349,9 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     *response_env.mutable_handshake_result() = res;
     send_envelope(response_env);
 
-    auto missions_res = mission_service_.get_missions(user_id_);
-    infinitepickaxe::Envelope missions_env;
-    missions_env.set_type(infinitepickaxe::DAILY_MISSIONS_RESPONSE);
-    *missions_env.mutable_daily_missions_response() = missions_res;
-    send_envelope(missions_env);
+    send_daily_missions_state();
+    send_milestone_state();
+    send_ad_counters_state();
 
     // 채굴 ?��??�이???�작 (DB?�서 로드???�재 광물�? nullable 처리)
     
@@ -569,12 +552,7 @@ void Session::handle_change_mineral(const infinitepickaxe::Envelope &env)
 
 void Session::handle_mission(const infinitepickaxe::Envelope &env)
 {
-    auto res = mission_service_.get_missions(user_id_);
-
-    infinitepickaxe::Envelope response_env;
-    response_env.set_type(infinitepickaxe::DAILY_MISSIONS_RESPONSE);
-    *response_env.mutable_daily_missions_response() = res;
-    send_envelope(response_env);
+    send_daily_missions_state();
 }
 
 void Session::handle_mission_progress_update(const infinitepickaxe::Envelope &env)
@@ -601,6 +579,8 @@ void Session::handle_mission_complete(const infinitepickaxe::Envelope &env)
     response_env.set_type(infinitepickaxe::MISSION_COMPLETE_RESULT);
     *response_env.mutable_mission_complete_result() = res;
     send_envelope(response_env);
+    send_daily_missions_state();
+    send_milestone_state();
 }
 
 void Session::handle_mission_reroll(const infinitepickaxe::Envelope &env)
@@ -611,6 +591,7 @@ void Session::handle_mission_reroll(const infinitepickaxe::Envelope &env)
     response_env.set_type(infinitepickaxe::MISSION_REROLL_RESULT);
     *response_env.mutable_mission_reroll_result() = res;
     send_envelope(response_env);
+    send_daily_missions_state();
 }
 
 void Session::handle_ad_watch(const infinitepickaxe::Envelope &env)
@@ -627,6 +608,7 @@ void Session::handle_ad_watch(const infinitepickaxe::Envelope &env)
     response_env.set_type(infinitepickaxe::AD_WATCH_RESULT);
     *response_env.mutable_ad_watch_result() = res;
     send_envelope(response_env);
+    send_ad_counters_state();
 }
 
 void Session::handle_milestone_claim(const infinitepickaxe::Envelope &env)
@@ -644,6 +626,7 @@ void Session::handle_milestone_claim(const infinitepickaxe::Envelope &env)
     response_env.set_type(infinitepickaxe::MILESTONE_CLAIM_RESULT);
     *response_env.mutable_milestone_claim_result() = res;
     send_envelope(response_env);
+    send_milestone_state();
 }
 
 void Session::handle_slot_unlock(const infinitepickaxe::Envelope &env)
@@ -765,6 +748,33 @@ void Session::send_mission_progress_updates(const std::vector<infinitepickaxe::M
         *env.mutable_mission_progress_update() = update;
         send_envelope(env);
     }
+}
+
+void Session::send_daily_missions_state()
+{
+    auto res = mission_service_.get_missions(user_id_);
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::DAILY_MISSIONS_RESPONSE);
+    *env.mutable_daily_missions_response() = res;
+    send_envelope(env);
+}
+
+void Session::send_milestone_state()
+{
+    auto state = mission_service_.get_milestone_state(user_id_);
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::MILESTONE_STATE);
+    *env.mutable_milestone_state() = state;
+    send_envelope(env);
+}
+
+void Session::send_ad_counters_state()
+{
+    auto state = ad_service_.get_ad_counters_state(user_id_);
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::AD_COUNTERS_STATE);
+    *env.mutable_ad_counters_state() = state;
+    send_envelope(env);
 }
 
 void Session::cache_mining_state()

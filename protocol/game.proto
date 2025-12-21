@@ -49,10 +49,12 @@ enum MessageType {
   MISSION_REROLL_RESULT = 66;
   MILESTONE_CLAIM = 67;
   MILESTONE_CLAIM_RESULT = 68;
+  MILESTONE_STATE = 69;
 
   // 광고
   AD_WATCH_COMPLETE = 70;
   AD_WATCH_RESULT = 71;
+  AD_COUNTERS_STATE = 72;
 
   // 재화
   CURRENCY_UPDATE = 80;
@@ -105,9 +107,11 @@ message Envelope {
     MissionRerollResult mission_reroll_result = 76;
     MilestoneClaim milestone_claim = 77;
     MilestoneClaimResult milestone_claim_result = 78;
+    MilestoneState milestone_state = 79;
 
     AdWatchComplete ad_watch_complete = 80;
     AdWatchResult ad_watch_result = 81;
+    AdCountersState ad_counters_state = 82;
 
     CurrencyUpdate currency_update = 90;
 
@@ -296,6 +300,8 @@ message MissionEntry {
   string status = 8;               // "active", "completed", "claimed"
   uint64 assigned_at = 9;          // 배정 시간 (Unix timestamp ms)
   uint64 expires_at = 10;          // 만료 시간 (Unix timestamp ms, nullable)
+  string difficulty = 11;
+  google.protobuf.UInt32Value mineral_id = 12;
 }
 
 message DailyMissionsResponse {
@@ -303,6 +309,9 @@ message DailyMissionsResponse {
   uint32 completed_count = 2;                 // 오늘 완료된 미션 수
   uint32 reroll_count = 3;                    // 오늘 리롤 사용 횟수
   repeated AdCounter ad_counters = 4;         // 광고 카운터 (옵션)
+  uint32 rerolls_free = 5;
+  uint32 rerolls_total_limit = 6;
+  uint64 reset_timestamp_ms = 7;
 }
 
 message MissionProgressUpdate {
@@ -352,6 +361,12 @@ message MilestoneClaimResult {
   string error_code = 7;
 }
 
+message MilestoneState {
+  uint32 completed_count = 1;
+  repeated uint32 claimed_milestones = 2;
+  uint64 reset_timestamp_ms = 3;
+}
+
 // -------------- 슬롯 해금 --------------
 
 message SlotUnlock {
@@ -381,6 +396,11 @@ message AdWatchResult {
   uint32 total_crystal = 4;
   repeated AdCounter ad_counters = 5;   // 업데이트된 광고 카운터
   string error_code = 6;
+}
+
+message AdCountersState {
+  repeated AdCounter ad_counters = 1;
+  uint64 reset_timestamp_ms = 2;
 }
 
 // -------------- 실시간 재화 동기화 --------------

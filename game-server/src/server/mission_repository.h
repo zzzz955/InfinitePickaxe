@@ -46,6 +46,7 @@ public:
     // === 마일스톤 청구 관련 ===
     bool has_milestone_claimed(const std::string& user_id, uint32_t milestone_count);
     bool insert_milestone_claim(const std::string& user_id, uint32_t milestone_count);
+    std::vector<uint32_t> get_claimed_milestones(const std::string& user_id);
 
     // === 미션 슬롯 관련 ===
     // 특정 슬롯 조회

@@ -1,5 +1,6 @@
 #include "mission_service.h"
 #include "ad_service.h"
+#include "time_utils.h"
 #include <spdlog/spdlog.h>
 #include <chrono>
 #include <random>
@@ -42,6 +43,9 @@ infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::s
     auto daily_info = ensure_daily_state_kst(user_id);
     response.set_completed_count(daily_info.completed_count);
     const uint32_t free_rerolls = meta_.mission_reroll().free_rerolls_per_day;
+    response.set_rerolls_free(free_rerolls);
+    response.set_rerolls_total_limit(free_rerolls + meta_.mission_reroll().ad_rerolls_per_day);
+    response.set_reset_timestamp_ms(kst_next_midnight_ms());
     uint32_t rerolls_used = 0;
     if (daily_info.reroll_count > free_rerolls) {
         rerolls_used = daily_info.reroll_count - free_rerolls;
@@ -80,10 +84,14 @@ infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::s
         entry->set_mission_id(slot.mission_id);
         entry->set_mission_type(slot.mission_type);
         entry->set_description(meta ? meta->description : "mission");
+        entry->set_difficulty(meta ? meta->difficulty : "");
         entry->set_target_value(meta ? meta->target : slot.target_value);
         entry->set_current_value(slot.current_value);
         entry->set_reward_crystal(meta ? meta->reward_crystal : slot.reward_crystal);
         entry->set_status(slot.status);
+        if (meta && meta->mineral_id.has_value()) {
+            entry->mutable_mineral_id()->set_value(meta->mineral_id.value());
+        }
 
         auto assigned_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
             slot.assigned_at.time_since_epoch()).count();
@@ -94,19 +102,6 @@ infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::s
                 slot.expires_at->time_since_epoch()).count();
             entry->set_expires_at(expires_ms);
         }
-    }
-
-    // Ad counters
-    auto ad_counters = ad_service_.get_ad_counters(user_id);
-    for (const auto& counter : ad_counters) {
-        auto* ad_counter = response.add_ad_counters();
-        ad_counter->set_ad_type(counter.ad_type);
-        ad_counter->set_ad_count(counter.ad_count);
-        uint32_t limit = 0;
-        if (const auto* ad_meta = meta_.ad_meta(counter.ad_type)) {
-            limit = ad_meta->daily_limit;
-        }
-        ad_counter->set_daily_limit(limit);
     }
 
     return response;
@@ -245,10 +240,14 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
         entry->set_mission_id(slot.mission_id);
         entry->set_mission_type(slot.mission_type);
         entry->set_description(meta ? meta->description : "mission");
+        entry->set_difficulty(meta ? meta->difficulty : "");
         entry->set_target_value(meta ? meta->target : slot.target_value);
         entry->set_current_value(slot.current_value);
         entry->set_reward_crystal(meta ? meta->reward_crystal : slot.reward_crystal);
         entry->set_status(slot.status);
+        if (meta && meta->mineral_id.has_value()) {
+            entry->mutable_mineral_id()->set_value(meta->mineral_id.value());
+        }
 
         auto assigned_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
             slot.assigned_at.time_since_epoch()).count();
@@ -331,6 +330,19 @@ infinitepickaxe::MilestoneClaimResult MissionService::handle_milestone_claim(
     res.set_total_crystal(total_crystal);
     res.set_error_code("");
     return res;
+}
+
+infinitepickaxe::MilestoneState MissionService::get_milestone_state(const std::string& user_id) {
+    infinitepickaxe::MilestoneState state;
+    auto daily_info = ensure_daily_state_kst(user_id);
+    state.set_completed_count(daily_info.completed_count);
+    state.set_reset_timestamp_ms(kst_next_midnight_ms());
+
+    auto claimed = repo_.get_claimed_milestones(user_id);
+    for (auto milestone : claimed) {
+        state.add_claimed_milestones(milestone);
+    }
+    return state;
 }
 
 std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_mining_complete(
