@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <chrono>
+#include <optional>
+#include <unordered_map>
 
 class RedisClient {
 public:
@@ -10,6 +12,14 @@ public:
                      std::chrono::system_clock::time_point expires_at,
                      const std::string& device_id,
                      const std::string& client_ip);
+
+    bool hset_fields(const std::string& key,
+                     const std::unordered_map<std::string, std::string>& fields,
+                     std::chrono::seconds ttl);
+    bool hgetall(const std::string& key,
+                 std::unordered_map<std::string, std::string>& out_fields);
+    bool set_string(const std::string& key, const std::string& value, std::chrono::seconds ttl);
+    std::optional<std::string> get_string(const std::string& key);
 
 private:
     std::string host_;

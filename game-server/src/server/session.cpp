@@ -35,6 +35,40 @@ namespace
         static thread_local std::uniform_int_distribution<uint32_t> dist(0, 9999);
         return dist(rng);
     }
+
+    constexpr int kMiningCacheTtlSeconds = 60 * 60 * 24;
+
+    bool parse_u64(const std::string& value, uint64_t& out)
+    {
+        if (value.empty())
+        {
+            return false;
+        }
+        char* end = nullptr;
+        unsigned long long v = std::strtoull(value.c_str(), &end, 10);
+        if (!end || *end != '\0')
+        {
+            return false;
+        }
+        out = static_cast<uint64_t>(v);
+        return true;
+    }
+
+    bool parse_u32(const std::string& value, uint32_t& out)
+    {
+        if (value.empty())
+        {
+            return false;
+        }
+        char* end = nullptr;
+        unsigned long v = std::strtoul(value.c_str(), &end, 10);
+        if (!end || *end != '\0' || v > std::numeric_limits<uint32_t>::max())
+        {
+            return false;
+        }
+        out = static_cast<uint32_t>(v);
+        return true;
+    }
 } // namespace
 
 Session::Session(boost::asio::ip::tcp::socket socket,
@@ -45,6 +79,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  MissionService &mission_service,
                  SlotService &slot_service,
                  OfflineService &offline_service,
+                 RedisClient &redis_client,
                  std::shared_ptr<SessionRegistry> registry,
                  const MetadataLoader &metadata)
     : socket_(std::move(socket)),
@@ -55,6 +90,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       mission_service_(mission_service),
       slot_service_(slot_service),
       offline_service_(offline_service),
+      redis_(redis_client),
       auth_timer_(socket_.get_executor()),
       registry_(std::move(registry)),
       metadata_(metadata)
@@ -260,6 +296,16 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
 
     // ?��? 게임 ?�이??조회
     auto game_data = game_repo_.get_user_game_data(user_id_);
+    uint32_t cached_mineral_id = 0;
+    uint64_t cached_hp = 0;
+    uint64_t cached_respawn_until_ms = 0;
+    bool has_cached_mineral = load_cached_mining_state(cached_mineral_id, cached_hp, cached_respawn_until_ms);
+    std::optional<uint32_t> current_mineral_id = game_data.current_mineral_id;
+    std::optional<uint64_t> current_mineral_hp = game_data.current_mineral_hp;
+    if (has_cached_mineral && cached_mineral_id > 0) {
+        current_mineral_id = cached_mineral_id;
+        current_mineral_hp = cached_hp;
+    }
     snapshot->mutable_gold()->set_value(game_data.gold);
     snapshot->mutable_crystal()->set_value(game_data.crystal);
 
@@ -270,11 +316,11 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     }
 
     // ?�재 채굴 중인 광물 ?�보 (DB?�서 조회, nullable 처리)
-    if (game_data.current_mineral_id.has_value() && game_data.current_mineral_id.value() > 0)
+    if (current_mineral_id.has_value() && current_mineral_id.value() > 0)
     {
-        const auto *mineral = metadata_.mineral(game_data.current_mineral_id.value());
-        snapshot->mutable_current_mineral_id()->set_value(game_data.current_mineral_id.value());
-        snapshot->mutable_mineral_hp()->set_value(game_data.current_mineral_hp.value_or(0));
+        const auto *mineral = metadata_.mineral(current_mineral_id.value());
+        snapshot->mutable_current_mineral_id()->set_value(current_mineral_id.value());
+        snapshot->mutable_mineral_hp()->set_value(current_mineral_hp.value_or(0));
         snapshot->mutable_mineral_max_hp()->set_value(mineral ? mineral->hp : 100);
     }
 
@@ -323,20 +369,51 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     send_envelope(missions_env);
 
     // 채굴 ?��??�이???�작 (DB?�서 로드???�재 광물�? nullable 처리)
-    if (game_data.current_mineral_id.has_value() && game_data.current_mineral_id.value() > 0 && game_data.current_mineral_hp.has_value())
+    
+    if (current_mineral_id.has_value() && current_mineral_id.value() > 0 && current_mineral_hp.has_value())
     {
-        mining_state_.current_mineral_id = game_data.current_mineral_id.value();
-        mining_state_.current_hp = game_data.current_mineral_hp.value();
+        mining_state_.current_mineral_id = current_mineral_id.value();
         const auto *current_mineral = metadata_.mineral(mining_state_.current_mineral_id);
         mining_state_.max_hp = current_mineral ? current_mineral->hp : 0;
 
-        // ?? HP? 0???�?�??? ?�?
-        if (mining_state_.current_hp > 0 && mining_state_.max_hp > 0)
+        uint64_t hp = current_mineral_hp.value();
+        if (mining_state_.max_hp > 0 && hp > mining_state_.max_hp)
         {
-            start_new_mineral();
+            hp = mining_state_.max_hp;
+        }
+        mining_state_.current_hp = hp;
+
+        const uint64_t now_ms = static_cast<uint64_t>(
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch())
+                .count());
+
+        if (cached_respawn_until_ms > now_ms)
+        {
+            mining_state_.respawn_timer_ms =
+                static_cast<float>(cached_respawn_until_ms - now_ms);
+            mining_state_.is_mining = false;
+        }
+        else if (mining_state_.current_hp > 0 && mining_state_.max_hp > 0)
+        {
+            mining_state_.respawn_timer_ms = 0.0f;
+            mining_state_.is_mining = true;
+            mining_state_.last_sent_hp = std::numeric_limits<uint64_t>::max();
+            refresh_slots_from_service(false);
+            send_mining_update({});
+            mining_state_.last_sent_hp = mining_state_.current_hp;
         }
         else
         {
+            if (current_mineral && mining_state_.max_hp > 0)
+            {
+                mining_state_.respawn_timer_ms =
+                    static_cast<float>(current_mineral->respawn_time) * 1000.0f;
+            }
+            else
+            {
+                mining_state_.respawn_timer_ms = 0.0f;
+            }
             mining_state_.is_mining = false;
         }
     }
@@ -346,6 +423,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
         mining_state_.current_mineral_id = 0;
         mining_state_.current_hp = 0;
         mining_state_.max_hp = 0;
+        mining_state_.respawn_timer_ms = 0.0f;
         mining_state_.is_mining = false;
     }
 
@@ -467,6 +545,7 @@ void Session::handle_change_mineral(const infinitepickaxe::Envelope &env)
             {
                 start_new_mineral();
             }
+            cache_mining_state();
 
             res.set_success(true);
             res.set_mineral_id(mineral_id);
@@ -686,6 +765,75 @@ void Session::send_mission_progress_updates(const std::vector<infinitepickaxe::M
     }
 }
 
+void Session::cache_mining_state()
+{
+    if (!authenticated_ || user_id_.empty())
+    {
+        return;
+    }
+
+    const uint64_t now_ms = static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count());
+    uint64_t respawn_until_ms = 0;
+    if (mining_state_.respawn_timer_ms > 0.0f)
+    {
+        respawn_until_ms = now_ms + static_cast<uint64_t>(mining_state_.respawn_timer_ms);
+    }
+
+    std::unordered_map<std::string, std::string> fields{
+        {"mineral_id", std::to_string(mining_state_.current_mineral_id)},
+        {"current_hp", std::to_string(mining_state_.current_hp)},
+        {"max_hp", std::to_string(mining_state_.max_hp)},
+        {"respawn_until_ms", std::to_string(respawn_until_ms)},
+        {"updated_at", std::to_string(static_cast<uint64_t>(
+            std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count()))}
+    };
+    const std::string key = "session:mining:" + user_id_;
+    redis_.hset_fields(key, fields, std::chrono::seconds(kMiningCacheTtlSeconds));
+}
+
+bool Session::load_cached_mining_state(uint32_t& mineral_id, uint64_t& hp, uint64_t& respawn_until_ms)
+{
+    if (user_id_.empty())
+    {
+        return false;
+    }
+
+    std::unordered_map<std::string, std::string> fields;
+    const std::string key = "session:mining:" + user_id_;
+    if (!redis_.hgetall(key, fields) || fields.empty())
+    {
+        return false;
+    }
+
+    uint32_t cached_mineral = 0;
+    uint64_t cached_hp = 0;
+    if (!parse_u32(fields["mineral_id"], cached_mineral))
+    {
+        return false;
+    }
+    if (!parse_u64(fields["current_hp"], cached_hp))
+    {
+        return false;
+    }
+
+    mineral_id = cached_mineral;
+    hp = cached_hp;
+    respawn_until_ms = 0;
+    auto it = fields.find("respawn_until_ms");
+    if (it != fields.end())
+    {
+        uint64_t cached_respawn = 0;
+        if (parse_u64(it->second, cached_respawn))
+        {
+            respawn_until_ms = cached_respawn;
+        }
+    }
+    return true;
+}
+
 void Session::flush_play_time_progress(bool force)
 {
     if (!authenticated_ || user_id_.empty())
@@ -757,6 +905,12 @@ void Session::update_mining_tick(float delta_ms)
 
     play_time_accum_ms_ += delta_ms;
     flush_play_time_progress(false);
+    mining_cache_accum_ms_ += delta_ms;
+    if (mining_cache_accum_ms_ >= static_cast<float>(kMiningCacheFlushSeconds) * 1000.0f)
+    {
+        cache_mining_state();
+        mining_cache_accum_ms_ = 0.0f;
+    }
 
     // 광물 선택이 0(중단)이면 채굴 자동 틱 중지
     if (mining_state_.current_mineral_id == 0)
@@ -1021,6 +1175,7 @@ void Session::handle_mining_complete_immediate()
     auto gold_updates = mission_service_.handle_gold_earned(user_id_, completion_result.gold_earned());
     updates.insert(updates.end(), gold_updates.begin(), gold_updates.end());
     send_mission_progress_updates(updates);
+    cache_mining_state();
 
     spdlog::info("Mining completed: user={} mineral={} gold_earned={} respawn_time={}s",
                  user_id_, mining_state_.current_mineral_id, gold_reward, respawn_time_sec);

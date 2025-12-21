@@ -4,6 +4,7 @@
 #include "metadata/metadata_loader.h"
 #include "game_repository.h"
 #include "offline_repository.h"
+#include "redis_client.h"
 #include <string>
 #include <vector>
 #include <unordered_set>
@@ -12,8 +13,9 @@
 
 class MissionService {
 public:
-    MissionService(MissionRepository& repo, GameRepository& game_repo, OfflineRepository& offline_repo, const MetadataLoader& meta)
-        : repo_(repo), game_repo_(game_repo), offline_repo_(offline_repo), meta_(meta) {}
+    MissionService(MissionRepository& repo, GameRepository& game_repo, OfflineRepository& offline_repo,
+                   const MetadataLoader& meta, RedisClient& redis)
+        : repo_(repo), game_repo_(game_repo), offline_repo_(offline_repo), meta_(meta), redis_(redis) {}
 
     infinitepickaxe::DailyMissionsResponse get_missions(const std::string& user_id);
 
@@ -53,9 +55,18 @@ private:
         const std::function<uint64_t(const MissionSlot&, const MissionMeta*)>& delta_fn);
     std::optional<infinitepickaxe::MissionProgressUpdate> apply_progress_update(
         const std::string& user_id, const MissionSlot& slot, uint32_t new_value);
+    std::vector<MissionSlot> load_cached_slots(const std::string& user_id);
+    std::optional<MissionSlot> load_cached_slot(const std::string& user_id, uint32_t slot_no);
+    void cache_slot(const std::string& user_id, const MissionSlot& slot);
+    void cache_slots(const std::string& user_id, const std::vector<MissionSlot>& slots);
+    void update_slot_cache(const std::string& user_id, const MissionSlot& slot);
+    bool flush_slots_if_due(const std::string& user_id, const std::vector<MissionSlot>& slots);
+    void flush_slots_to_db(const std::string& user_id, const std::vector<MissionSlot>& slots);
+    void flush_slot_to_db(const std::string& user_id, const MissionSlot& slot);
 
     MissionRepository& repo_;
     GameRepository& game_repo_;
     OfflineRepository& offline_repo_;
     const MetadataLoader& meta_;
+    RedisClient& redis_;
 };

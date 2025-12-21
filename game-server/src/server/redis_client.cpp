@@ -35,3 +35,73 @@ bool RedisClient::set_session(const std::string& user_id,
         return false;
     }
 }
+
+bool RedisClient::hset_fields(const std::string& key,
+                              const std::unordered_map<std::string, std::string>& fields,
+                              std::chrono::seconds ttl) {
+    try {
+        sw::redis::ConnectionOptions opts;
+        opts.host = host_;
+        opts.port = static_cast<int>(port_);
+        auto redis = sw::redis::Redis(opts);
+
+        redis.hset(key, fields.begin(), fields.end());
+        if (ttl.count() > 0) {
+            redis.expire(key, ttl);
+        }
+        return true;
+    } catch (const std::exception& ex) {
+        spdlog::warn("Redis hset failed for key {}: {}", key, ex.what());
+        return false;
+    }
+}
+
+bool RedisClient::hgetall(const std::string& key,
+                          std::unordered_map<std::string, std::string>& out_fields) {
+    try {
+        sw::redis::ConnectionOptions opts;
+        opts.host = host_;
+        opts.port = static_cast<int>(port_);
+        auto redis = sw::redis::Redis(opts);
+
+        out_fields.clear();
+        redis.hgetall(key, std::inserter(out_fields, out_fields.begin()));
+        return !out_fields.empty();
+    } catch (const std::exception& ex) {
+        spdlog::warn("Redis hgetall failed for key {}: {}", key, ex.what());
+        return false;
+    }
+}
+
+bool RedisClient::set_string(const std::string& key, const std::string& value, std::chrono::seconds ttl) {
+    try {
+        sw::redis::ConnectionOptions opts;
+        opts.host = host_;
+        opts.port = static_cast<int>(port_);
+        auto redis = sw::redis::Redis(opts);
+
+        redis.set(key, value, ttl);
+        return true;
+    } catch (const std::exception& ex) {
+        spdlog::warn("Redis set failed for key {}: {}", key, ex.what());
+        return false;
+    }
+}
+
+std::optional<std::string> RedisClient::get_string(const std::string& key) {
+    try {
+        sw::redis::ConnectionOptions opts;
+        opts.host = host_;
+        opts.port = static_cast<int>(port_);
+        auto redis = sw::redis::Redis(opts);
+
+        auto value = redis.get(key);
+        if (value.has_value()) {
+            return value.value();
+        }
+        return std::nullopt;
+    } catch (const std::exception& ex) {
+        spdlog::warn("Redis get failed for key {}: {}", key, ex.what());
+        return std::nullopt;
+    }
+}

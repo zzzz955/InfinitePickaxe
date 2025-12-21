@@ -38,14 +38,14 @@ int main() {
         OfflineRepository offline_repo(db_pool);
         MiningService mining_service(mining_repo, slot_repo, game_repo, metadata);
         UpgradeService upgrade_service(upgrade_repo, metadata);
-        MissionService mission_service(mission_repo, game_repo, offline_repo, metadata);
+        MissionService mission_service(mission_repo, game_repo, offline_repo, metadata, redis_client);
         SlotService slot_service(slot_repo, game_repo, metadata);
         OfflineService offline_service(offline_repo, metadata);
         boost::asio::io_context io;
 
         TcpServer server(io, cfg.listen_port, auth_service, game_repo,
                          mining_service, upgrade_service, mission_service,
-                         slot_service, offline_service, metadata);
+                         slot_service, offline_service, redis_client, metadata);
         server.start();
 
         spdlog::info("Game server listening on port {}", cfg.listen_port);

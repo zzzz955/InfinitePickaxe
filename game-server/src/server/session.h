@@ -50,6 +50,7 @@ public:
             MissionService& mission_service,
             SlotService& slot_service,
             OfflineService& offline_service,
+            RedisClient& redis_client,
             std::shared_ptr<SessionRegistry> registry,
             const class MetadataLoader& metadata);
 
@@ -93,6 +94,8 @@ private:
     void refresh_slots_from_service(bool preserve_timers);
     void send_mission_progress_updates(const std::vector<infinitepickaxe::MissionProgressUpdate>& updates);
     void flush_play_time_progress(bool force);
+    void cache_mining_state();
+    bool load_cached_mining_state(uint32_t& mineral_id, uint64_t& hp, uint64_t& respawn_until_ms);
 
     boost::asio::ip::tcp::socket socket_;
     boost::asio::steady_timer auth_timer_;
@@ -104,6 +107,7 @@ private:
     MissionService& mission_service_;
     SlotService& slot_service_;
     OfflineService& offline_service_;
+    RedisClient& redis_;
     std::shared_ptr<SessionRegistry> registry_;
     const class MetadataLoader& metadata_;
 
@@ -122,6 +126,8 @@ private:
     MiningState mining_state_;
     float play_time_accum_ms_{0.0f};
     static constexpr uint32_t kPlayTimeFlushSeconds = 60;
+    float mining_cache_accum_ms_{0.0f};
+    static constexpr uint32_t kMiningCacheFlushSeconds = 5;
 
     std::array<uint8_t, 4> len_buf_{};
     std::vector<uint8_t> payload_buf_;

@@ -54,13 +54,13 @@ public:
 
     // === 일일 미션 정보 관련 ===
     // 오늘 날짜의 일일 미션 정보 조회 (없으면 생성)
-    DailyMissionInfo get_or_create_daily_mission_info(const std::string& user_id);
+    DailyMissionInfo get_or_create_daily_mission_info(const std::string& user_id, uint32_t base_rerolls);
 
     // 완료 카운트 증가
-    bool increment_completed_count(const std::string& user_id, uint32_t count = 1);
+    bool increment_completed_count(const std::string& user_id, uint32_t count, uint32_t base_rerolls);
 
     // 리롤 카운트 증가
-    bool increment_reroll_count(const std::string& user_id);
+    bool increment_reroll_count(const std::string& user_id, uint32_t base_rerolls);
 
     // === 마일스톤 청구 관련 ===
     bool has_milestone_claimed(const std::string& user_id, uint32_t milestone_count);

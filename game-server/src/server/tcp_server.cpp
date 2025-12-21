@@ -12,6 +12,7 @@ TcpServer::TcpServer(boost::asio::io_context& io,
                      MissionService& mission_service,
                      SlotService& slot_service,
                      OfflineService& offline_service,
+                     RedisClient& redis_client,
                      const MetadataLoader& metadata)
     : acceptor_(io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
       mining_tick_timer_(io),
@@ -23,6 +24,7 @@ TcpServer::TcpServer(boost::asio::io_context& io,
       mission_service_(mission_service),
       slot_service_(slot_service),
       offline_service_(offline_service),
+      redis_client_(redis_client),
       metadata_(metadata) {
     rate_limiter_ = std::make_shared<ConnectionRateLimiter>(10, std::chrono::seconds(10));
 }
@@ -62,12 +64,13 @@ void TcpServer::do_accept() {
                                                              auth_service_,
                                                              game_repo_,
                                                              mining_service_,
-                                                             upgrade_service_,
-                                                             mission_service_,
-                                                             slot_service_,
-                                                             offline_service_,
-                                                             registry_,
-                                                             metadata_);
+                                                            upgrade_service_,
+                                                            mission_service_,
+                                                            slot_service_,
+                                                            offline_service_,
+                                                            redis_client_,
+                                                            registry_,
+                                                            metadata_);
                     session->start();
                 }
             }

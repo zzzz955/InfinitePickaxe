@@ -6,12 +6,37 @@
 #include <unordered_set>
 #include <algorithm>
 #include <cctype>
+#include <ctime>
+#include <sstream>
+#include <limits>
 
 namespace {
+constexpr int kMissionCacheTtlSeconds = 60 * 60 * 48;
+constexpr int kMissionFlushIntervalSeconds = 60 * 5;
+
 uint32_t reward_for_ad_view(const std::vector<uint32_t>& rewards_by_view, uint32_t count) {
     if (count == 0) return 0;
     if (count > rewards_by_view.size()) return 0;
     return rewards_by_view[count - 1];
+}
+
+std::string kst_date_key() {
+    auto now = std::chrono::system_clock::now() + std::chrono::hours(9);
+    std::time_t tt = std::chrono::system_clock::to_time_t(now);
+    std::tm tm = *std::gmtime(&tt);
+    char buf[16];
+    std::strftime(buf, sizeof(buf), "%Y%m%d", &tm);
+    return std::string(buf);
+}
+
+bool parse_uint32(const std::string& value, uint32_t& out) {
+    if (value.empty()) return false;
+    char* end = nullptr;
+    unsigned long v = std::strtoul(value.c_str(), &end, 10);
+    if (!end || *end != '\0') return false;
+    if (v > std::numeric_limits<uint32_t>::max()) return false;
+    out = static_cast<uint32_t>(v);
+    return true;
 }
 } // namespace
 
@@ -36,6 +61,15 @@ infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::s
     }
 
     auto slots = repo_.get_all_mission_slots(user_id);
+    for (auto& slot : slots) {
+        auto cached = load_cached_slot(user_id, slot.slot_no);
+        if (cached.has_value() && cached->mission_id == slot.mission_id) {
+            slot.current_value = cached->current_value;
+            slot.status = cached->status;
+        } else {
+            cache_slot(user_id, slot);
+        }
+    }
 
     if (slots.size() < 3) {
         if (assign_random_missions_unique(user_id, 3 - static_cast<uint32_t>(slots.size()))) {
@@ -121,22 +155,40 @@ infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
     result.set_success(false);
     result.set_slot_no(slot_no);
 
-    auto slot_opt = repo_.get_mission_slot(user_id, slot_no);
-    if (!slot_opt.has_value()) {
-        result.set_error_code("MISSION_NOT_FOUND");
-        return result;
-    }
+    auto cached = load_cached_slot(user_id, slot_no);
+    const bool cache_found = cached.has_value();
+    MissionSlot slot{};
+    if (cached.has_value()) {
+        slot = cached.value();
+        if (slot.current_value >= slot.target_value && slot.status == "active") {
+            slot.status = "completed";
+        }
+        if (slot.status == "claimed") {
+            result.set_error_code("ALREADY_CLAIMED");
+            return result;
+        }
+        if (slot.status != "completed") {
+            result.set_error_code("MISSION_NOT_COMPLETED");
+            return result;
+        }
+        flush_slot_to_db(user_id, slot);
+    } else {
+        auto slot_opt = repo_.get_mission_slot(user_id, slot_no);
+        if (!slot_opt.has_value()) {
+            result.set_error_code("MISSION_NOT_FOUND");
+            return result;
+        }
+        slot = slot_opt.value();
 
-    auto& slot = slot_opt.value();
+        if (slot.status != "completed") {
+            result.set_error_code("MISSION_NOT_COMPLETED");
+            return result;
+        }
 
-    if (slot.status != "completed") {
-        result.set_error_code("MISSION_NOT_COMPLETED");
-        return result;
-    }
-
-    if (slot.status == "claimed") {
-        result.set_error_code("ALREADY_CLAIMED");
-        return result;
+        if (slot.status == "claimed") {
+            result.set_error_code("ALREADY_CLAIMED");
+            return result;
+        }
     }
 
     if (!repo_.claim_mission_reward(user_id, slot_no)) {
@@ -154,13 +206,20 @@ infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
         total_crystal = total_opt.value();
     }
 
-    repo_.increment_completed_count(user_id, 1);
+    repo_.increment_completed_count(user_id, 1, meta_.mission_reroll().free_rerolls_per_day);
 
     result.set_success(true);
     result.set_mission_id(slot.mission_id);
     result.set_reward_crystal(slot.reward_crystal);
     result.set_total_crystal(total_crystal);
     result.set_error_code("");
+
+    slot.status = "claimed";
+    if (cache_found) {
+        update_slot_cache(user_id, slot);
+    } else {
+        cache_slot(user_id, slot);
+    }
 
     spdlog::debug("claim_mission_reward: user={} slot={} reward={} total_crystal={}",
                   user_id, slot_no, slot.reward_crystal, total_crystal);
@@ -210,9 +269,10 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
 
     assign_random_missions_unique(user_id, 3);
 
-    repo_.increment_reroll_count(user_id);
+    repo_.increment_reroll_count(user_id, free_rerolls);
 
     auto slots = repo_.get_all_mission_slots(user_id);
+    cache_slots(user_id, slots);
     for (const auto& slot : slots) {
         const MissionMeta* meta = get_mission_meta_for_slot(slot);
         auto* entry = result.add_rerolled_missions();
@@ -321,7 +381,7 @@ infinitepickaxe::MilestoneClaimResult MissionService::handle_milestone_claim(
         return res;
     }
 
-    auto daily_info = repo_.get_or_create_daily_mission_info(user_id);
+    auto daily_info = ensure_daily_state_kst(user_id);
     if (daily_info.completed_count < milestone_count) {
         res.set_error_code("MILESTONE_NOT_REACHED");
         return res;
@@ -422,7 +482,7 @@ std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_play_
 
 // private helpers
 DailyMissionInfo MissionService::ensure_daily_state_kst(const std::string& user_id) {
-    return repo_.get_or_create_daily_mission_info(user_id);
+    return repo_.get_or_create_daily_mission_info(user_id, meta_.mission_reroll().free_rerolls_per_day);
 }
 
 bool MissionService::assign_random_missions_unique(const std::string& user_id, uint32_t count) {
@@ -527,8 +587,9 @@ std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::apply_progre
     const std::string& user_id,
     const std::function<uint64_t(const MissionSlot&, const MissionMeta*)>& delta_fn) {
     std::vector<infinitepickaxe::MissionProgressUpdate> updates;
-    auto slots = repo_.get_all_mission_slots(user_id);
-    for (const auto& slot : slots) {
+    auto slots = load_cached_slots(user_id);
+    bool any_updated = false;
+    for (auto& slot : slots) {
         if (slot.status != "active") {
             continue;
         }
@@ -548,7 +609,15 @@ std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::apply_progre
         auto update_opt = apply_progress_update(user_id, slot, new_value);
         if (update_opt.has_value()) {
             updates.push_back(update_opt.value());
+            any_updated = true;
+            slot.current_value = new_value;
+            if (new_value >= slot.target_value) {
+                slot.status = "completed";
+            }
         }
+    }
+    if (any_updated) {
+        flush_slots_if_due(user_id, slots);
     }
     return updates;
 }
@@ -560,12 +629,12 @@ std::optional<infinitepickaxe::MissionProgressUpdate> MissionService::apply_prog
         new_status = "completed";
     }
 
-    bool success = repo_.update_mission_progress(user_id, slot.slot_no, new_value, new_status);
-    if (!success) {
-        return std::nullopt;
-    }
+    MissionSlot updated = slot;
+    updated.current_value = new_value;
+    updated.status = new_status;
+    update_slot_cache(user_id, updated);
     if (new_status == "completed") {
-        repo_.complete_mission(user_id, slot.slot_no);
+        flush_slot_to_db(user_id, updated);
     }
 
     infinitepickaxe::MissionProgressUpdate update;
@@ -575,4 +644,114 @@ std::optional<infinitepickaxe::MissionProgressUpdate> MissionService::apply_prog
     update.set_target_value(slot.target_value);
     update.set_status(new_status);
     return update;
+}
+
+std::vector<MissionSlot> MissionService::load_cached_slots(const std::string& user_id) {
+    std::vector<MissionSlot> slots;
+    bool all_cached = true;
+    for (uint32_t slot_no = 1; slot_no <= 3; ++slot_no) {
+        auto cached = load_cached_slot(user_id, slot_no);
+        if (!cached.has_value()) {
+            all_cached = false;
+            break;
+        }
+        slots.push_back(cached.value());
+    }
+
+    if (all_cached && slots.size() == 3) {
+        return slots;
+    }
+
+    slots = repo_.get_all_mission_slots(user_id);
+    cache_slots(user_id, slots);
+    return slots;
+}
+
+std::optional<MissionSlot> MissionService::load_cached_slot(const std::string& user_id, uint32_t slot_no) {
+    const std::string key = "mission:slot:" + user_id + ":" + kst_date_key() + ":" + std::to_string(slot_no);
+    std::unordered_map<std::string, std::string> fields;
+    if (!redis_.hgetall(key, fields) || fields.empty()) {
+        return std::nullopt;
+    }
+
+    MissionSlot slot;
+    slot.user_id = user_id;
+    slot.slot_no = slot_no;
+
+    if (!parse_uint32(fields["mission_id"], slot.mission_id)) return std::nullopt;
+    slot.mission_type = fields["mission_type"];
+    if (!parse_uint32(fields["target_value"], slot.target_value)) return std::nullopt;
+    if (!parse_uint32(fields["current_value"], slot.current_value)) return std::nullopt;
+    if (!parse_uint32(fields["reward_crystal"], slot.reward_crystal)) return std::nullopt;
+    slot.status = fields["status"];
+
+    return slot;
+}
+
+void MissionService::cache_slot(const std::string& user_id, const MissionSlot& slot) {
+    const std::string key = "mission:slot:" + user_id + ":" + kst_date_key() + ":" + std::to_string(slot.slot_no);
+    std::unordered_map<std::string, std::string> fields{
+        {"mission_id", std::to_string(slot.mission_id)},
+        {"mission_type", slot.mission_type},
+        {"target_value", std::to_string(slot.target_value)},
+        {"current_value", std::to_string(slot.current_value)},
+        {"reward_crystal", std::to_string(slot.reward_crystal)},
+        {"status", slot.status},
+    };
+    redis_.hset_fields(key, fields, std::chrono::seconds(kMissionCacheTtlSeconds));
+}
+
+void MissionService::cache_slots(const std::string& user_id, const std::vector<MissionSlot>& slots) {
+    for (const auto& slot : slots) {
+        cache_slot(user_id, slot);
+    }
+}
+
+void MissionService::update_slot_cache(const std::string& user_id, const MissionSlot& slot) {
+    const std::string key = "mission:slot:" + user_id + ":" + kst_date_key() + ":" + std::to_string(slot.slot_no);
+    std::unordered_map<std::string, std::string> fields{
+        {"current_value", std::to_string(slot.current_value)},
+        {"status", slot.status},
+    };
+    redis_.hset_fields(key, fields, std::chrono::seconds(kMissionCacheTtlSeconds));
+}
+
+bool MissionService::flush_slots_if_due(const std::string& user_id, const std::vector<MissionSlot>& slots) {
+    const std::string key = "mission:flush:" + user_id + ":" + kst_date_key();
+    auto now = std::chrono::system_clock::now();
+    auto now_seconds = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
+
+    auto last_str = redis_.get_string(key);
+    long long last = 0;
+    if (last_str.has_value()) {
+        try {
+            last = std::stoll(last_str.value());
+        } catch (...) {
+            last = 0;
+        }
+    }
+
+    if (last != 0 && (now_seconds - last) < kMissionFlushIntervalSeconds) {
+        return false;
+    }
+
+    flush_slots_to_db(user_id, slots);
+    redis_.set_string(key, std::to_string(now_seconds), std::chrono::seconds(kMissionCacheTtlSeconds));
+    return true;
+}
+
+void MissionService::flush_slots_to_db(const std::string& user_id, const std::vector<MissionSlot>& slots) {
+    for (const auto& slot : slots) {
+        if (slot.status == "claimed") {
+            continue;
+        }
+        flush_slot_to_db(user_id, slot);
+    }
+}
+
+void MissionService::flush_slot_to_db(const std::string& user_id, const MissionSlot& slot) {
+    repo_.update_mission_progress(user_id, slot.slot_no, slot.current_value, slot.status);
+    if (slot.status == "completed") {
+        repo_.complete_mission(user_id, slot.slot_no);
+    }
 }
