@@ -19,9 +19,6 @@ public:
 
     infinitepickaxe::DailyMissionsResponse get_missions(const std::string& user_id);
 
-    bool update_mission_progress(const std::string& user_id, uint32_t slot_no,
-                                 uint32_t new_value);
-
     infinitepickaxe::MissionCompleteResult claim_mission_reward(
         const std::string& user_id, uint32_t slot_no);
 

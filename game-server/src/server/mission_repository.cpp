@@ -19,12 +19,13 @@ AdCounter MissionRepository::get_or_create_ad_counter(const std::string& user_id
 
         // INSERT ON CONFLICT DO UPDATE로 원자적으로 처리 (CURRENT_DATE 사용)
         auto res = tx.exec_params(
+            "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
             "INSERT INTO game_schema.user_ad_counters (user_id, ad_type, ad_count, reset_date) "
-            "VALUES ($1, $2, 0, CURRENT_DATE) "
+            "SELECT $1, $2, 0, d FROM kst_today "
             "ON CONFLICT (user_id, ad_type) DO UPDATE "
-            "SET ad_count = CASE WHEN user_ad_counters.reset_date < CURRENT_DATE THEN 0 "
+            "SET ad_count = CASE WHEN user_ad_counters.reset_date < (SELECT d FROM kst_today) THEN 0 "
             "                    ELSE user_ad_counters.ad_count END, "
-            "    reset_date = CURRENT_DATE "
+            "    reset_date = (SELECT d FROM kst_today) "
             "RETURNING ad_count, reset_date",
             user_id, ad_type
         );
@@ -58,12 +59,13 @@ bool MissionRepository::increment_ad_counter(const std::string& user_id, const s
 
         // 오늘 날짜 리셋 후 증가
         tx.exec_params(
+            "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
             "INSERT INTO game_schema.user_ad_counters (user_id, ad_type, ad_count, reset_date) "
-            "VALUES ($1, $2, 1, CURRENT_DATE) "
+            "SELECT $1, $2, 1, d FROM kst_today "
             "ON CONFLICT (user_id, ad_type) DO UPDATE "
-            "SET ad_count = CASE WHEN user_ad_counters.reset_date < CURRENT_DATE THEN 1 "
+            "SET ad_count = CASE WHEN user_ad_counters.reset_date < (SELECT d FROM kst_today) THEN 1 "
             "                    ELSE user_ad_counters.ad_count + 1 END, "
-            "    reset_date = CURRENT_DATE",
+            "    reset_date = (SELECT d FROM kst_today)",
             user_id, ad_type
         );
 
@@ -83,6 +85,14 @@ std::vector<AdCounter> MissionRepository::get_all_ad_counters(const std::string&
     try {
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
+
+        tx.exec_params(
+            "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
+            "UPDATE game_schema.user_ad_counters "
+            "SET ad_count = 0, reset_date = (SELECT d FROM kst_today) "
+            "WHERE user_id = $1 AND reset_date < (SELECT d FROM kst_today)",
+            user_id
+        );
 
         auto res = tx.exec_params(
             "SELECT user_id, ad_type, ad_count, reset_date "

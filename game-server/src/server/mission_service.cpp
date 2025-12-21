@@ -117,36 +117,6 @@ infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::s
     return response;
 }
 
-// Progress update
-bool MissionService::update_mission_progress(const std::string& user_id, uint32_t slot_no,
-                                             uint32_t new_value) {
-    auto slot_opt = repo_.get_mission_slot(user_id, slot_no);
-    if (!slot_opt.has_value()) {
-        spdlog::warn("update_mission_progress: slot not found user={} slot={}", user_id, slot_no);
-        return false;
-    }
-
-    auto& slot = slot_opt.value();
-
-    if (slot.status == "completed" || slot.status == "claimed") {
-        spdlog::debug("update_mission_progress: mission already done user={} slot={}", user_id, slot_no);
-        return false;
-    }
-
-    std::string new_status = slot.status;
-    if (new_value >= slot.target_value) {
-        new_status = "completed";
-    }
-
-    bool success = repo_.update_mission_progress(user_id, slot_no, new_value, new_status);
-
-    if (success && new_status == "completed") {
-        repo_.complete_mission(user_id, slot_no);
-    }
-
-    return success;
-}
-
 // Complete mission and grant reward
 infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
     const std::string& user_id, uint32_t slot_no) {
