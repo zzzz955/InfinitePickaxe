@@ -18,6 +18,8 @@
 #include "offline_service.h"
 #include "session_registry.h"
 
+class AdService;
+
 // 각 슬롯의 채굴 상태
 struct SlotMiningState {
     uint32_t slot_index;          // 0-3
@@ -50,6 +52,7 @@ public:
             MissionService& mission_service,
             SlotService& slot_service,
             OfflineService& offline_service,
+            AdService& ad_service,
             RedisClient& redis_client,
             std::shared_ptr<SessionRegistry> registry,
             const class MetadataLoader& metadata);
@@ -107,6 +110,7 @@ private:
     MissionService& mission_service_;
     SlotService& slot_service_;
     OfflineService& offline_service_;
+    AdService& ad_service_;
     RedisClient& redis_;
     std::shared_ptr<SessionRegistry> registry_;
     const class MetadataLoader& metadata_;

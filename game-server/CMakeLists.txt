@@ -12,6 +12,8 @@ add_executable(game-server
     src/server/http_auth_client.cpp
     src/server/auth_service.cpp
     src/server/game_repository.cpp
+    src/server/ad_repository.cpp
+    src/server/ad_service.cpp
     src/server/mining_repository.cpp
     src/server/upgrade_repository.cpp
     src/server/mission_repository.cpp

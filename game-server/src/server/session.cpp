@@ -1,6 +1,6 @@
 #include "session.h"
 #include "metadata/metadata_loader.h"
-#include "mission_repository.h"
+#include "ad_service.h"
 #include <spdlog/spdlog.h>
 #include <iostream>
 #include <cstring>
@@ -79,6 +79,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  MissionService &mission_service,
                  SlotService &slot_service,
                  OfflineService &offline_service,
+                 AdService &ad_service,
                  RedisClient &redis_client,
                  std::shared_ptr<SessionRegistry> registry,
                  const MetadataLoader &metadata)
@@ -90,6 +91,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       mission_service_(mission_service),
       slot_service_(slot_service),
       offline_service_(offline_service),
+      ad_service_(ad_service),
       redis_(redis_client),
       auth_timer_(socket_.get_executor()),
       registry_(std::move(registry)),
@@ -340,7 +342,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
                 .count()));
 
     // 광고 카운??추�?
-    auto ad_counters = mission_service_.get_ad_counters(user_id_);
+    auto ad_counters = ad_service_.get_ad_counters(user_id_);
     for (const auto &counter : ad_counters)
     {
         auto *ad_counter = snapshot->add_ad_counters();
@@ -619,7 +621,7 @@ void Session::handle_ad_watch(const infinitepickaxe::Envelope &env)
         return;
     }
     const auto &req = env.ad_watch_complete();
-    auto res = mission_service_.handle_ad_watch(user_id_, req.ad_type());
+    auto res = ad_service_.handle_ad_watch(user_id_, req.ad_type());
 
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::AD_WATCH_RESULT);

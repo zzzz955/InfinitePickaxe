@@ -11,11 +11,14 @@
 #include <functional>
 #include <optional>
 
+class AdService;
+
 class MissionService {
 public:
     MissionService(MissionRepository& repo, GameRepository& game_repo, OfflineRepository& offline_repo,
-                   const MetadataLoader& meta, RedisClient& redis)
-        : repo_(repo), game_repo_(game_repo), offline_repo_(offline_repo), meta_(meta), redis_(redis) {}
+                   AdService& ad_service, const MetadataLoader& meta, RedisClient& redis)
+        : repo_(repo), game_repo_(game_repo), offline_repo_(offline_repo),
+          ad_service_(ad_service), meta_(meta), redis_(redis) {}
 
     infinitepickaxe::DailyMissionsResponse get_missions(const std::string& user_id);
 
@@ -23,10 +26,6 @@ public:
         const std::string& user_id, uint32_t slot_no);
 
     infinitepickaxe::MissionRerollResult reroll_missions(const std::string& user_id);
-
-    std::vector<AdCounter> get_ad_counters(const std::string& user_id);
-
-    infinitepickaxe::AdWatchResult handle_ad_watch(const std::string& user_id, const std::string& ad_type);
 
     infinitepickaxe::MilestoneClaimResult handle_milestone_claim(
         const std::string& user_id, uint32_t milestone_count);
@@ -64,6 +63,7 @@ private:
     MissionRepository& repo_;
     GameRepository& game_repo_;
     OfflineRepository& offline_repo_;
+    AdService& ad_service_;
     const MetadataLoader& meta_;
     RedisClient& redis_;
 };

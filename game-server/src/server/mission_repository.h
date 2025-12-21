@@ -5,14 +5,6 @@
 #include <optional>
 #include <chrono>
 
-// 광고 카운터 구조체 (user_ad_counters 테이블)
-struct AdCounter {
-    std::string user_id;
-    std::string ad_type;  // "upgrade_discount", "mission_reroll", "crystal_reward"
-    uint32_t ad_count;
-    std::chrono::system_clock::time_point reset_date;
-};
-
 // 일일 미션 정보 구조체 (user_mission_daily 테이블)
 struct DailyMissionInfo {
     std::string user_id;
@@ -41,17 +33,6 @@ struct MissionSlot {
 class MissionRepository {
 public:
     explicit MissionRepository(ConnectionPool& pool) : pool_(pool) {}
-
-    // === 광고 카운터 관련 ===
-    // 특정 ad_type의 카운터 조회 (없으면 생성)
-    AdCounter get_or_create_ad_counter(const std::string& user_id, const std::string& ad_type);
-
-    // 광고 카운터 증가
-    bool increment_ad_counter(const std::string& user_id, const std::string& ad_type);
-
-    // 모든 광고 카운터 조회
-    std::vector<AdCounter> get_all_ad_counters(const std::string& user_id);
-
     // === 일일 미션 정보 관련 ===
     // 오늘 날짜의 일일 미션 정보 조회 (없으면 생성)
     DailyMissionInfo get_or_create_daily_mission_info(const std::string& user_id, uint32_t base_rerolls);
