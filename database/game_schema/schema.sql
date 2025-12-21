@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS game_schema.user_mission_daily (
 CREATE TABLE IF NOT EXISTS game_schema.user_mission_slots (
     user_id         UUID NOT NULL,
     slot_no         INTEGER NOT NULL CHECK (slot_no BETWEEN 1 AND 3),
-    mission_id      UUID NOT NULL DEFAULT gen_random_uuid(),
+    mission_id      INTEGER NOT NULL CHECK (mission_id > 0),
     mission_type    VARCHAR(50) NOT NULL,
     target_value    INTEGER NOT NULL CHECK (target_value > 0),
     current_value   INTEGER NOT NULL DEFAULT 0 CHECK (current_value >= 0),

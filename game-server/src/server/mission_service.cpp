@@ -2,6 +2,10 @@
 #include <spdlog/spdlog.h>
 #include <chrono>
 #include <random>
+#include <unordered_map>
+#include <unordered_set>
+#include <algorithm>
+#include <cctype>
 
 namespace {
 uint32_t reward_for_ad_view(const std::vector<uint32_t>& rewards_by_view, uint32_t count) {
@@ -15,46 +19,41 @@ uint32_t reward_for_ad_view(const std::vector<uint32_t>& rewards_by_view, uint32
 infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::string& user_id) {
     infinitepickaxe::DailyMissionsResponse response;
 
-    auto daily_info = repo_.get_or_create_daily_mission_info(user_id);
+    auto daily_info = ensure_daily_state_kst(user_id);
     response.set_completed_count(daily_info.completed_count);
-    response.set_reroll_count(daily_info.reroll_count);
+    const uint32_t free_rerolls = meta_.mission_reroll().free_rerolls_per_day;
+    uint32_t rerolls_used = 0;
+    if (daily_info.reroll_count > free_rerolls) {
+        rerolls_used = daily_info.reroll_count - free_rerolls;
+    }
+    response.set_reroll_count(rerolls_used);
+
+    if (daily_info.reset_today) {
+        for (uint32_t slot_no = 1; slot_no <= 3; ++slot_no) {
+            repo_.delete_mission_slot(user_id, slot_no);
+        }
+        assign_random_missions_unique(user_id, 3);
+    }
 
     auto slots = repo_.get_all_mission_slots(user_id);
+
     if (slots.size() < 3) {
-        bool changed = false;
-        std::vector<bool> has_slot(4, false);
-        for (const auto& s : slots) {
-            if (s.slot_no < has_slot.size()) has_slot[s.slot_no] = true;
-        }
-        for (uint32_t slot_no = 1; slot_no <= 3; ++slot_no) {
-            if (!has_slot[slot_no]) {
-                assign_random_mission(user_id, slot_no);
-                changed = true;
-            }
-        }
-        if (changed) {
+        if (assign_random_missions_unique(user_id, 3 - static_cast<uint32_t>(slots.size()))) {
             slots = repo_.get_all_mission_slots(user_id);
         }
     }
 
     for (const auto& slot : slots) {
+        const MissionMeta* meta = get_mission_meta_for_slot(slot);
+
         auto* entry = response.add_missions();
         entry->set_slot_no(slot.slot_no);
         entry->set_mission_id(slot.mission_id);
         entry->set_mission_type(slot.mission_type);
-
-        std::string description = "mission";
-        for (const auto& m : meta_.missions()) {
-            if (m.type == slot.mission_type && m.target == slot.target_value) {
-                description = m.description;
-                break;
-            }
-        }
-        entry->set_description(description);
-
-        entry->set_target_value(slot.target_value);
+        entry->set_description(meta ? meta->description : "mission");
+        entry->set_target_value(meta ? meta->target : slot.target_value);
         entry->set_current_value(slot.current_value);
-        entry->set_reward_crystal(slot.reward_crystal);
+        entry->set_reward_crystal(meta ? meta->reward_crystal : slot.reward_crystal);
         entry->set_status(slot.status);
 
         auto assigned_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -109,7 +108,6 @@ bool MissionService::update_mission_progress(const std::string& user_id, uint32_
 
     if (success && new_status == "completed") {
         repo_.complete_mission(user_id, slot_no);
-        repo_.increment_completed_count(user_id, 1);
     }
 
     return success;
@@ -156,6 +154,8 @@ infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
         total_crystal = total_opt.value();
     }
 
+    repo_.increment_completed_count(user_id, 1);
+
     result.set_success(true);
     result.set_mission_id(slot.mission_id);
     result.set_reward_crystal(slot.reward_crystal);
@@ -173,18 +173,22 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
     infinitepickaxe::MissionRerollResult result;
     result.set_success(false);
 
-    auto daily_info = repo_.get_or_create_daily_mission_info(user_id);
+    auto daily_info = ensure_daily_state_kst(user_id);
 
     const auto reroll_meta = meta_.mission_reroll();
+    const uint32_t free_rerolls = reroll_meta.free_rerolls_per_day;
     const uint32_t total_limit = reroll_meta.free_rerolls_per_day + reroll_meta.ad_rerolls_per_day;
-    const uint32_t next_reroll = daily_info.reroll_count + 1;
+    const uint32_t used_rerolls = daily_info.reroll_count > free_rerolls
+        ? (daily_info.reroll_count - free_rerolls)
+        : 0;
+    const uint32_t next_reroll = used_rerolls + 1;
     if (next_reroll > total_limit) {
         result.set_error_code("REROLL_LIMIT_EXCEEDED");
         return result;
     }
 
-    if (next_reroll > reroll_meta.free_rerolls_per_day) {
-        const uint32_t required_ads = next_reroll - reroll_meta.free_rerolls_per_day;
+    if (next_reroll > free_rerolls) {
+        const uint32_t required_ads = next_reroll - free_rerolls;
         uint32_t ad_limit = reroll_meta.ad_rerolls_per_day;
         if (const auto* ad_meta = meta_.ad_meta("mission_reroll")) {
             ad_limit = ad_meta->daily_limit;
@@ -204,33 +208,21 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
         repo_.delete_mission_slot(user_id, slot_no);
     }
 
-    for (uint32_t slot_no = 1; slot_no <= 3; ++slot_no) {
-        if (!assign_random_mission(user_id, slot_no)) {
-            spdlog::error("reroll_missions: failed to assign slot={}", slot_no);
-        }
-    }
+    assign_random_missions_unique(user_id, 3);
 
     repo_.increment_reroll_count(user_id);
 
     auto slots = repo_.get_all_mission_slots(user_id);
     for (const auto& slot : slots) {
+        const MissionMeta* meta = get_mission_meta_for_slot(slot);
         auto* entry = result.add_rerolled_missions();
         entry->set_slot_no(slot.slot_no);
         entry->set_mission_id(slot.mission_id);
         entry->set_mission_type(slot.mission_type);
-
-        std::string description = "mission";
-        for (const auto& m : meta_.missions()) {
-            if (m.type == slot.mission_type && m.target == slot.target_value) {
-                description = m.description;
-                break;
-            }
-        }
-        entry->set_description(description);
-
-        entry->set_target_value(slot.target_value);
+        entry->set_description(meta ? meta->description : "mission");
+        entry->set_target_value(meta ? meta->target : slot.target_value);
         entry->set_current_value(slot.current_value);
-        entry->set_reward_crystal(slot.reward_crystal);
+        entry->set_reward_crystal(meta ? meta->reward_crystal : slot.reward_crystal);
         entry->set_status(slot.status);
 
         auto assigned_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -239,9 +231,9 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
     }
 
     result.set_success(true);
-    result.set_rerolls_used(daily_info.reroll_count + 1);
+    result.set_rerolls_used(used_rerolls + 1);
 
-    spdlog::debug("reroll_missions: user={} rerolls={}", user_id, daily_info.reroll_count + 1);
+    spdlog::debug("reroll_missions: user={} rerolls={}", user_id, used_rerolls + 1);
 
     return result;
 }
@@ -353,34 +345,234 @@ infinitepickaxe::MilestoneClaimResult MissionService::handle_milestone_claim(
         return res;
     }
 
+    // 크리스탈 보상: 3/5/7 완료 시 20/30/50
+    uint32_t milestone_crystal = 0;
+    if (milestone_count == 3) milestone_crystal = 20;
+    else if (milestone_count == 5) milestone_crystal = 30;
+    else if (milestone_count == 7) milestone_crystal = 50;
+
+    uint32_t total_crystal = 0;
+    if (milestone_crystal > 0) {
+        auto total_opt = game_repo_.add_crystal(user_id, milestone_crystal);
+        if (!total_opt.has_value()) {
+            res.set_error_code("DB_ERROR");
+            return res;
+        }
+        total_crystal = total_opt.value();
+    }
+
     res.set_success(true);
     res.set_offline_hours_gained(bonus_hours);
     res.set_total_offline_hours(updated_seconds.value() / 3600); // 프로토 필드가 hours 단위
+    res.set_reward_crystal(milestone_crystal);
+    res.set_total_crystal(total_crystal);
     res.set_error_code("");
     return res;
 }
 
-// private: random mission assignment
-bool MissionService::assign_random_mission(const std::string& user_id, uint32_t slot_no) {
+std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_mining_complete(
+    const std::string& user_id, uint32_t mineral_id) {
+    return apply_progress_delta(user_id, [mineral_id](const MissionSlot& slot, const MissionMeta* meta) -> uint64_t {
+        if (slot.mission_type == "mine_any") {
+            return 1;
+        }
+        if (slot.mission_type == "mine_mineral" && meta && meta->mineral_id.has_value() &&
+            meta->mineral_id.value() == mineral_id) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
+std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_upgrade_try(
+    const std::string& user_id, bool success) {
+    return apply_progress_delta(user_id, [success](const MissionSlot& slot, const MissionMeta*) -> uint64_t {
+        if (slot.mission_type == "upgrade_try") {
+            return 1;
+        }
+        if (success && slot.mission_type == "upgrade_success") {
+            return 1;
+        }
+        return 0;
+    });
+}
+
+std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_gold_earned(
+    const std::string& user_id, uint64_t gold_delta) {
+    return apply_progress_delta(user_id, [gold_delta](const MissionSlot& slot, const MissionMeta*) -> uint64_t {
+        if (slot.mission_type == "gold") {
+            return gold_delta;
+        }
+        return 0;
+    });
+}
+
+std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_play_time_seconds(
+    const std::string& user_id, uint32_t seconds) {
+    if (seconds == 0) {
+        return {};
+    }
+    return apply_progress_delta(user_id, [seconds](const MissionSlot& slot, const MissionMeta*) -> uint64_t {
+        if (slot.mission_type == "play_time") {
+            return seconds;
+        }
+        return 0;
+    });
+}
+
+// private helpers
+DailyMissionInfo MissionService::ensure_daily_state_kst(const std::string& user_id) {
+    return repo_.get_or_create_daily_mission_info(user_id);
+}
+
+bool MissionService::assign_random_missions_unique(const std::string& user_id, uint32_t count) {
+    std::unordered_set<uint32_t> used_meta_ids;
+    auto existing = repo_.get_all_mission_slots(user_id);
+    for (const auto& slot : existing) {
+        used_meta_ids.insert(slot.mission_id);
+    }
+
+    for (uint32_t slot_no = 1; slot_no <= 3 && count > 0; ++slot_no) {
+        bool occupied = false;
+        for (const auto& s : existing) {
+            if (s.slot_no == slot_no) { occupied = true; break; }
+        }
+        if (occupied) continue;
+
+        if (assign_random_mission(user_id, slot_no, used_meta_ids)) {
+            --count;
+        } else {
+            spdlog::warn("assign_random_missions_unique: no mission assigned for slot {}", slot_no);
+        }
+    }
+    return true;
+}
+
+bool MissionService::assign_random_mission(const std::string& user_id, uint32_t slot_no,
+                                           std::unordered_set<uint32_t>& used_meta_ids) {
     const auto& missions = meta_.missions();
     if (missions.empty()) {
         spdlog::error("assign_random_mission: no missions in metadata");
         return false;
     }
 
+    std::vector<const MissionMeta*> easy;
+    std::vector<const MissionMeta*> medium;
+    std::vector<const MissionMeta*> hard;
+
+    for (const auto& m : missions) {
+        if (used_meta_ids.count(m.id)) continue;
+        std::string d = m.difficulty;
+        std::transform(d.begin(), d.end(), d.begin(), ::tolower);
+        if (d == "easy") easy.push_back(&m);
+        else if (d == "hard") hard.push_back(&m);
+        else medium.push_back(&m); // default medium
+    }
+
+    auto choose_pool = [&](std::mt19937& rng) -> std::vector<const MissionMeta*>* {
+        struct Pool { std::vector<const MissionMeta*>* vec; uint32_t weight; };
+        std::vector<Pool> pools;
+        if (!easy.empty()) pools.push_back({&easy, 50});
+        if (!medium.empty()) pools.push_back({&medium, 30});
+        if (!hard.empty()) pools.push_back({&hard, 20});
+        if (pools.empty()) return nullptr;
+
+        uint32_t total_w = 0;
+        for (auto& p : pools) total_w += p.weight;
+        std::uniform_int_distribution<uint32_t> dist(1, total_w);
+        uint32_t r = dist(rng);
+        uint32_t acc = 0;
+        for (auto& p : pools) {
+            acc += p.weight;
+            if (r <= acc) return p.vec;
+        }
+        return pools.back().vec;
+    };
+
     static std::mt19937 rng(std::random_device{}());
-    std::uniform_int_distribution<size_t> dist(0, missions.size() - 1);
-    size_t idx = dist(rng);
+    auto pool = choose_pool(rng);
+    if (!pool || pool->empty()) {
+        spdlog::warn("assign_random_mission: no pool available after filtering");
+        return false;
+    }
 
-    const auto& mission = missions[idx];
+    std::uniform_int_distribution<size_t> dist(0, pool->size() - 1);
+    const MissionMeta* mission = (*pool)[dist(rng)];
+    if (!mission) return false;
 
+    used_meta_ids.insert(mission->id);
     bool success = repo_.assign_mission_to_slot(
-        user_id, slot_no, mission.type, mission.target, mission.reward_crystal);
+        user_id, slot_no, mission->id, mission->type, mission->target, mission->reward_crystal);
 
     if (success) {
-        spdlog::debug("assign_random_mission: user={} slot={} type={} target={}",
-                      user_id, slot_no, mission.type, mission.target);
+        spdlog::debug("assign_random_mission: user={} slot={} mission_id={} type={} target={}",
+                      user_id, slot_no, mission->id, mission->type, mission->target);
     }
 
     return success;
+}
+
+const MissionMeta* MissionService::get_mission_meta_by_id(uint32_t meta_id) const {
+    for (const auto& m : meta_.missions()) {
+        if (m.id == meta_id) return &m;
+    }
+    return nullptr;
+}
+
+const MissionMeta* MissionService::get_mission_meta_for_slot(const MissionSlot& slot) const {
+    return get_mission_meta_by_id(slot.mission_id);
+}
+
+std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::apply_progress_delta(
+    const std::string& user_id,
+    const std::function<uint64_t(const MissionSlot&, const MissionMeta*)>& delta_fn) {
+    std::vector<infinitepickaxe::MissionProgressUpdate> updates;
+    auto slots = repo_.get_all_mission_slots(user_id);
+    for (const auto& slot : slots) {
+        if (slot.status != "active") {
+            continue;
+        }
+        const MissionMeta* meta = get_mission_meta_for_slot(slot);
+        uint64_t delta = delta_fn(slot, meta);
+        if (delta == 0) {
+            continue;
+        }
+
+        uint64_t sum = static_cast<uint64_t>(slot.current_value) + delta;
+        uint32_t target = slot.target_value;
+        uint32_t new_value = static_cast<uint32_t>(sum > target ? target : sum);
+        if (new_value == slot.current_value) {
+            continue;
+        }
+
+        auto update_opt = apply_progress_update(user_id, slot, new_value);
+        if (update_opt.has_value()) {
+            updates.push_back(update_opt.value());
+        }
+    }
+    return updates;
+}
+
+std::optional<infinitepickaxe::MissionProgressUpdate> MissionService::apply_progress_update(
+    const std::string& user_id, const MissionSlot& slot, uint32_t new_value) {
+    std::string new_status = slot.status;
+    if (new_value >= slot.target_value) {
+        new_status = "completed";
+    }
+
+    bool success = repo_.update_mission_progress(user_id, slot.slot_no, new_value, new_status);
+    if (!success) {
+        return std::nullopt;
+    }
+    if (new_status == "completed") {
+        repo_.complete_mission(user_id, slot.slot_no);
+    }
+
+    infinitepickaxe::MissionProgressUpdate update;
+    update.set_slot_no(slot.slot_no);
+    update.set_mission_id(slot.mission_id);
+    update.set_current_value(new_value);
+    update.set_target_value(slot.target_value);
+    update.set_status(new_status);
+    return update;
 }

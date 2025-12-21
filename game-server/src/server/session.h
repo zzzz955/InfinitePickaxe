@@ -91,6 +91,8 @@ private:
     void apply_slot_update(uint32_t slot_index, uint64_t attack_power, float attack_speed,
                            uint32_t critical_hit_percent, uint32_t critical_damage);
     void refresh_slots_from_service(bool preserve_timers);
+    void send_mission_progress_updates(const std::vector<infinitepickaxe::MissionProgressUpdate>& updates);
+    void flush_play_time_progress(bool force);
 
     boost::asio::ip::tcp::socket socket_;
     boost::asio::steady_timer auth_timer_;
@@ -118,6 +120,8 @@ private:
 
     // 채굴 시뮬레이션 상태
     MiningState mining_state_;
+    float play_time_accum_ms_{0.0f};
+    static constexpr uint32_t kPlayTimeFlushSeconds = 60;
 
     std::array<uint8_t, 4> len_buf_{};
     std::vector<uint8_t> payload_buf_;

@@ -287,7 +287,7 @@ message DailyMissionsRequest {
 
 message MissionEntry {
   uint32 slot_no = 1;              // 슬롯 번호 (1-3)
-  string mission_id = 2;           // UUID (DB와 동일)
+  uint32 mission_id = 2;           // 메타데이터 기반 미션 ID
   string mission_type = 3;         // "mine", "play_time", "upgrade", "gold", "level" 등
   string description = 4;
   uint32 target_value = 5;         // 목표 값
@@ -307,7 +307,7 @@ message DailyMissionsResponse {
 
 message MissionProgressUpdate {
   uint32 slot_no = 1;              // 슬롯 번호 (1-3)
-  string mission_id = 2;           // UUID
+  uint32 mission_id = 2;           // 메타데이터 기반 미션 ID
   uint32 current_value = 3;        // 현재 진행도
   uint32 target_value = 4;         // 목표 값
   string status = 5;               // "active", "completed", "claimed"
@@ -320,7 +320,7 @@ message MissionComplete {
 message MissionCompleteResult {
   bool success = 1;
   uint32 slot_no = 2;              // 슬롯 번호
-  string mission_id = 3;           // UUID
+  uint32 mission_id = 3;           // 메타데이터 기반 미션 ID
   uint32 reward_crystal = 4;       // 보상 크리스탈
   uint32 total_crystal = 5;        // 총 크리스탈
   string error_code = 6;
@@ -347,7 +347,9 @@ message MilestoneClaimResult {
   uint32 milestone_count = 2;
   uint32 offline_hours_gained = 3;  // 오프라인 보상 시간 증가량
   uint32 total_offline_hours = 4;   // 현재 총 오프라인 보유 시간
-  string error_code = 5;
+  uint32 reward_crystal = 5;        // 이번 수령으로 받은 크리스탈
+  uint32 total_crystal = 6;         // 수령 후 총 크리스탈
+  string error_code = 7;
 }
 
 // -------------- 슬롯 해금 --------------

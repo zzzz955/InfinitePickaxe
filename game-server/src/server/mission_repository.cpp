@@ -122,33 +122,61 @@ DailyMissionInfo MissionRepository::get_or_create_daily_mission_info(const std::
     info.user_id = user_id;
     info.mission_date = std::chrono::system_clock::now();
     info.completed_count = 0;
-    info.reroll_count = 0;
+    info.reroll_count = 2;
+    info.reset_today = false;
 
     try {
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
 
-        // INSERT ON CONFLICT로 오늘 날짜 row 보장
-        auto res = tx.exec_params(
-            "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
-            "VALUES ($1, CURRENT_DATE, 0, 0) "
-            "ON CONFLICT (user_id, mission_date) DO UPDATE "
-            "SET completed_count = user_mission_daily.completed_count, "
-            "    reroll_count = user_mission_daily.reroll_count "
-            "RETURNING completed_count, reroll_count, mission_date",
-            user_id
-        );
+        auto kst_row = tx.exec1("SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d");
+        auto kst_date_str = kst_row["d"].as<std::string>();
+        std::tm tm_kst = {};
+        std::istringstream ss_kst(kst_date_str);
+        ss_kst >> std::get_time(&tm_kst, "%Y-%m-%d");
+        auto kst_date = std::chrono::system_clock::from_time_t(std::mktime(&tm_kst));
 
-        if (!res.empty()) {
-            auto row = res[0];
-            info.completed_count = row["completed_count"].as<uint32_t>();
-            info.reroll_count = row["reroll_count"].as<uint32_t>();
+        auto existing = tx.exec_params(
+            "SELECT mission_date, completed_count, reroll_count "
+            "FROM game_schema.user_mission_daily "
+            "WHERE user_id = $1 "
+            "ORDER BY mission_date DESC "
+            "LIMIT 1",
+            user_id);
 
+        if (existing.empty()) {
+            tx.exec_params(
+                "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
+                "VALUES ($1, $2, 0, 2)",
+                user_id, kst_date_str);
+            info.reset_today = true;
+            info.completed_count = 0;
+            info.reroll_count = 2;
+            info.mission_date = kst_date;
+        } else {
+            auto row = existing[0];
             auto date_str = row["mission_date"].as<std::string>();
             std::tm tm = {};
             std::istringstream ss(date_str);
             ss >> std::get_time(&tm, "%Y-%m-%d");
-            info.mission_date = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+            auto stored_date = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+
+            if (date_str != kst_date_str) {
+                tx.exec_params(
+                    "UPDATE game_schema.user_mission_daily "
+                    "SET mission_date = $2, completed_count = 0, reroll_count = 2, created_at = NOW() "
+                    "WHERE user_id = $1 AND mission_date = $3",
+                    user_id, kst_date_str, date_str);
+                info.reset_today = true;
+                info.completed_count = 0;
+                info.reroll_count = 2;
+                info.mission_date = kst_date;
+            } else {
+                info.reset_today = false;
+                info.completed_count = row["completed_count"].as<uint32_t>();
+                info.reroll_count = row["reroll_count"].as<uint32_t>();
+                info.mission_date = stored_date;
+            }
         }
 
         tx.commit();
@@ -165,8 +193,9 @@ bool MissionRepository::increment_completed_count(const std::string& user_id, ui
         pqxx::work tx(*conn);
 
         tx.exec_params(
+            "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
             "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
-            "VALUES ($1, CURRENT_DATE, $2, 0) "
+            "SELECT $1, d, $2, 2 FROM kst_today "
             "ON CONFLICT (user_id, mission_date) DO UPDATE "
             "SET completed_count = user_mission_daily.completed_count + $2",
             user_id, count
@@ -187,8 +216,9 @@ bool MissionRepository::increment_reroll_count(const std::string& user_id) {
         pqxx::work tx(*conn);
 
         tx.exec_params(
+            "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
             "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
-            "VALUES ($1, CURRENT_DATE, 0, 1) "
+            "SELECT $1, d, 0, 1 FROM kst_today "
             "ON CONFLICT (user_id, mission_date) DO UPDATE "
             "SET reroll_count = user_mission_daily.reroll_count + 1",
             user_id
@@ -209,7 +239,7 @@ bool MissionRepository::has_milestone_claimed(const std::string& user_id, uint32
         pqxx::work tx(*conn);
         auto res = tx.exec_params(
             "SELECT 1 FROM game_schema.user_milestones "
-            "WHERE user_id = $1 AND milestone_date = CURRENT_DATE AND milestone_count = $2 "
+            "WHERE user_id = $1 AND milestone_date = (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AND milestone_count = $2 "
             "LIMIT 1",
             user_id, milestone_count);
         tx.commit();
@@ -226,7 +256,7 @@ bool MissionRepository::insert_milestone_claim(const std::string& user_id, uint3
         pqxx::work tx(*conn);
         auto res = tx.exec_params(
             "INSERT INTO game_schema.user_milestones (user_id, milestone_date, milestone_count) "
-            "VALUES ($1, CURRENT_DATE, $2) "
+            "VALUES ($1, (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date, $2) "
             "ON CONFLICT DO NOTHING",
             user_id, milestone_count);
         tx.commit();
@@ -260,7 +290,7 @@ std::optional<MissionSlot> MissionRepository::get_mission_slot(const std::string
         MissionSlot slot;
         slot.user_id = row["user_id"].as<std::string>();
         slot.slot_no = row["slot_no"].as<uint32_t>();
-        slot.mission_id = row["mission_id"].as<std::string>();
+        slot.mission_id = row["mission_id"].as<uint32_t>();
         slot.mission_type = row["mission_type"].as<std::string>();
         slot.target_value = row["target_value"].as<uint32_t>();
         slot.current_value = row["current_value"].as<uint32_t>();
@@ -324,7 +354,7 @@ std::vector<MissionSlot> MissionRepository::get_all_mission_slots(const std::str
             MissionSlot slot;
             slot.user_id = row["user_id"].as<std::string>();
             slot.slot_no = row["slot_no"].as<uint32_t>();
-            slot.mission_id = row["mission_id"].as<std::string>();
+            slot.mission_id = row["mission_id"].as<uint32_t>();
             slot.mission_type = row["mission_type"].as<std::string>();
             slot.target_value = row["target_value"].as<uint32_t>();
             slot.current_value = row["current_value"].as<uint32_t>();
@@ -355,28 +385,27 @@ std::vector<MissionSlot> MissionRepository::get_all_mission_slots(const std::str
 }
 
 bool MissionRepository::assign_mission_to_slot(const std::string& user_id, uint32_t slot_no,
-                                               const std::string& mission_type, uint32_t target_value,
-                                               uint32_t reward_crystal) {
+                                               uint32_t mission_id, const std::string& mission_type,
+                                               uint32_t target_value, uint32_t reward_crystal) {
     try {
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
 
-        // gen_random_uuid()로 mission_id 생성
         tx.exec_params(
             "INSERT INTO game_schema.user_mission_slots "
             "(user_id, slot_no, mission_id, mission_type, target_value, current_value, "
             " reward_crystal, status, assigned_at) "
-            "VALUES ($1, $2, gen_random_uuid(), $3, $4, 0, $5, 'active', NOW()) "
+            "VALUES ($1, $2, $3, $4, $5, 0, $6, 'active', NOW()) "
             "ON CONFLICT (user_id, slot_no) DO UPDATE "
-            "SET mission_id = gen_random_uuid(), mission_type = $3, target_value = $4, "
-            "    current_value = 0, reward_crystal = $5, status = 'active', "
+            "SET mission_id = $3, mission_type = $4, target_value = $5, "
+            "    current_value = 0, reward_crystal = $6, status = 'active', "
             "    assigned_at = NOW(), completed_at = NULL, claimed_at = NULL, expires_at = NULL",
-            user_id, slot_no, mission_type, target_value, reward_crystal
+            user_id, slot_no, static_cast<int32_t>(mission_id), mission_type, target_value, reward_crystal
         );
 
         tx.commit();
-        spdlog::debug("assign_mission_to_slot: user={} slot={} type={} target={}",
-                      user_id, slot_no, mission_type, target_value);
+        spdlog::debug("assign_mission_to_slot: user={} slot={} mission_id={} type={} target={}",
+                      user_id, slot_no, mission_id, mission_type, target_value);
         return true;
     } catch (const std::exception& ex) {
         spdlog::error("assign_mission_to_slot failed: user={} slot={} error={}",

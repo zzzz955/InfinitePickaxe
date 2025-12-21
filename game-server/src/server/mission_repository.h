@@ -18,14 +18,15 @@ struct DailyMissionInfo {
     std::string user_id;
     std::chrono::system_clock::time_point mission_date;
     uint32_t completed_count; // 오늘 완료된 미션 수
-    uint32_t reroll_count;    // 오늘 리롤 사용 횟수
+    uint32_t reroll_count;    // 저장값: free_rerolls_per_day + 사용한 리롤 수
+    bool reset_today{false};  // KST 기준 리셋 여부
 };
 
 // 미션 슬롯 구조체 (user_mission_slots 테이블)
 struct MissionSlot {
     std::string user_id;
     uint32_t slot_no;                    // 1-3
-    std::string mission_id;              // UUID
+    uint32_t mission_id;                 // 메타 미션 ID
     std::string mission_type;            // "mine", "play_time", "upgrade", "gold", "level" 등
     uint32_t target_value;
     uint32_t current_value;
@@ -74,8 +75,8 @@ public:
 
     // 미션 슬롯 생성/배정
     bool assign_mission_to_slot(const std::string& user_id, uint32_t slot_no,
-                                const std::string& mission_type, uint32_t target_value,
-                                uint32_t reward_crystal);
+                                uint32_t mission_id, const std::string& mission_type,
+                                uint32_t target_value, uint32_t reward_crystal);
 
     // 미션 진행도 업데이트
     bool update_mission_progress(const std::string& user_id, uint32_t slot_no,

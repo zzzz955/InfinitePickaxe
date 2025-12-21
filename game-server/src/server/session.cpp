@@ -316,6 +316,12 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     *response_env.mutable_handshake_result() = res;
     send_envelope(response_env);
 
+    auto missions_res = mission_service_.get_missions(user_id_);
+    infinitepickaxe::Envelope missions_env;
+    missions_env.set_type(infinitepickaxe::DAILY_MISSIONS_RESPONSE);
+    *missions_env.mutable_daily_missions_response() = missions_res;
+    send_envelope(missions_env);
+
     // 채굴 ?��??�이???�작 (DB?�서 로드???�재 광물�? nullable 처리)
     if (game_data.current_mineral_id.has_value() && game_data.current_mineral_id.value() > 0 && game_data.current_mineral_hp.has_value())
     {
@@ -401,6 +407,11 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope &env)
     response_env.set_type(infinitepickaxe::UPGRADE_RESULT);
     *response_env.mutable_upgrade_result() = res;
     send_envelope(response_env);
+
+    if (slot.has_value()) {
+        auto updates = mission_service_.handle_upgrade_try(user_id_, res.success());
+        send_mission_progress_updates(updates);
+    }
 }
 
 void Session::handle_change_mineral(const infinitepickaxe::Envelope &env)
@@ -492,8 +503,7 @@ void Session::handle_mission_progress_update(const infinitepickaxe::Envelope &en
         send_error("2004", "mission_progress_update message missing");
         return;
     }
-    const auto &req = env.mission_progress_update();
-    mission_service_.update_mission_progress(user_id_, req.slot_no(), req.current_value());
+    spdlog::debug("Ignoring client mission_progress_update (server-authoritative): user={}", user_id_);
 }
 
 void Session::handle_mission_complete(const infinitepickaxe::Envelope &env)
@@ -665,10 +675,51 @@ void Session::send_error(const std::string &code, const std::string &message)
     send_envelope(env);
 }
 
+void Session::send_mission_progress_updates(const std::vector<infinitepickaxe::MissionProgressUpdate>& updates)
+{
+    for (const auto& update : updates)
+    {
+        infinitepickaxe::Envelope env;
+        env.set_type(infinitepickaxe::MISSION_PROGRESS_UPDATE);
+        *env.mutable_mission_progress_update() = update;
+        send_envelope(env);
+    }
+}
+
+void Session::flush_play_time_progress(bool force)
+{
+    if (!authenticated_ || user_id_.empty())
+    {
+        return;
+    }
+
+    uint32_t seconds = static_cast<uint32_t>(play_time_accum_ms_ / 1000.0f);
+    if (seconds == 0)
+    {
+        return;
+    }
+
+    uint32_t flush_seconds = seconds;
+    if (!force)
+    {
+        flush_seconds = (seconds / kPlayTimeFlushSeconds) * kPlayTimeFlushSeconds;
+    }
+
+    if (flush_seconds == 0)
+    {
+        return;
+    }
+
+    play_time_accum_ms_ -= static_cast<float>(flush_seconds * 1000);
+    auto updates = mission_service_.handle_play_time_seconds(user_id_, flush_seconds);
+    send_mission_progress_updates(updates);
+}
+
 void Session::close()
 {
     if (closed_)
         return;
+    flush_play_time_progress(true);
     closed_ = true;
     boost::system::error_code timer_ec;
     auth_timer_.cancel(timer_ec);
@@ -703,6 +754,9 @@ void Session::update_mining_tick(float delta_ms)
     {
         return;
     }
+
+    play_time_accum_ms_ += delta_ms;
+    flush_play_time_progress(false);
 
     // 광물 선택이 0(중단)이면 채굴 자동 틱 중지
     if (mining_state_.current_mineral_id == 0)
@@ -962,6 +1016,11 @@ void Session::handle_mining_complete_immediate()
     env.set_type(infinitepickaxe::MINING_COMPLETE);
     *env.mutable_mining_complete() = complete;
     send_envelope(env);
+
+    auto updates = mission_service_.handle_mining_complete(user_id_, mining_state_.current_mineral_id);
+    auto gold_updates = mission_service_.handle_gold_earned(user_id_, completion_result.gold_earned());
+    updates.insert(updates.end(), gold_updates.begin(), gold_updates.end());
+    send_mission_progress_updates(updates);
 
     spdlog::info("Mining completed: user={} mineral={} gold_earned={} respawn_time={}s",
                  user_id_, mining_state_.current_mineral_id, gold_reward, respawn_time_sec);

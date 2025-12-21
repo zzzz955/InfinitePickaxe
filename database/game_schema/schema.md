@@ -61,7 +61,7 @@
 | --- | --- | --- | --- |
 | user_id | UUID | PK part |  |
 | slot_no | INTEGER | PK part, CHECK 1-3 | 활성 슬롯 3개 |
-| mission_id | UUID | UNIQUE per user, DEFAULT gen_random_uuid() |  |
+| mission_id | INTEGER | UNIQUE per user, CHECK >0 | 메타 미션 ID |
 | mission_type | VARCHAR(50) | NOT NULL | 미션 타입 |
 | target_value | INTEGER | NOT NULL, >0 | 목표 |
 | current_value | INTEGER | DEFAULT 0, CHECK >=0 | 진행 |
