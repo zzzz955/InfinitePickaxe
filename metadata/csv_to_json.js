@@ -122,16 +122,21 @@ function convertDailyMissions() {
   const missionsContent = fs.readFileSync('csv/daily_missions.csv', 'utf8');
   const missionRows = parseCSV(missionsContent);
 
-  const pools = { Easy: [], Medium: [], Hard: [] };
-  missionRows.forEach(row => {
-    const mission = {
-      id: row.id,
+  const missions = missionRows.map(row => {
+    const mineralId =
+      row.mineral_id === undefined || row.mineral_id === null || row.mineral_id === '' || row.mineral_id.toLowerCase?.() === 'null'
+        ? null
+        : parseInt(row.mineral_id, 10);
+
+    return {
+      id: parseInt(row.id, 10),
+      difficulty: row.difficulty || row.pool,
       type: row.type,
-      target: parseInt(row.target),
+      target: parseInt(row.target, 10),
+      mineral_id: mineralId,
       description: row.description,
-      reward_crystal: parseInt(row.reward_crystal)
+      reward_crystal: parseInt(row.reward_crystal, 10)
     };
-    pools[row.difficulty].push(mission);
   });
 
   // 마일스톤
@@ -146,7 +151,7 @@ function convertDailyMissions() {
     reset_time_kst: config.reset_time_kst,
     total_slots: config.total_slots,
     max_daily_assign: config.max_daily_assign,
-    pools,
+    missions,
     milestone_offline_bonus_hours: milestones
   };
 

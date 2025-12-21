@@ -24,11 +24,14 @@ struct MineralMeta {
 };
 
 struct MissionMeta {
-    uint32_t index;
+    uint32_t index{0};
+    uint32_t id{0};
     std::string type;
     uint32_t target;
     uint32_t reward_crystal;
     std::string description;
+    std::string difficulty;
+    std::optional<uint32_t> mineral_id;
 };
 
 struct MilestoneBonus {

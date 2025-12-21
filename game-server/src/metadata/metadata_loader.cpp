@@ -65,28 +65,34 @@ bool MetadataLoader::load(const std::string& base_path) {
             std::ifstream f(base_path + "/daily_missions.json");
             nlohmann::json j;
             f >> j;
+            uint32_t idx = 0;
+            auto parse_mission = [&](const nlohmann::json& e) {
+                MissionMeta m;
+                m.index = idx++;
+                m.id = e.value("id", m.index);
+                m.type = e.value("type", "");
+                m.target = e.value("target", 0);
+                m.reward_crystal = e.value("reward_crystal", 0);
+                m.description = e.value("description", "");
+                m.difficulty = e.value("difficulty", "");
+                if (e.contains("mineral_id") && !e["mineral_id"].is_null()) {
+                    m.mineral_id = e.value("mineral_id", 0);
+                }
+                missions_.push_back(m);
+            };
+
             if (j.is_array()) {
-                uint32_t idx = 0;
                 for (auto& e : j) {
-                    MissionMeta m;
-                    m.index = e.value("index", idx++);
-                    m.type = e.value("type", "");
-                    m.target = e.value("target", 0);
-                    m.reward_crystal = e.value("reward_crystal", 0);
-                    m.description = e.value("description", "");
-                    missions_.push_back(m);
+                    parse_mission(e);
+                }
+            } else if (j.contains("missions") && j["missions"].is_array()) {
+                for (auto& e : j["missions"]) {
+                    parse_mission(e);
                 }
             } else if (j.contains("pools")) {
-                uint32_t idx = 0;
                 for (auto& pool : j["pools"].items()) {
                     for (auto& e : pool.value()) {
-                        MissionMeta m;
-                        m.index = idx++;
-                        m.type = e.value("type", "");
-                        m.target = e.value("target", 0);
-                        m.reward_crystal = e.value("reward_crystal", 0);
-                        m.description = e.value("description", "");
-                        missions_.push_back(m);
+                        parse_mission(e);
                     }
                 }
             }

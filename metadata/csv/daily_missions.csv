@@ -1,10 +1,31 @@
-﻿difficulty,id,type,target,description,reward_crystal
-Easy,easy_mine_10,mine,10,광물 10회 채굴,10
-Easy,easy_play_5m,play_time,300,게임 접속 5분 유지,10
-Easy,easy_upgrade_once,upgrade,1,강화 1회 수행,10
-Medium,med_gold_5000,gold,5000,"골드 5,000 획득",14
-Medium,med_copper_3,mine_mineral,3,구리 3회 채굴,14
-Medium,med_pickaxe_lv8,level,8,곡괭이 Lv 8 달성,14
-Hard,hard_emerald_1,mine_mineral,1,에메랄드 1회 채굴,18
-Hard,hard_pickaxe_lv15,level,15,곡괭이 Lv 15 달성,18
-Hard,hard_gold_50000,gold,50000,"골드 50,000 획득",18
+﻿id,difficulty,type,target,mineral_id,description,reward_crystal
+1,Easy,mine_any,10,,아무 광물이나 10회 채굴,10
+2,Easy,play_time,300,,게임 접속 5분 유지,10
+3,Easy,upgrade_success,2,,강화 2회 성공,10
+4,Easy,upgrade_try,4,,강화 4회 수행,10
+5,Easy,gold,2500,,"골드 2,500 획득",10
+6,Easy,mine_mineral,5,5,강철 5회 채굴,10
+7,Easy,mine_mineral,5,6,흑철 5회 채굴,10
+8,Easy,mine_mineral,5,7,은 5회 채굴,10
+9,Easy,mine_mineral,5,8,리튬 5회 채굴,10
+10,Easy,mine_mineral,5,9,운모 5회 채굴,10
+101,Medium,mine_any,20,,아무 광물이나 25회 채굴,14
+102,Medium,play_time,900,,게임 접속 15분 유지,14
+103,Medium,upgrade_success,4,,강화 5회 성공,14
+104,Medium,upgrade_try,8,,강화 10회 수행,14
+105,Medium,gold,10000,,"골드 10,000 획득",14
+106,Medium,mine_mineral,5,10,에메랄드 10회 채굴,14
+107,Medium,mine_mineral,5,11,아쿠아마린 5회 채굴,14
+108,Medium,mine_mineral,5,12,금 5회 채굴,14
+109,Medium,mine_mineral,5,13,다이아몬드 5회 채굴,14
+110,Medium,mine_mineral,5,14,석영 5회 채굴,14
+201,Hard,mine_any,50,,아무 광물이나 50회 채굴,18
+202,Hard,play_time,1800,,게임 접속 30분 유지,18
+203,Hard,upgrade_success,6,,강화 6회 성공,18
+204,Hard,upgrade_try,12,,강화 12회 수행,18
+205,Hard,gold,50000,,"골드 50,000 획득",18
+206,Hard,mine_mineral,5,15,감람석 5회 채굴,18
+207,Hard,mine_mineral,5,16,백금 5회 채굴,18
+208,Hard,mine_mineral,5,17,비스무트 5회 채굴,18
+209,Hard,mine_mineral,5,18,오리할콘 5회 채굴,18
+210,Hard,mine_mineral,5,19,토파즈 5회 채굴,18

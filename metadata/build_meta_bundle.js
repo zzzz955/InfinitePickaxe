@@ -209,24 +209,26 @@ function buildAds() {
 
 function buildDailyMissions() {
   const config = readKeyValueConfig('daily_missions_config.csv');
-  const pools = {};
+  const missions = [];
 
   readCsv('daily_missions.csv').forEach((row, idx) => {
     const context = `daily_missions.csv row ${idx + 2}`;
-    const pool = requireField(row.difficulty || row.pool, 'difficulty', context);
+    const difficulty = requireField(row.difficulty || row.pool, 'difficulty', context);
+    const mineralRaw = row.mineral_id;
+    const mineralId =
+      mineralRaw === undefined || mineralRaw === null || `${mineralRaw}`.trim() === '' || `${mineralRaw}`.toLowerCase() === 'null'
+        ? null
+        : toNumber(mineralRaw, `${context} mineral_id`);
     const entry = {
-      id: requireField(row.id, 'id', context),
+      id: toNumber(requireField(row.id, 'id', context), `${context} id`),
+      difficulty,
       type: requireField(row.type, 'type', context),
       target: toNumber(row.target, `${context} target`),
+      mineral_id: mineralId,
       description: requireField(row.description, 'description', context),
       reward_crystal: toNumber(row.reward_crystal, `${context} reward_crystal`),
     };
-
-    if (!pools[pool]) {
-      pools[pool] = [];
-    }
-
-    pools[pool].push(entry);
+    missions.push(entry);
   });
 
   const milestones = readCsv('daily_missions_milestones.csv').map((row, idx) => {
@@ -245,7 +247,7 @@ function buildDailyMissions() {
       reset_time_kst: requireField(config.reset_time_kst, 'reset_time_kst', 'daily_missions_config.csv'),
       total_slots: toNumber(config.total_slots, 'daily_missions_config.csv total_slots'),
       max_daily_assign: toNumber(config.max_daily_assign, 'daily_missions_config.csv max_daily_assign'),
-      pools,
+      missions,
       milestone_offline_bonus_hours: milestones,
     },
   };
