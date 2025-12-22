@@ -12,6 +12,8 @@ namespace InfinitePickaxe.Client.UI.Game
 {
     public class QuestTabController : BaseTabController
     {
+        private const string MissionRerollAdType = "mission_reroll";
+
         [Header("Quest UI References")]
         [SerializeField] private TextMeshProUGUI questCountText;
         [SerializeField] private Transform questListContainer;
@@ -29,6 +31,10 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button milestone3Button;
         [SerializeField] private Button milestone5Button;
         [SerializeField] private Button milestone7Button;
+        [SerializeField] private Color milestoneLockedColor = new Color(1f, 0.35f, 0.35f, 1f);
+        [SerializeField] private Color milestoneClaimableColor = new Color(0.2f, 0.85f, 0.3f, 1f);
+        [SerializeField] private Color milestoneClaimedColor = new Color(0.7f, 0.7f, 0.7f, 1f);
+        [SerializeField] private float milestoneButtonDisabledAlpha = 0.5f;
 
         [Header("Quest Data (Fallback)")]
         [SerializeField] private int completedCount = 0;
@@ -376,20 +382,40 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void UpdateMilestoneRow(uint milestoneCount, TextMeshProUGUI text, Button button)
         {
-            uint bonusHours = GetMilestoneBonusHours(milestoneCount);
-            if (text != null)
+            bool hasState = questState != null && questState.HasMilestoneState;
+            bool claimed = hasState && questState.IsMilestoneClaimed(milestoneCount);
+            bool canClaim = hasState
+                            && questState.MilestoneCompletedCount >= milestoneCount
+                            && !claimed;
+
+            string stateLabel;
+            Color stateColor;
+            if (claimed)
             {
-                text.text = $"{milestoneCount}개 완료: 오프라인 +{bonusHours}h";
+                stateLabel = "수령 완료";
+                stateColor = milestoneClaimedColor;
+            }
+            else if (canClaim)
+            {
+                stateLabel = "획득 가능";
+                stateColor = milestoneClaimableColor;
+            }
+            else
+            {
+                stateLabel = "획득 불가";
+                stateColor = milestoneLockedColor;
             }
 
-            bool canClaim = questState != null
-                            && questState.HasMilestoneState
-                            && questState.MilestoneCompletedCount >= milestoneCount
-                            && !questState.IsMilestoneClaimed(milestoneCount);
+            if (text != null)
+            {
+                text.text = $"일일 미션 {milestoneCount}개 완료 : {stateLabel}";
+                text.color = stateColor;
+            }
 
             if (button != null)
             {
                 button.interactable = canClaim;
+                ApplyMilestoneButtonVisual(button, canClaim);
             }
         }
 
@@ -436,18 +462,41 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 freeLimit = (int)questState.RerollsFree;
                 int totalLimit = (int)questState.RerollsTotalLimit;
-                int used = (int)questState.RerollCount;
+                int usedTotal = (int)questState.RerollCount;
+                int adUsed = 0;
 
-                int freeUsed = Math.Min(used, freeLimit);
+                if (questState.TryGetAdCounter(MissionRerollAdType, out var counter))
+                {
+                    adUsed = (int)counter.AdCount;
+                    if (counter.DailyLimit > 0)
+                    {
+                        adLimit = (int)counter.DailyLimit;
+                    }
+                }
+
+                if (adLimit == 0)
+                {
+                    adLimit = Math.Max(0, totalLimit - freeLimit);
+                }
+
+                int freeUsed = Math.Max(0, usedTotal - adUsed);
                 freeRemaining = Math.Max(0, freeLimit - freeUsed);
-
-                adLimit = Math.Max(0, totalLimit - freeLimit);
-                int adUsed = Math.Max(0, used - freeLimit);
                 adRemaining = Math.Max(0, adLimit - adUsed);
                 return;
             }
 
             freeRemaining = Math.Max(0, freeRefreshCount - usedRefreshCount);
+        }
+
+        private void ApplyMilestoneButtonVisual(Button button, bool canClaim)
+        {
+            if (button == null) return;
+            var graphic = button.targetGraphic;
+            if (graphic == null) return;
+
+            var color = graphic.color;
+            color.a = canClaim ? 1f : milestoneButtonDisabledAlpha;
+            graphic.color = color;
         }
 
         private void OnRefreshQuestClicked()

@@ -411,6 +411,17 @@ namespace InfinitePickaxe.Client.Net
             {
                 Debug.LogWarning($"미션 완료 실패: {result.ErrorCode}");
             }
+            if (result.Success || result.TotalCrystal > 0 || result.RewardCrystal > 0)
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = null,
+                    Crystal = result.TotalCrystal,
+                    Reason = "mission_complete"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+            }
             OnMissionCompleteResult?.Invoke(result);
         }
 
@@ -436,6 +447,17 @@ namespace InfinitePickaxe.Client.Net
             else
             {
                 Debug.LogWarning($"마일스톤 보상 실패: {result.ErrorCode}");
+            }
+            if (result.Success || result.TotalCrystal > 0 || result.RewardCrystal > 0)
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = null,
+                    Crystal = result.TotalCrystal,
+                    Reason = "milestone_claim"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
             }
             OnMilestoneClaimResult?.Invoke(result);
         }
