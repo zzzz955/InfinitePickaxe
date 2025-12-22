@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using InfinitePickaxe.Client.UI.Common;
 
 namespace InfinitePickaxe.Client.UI.Title
 {
@@ -22,6 +23,7 @@ namespace InfinitePickaxe.Client.UI.Title
         [SerializeField] private Button startButton;
         [SerializeField] private Button logoutButton;
         [SerializeField] private CanvasGroup overlayGroup;
+        private bool globalOverlayVisible;
         [SerializeField] private GameObject modalPrefab;
         [SerializeField] private string modalResourcePath = "UI/Modal";
         [SerializeField] private CanvasGroup modalGroup;
@@ -128,6 +130,41 @@ namespace InfinitePickaxe.Client.UI.Title
 
         public void ShowOverlay(bool show, string message = null)
         {
+            var manager = LoadingOverlayManager.Instance;
+            if (manager != null)
+            {
+                if (show)
+                {
+                    if (!globalOverlayVisible)
+                    {
+                        manager.Show(message);
+                        globalOverlayVisible = true;
+                    }
+                    else if (!string.IsNullOrEmpty(message))
+                    {
+                        manager.SetMessage(message);
+                    }
+                }
+                else if (globalOverlayVisible)
+                {
+                    manager.Hide();
+                    globalOverlayVisible = false;
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    SetLoadingMessage(message);
+                }
+
+                if (overlayGroup != null)
+                {
+                    overlayGroup.alpha = 0f;
+                    overlayGroup.interactable = false;
+                    overlayGroup.blocksRaycasts = false;
+                }
+                return;
+            }
+
             if (overlayGroup == null)
             {
                 return;
@@ -355,7 +392,7 @@ namespace InfinitePickaxe.Client.UI.Title
 
         private CanvasGroup CreateOverlay()
         {
-            var overlay = new GameObject("LoadingOverlay", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(CanvasGroup));
+            var overlay = new GameObject("TitleOverlay", typeof(RectTransform), typeof(CanvasRenderer), typeof(UnityEngine.UI.Image), typeof(CanvasGroup));
             overlay.transform.SetParent(transform, false);
             var rt = overlay.GetComponent<RectTransform>();
             rt.anchorMin = Vector2.zero;

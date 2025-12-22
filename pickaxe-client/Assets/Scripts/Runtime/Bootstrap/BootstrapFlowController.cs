@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using InfinitePickaxe.Client.Metadata;
 using InfinitePickaxe.Client.Config;
+using InfinitePickaxe.Client.UI.Common;
 
 namespace InfinitePickaxe.Client.Bootstrap
 {
@@ -39,6 +40,7 @@ namespace InfinitePickaxe.Client.Bootstrap
         private const string MetaHashKey = "meta_hash";
         private const string MetaFileName = "meta_bundle.json";
         private bool running;
+        private bool overlayShown;
 
         private void Awake()
         {
@@ -257,7 +259,25 @@ namespace InfinitePickaxe.Client.Bootstrap
 
         private void ShowOverlay(bool show, string message = null)
         {
-            if (overlayRoot != null) overlayRoot.SetActive(show);
+            var manager = LoadingOverlayManager.Instance;
+            if (show)
+            {
+                if (!overlayShown)
+                {
+                    manager.Show(message);
+                    overlayShown = true;
+                }
+                else if (!string.IsNullOrEmpty(message))
+                {
+                    manager.SetMessage(message);
+                }
+            }
+            else if (overlayShown)
+            {
+                manager.Hide();
+                overlayShown = false;
+            }
+
             if (statusText != null && message != null) statusText.text = message;
         }
 
@@ -275,7 +295,6 @@ namespace InfinitePickaxe.Client.Bootstrap
                 yield break;
             }
 
-            ShowOverlay(false);
             LoadNextScene();
         }
 

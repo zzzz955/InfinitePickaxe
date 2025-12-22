@@ -37,6 +37,7 @@ namespace InfinitePickaxe.Client.Net
 
         private ulong? lastGold;
         private uint? lastCrystal;
+        private UserDataSnapshot lastSnapshot;
 
         // 핸드셰이크
         public event Action<HandshakeResponse> OnHandshakeResult;
@@ -243,6 +244,7 @@ namespace InfinitePickaxe.Client.Net
             Debug.Log($"핸드셰이크 결과: {(result.Success ? "성공" : "실패")} - {result.Message}");
             if (result?.Snapshot != null)
             {
+                CacheSnapshot(result.Snapshot);
                 PickaxeStateCache.Instance.UpdateFromSnapshot(result.Snapshot);
                 CacheCurrency(result.Snapshot.Gold, result.Snapshot.Crystal);
                 if (result.Snapshot.ServerTime.HasValue)
@@ -260,6 +262,7 @@ namespace InfinitePickaxe.Client.Net
         private void HandleUserDataSnapshot(UserDataSnapshot snapshot)
         {
             Debug.Log($"유저 데이터 스냅샷 수신: Gold={snapshot.Gold ?? 0}, Crystal={snapshot.Crystal ?? 0}");
+            CacheSnapshot(snapshot);
             PickaxeStateCache.Instance.UpdateFromSnapshot(snapshot);
             CacheCurrency(snapshot.Gold, snapshot.Crystal);
             if (snapshot.ServerTime.HasValue)
@@ -699,10 +702,24 @@ namespace InfinitePickaxe.Client.Net
             return gold.HasValue || crystal.HasValue;
         }
 
+        public bool TryGetLastSnapshot(out UserDataSnapshot snapshot)
+        {
+            snapshot = lastSnapshot;
+            return snapshot != null;
+        }
+
         private void CacheCurrency(ulong? gold, uint? crystal)
         {
             if (gold.HasValue) lastGold = gold.Value;
             if (crystal.HasValue) lastCrystal = crystal.Value;
+        }
+
+        private void CacheSnapshot(UserDataSnapshot snapshot)
+        {
+            if (snapshot != null)
+            {
+                lastSnapshot = snapshot;
+            }
         }
 
         #endregion

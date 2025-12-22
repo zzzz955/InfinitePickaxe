@@ -68,10 +68,11 @@ pickaxe-client/Assets/Plugins/Android/FirebaseApp.androidlib/res/values/google-s
 CLAUDE.md
 
 # codex
-.codex/
+AGENTS.md
 
 # log
 last_log.txt
 
 # etc
 TODO-LIST.md
+last_screenshot.png

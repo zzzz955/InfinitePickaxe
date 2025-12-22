@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using InfinitePickaxe.Client.Auth;
 using InfinitePickaxe.Client.Config;
 using InfinitePickaxe.Client.Core;
 using InfinitePickaxe.Client.UI.Title;
+using InfinitePickaxe.Client.UI.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,6 +27,9 @@ namespace InfinitePickaxe.Client.Core
         private bool autoAuthAttempted;
         private AuthSessionService sessionService;
         private string deviceId;
+        private Coroutine overlayDelayRoutine;
+        private bool overlayVisible;
+        private const float OverlayDelaySeconds = 1f;
 
         private const string IdleStatus = "로그인 상태: 미인증";
         private const string AuthenticatedStatus = "로그인 상태: 인증 완료";
@@ -61,6 +66,8 @@ namespace InfinitePickaxe.Client.Core
             sessionService = ResolveSessionService();
             view.SetButtonHandlers(OnGoogleSignInClicked, OnStartClicked, OnLogoutClicked);
             view.SetState(TitleState.Idle, IdleStatus);
+            LoadingOverlayManager.Instance.Clear();
+            overlayVisible = false;
 
             if (!string.IsNullOrEmpty(pendingReconnectMessage))
             {
@@ -106,6 +113,64 @@ namespace InfinitePickaxe.Client.Core
             return created;
         }
 
+        private void BeginOverlayDelay(string message)
+        {
+            CancelOverlayDelay();
+            overlayDelayRoutine = StartCoroutine(ShowOverlayAfterDelay(message));
+        }
+
+        private IEnumerator ShowOverlayAfterDelay(string message)
+        {
+            yield return new WaitForSecondsRealtime(OverlayDelaySeconds);
+            overlayDelayRoutine = null;
+            ShowOverlayImmediate(message);
+        }
+
+        private void ShowOverlayImmediate(string message)
+        {
+            if (view == null) return;
+
+            if (!overlayVisible)
+            {
+                view.ShowOverlay(true, message);
+                overlayVisible = true;
+            }
+            else if (!string.IsNullOrEmpty(message))
+            {
+                view.ShowOverlay(true, message);
+            }
+        }
+
+        private void CompleteOverlay(bool keepVisible = false)
+        {
+            CancelOverlayDelay();
+            if (!keepVisible)
+            {
+                HideOverlay();
+            }
+        }
+
+        private void HideOverlay()
+        {
+            CancelOverlayDelay();
+            if (view == null) return;
+
+            if (overlayVisible)
+            {
+                view.ShowOverlay(false);
+                overlayVisible = false;
+            }
+        }
+
+        private void CancelOverlayDelay()
+        {
+            if (overlayDelayRoutine != null)
+            {
+                StopCoroutine(overlayDelayRoutine);
+                overlayDelayRoutine = null;
+            }
+        }
+
         private AuthSessionService CreateSessionService()
         {
             var config = ClientRuntime.IsInitialized ? ClientRuntime.Config : ClientConfigLoader.Load();
@@ -127,16 +192,18 @@ namespace InfinitePickaxe.Client.Core
         {
             view.SetState(TitleState.Loading, "저장된 토큰으로 자동 로그인 중...");
             view.SetLoadingMessage("세션 검증 중...");
-            view.ShowOverlay(true, "세션 검증 중...");
+            BeginOverlayDelay("세션 검증 중...");
 
             var result = await sessionService.AuthenticateWithRefreshAsync();
             if (result.Success)
             {
-                OnAuthenticated(result.Nickname);
+                var keepOverlay = OnAuthenticated(result.Nickname);
+                CompleteOverlay(keepOverlay);
             }
             else
             {
                 HandleInvalidToken($"자동 로그인 실패: {result.Error}");
+                CompleteOverlay();
             }
         }
 
@@ -144,12 +211,13 @@ namespace InfinitePickaxe.Client.Core
         {
             view.SetState(TitleState.Loading, "Google 로그인 진행 중...");
             view.SetLoadingMessage("Google 계정 선택...");
-            view.ShowOverlay(true, "로그인 진행 중...");
+            BeginOverlayDelay("로그인 진행 중...");
 
             var result = await authService.SignInAsync(silent: false);
             if (!result.Success)
             {
                 HandleInvalidToken($"Google 로그인 실패: {result.Error}");
+                CompleteOverlay();
                 return;
             }
 
@@ -158,10 +226,12 @@ namespace InfinitePickaxe.Client.Core
             if (!backendResult.Success)
             {
                 HandleInvalidToken($"백엔드 인증 실패: {backendResult.Error}");
+                CompleteOverlay();
                 return;
             }
 
-            OnAuthenticated(backendResult.Nickname);
+            var keepOverlay = OnAuthenticated(backendResult.Nickname);
+            CompleteOverlay(keepOverlay);
         }
 
         public void OnStartClicked()
@@ -172,9 +242,8 @@ namespace InfinitePickaxe.Client.Core
         public void OnLogoutClicked()
         {
             sessionService.Clear();
-            view.ShowOverlay(true, "로그아웃 처리 중...");
             view.SetState(TitleState.Idle, IdleStatus);
-            view.ShowOverlay(false);
+            HideOverlay();
         }
 
         private void LoadGameScene()
@@ -184,39 +253,39 @@ namespace InfinitePickaxe.Client.Core
                 Debug.LogError("TitleController: gameSceneName is not set.");
                 view.SetError("게임 씬 이름이 설정되지 않았습니다.");
                 view.SetState(TitleState.Idle, IdleStatus);
-                view.ShowOverlay(false);
+                HideOverlay();
                 return;
             }
 
             SceneManager.LoadScene(gameSceneName);
         }
 
-        private void OnAuthenticated(string nickname)
+        private bool OnAuthenticated(string nickname)
         {
             if (!string.IsNullOrEmpty(nickname))
             {
-                view.ShowOverlay(false);
+                HideOverlay();
                 view.SetState(TitleState.Authenticated, $"환영합니다 {nickname}님!");
+                return false;
             }
-            else
-            {
-                view.SetState(TitleState.Loading, "닉네임을 설정해주세요.");
-                view.ShowOverlay(true, "닉네임 설정 필요");
-                PromptNickname();
-            }
+
+            view.SetState(TitleState.Loading, "닉네임을 설정해주세요.");
+            HideOverlay();
+            PromptNickname();
+            return true;
         }
 
         private void PromptNickname()
         {
-            view.ShowOverlay(true, "닉네임 설정 중...");
             view.ShowInputModal(
                 "닉네임을 설정해주세요.",
                 "닉네임",
                 "확인",
                 async nickname =>
                 {
+                    BeginOverlayDelay("닉네임 설정 중...");
                     var result = await sessionService.UpdateNicknameAsync(nickname);
-                    view.ShowOverlay(false);
+                    CompleteOverlay();
                     if (result.Success && sessionService.Tokens.HasNickname)
                     {
                         view.HideModal();
@@ -242,7 +311,7 @@ namespace InfinitePickaxe.Client.Core
                 : message;
             view.SetError(display);
             view.SetState(TitleState.Idle, "로그인 상태: 재로그인 필요");
-            view.ShowOverlay(false);
+            HideOverlay();
             view.ShowModal(display, "다시 로그인");
         }
 
@@ -260,12 +329,13 @@ namespace InfinitePickaxe.Client.Core
                 return;
             }
 
-            view.ShowOverlay(true, "게임 서버 연결 준비 중...");
+            BeginOverlayDelay("게임 서버 연결 준비 중...");
 
             var refreshResult = await sessionService.RefreshAccessTokenIfNeededAsync(120);
+            CancelOverlayDelay();
             if (!refreshResult.Success)
             {
-                view.ShowOverlay(false);
+                HideOverlay();
                 view.ShowModal($"토큰 갱신 실패: {refreshResult.Error}", "다시 로그인", () =>
                 {
                     HandleInvalidToken(refreshResult.Error);
@@ -273,7 +343,7 @@ namespace InfinitePickaxe.Client.Core
                 return;
             }
 
-            view.ShowOverlay(true, "게임 데이터를 불러오는 중...");
+            ShowOverlayImmediate("게임 데이터를 불러오는 중...");
             LoadGameScene();
         }
     }

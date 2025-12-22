@@ -91,6 +91,7 @@ namespace InfinitePickaxe.Client.UI.Game
         };
 
         private bool hasServerState = false;
+        private bool messageSubscribed = false;
 
         private GameTabManager tabManager;
         private MessageHandler messageHandler;
@@ -209,53 +210,24 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OnDestroy()
         {
             // 중복 해제 방지: OnDisable에서도 수행하지만 안전하게 한 번 더 수행
-            if (messageHandler != null)
-            {
-                messageHandler.OnUserDataSnapshot -= HandleUserDataSnapshot;
-                messageHandler.OnMiningUpdate -= HandleMiningUpdate;
-                messageHandler.OnMiningComplete -= HandleMiningComplete;
-                messageHandler.OnChangeMineralResponse -= HandleChangeMineralResponse;
-                messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
-                messageHandler.OnUpgradeResult -= HandleUpgradeResult;
-            }
+            UnsubscribeMessageHandler();
             UnsubscribeCache();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
-
-            // MessageHandler 이벤트 구독
-            if (messageHandler != null)
-            {
-                messageHandler.OnUserDataSnapshot += HandleUserDataSnapshot;
-                messageHandler.OnMiningUpdate += HandleMiningUpdate;
-                messageHandler.OnMiningComplete += HandleMiningComplete;
-                messageHandler.OnChangeMineralResponse += HandleChangeMineralResponse;
-                messageHandler.OnAllSlotsResponse += HandleAllSlotsResponse;
-                messageHandler.OnUpgradeResult += HandleUpgradeResult;
-            }
+            SubscribeMessageHandler();
 
             SubscribeCache();
             SyncSlotsFromCache();
+            ApplyLastSnapshotIfAvailable();
             RefreshData();
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
-
-            // MessageHandler 이벤트 구독 해제
-            if (messageHandler != null)
-            {
-                messageHandler.OnUserDataSnapshot -= HandleUserDataSnapshot;
-                messageHandler.OnMiningUpdate -= HandleMiningUpdate;
-                messageHandler.OnMiningComplete -= HandleMiningComplete;
-                messageHandler.OnChangeMineralResponse -= HandleChangeMineralResponse;
-                messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
-                messageHandler.OnUpgradeResult -= HandleUpgradeResult;
-            }
-
             UnsubscribeCache();
         }
 
@@ -266,6 +238,44 @@ namespace InfinitePickaxe.Client.UI.Game
             // 탭이 표시될 때마다 데이터 갱신
             RefreshData();
             AutoBindLevelTexts();
+        }
+
+        private void SubscribeMessageHandler()
+        {
+            if (messageSubscribed) return;
+            messageHandler ??= MessageHandler.Instance;
+            if (messageHandler == null) return;
+
+            messageHandler.OnUserDataSnapshot += HandleUserDataSnapshot;
+            messageHandler.OnMiningUpdate += HandleMiningUpdate;
+            messageHandler.OnMiningComplete += HandleMiningComplete;
+            messageHandler.OnChangeMineralResponse += HandleChangeMineralResponse;
+            messageHandler.OnAllSlotsResponse += HandleAllSlotsResponse;
+            messageHandler.OnUpgradeResult += HandleUpgradeResult;
+            messageSubscribed = true;
+        }
+
+        private void UnsubscribeMessageHandler()
+        {
+            if (!messageSubscribed || messageHandler == null) return;
+
+            messageHandler.OnUserDataSnapshot -= HandleUserDataSnapshot;
+            messageHandler.OnMiningUpdate -= HandleMiningUpdate;
+            messageHandler.OnMiningComplete -= HandleMiningComplete;
+            messageHandler.OnChangeMineralResponse -= HandleChangeMineralResponse;
+            messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
+            messageHandler.OnUpgradeResult -= HandleUpgradeResult;
+            messageSubscribed = false;
+        }
+
+        private void ApplyLastSnapshotIfAvailable()
+        {
+            if (hasServerState) return;
+            messageHandler ??= MessageHandler.Instance;
+            if (messageHandler != null && messageHandler.TryGetLastSnapshot(out var snapshot))
+            {
+                HandleUserDataSnapshot(snapshot);
+            }
         }
 
         private void SubscribeCache()
@@ -289,7 +299,10 @@ namespace InfinitePickaxe.Client.UI.Game
         private void HandlePickaxeCacheChanged()
         {
             SyncSlotsFromCache();
-            RefreshData();
+            if (isActive)
+            {
+                RefreshData();
+            }
         }
 
         private void SyncSlotsFromCache()
@@ -1170,6 +1183,7 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void HandleUserDataSnapshot(UserDataSnapshot snapshot)
         {
+            bool wasReady = hasServerState;
             hasServerState = true;
             isPreparingMineral = false;
 
@@ -1218,8 +1232,10 @@ namespace InfinitePickaxe.Client.UI.Game
                     case 3: slot4Unlocked = isUnlocked; break;
                 }
             }
-
-            RefreshData();
+            if (isActive)
+            {
+                RefreshData();
+            }
         }
 
         /// <summary>
@@ -1227,6 +1243,8 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void HandleMiningUpdate(MiningUpdate update)
         {
+            bool wasReady = hasServerState;
+            hasServerState = true;
             currentHP = update.CurrentHp;
             maxHP = update.MaxHp;
             currentMineralId = update.MineralId;
@@ -1249,6 +1267,8 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // DPS는 AllSlotsResponse에서 받은 값 유지 (TotalDps 필드 제거됨)
             // currentDPS는 슬롯 변경 시에만 업데이트됨
+
+            if (!isActive) return;
 
             // 각 곡괭이 공격 처리 (애니메이션 트리거)
             if (update.Attacks != null && update.Attacks.Count > 0)
@@ -1276,9 +1296,12 @@ namespace InfinitePickaxe.Client.UI.Game
             isPreparingMineral = false;
             isRespawning = true;
             currentHP = 0;
-            UpdateMineInfo();
-            UpdateHPBar();
-            UpdateMineralSprite();
+            if (isActive)
+            {
+                UpdateMineInfo();
+                UpdateHPBar();
+                UpdateMineralSprite();
+            }
 
             // 재화 갱신: 서버가 total_gold를 내려주므로 상단 재화도 반영
         }
@@ -1356,7 +1379,10 @@ namespace InfinitePickaxe.Client.UI.Game
                     isPreparingMineral = true; // 서버의 첫 MiningUpdate가 도착하기 전까지 준비 상태
                 }
 
-                RefreshData();
+                if (isActive)
+                {
+                    RefreshData();
+                }
 
                 CloseModal(mineralSelectModal);
             }
@@ -1390,7 +1416,10 @@ namespace InfinitePickaxe.Client.UI.Game
                 }
             }
 
-            RefreshData();
+            if (isActive)
+            {
+                RefreshData();
+            }
         }
 
         private void HandleUpgradeResult(UpgradeResult result)
@@ -1400,7 +1429,10 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 pickaxeCache?.UpdateFromUpgradeResult(result);
                 SyncSlotsFromCache();
-                RefreshData();
+                if (isActive)
+                {
+                    RefreshData();
+                }
             }
         }
 
