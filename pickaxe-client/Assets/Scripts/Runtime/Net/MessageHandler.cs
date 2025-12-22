@@ -479,6 +479,17 @@ namespace InfinitePickaxe.Client.Net
             {
                 Debug.LogWarning($"광고 시청 실패: {result.ErrorCode}");
             }
+            if (result.Success && (result.CrystalEarned > 0 || result.TotalCrystal > 0))
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = null,
+                    Crystal = result.TotalCrystal,
+                    Reason = "ad_watch"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+            }
             QuestStateCache.Instance.ApplyAdWatchResult(result);
             OnAdWatchResult?.Invoke(result);
         }

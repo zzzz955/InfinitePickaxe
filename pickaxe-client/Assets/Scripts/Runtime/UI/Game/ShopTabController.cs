@@ -54,6 +54,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private bool cacheSubscribed;
         private QuestStateCache questState;
         private bool adStateSubscribed;
+        private float nextTimerRefreshTime;
 
         protected override void Initialize()
         {
@@ -134,6 +135,15 @@ namespace InfinitePickaxe.Client.UI.Game
             UnsubscribeAdState();
         }
 
+        private void Update()
+        {
+            if (!isActive) return;
+            if (Time.unscaledTime < nextTimerRefreshTime) return;
+
+            nextTimerRefreshTime = Time.unscaledTime + 1f;
+            UpdateAdCount();
+        }
+
         private void OnDestroy()
         {
             UnsubscribeMessageHandler();
@@ -170,10 +180,10 @@ namespace InfinitePickaxe.Client.UI.Game
             if (adCountText != null)
             {
                 string timer = FormatResetTimer(questState != null ? questState.AdCountersResetTimestampMs : 0);
-                var textValue = $"?? ?? (?? {watchedAdCount}/{maxAdCount})";
+                var textValue = $"광고 보상 (오늘 {watchedAdCount}/{maxAdCount})";
                 if (!string.IsNullOrEmpty(timer))
                 {
-                    textValue += $" | ?? {timer}";
+                    textValue += $" | 리셋 {timer}";
                 }
                 adCountText.text = textValue;
             }
