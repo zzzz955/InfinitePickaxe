@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,6 +41,8 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private bool slot3Unlocked = false;
         [SerializeField] private bool slot4Unlocked = false;
 
+        private const string CrystalRewardAdType = "crystal_reward";
+
         private readonly int[] slotCosts = { 0, 400, 2000, 4000 }; // 서버 슬롯 인덱스 기준 (0~3)
         private readonly bool[] slotUnlockedStates = new bool[4];   // 서버 인덱스 기준
         private readonly bool[] unlockInProgress = new bool[4];     // 중복 요청 방지
@@ -49,6 +52,8 @@ namespace InfinitePickaxe.Client.UI.Game
         private MessageHandler messageHandler;
         private PickaxeStateCache pickaxeCache;
         private bool cacheSubscribed;
+        private QuestStateCache questState;
+        private bool adStateSubscribed;
 
         protected override void Initialize()
         {
@@ -116,6 +121,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             SubscribeMessageHandler();
             SubscribeCache();
+            SubscribeAdState();
             SyncSlotsFromCache();
             RefreshData();
         }
@@ -125,12 +131,14 @@ namespace InfinitePickaxe.Client.UI.Game
             base.OnDisable();
             UnsubscribeMessageHandler();
             UnsubscribeCache();
+            UnsubscribeAdState();
         }
 
         private void OnDestroy()
         {
             UnsubscribeMessageHandler();
             UnsubscribeCache();
+            UnsubscribeAdState();
         }
 
         /// <summary>
@@ -144,23 +152,43 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void UpdateAdCount()
         {
-            if (adCountText != null)
+            int watched = watchedAdCount;
+            int limit = maxAdCount;
+
+            if (questState != null && questState.TryGetAdCounter(CrystalRewardAdType, out var counter))
             {
-                adCountText.text = $"광고 시청 (오늘 {watchedAdCount}/{maxAdCount})";
+                watched = (int)counter.AdCount;
+                if (counter.DailyLimit > 0)
+                {
+                    limit = (int)counter.DailyLimit;
+                }
             }
 
-            // 광고 버튼 활성화 상태 업데이트
+            watchedAdCount = watched;
+            maxAdCount = limit;
+
+            if (adCountText != null)
+            {
+                string timer = FormatResetTimer(questState != null ? questState.AdCountersResetTimestampMs : 0);
+                var textValue = $"?? ?? (?? {watchedAdCount}/{maxAdCount})";
+                if (!string.IsNullOrEmpty(timer))
+                {
+                    textValue += $" | ?? {timer}";
+                }
+                adCountText.text = textValue;
+            }
+
             if (watchAdButton1 != null)
             {
-                watchAdButton1.interactable = (watchedAdCount < 1);
+                watchAdButton1.interactable = watchedAdCount < 1 && maxAdCount >= 1;
             }
             if (watchAdButton2 != null)
             {
-                watchAdButton2.interactable = (watchedAdCount < 2);
+                watchAdButton2.interactable = watchedAdCount < 2 && maxAdCount >= 2;
             }
             if (watchAdButton3 != null)
             {
-                watchAdButton3.interactable = (watchedAdCount < 3);
+                watchAdButton3.interactable = watchedAdCount < 3 && maxAdCount >= 3;
             }
         }
 
@@ -176,8 +204,9 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void OnWatchAdClicked(int tier)
         {
-            // TODO: 광고 SDK 호출
-            Debug.Log($"ShopTabController: 광고 시청 버튼 클릭됨 (Tier {tier})");
+            messageHandler ??= MessageHandler.Instance;
+            messageHandler?.NotifyAdWatchComplete(CrystalRewardAdType);
+            Debug.Log($"ShopTabController: ?? ?? ?? ??? (Tier {tier})");
         }
 
         /// <summary>
@@ -302,6 +331,30 @@ namespace InfinitePickaxe.Client.UI.Game
             cacheSubscribed = false;
         }
 
+        private void SubscribeAdState()
+        {
+            if (adStateSubscribed) return;
+            questState = QuestStateCache.Instance;
+            if (questState != null)
+            {
+                questState.OnAdCountersChanged += HandleAdCountersChanged;
+                adStateSubscribed = true;
+                UpdateAdCount();
+            }
+        }
+
+        private void UnsubscribeAdState()
+        {
+            if (!adStateSubscribed || questState == null) return;
+            questState.OnAdCountersChanged -= HandleAdCountersChanged;
+            adStateSubscribed = false;
+        }
+
+        private void HandleAdCountersChanged()
+        {
+            UpdateAdCount();
+        }
+
         private void HandleHandshake(HandshakeResponse res)
         {
             if (res?.Snapshot != null)
@@ -374,6 +427,18 @@ namespace InfinitePickaxe.Client.UI.Game
                     currentCrystal = crystal.Value;
                 }
             }
+        }
+
+        private string FormatResetTimer(ulong resetTimestampMs)
+        {
+            if (resetTimestampMs == 0) return string.Empty;
+
+            long remainingMs = (long)resetTimestampMs - ServerTimeCache.Instance.NowMs;
+            if (remainingMs < 0) remainingMs = 0;
+
+            var span = TimeSpan.FromMilliseconds(remainingMs);
+            int hours = (int)Math.Floor(span.TotalHours);
+            return $"{hours:00}:{span.Minutes:00}:{span.Seconds:00}";
         }
 
         #endregion

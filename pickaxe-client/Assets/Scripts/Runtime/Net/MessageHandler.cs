@@ -67,9 +67,11 @@ namespace InfinitePickaxe.Client.Net
 
         // 마일스톤
         public event Action<MilestoneClaimResult> OnMilestoneClaimResult;
+        public event Action<MilestoneState> OnMilestoneState;
 
         // 광고
         public event Action<AdWatchResult> OnAdWatchResult;
+        public event Action<AdCountersState> OnAdCountersState;
 
         // 재화
         public event Action<CurrencyUpdate> OnCurrencyUpdate;
@@ -193,8 +195,16 @@ namespace InfinitePickaxe.Client.Net
                         HandleMilestoneClaimResult(envelope.MilestoneClaimResult);
                         break;
 
+                    case MessageType.MilestoneState:
+                        HandleMilestoneState(envelope.MilestoneState);
+                        break;
+
                     case MessageType.AdWatchResult:
                         HandleAdWatchResult(envelope.AdWatchResult);
+                        break;
+
+                    case MessageType.AdCountersState:
+                        HandleAdCountersState(envelope.AdCountersState);
                         break;
 
                     case MessageType.CurrencyUpdate:
@@ -235,6 +245,14 @@ namespace InfinitePickaxe.Client.Net
             {
                 PickaxeStateCache.Instance.UpdateFromSnapshot(result.Snapshot);
                 CacheCurrency(result.Snapshot.Gold, result.Snapshot.Crystal);
+                if (result.Snapshot.ServerTime.HasValue)
+                {
+                    ServerTimeCache.Instance.Update(result.Snapshot.ServerTime.Value);
+                }
+            }
+            if (result != null && result.Success)
+            {
+                QuestStateCache.Instance.ResetAll();
             }
             OnHandshakeResult?.Invoke(result);
         }
@@ -244,6 +262,10 @@ namespace InfinitePickaxe.Client.Net
             Debug.Log($"유저 데이터 스냅샷 수신: Gold={snapshot.Gold ?? 0}, Crystal={snapshot.Crystal ?? 0}");
             PickaxeStateCache.Instance.UpdateFromSnapshot(snapshot);
             CacheCurrency(snapshot.Gold, snapshot.Crystal);
+            if (snapshot.ServerTime.HasValue)
+            {
+                ServerTimeCache.Instance.Update(snapshot.ServerTime.Value);
+            }
             OnUserDataSnapshot?.Invoke(snapshot);
         }
 
@@ -366,6 +388,7 @@ namespace InfinitePickaxe.Client.Net
         private void HandleDailyMissionsResponse(DailyMissionsResponse response)
         {
             Debug.Log($"일일 미션 수신: {response.Missions.Count}개, 완료 {response.CompletedCount}, 리롤 {response.RerollCount}");
+            QuestStateCache.Instance.UpdateFromDailyMissionsResponse(response);
             OnDailyMissionsResponse?.Invoke(response);
         }
 
@@ -374,6 +397,7 @@ namespace InfinitePickaxe.Client.Net
 #if UNITY_EDITOR || DEBUG_NET
             Debug.Log($"미션 진행도 업데이트: 슬롯 {update.SlotNo}, {update.CurrentValue}/{update.TargetValue}, 상태 {update.Status}");
 #endif
+            QuestStateCache.Instance.UpdateFromMissionProgress(update);
             OnMissionProgressUpdate?.Invoke(update);
         }
 
@@ -416,6 +440,13 @@ namespace InfinitePickaxe.Client.Net
             OnMilestoneClaimResult?.Invoke(result);
         }
 
+        private void HandleMilestoneState(MilestoneState state)
+        {
+            Debug.Log($"마일스톤 상태 수신: 완료 {state.CompletedCount}, 청구 {state.ClaimedMilestones.Count}");
+            QuestStateCache.Instance.UpdateFromMilestoneState(state);
+            OnMilestoneState?.Invoke(state);
+        }
+
         private void HandleAdWatchResult(AdWatchResult result)
         {
             if (result.Success)
@@ -426,7 +457,15 @@ namespace InfinitePickaxe.Client.Net
             {
                 Debug.LogWarning($"광고 시청 실패: {result.ErrorCode}");
             }
+            QuestStateCache.Instance.ApplyAdWatchResult(result);
             OnAdWatchResult?.Invoke(result);
+        }
+
+        private void HandleAdCountersState(AdCountersState state)
+        {
+            Debug.Log($"광고 카운터 상태 수신: {state.AdCounters.Count}개");
+            QuestStateCache.Instance.UpdateFromAdCountersState(state);
+            OnAdCountersState?.Invoke(state);
         }
 
         private void HandleCurrencyUpdate(CurrencyUpdate update)
