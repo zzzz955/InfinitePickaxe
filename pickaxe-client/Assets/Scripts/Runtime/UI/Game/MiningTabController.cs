@@ -4,6 +4,7 @@ using UnityEngine.U2D;
 using TMPro;
 using InfinitePickaxe.Client.Net;
 using Infinitepickaxe;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using InfinitePickaxe.Client.Core;
@@ -92,6 +93,19 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private bool hasServerState = false;
         private bool messageSubscribed = false;
+        private enum MiningViewState
+        {
+            Loading,
+            NoSelection,
+            Active
+        }
+        private const string LoadingMineralMessage = "광물 정보를 불러오는 중...";
+        private const string NoSelectionMessage = "선택된 광물이 없습니다";
+        private const string UnknownHpMessage = "HP: -/-";
+        [SerializeField] private float initialOverlayDelaySeconds = 0.3f;
+        private MiningViewState viewState = MiningViewState.Loading;
+        private Coroutine initialOverlayRoutine;
+        private bool overlayOwned;
 
         private GameTabManager tabManager;
         private MessageHandler messageHandler;
@@ -212,6 +226,7 @@ namespace InfinitePickaxe.Client.UI.Game
             // 중복 해제 방지: OnDisable에서도 수행하지만 안전하게 한 번 더 수행
             UnsubscribeMessageHandler();
             UnsubscribeCache();
+            EndInitialLoadingOverlay();
         }
 
         protected override void OnEnable()
@@ -222,6 +237,7 @@ namespace InfinitePickaxe.Client.UI.Game
             SubscribeCache();
             SyncSlotsFromCache();
             ApplyLastSnapshotIfAvailable();
+            SyncInitialLoadingState();
             RefreshData();
         }
 
@@ -229,6 +245,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             base.OnDisable();
             UnsubscribeCache();
+            EndInitialLoadingOverlay();
         }
 
         protected override void OnTabShown()
@@ -388,6 +405,7 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         public override void RefreshData()
         {
+            viewState = ResolveViewState();
             // targetFillNormalized는 Animate에서 부드럽게 따라감
             // 서버 상태를 받은 뒤에만 렌더링되도록 기본 상태는 채굴 중단을 표시
             UpdateMineInfo();
@@ -404,17 +422,28 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void UpdateMineInfo()
         {
-            if (mineInfoText != null)
-            {
-                if (isPreparingMineral)
-                {
-                    mineInfoText.text = $"대기 중: {currentMineralName}";
-                    return;
-                }
+            if (mineInfoText == null) return;
 
-                string status = isRespawning ? " (리스폰 중)" : string.Empty;
-                mineInfoText.text = $"채굴 중: {currentMineralName}{status}";
+            if (viewState == MiningViewState.Loading)
+            {
+                mineInfoText.text = LoadingMineralMessage;
+                return;
             }
+
+            if (viewState == MiningViewState.NoSelection)
+            {
+                mineInfoText.text = NoSelectionMessage;
+                return;
+            }
+
+            if (isPreparingMineral)
+            {
+                mineInfoText.text = $"대기 중: {currentMineralName}";
+                return;
+            }
+
+            string status = isRespawning ? " (리스폰 중)" : string.Empty;
+            mineInfoText.text = $"채굴 중: {currentMineralName}{status}";
         }
 
         /// <summary>
@@ -424,6 +453,45 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             // Fill/Background RectTransform이 0x0이면 슬라이더가 안 보이므로 한 번 강제 리레이아웃
             FixHpSliderLayout();
+
+            if (viewState != MiningViewState.Active)
+            {
+                safeMaxForDisplay = 1f;
+                if (mineHPSlider != null)
+                {
+                    mineHPSlider.minValue = 0f;
+                    mineHPSlider.maxValue = safeMaxForDisplay;
+                    mineHPSlider.wholeNumbers = false;
+                    mineHPSlider.SetValueWithoutNotify(0f);
+                    // 슬라이더 오브젝트 자체 사이즈가 0이라면 디폴트 크기로 보정
+                    var rt = mineHPSlider.GetComponent<RectTransform>();
+                    if (rt != null && (rt.sizeDelta.x <= 0 || rt.sizeDelta.y <= 0))
+                    {
+                        rt.sizeDelta = new Vector2(hpSliderDefaultWidth, hpSliderDefaultHeight);
+                    }
+                }
+
+                targetFillNormalized = 0f;
+                displayedFillNormalized = 0f;
+
+                if (mineHPSliderFill != null)
+                {
+                    mineHPSliderFill.fillAmount = 0f;
+                }
+
+                if (mineHPText != null)
+                {
+                    mineHPText.text = UnknownHpMessage;
+                    mineHPText.color = Color.gray;
+                }
+
+                if (mineHPSliderBackground != null)
+                {
+                    mineHPSliderBackground.color = Color.black;
+                }
+
+                return;
+            }
 
             safeMaxForDisplay = Mathf.Max(1f, maxHP);
             if (mineHPSlider != null)
@@ -478,6 +546,11 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void AnimateHPBar()
         {
+            if (viewState != MiningViewState.Active)
+            {
+                return;
+            }
+
             // 부드러운 채움 값 보간
             displayedFillNormalized = Mathf.Lerp(displayedFillNormalized, targetFillNormalized, Time.deltaTime * fillLerpSpeed);
             displayedFillNormalized = Mathf.Clamp01(displayedFillNormalized);
@@ -538,6 +611,13 @@ namespace InfinitePickaxe.Client.UI.Game
         private void UpdateMineralSprite()
         {
             if (currentMineralImage == null) return;
+
+            if (viewState != MiningViewState.Active)
+            {
+                currentMineralImage.sprite = null;
+                currentMineralImage.enabled = false;
+                return;
+            }
 
             var sprite = SpriteAtlasCache.GetMineralSprite(currentMineralId);
             currentMineralImage.sprite = sprite;
@@ -865,6 +945,98 @@ namespace InfinitePickaxe.Client.UI.Game
             }
         }
 
+        private MiningViewState ResolveViewState()
+        {
+            if (!hasServerState)
+            {
+                return MiningViewState.Loading;
+            }
+
+            if (IsNoSelectionState())
+            {
+                return MiningViewState.NoSelection;
+            }
+
+            return MiningViewState.Active;
+        }
+
+        private bool IsNoSelectionState()
+        {
+            if (isRespawning || isPreparingMineral)
+            {
+                return false;
+            }
+
+            if (currentMineralId == StopMineralId)
+            {
+                return true;
+            }
+
+            if (maxHP <= 0f && currentHP <= 0f)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void SyncInitialLoadingState()
+        {
+            if (!hasServerState)
+            {
+                BeginInitialLoadingOverlay();
+                return;
+            }
+
+            EndInitialLoadingOverlay();
+        }
+
+        private void BeginInitialLoadingOverlay()
+        {
+            if (overlayOwned || initialOverlayRoutine != null) return;
+
+            initialOverlayRoutine = StartCoroutine(ShowInitialOverlayAfterDelay());
+        }
+
+        private IEnumerator ShowInitialOverlayAfterDelay()
+        {
+            if (initialOverlayDelaySeconds > 0f)
+            {
+                yield return new WaitForSecondsRealtime(initialOverlayDelaySeconds);
+            }
+
+            initialOverlayRoutine = null;
+            if (hasServerState || overlayOwned) yield break;
+
+            var manager = LoadingOverlayManager.Instance;
+            if (manager == null) yield break;
+
+            manager.Show(LoadingMineralMessage);
+            overlayOwned = true;
+        }
+
+        private void EndInitialLoadingOverlay()
+        {
+            if (initialOverlayRoutine != null)
+            {
+                StopCoroutine(initialOverlayRoutine);
+                initialOverlayRoutine = null;
+            }
+
+            if (!overlayOwned)
+            {
+                return;
+            }
+
+            var manager = LoadingOverlayManager.Instance;
+            if (manager != null)
+            {
+                manager.Hide();
+            }
+
+            overlayOwned = false;
+        }
+
         /// <summary>
         /// 광물 선택 버튼 클릭 이벤트
         /// </summary>
@@ -1183,7 +1355,6 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void HandleUserDataSnapshot(UserDataSnapshot snapshot)
         {
-            bool wasReady = hasServerState;
             hasServerState = true;
             isPreparingMineral = false;
 
@@ -1232,10 +1403,12 @@ namespace InfinitePickaxe.Client.UI.Game
                     case 3: slot4Unlocked = isUnlocked; break;
                 }
             }
+            viewState = ResolveViewState();
             if (isActive)
             {
                 RefreshData();
             }
+            SyncInitialLoadingState();
         }
 
         /// <summary>
@@ -1243,7 +1416,6 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void HandleMiningUpdate(MiningUpdate update)
         {
-            bool wasReady = hasServerState;
             hasServerState = true;
             currentHP = update.CurrentHp;
             maxHP = update.MaxHp;
@@ -1264,6 +1436,9 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 isRespawning = false;
             }
+
+            viewState = ResolveViewState();
+            SyncInitialLoadingState();
 
             // DPS는 AllSlotsResponse에서 받은 값 유지 (TotalDps 필드 제거됨)
             // currentDPS는 슬롯 변경 시에만 업데이트됨

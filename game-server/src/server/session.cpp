@@ -153,7 +153,7 @@ void Session::read_length()
                                 }
                                 uint32_t len = decode_le(len_buf_);
                                 if (len == 0 || len > 64 * 1024)
-                                { // 간단???�한
+                                { // 간단한 길이 제한
                                     send_error("INVALID_LENGTH", "invalid length");
                                     close();
                                     return;
@@ -296,7 +296,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     // UserDataSnapshot 구성
     auto *snapshot = res.mutable_snapshot();
 
-    // ?��? 게임 ?�이??조회
+    // 유저 게임 데이터 조회
     auto game_data = game_repo_.get_user_game_data(user_id_);
     uint32_t cached_mineral_id = 0;
     uint64_t cached_hp = 0;
@@ -311,22 +311,31 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     snapshot->mutable_gold()->set_value(game_data.gold);
     snapshot->mutable_crystal()->set_value(game_data.crystal);
 
-    // ?�롯 ?�금 ?�태
+    // 슬롯 해금 상태
     for (bool unlocked : game_data.unlocked_slots)
     {
         snapshot->add_unlocked_slots(unlocked);
     }
 
-    // ?�재 채굴 중인 광물 ?�보 (DB?�서 조회, nullable 처리)
-    if (current_mineral_id.has_value() && current_mineral_id.value() > 0)
+    // 현재 채굴 중인 광물 정보 (캐시/DB 기반, nullable 처리)
+    if (current_mineral_id.has_value())
     {
-        const auto *mineral = metadata_.mineral(current_mineral_id.value());
-        snapshot->mutable_current_mineral_id()->set_value(current_mineral_id.value());
-        snapshot->mutable_mineral_hp()->set_value(current_mineral_hp.value_or(0));
-        snapshot->mutable_mineral_max_hp()->set_value(mineral ? mineral->hp : 100);
+        const uint32_t mineral_id = current_mineral_id.value();
+        const uint64_t mineral_hp = mineral_id > 0 ? current_mineral_hp.value_or(0) : 0;
+        snapshot->mutable_current_mineral_id()->set_value(mineral_id);
+        snapshot->mutable_mineral_hp()->set_value(mineral_hp);
+        if (mineral_id > 0)
+        {
+            const auto *mineral = metadata_.mineral(mineral_id);
+            snapshot->mutable_mineral_max_hp()->set_value(mineral ? mineral->hp : 100);
+        }
+        else
+        {
+            snapshot->mutable_mineral_max_hp()->set_value(0);
+        }
     }
 
-    // ?�롯 ?�보 �?�?DPS
+    // 슬롯 정보 및 총 DPS
     auto slots_response = slot_service_.handle_all_slots(user_id_);
     for (const auto &slot : slots_response.slots())
     {
@@ -334,7 +343,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     }
     snapshot->set_total_dps(slots_response.total_dps());
 
-    // ?�버 ?�간
+    // 서버 시간
     snapshot->mutable_server_time()->set_value(
         static_cast<uint64_t>(
             std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -353,7 +362,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     send_milestone_state();
     send_ad_counters_state();
 
-    // 채굴 ?��??�이???�작 (DB?�서 로드???�재 광물�? nullable 처리)
+    // 채굴 상태 초기화 (DB/캐시에서 로드한 현재 광물, nullable 처리)
     
     if (current_mineral_id.has_value() && current_mineral_id.value() > 0 && current_mineral_hp.has_value())
     {
@@ -404,7 +413,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     }
     else
     {
-        // ??? ???? ?? ?? ?? ?? ??? ???
+        // 현재 채굴 중인 광물이 없는 경우 기본 상태로 초기화
         mining_state_.current_mineral_id = 0;
         mining_state_.current_hp = 0;
         mining_state_.max_hp = 0;
@@ -444,7 +453,7 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope &env)
         return;
     }
     const auto &req = env.upgrade_request();
-    // ?�재 ?�롯 ?�벨??조회??target_level = current + 1 �??�정
+    // 현재 슬롯 레벨 조회 후 target_level = current + 1로 설정
     auto slot = slot_service_.get_slot(user_id_, req.slot_index());
     infinitepickaxe::UpgradeResult res;
     if (!slot.has_value())

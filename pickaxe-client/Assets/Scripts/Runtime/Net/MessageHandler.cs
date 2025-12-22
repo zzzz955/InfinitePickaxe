@@ -251,6 +251,7 @@ namespace InfinitePickaxe.Client.Net
                 {
                     ServerTimeCache.Instance.Update(result.Snapshot.ServerTime.Value);
                 }
+                OnUserDataSnapshot?.Invoke(result.Snapshot);
             }
             if (result != null && result.Success)
             {
