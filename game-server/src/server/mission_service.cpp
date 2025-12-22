@@ -34,6 +34,17 @@ bool parse_uint32(const std::string& value, uint32_t& out) {
     out = static_cast<uint32_t>(v);
     return true;
 }
+
+uint32_t normalize_free_rerolls_used(uint32_t stored_rerolls, uint32_t free_limit) {
+    if (free_limit == 0) {
+        return 0;
+    }
+    if (stored_rerolls > free_limit) {
+        uint32_t legacy_used = stored_rerolls - free_limit;
+        return std::min(legacy_used, free_limit);
+    }
+    return stored_rerolls;
+}
 } // namespace
 
 // Daily missions (3 slots)
@@ -43,14 +54,12 @@ infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::s
     auto daily_info = ensure_daily_state_kst(user_id);
     response.set_completed_count(daily_info.completed_count);
     const uint32_t free_rerolls = meta_.mission_reroll().free_rerolls_per_day;
+    const uint32_t free_used = normalize_free_rerolls_used(daily_info.reroll_count, free_rerolls);
+    auto ad_counter = ad_service_.get_or_create_ad_counter(user_id, "mission_reroll");
     response.set_rerolls_free(free_rerolls);
     response.set_rerolls_total_limit(free_rerolls + meta_.mission_reroll().ad_rerolls_per_day);
     response.set_reset_timestamp_ms(kst_next_midnight_ms());
-    uint32_t rerolls_used = 0;
-    if (daily_info.reroll_count > free_rerolls) {
-        rerolls_used = daily_info.reroll_count - free_rerolls;
-    }
-    response.set_reroll_count(rerolls_used);
+    response.set_reroll_count(free_used + ad_counter.ad_count);
 
     if (daily_info.reset_today) {
         for (uint32_t slot_no = 1; slot_no <= 3; ++slot_no) {
@@ -166,7 +175,7 @@ infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
         total_crystal = total_opt.value();
     }
 
-    repo_.increment_completed_count(user_id, 1, meta_.mission_reroll().free_rerolls_per_day);
+    repo_.increment_completed_count(user_id, 1);
 
     result.set_success(true);
     result.set_mission_id(slot.mission_id);
@@ -187,8 +196,18 @@ infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
     return result;
 }
 
-// Reroll missions
+// Reroll missions (free request)
 infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::string& user_id) {
+    return reroll_missions_internal(user_id, false);
+}
+
+// Reroll missions (ad request)
+infinitepickaxe::MissionRerollResult MissionService::reroll_missions_ad(const std::string& user_id) {
+    return reroll_missions_internal(user_id, true);
+}
+
+infinitepickaxe::MissionRerollResult MissionService::reroll_missions_internal(
+    const std::string& user_id, bool use_ad) {
     infinitepickaxe::MissionRerollResult result;
     result.set_success(false);
 
@@ -196,28 +215,16 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
 
     const auto reroll_meta = meta_.mission_reroll();
     const uint32_t free_rerolls = reroll_meta.free_rerolls_per_day;
-    const uint32_t total_limit = reroll_meta.free_rerolls_per_day + reroll_meta.ad_rerolls_per_day;
-    const uint32_t used_rerolls = daily_info.reroll_count > free_rerolls
-        ? (daily_info.reroll_count - free_rerolls)
-        : 0;
-    const uint32_t next_reroll = used_rerolls + 1;
-    if (next_reroll > total_limit) {
-        result.set_error_code("REROLL_LIMIT_EXCEEDED");
-        return result;
-    }
+    const uint32_t free_used = normalize_free_rerolls_used(daily_info.reroll_count, free_rerolls);
+    auto ad_counter = ad_service_.get_or_create_ad_counter(user_id, "mission_reroll");
 
-    if (next_reroll > free_rerolls) {
-        const uint32_t required_ads = next_reroll - free_rerolls;
-        uint32_t ad_limit = reroll_meta.ad_rerolls_per_day;
-        if (const auto* ad_meta = meta_.ad_meta("mission_reroll")) {
-            ad_limit = ad_meta->daily_limit;
-        }
-        if (required_ads > ad_limit) {
-            result.set_error_code("AD_LIMIT_EXCEEDED");
+    if (use_ad) {
+        if (ad_counter.ad_count == 0) {
+            result.set_error_code("AD_REQUIRED");
             return result;
         }
-        auto ad_counter = ad_service_.get_or_create_ad_counter(user_id, "mission_reroll");
-        if (ad_counter.ad_count < required_ads) {
+    } else {
+        if (free_used >= free_rerolls) {
             result.set_error_code("AD_REQUIRED");
             return result;
         }
@@ -229,7 +236,9 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
 
     assign_random_missions_unique(user_id, 3);
 
-    repo_.increment_reroll_count(user_id, free_rerolls);
+    if (!use_ad) {
+        repo_.increment_reroll_count(user_id);
+    }
 
     auto slots = repo_.get_all_mission_slots(user_id);
     cache_slots(user_id, slots);
@@ -255,9 +264,10 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions(const std::
     }
 
     result.set_success(true);
-    result.set_rerolls_used(used_rerolls + 1);
+    uint32_t rerolls_used = free_used + (use_ad ? 0 : 1) + ad_counter.ad_count;
+    result.set_rerolls_used(rerolls_used);
 
-    spdlog::debug("reroll_missions: user={} rerolls={}", user_id, used_rerolls + 1);
+    spdlog::debug("reroll_missions: user={} rerolls={} ad={}", user_id, rerolls_used, use_ad);
 
     return result;
 }
@@ -397,7 +407,7 @@ std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_play_
 
 // private helpers
 DailyMissionInfo MissionService::ensure_daily_state_kst(const std::string& user_id) {
-    return repo_.get_or_create_daily_mission_info(user_id, meta_.mission_reroll().free_rerolls_per_day);
+    return repo_.get_or_create_daily_mission_info(user_id);
 }
 
 bool MissionService::assign_random_missions_unique(const std::string& user_id, uint32_t count) {

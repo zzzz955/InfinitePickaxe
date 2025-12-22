@@ -26,6 +26,7 @@ public:
         const std::string& user_id, uint32_t slot_no);
 
     infinitepickaxe::MissionRerollResult reroll_missions(const std::string& user_id);
+    infinitepickaxe::MissionRerollResult reroll_missions_ad(const std::string& user_id);
 
     infinitepickaxe::MilestoneClaimResult handle_milestone_claim(
         const std::string& user_id, uint32_t milestone_count);
@@ -42,6 +43,7 @@ public:
 
 private:
     DailyMissionInfo ensure_daily_state_kst(const std::string& user_id);
+    infinitepickaxe::MissionRerollResult reroll_missions_internal(const std::string& user_id, bool use_ad);
     bool assign_random_missions_unique(const std::string& user_id, uint32_t count);
     bool assign_random_mission(const std::string& user_id, uint32_t slot_no,
                                std::unordered_set<uint32_t>& used_meta_ids);

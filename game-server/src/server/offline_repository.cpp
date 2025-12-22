@@ -50,10 +50,10 @@ std::optional<uint32_t> OfflineRepository::add_offline_seconds(const std::string
         pqxx::work tx(*conn);
         auto row = tx.exec_params1(
             "INSERT INTO game_schema.user_offline_state (user_id, offline_date, current_offline_hours) "
-            "VALUES ($1, CURRENT_DATE, $3 + $2) "
+            "VALUES ($1, CURRENT_DATE, $3::integer + $2::integer) "
             "ON CONFLICT (user_id) DO UPDATE "
-            "SET current_offline_hours = (CASE WHEN user_offline_state.offline_date < CURRENT_DATE THEN $3 "
-            "                                   ELSE user_offline_state.current_offline_hours END) + $2, "
+            "SET current_offline_hours = (CASE WHEN user_offline_state.offline_date < CURRENT_DATE THEN $3::integer "
+            "                                   ELSE user_offline_state.current_offline_hours END) + $2::integer, "
             "    offline_date = CASE WHEN user_offline_state.offline_date < CURRENT_DATE THEN CURRENT_DATE "
             "                         ELSE user_offline_state.offline_date END "
             "RETURNING current_offline_hours",

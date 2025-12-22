@@ -35,6 +35,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Color milestoneClaimableColor = new Color(0.2f, 0.85f, 0.3f, 1f);
         [SerializeField] private Color milestoneClaimedColor = new Color(0.7f, 0.7f, 0.7f, 1f);
         [SerializeField] private float milestoneButtonDisabledAlpha = 0.5f;
+        private readonly Dictionary<Graphic, Color> milestoneButtonGraphicColors = new Dictionary<Graphic, Color>();
 
         [Header("Quest Data (Fallback)")]
         [SerializeField] private int completedCount = 0;
@@ -414,6 +415,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (button != null)
             {
+                CacheButtonGraphics(button, milestoneButtonGraphicColors);
                 button.interactable = canClaim;
                 ApplyMilestoneButtonVisual(button, canClaim);
             }
@@ -440,7 +442,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (adRefreshButton != null)
             {
-                adRefreshButton.interactable = adRemaining > 0;
+                adRefreshButton.interactable = freeRemaining == 0 && adRemaining > 0;
             }
 
             if (adRefreshButtonText != null)
@@ -490,13 +492,48 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void ApplyMilestoneButtonVisual(Button button, bool canClaim)
         {
-            if (button == null) return;
-            var graphic = button.targetGraphic;
-            if (graphic == null) return;
+            ApplyButtonGraphics(button, canClaim, milestoneButtonDisabledAlpha, milestoneButtonGraphicColors);
+        }
 
-            var color = graphic.color;
-            color.a = canClaim ? 1f : milestoneButtonDisabledAlpha;
-            graphic.color = color;
+        private void CacheButtonGraphics(Button button, Dictionary<Graphic, Color> cache)
+        {
+            if (button == null) return;
+            var graphics = button.GetComponentsInChildren<Graphic>(true);
+            for (int i = 0; i < graphics.Length; i++)
+            {
+                var graphic = graphics[i];
+                if (graphic == null) continue;
+                if (!cache.ContainsKey(graphic))
+                {
+                    cache[graphic] = graphic.color;
+                }
+            }
+        }
+
+        private void ApplyButtonGraphics(Button button, bool isEnabled, float disabledAlpha, Dictionary<Graphic, Color> cache)
+        {
+            if (button == null) return;
+            var graphics = button.GetComponentsInChildren<Graphic>(true);
+            for (int i = 0; i < graphics.Length; i++)
+            {
+                var graphic = graphics[i];
+                if (graphic == null) continue;
+                if (!cache.TryGetValue(graphic, out var baseColor))
+                {
+                    baseColor = graphic.color;
+                    cache[graphic] = baseColor;
+                }
+
+                if (isEnabled)
+                {
+                    graphic.color = baseColor;
+                }
+                else
+                {
+                    float gray = (baseColor.r + baseColor.g + baseColor.b) / 3f;
+                    graphic.color = new Color(gray, gray, gray, baseColor.a * disabledAlpha);
+                }
+            }
         }
 
         private void OnRefreshQuestClicked()
@@ -508,8 +545,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OnAdRefreshQuestClicked()
         {
             messageHandler ??= MessageHandler.Instance;
-            messageHandler?.NotifyAdWatchComplete("mission_reroll");
-            messageHandler?.RequestMissionReroll();
+            messageHandler?.NotifyAdWatchComplete(MissionRerollAdType);
         }
 
         private void OnMilestoneClaimClicked(uint milestoneCount)

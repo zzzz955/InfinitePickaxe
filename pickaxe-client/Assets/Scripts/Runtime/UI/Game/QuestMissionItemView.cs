@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +26,8 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Color activeStatusColor = new Color(1f, 0.85f, 0.2f, 1f);
         [SerializeField] private Color completedStatusColor = new Color(0.2f, 0.85f, 0.3f, 1f);
         [SerializeField] private Color claimedStatusColor = new Color(0.7f, 0.7f, 0.7f, 1f);
+        [SerializeField] private float claimButtonDisabledAlpha = 0.5f;
+        private readonly Dictionary<Graphic, Color> claimButtonGraphicColors = new Dictionary<Graphic, Color>();
 
         public void Apply(
             string type,
@@ -67,6 +70,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (claimButton != null)
             {
+                CacheButtonGraphics(claimButton, claimButtonGraphicColors);
                 claimButton.onClick.RemoveAllListeners();
                 claimButton.interactable = canClaim;
                 if (onClaim != null)
@@ -76,6 +80,7 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             UpdateClaimButtonText(statusState, canClaim);
+            ApplyButtonGraphics(claimButton, canClaim, claimButtonDisabledAlpha, claimButtonGraphicColors);
         }
 
         private void UpdateClaimButtonText(MissionStatusState statusState, bool canClaim)
@@ -150,6 +155,47 @@ namespace InfinitePickaxe.Client.UI.Game
             if (rewardText == null)
             {
                 rewardText = FindText("Layout2/claimButton/rewardText", "rewardText");
+            }
+        }
+
+        private void CacheButtonGraphics(Button button, Dictionary<Graphic, Color> cache)
+        {
+            if (button == null) return;
+            var graphics = button.GetComponentsInChildren<Graphic>(true);
+            for (int i = 0; i < graphics.Length; i++)
+            {
+                var graphic = graphics[i];
+                if (graphic == null) continue;
+                if (!cache.ContainsKey(graphic))
+                {
+                    cache[graphic] = graphic.color;
+                }
+            }
+        }
+
+        private void ApplyButtonGraphics(Button button, bool isEnabled, float disabledAlpha, Dictionary<Graphic, Color> cache)
+        {
+            if (button == null) return;
+            var graphics = button.GetComponentsInChildren<Graphic>(true);
+            for (int i = 0; i < graphics.Length; i++)
+            {
+                var graphic = graphics[i];
+                if (graphic == null) continue;
+                if (!cache.TryGetValue(graphic, out var baseColor))
+                {
+                    baseColor = graphic.color;
+                    cache[graphic] = baseColor;
+                }
+
+                if (isEnabled)
+                {
+                    graphic.color = baseColor;
+                }
+                else
+                {
+                    float gray = (baseColor.r + baseColor.g + baseColor.b) / 3f;
+                    graphic.color = new Color(gray, gray, gray, baseColor.a * disabledAlpha);
+                }
             }
         }
 

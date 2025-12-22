@@ -8,12 +8,12 @@
 
 // === Daily mission info ===
 
-DailyMissionInfo MissionRepository::get_or_create_daily_mission_info(const std::string& user_id, uint32_t base_rerolls) {
+DailyMissionInfo MissionRepository::get_or_create_daily_mission_info(const std::string& user_id) {
     DailyMissionInfo info;
     info.user_id = user_id;
     info.mission_date = std::chrono::system_clock::now();
     info.completed_count = 0;
-    info.reroll_count = base_rerolls;
+    info.reroll_count = 0;
     info.reset_today = false;
 
     try {
@@ -38,11 +38,11 @@ DailyMissionInfo MissionRepository::get_or_create_daily_mission_info(const std::
         if (existing.empty()) {
             tx.exec_params(
                 "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
-                "VALUES ($1, $2, 0, $3)",
-                user_id, kst_date_str, static_cast<int32_t>(base_rerolls));
+                "VALUES ($1, $2, 0, 0)",
+                user_id, kst_date_str);
             info.reset_today = true;
             info.completed_count = 0;
-            info.reroll_count = base_rerolls;
+            info.reroll_count = 0;
             info.mission_date = kst_date;
         } else {
             auto row = existing[0];
@@ -55,12 +55,12 @@ DailyMissionInfo MissionRepository::get_or_create_daily_mission_info(const std::
             if (date_str != kst_date_str) {
                 tx.exec_params(
                     "UPDATE game_schema.user_mission_daily "
-                    "SET mission_date = $2, completed_count = 0, reroll_count = $3, created_at = NOW() "
-                    "WHERE user_id = $1 AND mission_date = $4",
-                    user_id, kst_date_str, static_cast<int32_t>(base_rerolls), date_str);
+                    "SET mission_date = $2, completed_count = 0, reroll_count = 0, created_at = NOW() "
+                    "WHERE user_id = $1 AND mission_date = $3",
+                    user_id, kst_date_str, date_str);
                 info.reset_today = true;
                 info.completed_count = 0;
-                info.reroll_count = base_rerolls;
+                info.reroll_count = 0;
                 info.mission_date = kst_date;
             } else {
                 info.reset_today = false;
@@ -78,7 +78,7 @@ DailyMissionInfo MissionRepository::get_or_create_daily_mission_info(const std::
     return info;
 }
 
-bool MissionRepository::increment_completed_count(const std::string& user_id, uint32_t count, uint32_t base_rerolls) {
+bool MissionRepository::increment_completed_count(const std::string& user_id, uint32_t count) {
     try {
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
@@ -86,10 +86,10 @@ bool MissionRepository::increment_completed_count(const std::string& user_id, ui
         tx.exec_params(
             "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
             "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
-            "SELECT $1, d, $2, $3 FROM kst_today "
+            "SELECT $1, d, $2, 0 FROM kst_today "
             "ON CONFLICT (user_id, mission_date) DO UPDATE "
             "SET completed_count = user_mission_daily.completed_count + $2",
-            user_id, count, static_cast<int32_t>(base_rerolls)
+            user_id, count
         );
 
         tx.commit();
@@ -101,7 +101,7 @@ bool MissionRepository::increment_completed_count(const std::string& user_id, ui
     }
 }
 
-bool MissionRepository::increment_reroll_count(const std::string& user_id, uint32_t base_rerolls) {
+bool MissionRepository::increment_reroll_count(const std::string& user_id) {
     try {
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
@@ -109,10 +109,10 @@ bool MissionRepository::increment_reroll_count(const std::string& user_id, uint3
         tx.exec_params(
             "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
             "INSERT INTO game_schema.user_mission_daily (user_id, mission_date, completed_count, reroll_count) "
-            "SELECT $1, d, 0, $2 FROM kst_today "
+            "SELECT $1, d, 0, 1 FROM kst_today "
             "ON CONFLICT (user_id, mission_date) DO UPDATE "
             "SET reroll_count = user_mission_daily.reroll_count + 1",
-            user_id, static_cast<int32_t>(base_rerolls + 1)
+            user_id
         );
 
         tx.commit();

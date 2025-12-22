@@ -609,6 +609,17 @@ void Session::handle_ad_watch(const infinitepickaxe::Envelope &env)
     *response_env.mutable_ad_watch_result() = res;
     send_envelope(response_env);
     send_ad_counters_state();
+
+    if (res.success() && req.ad_type() == "mission_reroll") {
+        auto reroll_res = mission_service_.reroll_missions_ad(user_id_);
+        infinitepickaxe::Envelope reroll_env;
+        reroll_env.set_type(infinitepickaxe::MISSION_REROLL_RESULT);
+        *reroll_env.mutable_mission_reroll_result() = reroll_res;
+        send_envelope(reroll_env);
+        if (reroll_res.success()) {
+            send_daily_missions_state();
+        }
+    }
 }
 
 void Session::handle_milestone_claim(const infinitepickaxe::Envelope &env)
