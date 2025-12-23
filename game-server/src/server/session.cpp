@@ -1,6 +1,7 @@
 #include "session.h"
 #include "metadata/metadata_loader.h"
 #include "ad_service.h"
+#include "time_utils.h"
 #include <spdlog/spdlog.h>
 #include <iostream>
 #include <cstring>
@@ -281,6 +282,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     authenticated_ = true;
     boost::system::error_code timer_ec;
     auth_timer_.cancel(timer_ec);
+    next_daily_reset_ms_ = kst_next_midnight_ms();
 
     if (registry_)
     {
@@ -933,6 +935,21 @@ void Session::update_mining_tick(float delta_ms)
     if (!authenticated_ || closed_)
     {
         return;
+    }
+
+    const uint64_t now_ms = static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count());
+    if (next_daily_reset_ms_ == 0)
+    {
+        next_daily_reset_ms_ = kst_next_midnight_ms();
+    }
+    else if (now_ms >= next_daily_reset_ms_)
+    {
+        send_daily_missions_state();
+        send_milestone_state();
+        send_ad_counters_state();
+        next_daily_reset_ms_ = kst_next_midnight_ms();
     }
 
     play_time_accum_ms_ += delta_ms;

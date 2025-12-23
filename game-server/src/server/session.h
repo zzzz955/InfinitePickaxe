@@ -135,6 +135,7 @@ private:
     static constexpr uint32_t kPlayTimeFlushSeconds = 60;
     float mining_cache_accum_ms_{0.0f};
     static constexpr uint32_t kMiningCacheFlushSeconds = 5;
+    uint64_t next_daily_reset_ms_{0};
 
     std::array<uint8_t, 4> len_buf_{};
     std::vector<uint8_t> payload_buf_;

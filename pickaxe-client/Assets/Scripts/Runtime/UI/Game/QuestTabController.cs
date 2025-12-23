@@ -14,7 +14,7 @@ namespace InfinitePickaxe.Client.UI.Game
     {
         private const string MissionRerollAdType = "mission_reroll";
         private const string DailyLimitReachedMessage = "오늘 보상 한도 도달";
-        private const string DailyLimitReachedMessageFormat = "오늘 보상 한도({0}회) 도달";
+        private const string DailyLimitReachedMessageFormat = "오늘 일일 미션 보상 한도({0}회) 도달";
 
         [Header("Quest UI References")]
         [SerializeField] private TextMeshProUGUI questCountText;
