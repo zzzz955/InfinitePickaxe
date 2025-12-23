@@ -1250,6 +1250,8 @@ namespace InfinitePickaxe.Client.Editor
             // Stats
             CreateText(modalPanel.transform, "AttackPowerText", "공격력: 10", 44, TextAlignmentOptions.Center, new Vector2(780, 60));
             CreateText(modalPanel.transform, "AttackSpeedText", "공격속도: 1.0", 44, TextAlignmentOptions.Center, new Vector2(780, 60));
+            CreateText(modalPanel.transform, "CriticalChanceText", "크리티컬 확률: 5%", 44, TextAlignmentOptions.Center, new Vector2(780, 60));
+            CreateText(modalPanel.transform, "CriticalDamageText", "크리티컬 데미지: 150%", 44, TextAlignmentOptions.Center, new Vector2(780, 60));
             var dpsText = CreateText(modalPanel.transform, "DPSText", "DPS: 10", 48, TextAlignmentOptions.Center, new Vector2(780, 70), FontStyles.Bold);
             dpsText.GetComponent<TextMeshProUGUI>().color = new Color(1f, 0.8f, 0.2f);
 

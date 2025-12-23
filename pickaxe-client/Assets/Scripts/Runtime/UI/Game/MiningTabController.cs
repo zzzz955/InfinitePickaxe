@@ -60,6 +60,8 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI pickaxeInfoAttackPowerText;
         [SerializeField] private TextMeshProUGUI pickaxeInfoAttackSpeedText;
         [SerializeField] private TextMeshProUGUI pickaxeInfoDpsText;
+        [SerializeField] private TextMeshProUGUI pickaxeInfoCriticalChanceText;
+        [SerializeField] private TextMeshProUGUI pickaxeInfoCriticalDamageText;
         [Header("Mineral Select (Dynamic)")]
         [SerializeField] private Transform mineralListContent;
         [SerializeField] private GameObject mineralItemTemplate;
@@ -419,6 +421,57 @@ namespace InfinitePickaxe.Client.UI.Game
                 var dpsTf = FindChildRecursive(root, "DPSText");
                 if (dpsTf != null) pickaxeInfoDpsText = dpsTf.GetComponent<TextMeshProUGUI>();
             }
+
+            if (pickaxeInfoCriticalChanceText == null)
+            {
+                var chanceTf = FindChildRecursive(root, "CriticalChanceText");
+                if (chanceTf != null) pickaxeInfoCriticalChanceText = chanceTf.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (pickaxeInfoCriticalDamageText == null)
+            {
+                var damageTf = FindChildRecursive(root, "CriticalDamageText");
+                if (damageTf != null) pickaxeInfoCriticalDamageText = damageTf.GetComponent<TextMeshProUGUI>();
+            }
+
+            EnsurePickaxeInfoModalCriticalTexts();
+        }
+
+        private void EnsurePickaxeInfoModalCriticalTexts()
+        {
+            if (pickaxeInfoModal == null) return;
+
+            var template = pickaxeInfoAttackSpeedText != null ? pickaxeInfoAttackSpeedText : pickaxeInfoAttackPowerText;
+            if (template == null) return;
+
+            if (pickaxeInfoCriticalChanceText == null)
+            {
+                int insertIndex = template.transform.GetSiblingIndex() + 1;
+                pickaxeInfoCriticalChanceText = ClonePickaxeInfoText("CriticalChanceText", template, insertIndex);
+            }
+
+            if (pickaxeInfoCriticalDamageText == null)
+            {
+                int baseIndex = pickaxeInfoCriticalChanceText != null
+                    ? pickaxeInfoCriticalChanceText.transform.GetSiblingIndex()
+                    : template.transform.GetSiblingIndex();
+                pickaxeInfoCriticalDamageText = ClonePickaxeInfoText("CriticalDamageText", template, baseIndex + 1);
+            }
+        }
+
+        private TextMeshProUGUI ClonePickaxeInfoText(string name, TextMeshProUGUI template, int siblingIndex)
+        {
+            if (template == null) return null;
+            var parent = template.transform.parent;
+            if (parent == null) return null;
+
+            var clone = Instantiate(template.gameObject, parent, false);
+            clone.name = name;
+            clone.transform.SetSiblingIndex(Mathf.Clamp(siblingIndex, 0, parent.childCount - 1));
+
+            var text = clone.GetComponent<TextMeshProUGUI>();
+            if (text != null) text.text = string.Empty;
+            return text;
         }
 
         private Image GetButtonImage(Button button)
@@ -1267,6 +1320,8 @@ namespace InfinitePickaxe.Client.UI.Game
             SetPickaxeInfoText(pickaxeInfoAttackPowerText, PickaxeInfoMissingMessage);
             SetPickaxeInfoText(pickaxeInfoAttackSpeedText, PickaxeInfoMissingMessage);
             SetPickaxeInfoText(pickaxeInfoDpsText, PickaxeInfoMissingMessage);
+            SetPickaxeInfoText(pickaxeInfoCriticalChanceText, PickaxeInfoMissingMessage);
+            SetPickaxeInfoText(pickaxeInfoCriticalDamageText, PickaxeInfoMissingMessage);
 
             if (pickaxeInfoImage != null)
             {
@@ -1304,6 +1359,18 @@ namespace InfinitePickaxe.Client.UI.Game
             if (pickaxeInfoDpsText != null)
             {
                 pickaxeInfoDpsText.text = $"DPS: {slotInfo.Dps:N0}";
+            }
+
+            if (pickaxeInfoCriticalChanceText != null)
+            {
+                float critChance = slotInfo.CriticalHitPercent / 100f;
+                pickaxeInfoCriticalChanceText.text = $"크리티컬 확률: {critChance:0.##}%";
+            }
+
+            if (pickaxeInfoCriticalDamageText != null)
+            {
+                float critDamage = slotInfo.CriticalDamage / 100f;
+                pickaxeInfoCriticalDamageText.text = $"크리티컬 데미지: {critDamage:0.##}%";
             }
 
             if (pickaxeInfoImage != null)
