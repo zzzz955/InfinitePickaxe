@@ -11,6 +11,7 @@ bool MetadataLoader::load(const std::string& base_path) {
         milestone_bonuses_.clear();
         ad_types_.clear();
         ad_types_by_id_.clear();
+        daily_missions_config_ = DailyMissionConfig{};
         mission_reroll_ = MissionRerollMeta{};
         offline_defaults_ = OfflineDefaults{};
 
@@ -65,6 +66,10 @@ bool MetadataLoader::load(const std::string& base_path) {
             std::ifstream f(base_path + "/daily_missions.json");
             nlohmann::json j;
             f >> j;
+            if (j.is_object()) {
+                daily_missions_config_.total_slots = j.value("total_slots", daily_missions_config_.total_slots);
+                daily_missions_config_.max_daily_assign = j.value("max_daily_assign", daily_missions_config_.max_daily_assign);
+            }
             uint32_t idx = 0;
             auto parse_mission = [&](const nlohmann::json& e) {
                 MissionMeta m;

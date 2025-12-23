@@ -39,6 +39,11 @@ struct MilestoneBonus {
     uint32_t bonus_hours;
 };
 
+struct DailyMissionConfig {
+    uint32_t total_slots{3};
+    uint32_t max_daily_assign{7};
+};
+
 struct AdTypeMeta {
     std::string id;
     std::string effect;
@@ -79,6 +84,7 @@ public:
     const PickaxeLevel* pickaxe_level(uint32_t level) const;
     const MineralMeta* mineral(uint32_t id) const;
     const std::vector<MissionMeta>& missions() const { return missions_; }
+    const DailyMissionConfig& daily_missions_config() const { return daily_missions_config_; }
     const std::vector<MilestoneBonus>& milestone_bonuses() const { return milestone_bonuses_; }
     const std::vector<AdTypeMeta>& ad_types() const { return ad_types_; }
     const AdTypeMeta* ad_meta(const std::string& id) const;
@@ -90,6 +96,7 @@ private:
     std::unordered_map<uint32_t, PickaxeLevel> pickaxe_levels_;
     std::unordered_map<uint32_t, MineralMeta> minerals_;
     std::vector<MissionMeta> missions_;
+    DailyMissionConfig daily_missions_config_;
     std::vector<MilestoneBonus> milestone_bonuses_;
     std::vector<AdTypeMeta> ad_types_;
     std::unordered_map<std::string, AdTypeMeta> ad_types_by_id_;

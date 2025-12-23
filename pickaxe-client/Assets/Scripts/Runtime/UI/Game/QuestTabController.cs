@@ -13,11 +13,14 @@ namespace InfinitePickaxe.Client.UI.Game
     public class QuestTabController : BaseTabController
     {
         private const string MissionRerollAdType = "mission_reroll";
+        private const string DailyLimitReachedMessage = "오늘 보상 한도 도달";
+        private const string DailyLimitReachedMessageFormat = "오늘 보상 한도({0}회) 도달";
 
         [Header("Quest UI References")]
         [SerializeField] private TextMeshProUGUI questCountText;
         [SerializeField] private Transform questListContainer;
         [SerializeField] private GameObject questItemPrefab;
+        [SerializeField] private GameObject refreshArea;
         [SerializeField] private Button refreshQuestButton;
         [SerializeField] private Button adRefreshButton;
         [SerializeField] private TextMeshProUGUI refreshCountText;
@@ -157,6 +160,11 @@ namespace InfinitePickaxe.Client.UI.Game
                 questListContainer = transform.Find("QuestListContainer");
             }
 
+            if (refreshArea == null)
+            {
+                refreshArea = transform.Find("RefreshArea")?.gameObject;
+            }
+
             if (refreshQuestButton == null)
             {
                 refreshQuestButton = transform.Find("RefreshArea/ButtonRow/RefreshButton")?.GetComponent<Button>();
@@ -175,6 +183,24 @@ namespace InfinitePickaxe.Client.UI.Game
             if (allCompleteMessage == null && questListContainer != null)
             {
                 allCompleteMessage = questListContainer.Find("AllCompleteMessage")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (allCompleteMessage == null)
+            {
+                allCompleteMessage = transform.Find("AllCompleteMessage")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (allCompleteMessage == null)
+            {
+                var texts = GetComponentsInChildren<TextMeshProUGUI>(true);
+                for (int i = 0; i < texts.Length; i++)
+                {
+                    if (texts[i] != null && texts[i].name == "AllCompleteMessage")
+                    {
+                        allCompleteMessage = texts[i];
+                        break;
+                    }
+                }
             }
 
             if (milestoneTitleText == null)
@@ -273,21 +299,32 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (questListContainer == null) return;
 
+            bool limitReached = IsDailyLimitReached();
+            questListContainer.gameObject.SetActive(!limitReached);
+
+            if (allCompleteMessage != null)
+            {
+                if (limitReached)
+                {
+                    allCompleteMessage.text = BuildDailyLimitReachedMessage();
+                    allCompleteMessage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    allCompleteMessage.gameObject.SetActive(false);
+                }
+            }
+
+            if (limitReached)
+            {
+                ClearMissionItems();
+                return;
+            }
+
             ClearMissionItems();
 
             var missions = questState != null ? questState.Missions : null;
             bool hasMissions = missions != null && missions.Count > 0;
-
-            if (allCompleteMessage != null)
-            {
-                int completed = GetCompletedCount();
-                int total = GetTotalMissionCount();
-                bool showComplete = questState != null
-                                    && questState.HasDailyMissions
-                                    && total > 0
-                                    && completed >= total;
-                allCompleteMessage.gameObject.SetActive(showComplete);
-            }
 
             if (!hasMissions)
             {
@@ -423,6 +460,18 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void UpdateRefreshButton()
         {
+            bool limitReached = IsDailyLimitReached();
+            if (refreshArea != null)
+            {
+                refreshArea.SetActive(!limitReached);
+            }
+            else
+            {
+                if (refreshCountText != null) refreshCountText.gameObject.SetActive(!limitReached);
+                if (refreshQuestButton != null) refreshQuestButton.gameObject.SetActive(!limitReached);
+                if (adRefreshButton != null) adRefreshButton.gameObject.SetActive(!limitReached);
+            }
+
             int freeRemaining;
             int freeLimit;
             int adRemaining;
@@ -459,6 +508,15 @@ namespace InfinitePickaxe.Client.UI.Game
             freeLimit = freeRefreshCount;
             adRemaining = 0;
             adLimit = 0;
+
+            if (IsDailyLimitReached())
+            {
+                freeRemaining = 0;
+                freeLimit = 0;
+                adRemaining = 0;
+                adLimit = 0;
+                return;
+            }
 
             if (questState != null && questState.HasDailyMissions && questState.RerollsTotalLimit > 0)
             {
@@ -538,12 +596,14 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void OnRefreshQuestClicked()
         {
+            if (IsDailyLimitReached()) return;
             messageHandler ??= MessageHandler.Instance;
             messageHandler?.RequestMissionReroll();
         }
 
         private void OnAdRefreshQuestClicked()
         {
+            if (IsDailyLimitReached()) return;
             messageHandler ??= MessageHandler.Instance;
             messageHandler?.NotifyAdWatchComplete(MissionRerollAdType);
         }
@@ -557,6 +617,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OnMissionClaimClicked(uint slotNo)
         {
             if (slotNo == 0) return;
+            if (IsDailyLimitReached()) return;
             messageHandler ??= MessageHandler.Instance;
             messageHandler?.RequestMissionComplete(slotNo);
         }
@@ -584,12 +645,34 @@ namespace InfinitePickaxe.Client.UI.Game
                 return (int)missionMetaResolver.MaxDailyAssign;
             }
 
+            if (totalCount > 0)
+            {
+                return totalCount;
+            }
+
             if (questState != null && questState.Missions != null && questState.Missions.Count > 0)
             {
                 return questState.Missions.Count;
             }
 
-            return totalCount;
+            return 0;
+        }
+
+        private bool IsDailyLimitReached()
+        {
+            int total = GetTotalMissionCount();
+            if (total <= 0) return false;
+            return GetCompletedCount() >= total;
+        }
+
+        private string BuildDailyLimitReachedMessage()
+        {
+            int total = GetTotalMissionCount();
+            if (total > 0)
+            {
+                return string.Format(DailyLimitReachedMessageFormat, total);
+            }
+            return DailyLimitReachedMessage;
         }
 
         private uint GetMilestoneBonusHours(uint milestoneCount)
@@ -633,7 +716,9 @@ namespace InfinitePickaxe.Client.UI.Game
             string rewardText = reward > 0 ? reward.ToString("N0") : "0";
             var statusState = GetStatusState(entry.Status);
             string status = GetStatusLabel(entry.Status);
-            bool canClaim = statusState == QuestMissionItemView.MissionStatusState.Completed && entry.SlotNo > 0;
+            bool canClaim = statusState == QuestMissionItemView.MissionStatusState.Completed
+                            && entry.SlotNo > 0
+                            && !IsDailyLimitReached();
 
             return new MissionDisplayData
             {

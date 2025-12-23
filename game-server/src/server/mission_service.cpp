@@ -45,6 +45,10 @@ uint32_t normalize_free_rerolls_used(uint32_t stored_rerolls, uint32_t free_limi
     }
     return stored_rerolls;
 }
+
+uint32_t resolve_max_daily_assign(const MetadataLoader& meta) {
+    return meta.daily_missions_config().max_daily_assign;
+}
 } // namespace
 
 // Daily missions (3 slots)
@@ -123,6 +127,13 @@ infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
     infinitepickaxe::MissionCompleteResult result;
     result.set_success(false);
     result.set_slot_no(slot_no);
+
+    auto daily_info = ensure_daily_state_kst(user_id);
+    const uint32_t max_daily_assign = resolve_max_daily_assign(meta_);
+    if (max_daily_assign > 0 && daily_info.completed_count >= max_daily_assign) {
+        result.set_error_code("DAILY_LIMIT_REACHED");
+        return result;
+    }
 
     auto cached = load_cached_slot(user_id, slot_no);
     const bool cache_found = cached.has_value();
@@ -212,6 +223,11 @@ infinitepickaxe::MissionRerollResult MissionService::reroll_missions_internal(
     result.set_success(false);
 
     auto daily_info = ensure_daily_state_kst(user_id);
+    const uint32_t max_daily_assign = resolve_max_daily_assign(meta_);
+    if (max_daily_assign > 0 && daily_info.completed_count >= max_daily_assign) {
+        result.set_error_code("DAILY_LIMIT_REACHED");
+        return result;
+    }
 
     const auto reroll_meta = meta_.mission_reroll();
     const uint32_t free_rerolls = reroll_meta.free_rerolls_per_day;
