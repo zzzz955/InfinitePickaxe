@@ -1504,6 +1504,14 @@ namespace InfinitePickaxe.Client.UI.Game
             if (tabManager != null)
             {
                 tabManager.ShowTab(GameTab.Upgrade);
+                if (lastPickaxeInfoSlotIndex >= 0)
+                {
+                    var upgradeTab = FindObjectOfType<UpgradeTabController>();
+                    if (upgradeTab != null)
+                    {
+                        upgradeTab.SetSelectedSlot((uint)lastPickaxeInfoSlotIndex);
+                    }
+                }
                 Debug.Log("MiningTabController: 강화 탭으로 이동");
             }
             else

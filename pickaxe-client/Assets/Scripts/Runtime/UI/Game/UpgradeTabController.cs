@@ -1023,6 +1023,17 @@ namespace InfinitePickaxe.Client.UI.Game
             public Sprite sprite;
         }
 
+        public void SetSelectedSlot(uint slotIndex)
+        {
+            if (slotIndex > 3) return;
+
+            selectedSlotIndex = slotIndex;
+            if (isActive)
+            {
+                RefreshData();
+            }
+        }
+
         #region Meta Resolver
 
         private sealed class UpgradeMetaResolver
