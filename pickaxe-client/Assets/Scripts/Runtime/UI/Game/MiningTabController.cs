@@ -54,6 +54,12 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private GameObject pickaxeInfoModal;
         [SerializeField] private GameObject lockedSlotModal;
         [SerializeField] private GameObject mineralSelectModal;
+        [Header("Pickaxe Info Modal UI")]
+        [SerializeField] private Image pickaxeInfoImage;
+        [SerializeField] private TextMeshProUGUI pickaxeInfoLevelText;
+        [SerializeField] private TextMeshProUGUI pickaxeInfoAttackPowerText;
+        [SerializeField] private TextMeshProUGUI pickaxeInfoAttackSpeedText;
+        [SerializeField] private TextMeshProUGUI pickaxeInfoDpsText;
         [Header("Mineral Select (Dynamic)")]
         [SerializeField] private Transform mineralListContent;
         [SerializeField] private GameObject mineralItemTemplate;
@@ -61,6 +67,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private bool mineralListBuilt = false;
         private int lastBuiltMineralCount = 0;
         private bool mineralRecommendDirty = false;
+        private int lastPickaxeInfoSlotIndex = -1;
 
         [Header("Mining Data")]
         [SerializeField] private string currentMineralName = "약한 돌";
@@ -102,6 +109,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private const string LoadingMineralMessage = "광물 정보를 불러오는 중...";
         private const string NoSelectionMessage = "선택된 광물이 없습니다";
         private const string UnknownHpMessage = "HP: -/-";
+        private const string PickaxeInfoMissingMessage = "데이터를 불러올 수 없다";
         [SerializeField] private float initialOverlayDelaySeconds = 0.3f;
         private MiningViewState viewState = MiningViewState.Loading;
         private Coroutine initialOverlayRoutine;
@@ -213,6 +221,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             AutoBindLevelTexts();
             AutoBindSlotImages();
+            AutoBindPickaxeInfoModalReferences();
 
             // 모달 닫기 버튼 이벤트 등록
             SetupModalCloseButtons();
@@ -319,6 +328,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (isActive)
             {
                 RefreshData();
+                UpdatePickaxeInfoModalIfOpen();
             }
         }
 
@@ -373,6 +383,42 @@ namespace InfinitePickaxe.Client.UI.Game
                 pickaxeSlot3Image = GetButtonImage(pickaxeSlot3Button);
             if (pickaxeSlot4Image == null)
                 pickaxeSlot4Image = GetButtonImage(pickaxeSlot4Button);
+        }
+
+        private void AutoBindPickaxeInfoModalReferences()
+        {
+            if (pickaxeInfoModal == null) return;
+
+            var root = pickaxeInfoModal.transform;
+            if (pickaxeInfoImage == null)
+            {
+                var imageTf = FindChildRecursive(root, "PickaxeImage");
+                if (imageTf != null) pickaxeInfoImage = imageTf.GetComponent<Image>();
+            }
+
+            if (pickaxeInfoLevelText == null)
+            {
+                var levelTf = FindChildRecursive(root, "PickaxeLevelText");
+                if (levelTf != null) pickaxeInfoLevelText = levelTf.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (pickaxeInfoAttackPowerText == null)
+            {
+                var attackTf = FindChildRecursive(root, "AttackPowerText");
+                if (attackTf != null) pickaxeInfoAttackPowerText = attackTf.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (pickaxeInfoAttackSpeedText == null)
+            {
+                var speedTf = FindChildRecursive(root, "AttackSpeedText");
+                if (speedTf != null) pickaxeInfoAttackSpeedText = speedTf.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (pickaxeInfoDpsText == null)
+            {
+                var dpsTf = FindChildRecursive(root, "DPSText");
+                if (dpsTf != null) pickaxeInfoDpsText = dpsTf.GetComponent<TextMeshProUGUI>();
+            }
         }
 
         private Image GetButtonImage(Button button)
@@ -1174,6 +1220,111 @@ namespace InfinitePickaxe.Client.UI.Game
             }
         }
 
+        private void UpdatePickaxeInfoModalIfOpen()
+        {
+            if (pickaxeInfoModal == null || !pickaxeInfoModal.activeSelf) return;
+            if (lastPickaxeInfoSlotIndex < 0) return;
+
+            UpdatePickaxeInfoModal(lastPickaxeInfoSlotIndex);
+        }
+
+        private void UpdatePickaxeInfoModal(int slotIndex)
+        {
+            AutoBindPickaxeInfoModalReferences();
+
+            if (!TryGetPickaxeSlotInfo(slotIndex, out var slotInfo))
+            {
+                ApplyPickaxeInfoMissingState();
+                return;
+            }
+
+            UpdatePickaxeInfoModalData(slotIndex, slotInfo);
+        }
+
+        private bool TryGetPickaxeSlotInfo(int slotIndex, out PickaxeSlotInfo slotInfo)
+        {
+            slotInfo = null;
+            if (slotIndex < 0 || slotIndex > 3) return false;
+
+            var key = (uint)slotIndex;
+            if (slotInfos.TryGetValue(key, out slotInfo) && slotInfo != null)
+            {
+                return true;
+            }
+
+            if (pickaxeCache != null && pickaxeCache.TryGetSlot(key, out slotInfo) && slotInfo != null)
+            {
+                slotInfos[key] = slotInfo;
+                return true;
+            }
+
+            return false;
+        }
+
+        private void ApplyPickaxeInfoMissingState()
+        {
+            SetPickaxeInfoText(pickaxeInfoLevelText, PickaxeInfoMissingMessage);
+            SetPickaxeInfoText(pickaxeInfoAttackPowerText, PickaxeInfoMissingMessage);
+            SetPickaxeInfoText(pickaxeInfoAttackSpeedText, PickaxeInfoMissingMessage);
+            SetPickaxeInfoText(pickaxeInfoDpsText, PickaxeInfoMissingMessage);
+
+            if (pickaxeInfoImage != null)
+            {
+                pickaxeInfoImage.sprite = null;
+                pickaxeInfoImage.enabled = false;
+            }
+        }
+
+        private void SetPickaxeInfoText(TextMeshProUGUI target, string text)
+        {
+            if (target != null)
+            {
+                target.text = text;
+            }
+        }
+
+        private void UpdatePickaxeInfoModalData(int slotIndex, PickaxeSlotInfo slotInfo)
+        {
+            if (pickaxeInfoLevelText != null)
+            {
+                pickaxeInfoLevelText.text = $"Lv {slotInfo.Level}";
+            }
+
+            if (pickaxeInfoAttackPowerText != null)
+            {
+                pickaxeInfoAttackPowerText.text = $"공격력: {slotInfo.AttackPower:N0}";
+            }
+
+            if (pickaxeInfoAttackSpeedText != null)
+            {
+                float attackSpeed = slotInfo.AttackSpeedX100 / 100f;
+                pickaxeInfoAttackSpeedText.text = $"공격속도: {attackSpeed:0.0#}";
+            }
+
+            if (pickaxeInfoDpsText != null)
+            {
+                pickaxeInfoDpsText.text = $"DPS: {slotInfo.Dps:N0}";
+            }
+
+            if (pickaxeInfoImage != null)
+            {
+                uint tier = slotInfo.Tier;
+                tier = tierResolver.ResolveTier((uint)slotIndex, slotInfo.Level, tier);
+
+                if (!SpriteAtlasCache.TryGetPickaxeSprite(tier, out var sprite))
+                {
+                    sprite = SpriteAtlasCache.GetFallbackSprite();
+                }
+
+                pickaxeInfoImage.sprite = sprite;
+                pickaxeInfoImage.enabled = sprite != null;
+                pickaxeInfoImage.type = Image.Type.Simple;
+                pickaxeInfoImage.preserveAspect = true;
+                var scale = pickaxeInfoImage.rectTransform.localScale;
+                pickaxeInfoImage.rectTransform.localScale = new Vector3(Mathf.Abs(scale.x), Mathf.Abs(scale.y), 1f);
+            }
+        }
+
         /// <summary>
         /// 곡괭이 정보 모달 열기
         /// </summary>
@@ -1181,7 +1332,8 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (pickaxeInfoModal != null)
             {
-                // TODO: 슬롯 인덱스에 맞는 곡괭이 정보 업데이트
+                lastPickaxeInfoSlotIndex = slotIndex;
+                UpdatePickaxeInfoModal(slotIndex);
                 pickaxeInfoModal.SetActive(true);
                 Debug.Log($"MiningTabController: 곡괭이 슬롯 {slotIndex} 정보 모달 열림");
             }
