@@ -17,7 +17,7 @@ namespace InfinitePickaxe.Client.UI.Game
     /// 채굴 탭 컨트롤러
     /// 현재 채굴 중인 광물 정보, HP 바, DPS 등을 표시
     /// </summary>
-    public class MiningTabController : BaseTabController
+    public partial class MiningTabController : BaseTabController
     {
         [Header("Mining UI References")]
         [SerializeField] private TextMeshProUGUI mineInfoText;
@@ -227,6 +227,8 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // 모달 닫기 버튼 이벤트 등록
             SetupModalCloseButtons();
+
+            InitializeSubTabs();
 
             // 초기 UI 업데이트
             RefreshData();
