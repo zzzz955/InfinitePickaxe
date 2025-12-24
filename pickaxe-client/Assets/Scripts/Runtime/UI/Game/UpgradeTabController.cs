@@ -16,7 +16,7 @@ namespace InfinitePickaxe.Client.UI.Game
     /// 곡괭이 강화 탭 컨트롤러.
     /// 슬롯 상태를 받아와 UI를 갱신하고, 강화 요청/응답을 처리한다.
     /// </summary>
-    public class UpgradeTabController : BaseTabController
+    public partial class UpgradeTabController : BaseTabController
     {
         [Header("Upgrade UI References")]
         [SerializeField] private TextMeshProUGUI pickaxeLevelText;
@@ -102,6 +102,7 @@ namespace InfinitePickaxe.Client.UI.Game
             base.Initialize();
             SpriteAtlasCache.RegisterPickaxeAtlas(pickaxeSpriteAtlas);
             AutoBindReferences();
+            InitializeSubTabs();
             BindSlotButtons();
             BindActionButtons();
             CacheInitialVisualState();
