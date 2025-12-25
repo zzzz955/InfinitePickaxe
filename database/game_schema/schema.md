@@ -74,5 +74,64 @@
 | created_at | TIMESTAMP | DEFAULT now |  |
 | updated_at | TIMESTAMP | DEFAULT now |  |
 
+## user_gem_inventory
+| 컬럼 | 타입 | 제약/기본값 | 비고 |
+| --- | --- | --- | --- |
+| user_id | UUID | PK | auth.users 논리 참조 |
+| current_capacity | INTEGER | DEFAULT 48, CHECK 48-128 | 현재 인벤토리 용량 |
+| created_at | TIMESTAMP | DEFAULT now | 생성 |
+| updated_at | TIMESTAMP | DEFAULT now | 업데이트 |
+
+## user_gems
+| 컬럼 | 타입 | 제약/기본값 | 비고 |
+| --- | --- | --- | --- |
+| gem_instance_id | UUID | PK | 보석 인스턴스 ID |
+| user_id | UUID | NOT NULL | auth.users 논리 참조 |
+| gem_id | INTEGER | NOT NULL, CHECK >=0 | 메타데이터 gem_id |
+| acquired_at | TIMESTAMP | DEFAULT now | 획득 시각 |
+| created_at | TIMESTAMP | DEFAULT now | 생성 |
+| updated_at | TIMESTAMP | DEFAULT now | 업데이트 |
+
+**인덱스**:
+- idx_user_gems_user: user_id
+- idx_user_gems_gem_id: gem_id
+
+## pickaxe_gem_slots
+| 컬럼 | 타입 | 제약/기본값 | 비고 |
+| --- | --- | --- | --- |
+| pickaxe_slot_id | UUID | PK part, FK to pickaxe_slots | 곡괭이 슬롯 ID |
+| gem_slot_index | INTEGER | PK part, CHECK 0-5 | 보석 슬롯 번호 (0-5) |
+| is_unlocked | BOOLEAN | DEFAULT false | 해금 여부 |
+| unlocked_at | TIMESTAMP | | 해금 시각 |
+| created_at | TIMESTAMP | DEFAULT now | 생성 |
+| updated_at | TIMESTAMP | DEFAULT now | 업데이트 |
+
+**제약**:
+- PK: (pickaxe_slot_id, gem_slot_index)
+- FK: pickaxe_slot_id REFERENCES pickaxe_slots(slot_id) ON DELETE CASCADE
+
+**인덱스**:
+- idx_pickaxe_gem_slots_pickaxe: pickaxe_slot_id
+
+## pickaxe_equipped_gems
+| 컬럼 | 타입 | 제약/기본값 | 비고 |
+| --- | --- | --- | --- |
+| pickaxe_slot_id | UUID | PK part | 곡괭이 슬롯 ID |
+| gem_slot_index | INTEGER | PK part, CHECK 0-5 | 보석 슬롯 번호 (0-5) |
+| gem_instance_id | UUID | NOT NULL, UNIQUE | 장착된 보석 인스턴스 |
+| equipped_at | TIMESTAMP | DEFAULT now | 장착 시각 |
+| created_at | TIMESTAMP | DEFAULT now | 생성 |
+| updated_at | TIMESTAMP | DEFAULT now | 업데이트 |
+
+**제약**:
+- PK: (pickaxe_slot_id, gem_slot_index)
+- FK: (pickaxe_slot_id, gem_slot_index) REFERENCES pickaxe_gem_slots ON DELETE CASCADE
+- FK: gem_instance_id REFERENCES user_gems(gem_instance_id) ON DELETE CASCADE
+- UNIQUE: gem_instance_id (하나의 보석은 한 곳에만 장착)
+
+**인덱스**:
+- idx_equipped_gems_pickaxe: pickaxe_slot_id
+- idx_equipped_gems_instance: gem_instance_id
+
 ## 트리거
-- updated_at 자동 갱신: user_game_data, pickaxe_slots, user_ad_counters, user_mission_daily, user_mission_slots 테이블에 BEFORE UPDATE 트리거 적용.
+- updated_at 자동 갱신: user_game_data, pickaxe_slots, user_ad_counters, user_mission_daily, user_mission_slots, user_gem_inventory, user_gems, pickaxe_gem_slots, pickaxe_equipped_gems 테이블에 BEFORE UPDATE 트리거 적용.
