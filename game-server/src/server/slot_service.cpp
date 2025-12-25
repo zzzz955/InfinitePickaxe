@@ -72,7 +72,8 @@ PickaxeSlot build_base_slot(const std::string& user_id, uint32_t slot_index, con
     return slot;
 }
 
-void fill_slot_info(const PickaxeSlot& slot, infinitepickaxe::PickaxeSlotInfo* slot_info)
+void fill_slot_info(const PickaxeSlot& slot, infinitepickaxe::PickaxeSlotInfo* slot_info,
+                    GemRepository& gem_repo, const MetadataLoader& meta)
 {
     if (!slot_info)
     {
@@ -88,6 +89,46 @@ void fill_slot_info(const PickaxeSlot& slot, infinitepickaxe::PickaxeSlotInfo* s
     slot_info->set_dps(slot.dps);
     slot_info->set_pity_bonus(slot.pity_bonus);
     slot_info->set_is_unlocked(true);
+
+    // 보석 슬롯 정보 추가
+    auto gem_slots = gem_repo.get_gem_slots_for_pickaxe(slot.slot_id);
+    for (const auto& gem_slot : gem_slots) {
+        auto* gem_slot_info = slot_info->add_gem_slots();
+        gem_slot_info->set_gem_slot_index(gem_slot.gem_slot_index);
+        gem_slot_info->set_is_unlocked(gem_slot.is_unlocked);
+
+        // 장착된 보석이 있는 경우
+        if (gem_slot.equipped_gem.has_value()) {
+            const auto& gem = gem_slot.equipped_gem.value();
+            auto* gem_info = gem_slot_info->mutable_equipped_gem();
+            gem_info->set_gem_instance_id(gem.gem_instance_id);
+            gem_info->set_gem_id(gem.gem_id);
+            gem_info->set_acquired_at(gem.acquired_at);
+
+            // 메타데이터에서 보석 상세 정보 조회
+            if (const auto* gem_def = meta.gem_definition(gem.gem_id)) {
+                gem_info->set_name(gem_def->name);
+                gem_info->set_icon(gem_def->icon);
+                gem_info->set_stat_multiplier(gem_def->stat_multiplier);
+
+                // GemGrade enum 변환
+                if (const auto* grade = meta.gem_grade(gem_def->grade_id)) {
+                    if (grade->grade == "COMMON") gem_info->set_grade(infinitepickaxe::COMMON);
+                    else if (grade->grade == "RARE") gem_info->set_grade(infinitepickaxe::RARE);
+                    else if (grade->grade == "EPIC") gem_info->set_grade(infinitepickaxe::EPIC);
+                    else if (grade->grade == "HERO") gem_info->set_grade(infinitepickaxe::HERO);
+                    else if (grade->grade == "LEGENDARY") gem_info->set_grade(infinitepickaxe::LEGENDARY);
+                }
+
+                // GemType enum 변환
+                if (const auto* type = meta.gem_type(gem_def->type_id)) {
+                    if (type->type == "ATTACK_SPEED") gem_info->set_type(infinitepickaxe::ATTACK_SPEED);
+                    else if (type->type == "CRIT_RATE") gem_info->set_type(infinitepickaxe::CRIT_RATE);
+                    else if (type->type == "CRIT_DMG") gem_info->set_type(infinitepickaxe::CRIT_DMG);
+                }
+            }
+        }
+    }
 }
 }
 
@@ -97,7 +138,7 @@ infinitepickaxe::AllSlotsResponse SlotService::handle_all_slots(const std::strin
     auto slots = repo_.get_user_slots(user_id);
 
     for (const auto& slot : slots) {
-        fill_slot_info(slot, response.add_slots());
+        fill_slot_info(slot, response.add_slots(), gem_repo_, meta_);
     }
 
     uint64_t total_dps = calculate_total_dps(slots);
@@ -156,7 +197,7 @@ infinitepickaxe::SlotUnlockResult SlotService::handle_unlock(const std::string& 
     res.set_crystal_spent(*crystal_cost);
     res.set_remaining_crystal(db_res.remaining_crystal);
     res.set_total_dps(db_res.total_dps);
-    fill_slot_info(slot, res.mutable_new_slot());
+    fill_slot_info(slot, res.mutable_new_slot(), gem_repo_, meta_);
     return res;
 }
 

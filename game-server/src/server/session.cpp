@@ -355,6 +355,11 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     auto offline_state = offline_service_.get_state(user_id_);
     snapshot->set_current_offline_hours(offline_state.current_offline_seconds / 3600);
 
+    // 보석 인벤토리 정보
+    auto gem_inv = game_repo_.get_gem_inventory_info(user_id_);
+    snapshot->set_gem_inventory_capacity(gem_inv.capacity);
+    snapshot->set_total_gems(gem_inv.total_gems);
+
     infinitepickaxe::Envelope response_env;
     response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);
     *response_env.mutable_handshake_result() = res;
