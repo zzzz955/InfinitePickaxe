@@ -81,6 +81,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  SlotService &slot_service,
                  OfflineService &offline_service,
                  AdService &ad_service,
+                 GemService &gem_service,
                  RedisClient &redis_client,
                  std::shared_ptr<SessionRegistry> registry,
                  const MetadataLoader &metadata)
@@ -93,6 +94,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       slot_service_(slot_service),
       offline_service_(offline_service),
       ad_service_(ad_service),
+      gem_service_(gem_service),
       redis_(redis_client),
       auth_timer_(socket_.get_executor()),
       registry_(std::move(registry)),
@@ -730,6 +732,24 @@ void Session::init_router()
                              { handle_all_slots(e); });
     router_.register_handler(infinitepickaxe::OFFLINE_REWARD_REQUEST, [this](const infinitepickaxe::Envelope &e)
                              { handle_offline_reward(e); });
+    router_.register_handler(infinitepickaxe::GEM_LIST_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_list(e); });
+    router_.register_handler(infinitepickaxe::GEM_GACHA_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_gacha(e); });
+    router_.register_handler(infinitepickaxe::GEM_SYNTHESIS_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_synthesis(e); });
+    router_.register_handler(infinitepickaxe::GEM_CONVERSION_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_conversion(e); });
+    router_.register_handler(infinitepickaxe::GEM_DISCARD_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_discard(e); });
+    router_.register_handler(infinitepickaxe::GEM_EQUIP_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_equip(e); });
+    router_.register_handler(infinitepickaxe::GEM_UNEQUIP_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_unequip(e); });
+    router_.register_handler(infinitepickaxe::GEM_SLOT_UNLOCK_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_slot_unlock(e); });
+    router_.register_handler(infinitepickaxe::GEM_INVENTORY_EXPAND_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_inventory_expand(e); });
 }
 
 void Session::send_envelope(const infinitepickaxe::Envelope &env)
@@ -1233,4 +1253,214 @@ void Session::handle_mining_complete_immediate()
 
     spdlog::info("Mining completed: user={} mineral={} gold_earned={} respawn_time={}s",
                  user_id_, mining_state_.current_mineral_id, gold_reward, respawn_time_sec);
+}
+
+// ========== 보석 핸들러 ==========
+
+void Session::handle_gem_list(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    auto response = gem_service_.handle_gem_list(user_id_);
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_LIST_RESPONSE);
+    *res_env.mutable_gem_list_response() = response;
+    send_envelope(res_env);
+}
+
+void Session::handle_gem_gacha(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_gem_gacha_request()) {
+        send_error("INVALID_REQUEST", "missing gem_gacha_request");
+        return;
+    }
+
+    const auto& req = env.gem_gacha_request();
+    auto result = gem_service_.handle_gacha_pull(user_id_, req.pull_count());
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_GACHA_RESULT);
+    *res_env.mutable_gem_gacha_result() = result;
+    send_envelope(res_env);
+}
+
+void Session::handle_gem_synthesis(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_gem_synthesis_request()) {
+        send_error("INVALID_REQUEST", "missing gem_synthesis_request");
+        return;
+    }
+
+    const auto& req = env.gem_synthesis_request();
+    std::vector<std::string> gem_ids;
+    for (int i = 0; i < req.gem_instance_ids_size(); ++i) {
+        gem_ids.push_back(req.gem_instance_ids(i));
+    }
+
+    auto result = gem_service_.handle_synthesis(user_id_, gem_ids);
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_SYNTHESIS_RESULT);
+    *res_env.mutable_gem_synthesis_result() = result;
+    send_envelope(res_env);
+}
+
+void Session::handle_gem_conversion(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_gem_conversion_request()) {
+        send_error("INVALID_REQUEST", "missing gem_conversion_request");
+        return;
+    }
+
+    const auto& req = env.gem_conversion_request();
+    auto result = gem_service_.handle_conversion(user_id_,
+                                                  req.gem_instance_id(),
+                                                  req.target_type(),
+                                                  req.use_fixed_cost());
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_CONVERSION_RESULT);
+    *res_env.mutable_gem_conversion_result() = result;
+    send_envelope(res_env);
+}
+
+void Session::handle_gem_discard(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_gem_discard_request()) {
+        send_error("INVALID_REQUEST", "missing gem_discard_request");
+        return;
+    }
+
+    const auto& req = env.gem_discard_request();
+    std::vector<std::string> gem_ids;
+    for (int i = 0; i < req.gem_instance_ids_size(); ++i) {
+        gem_ids.push_back(req.gem_instance_ids(i));
+    }
+
+    auto result = gem_service_.handle_discard(user_id_, gem_ids);
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_DISCARD_RESULT);
+    *res_env.mutable_gem_discard_result() = result;
+    send_envelope(res_env);
+}
+
+void Session::handle_gem_equip(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_gem_equip_request()) {
+        send_error("INVALID_REQUEST", "missing gem_equip_request");
+        return;
+    }
+
+    const auto& req = env.gem_equip_request();
+    auto result = gem_service_.handle_equip(user_id_,
+                                            req.pickaxe_slot_index(),
+                                            req.gem_slot_index(),
+                                            req.gem_instance_id());
+
+    // 곡괭이 스탯이 변경되었으므로 채굴 시뮬레이션 슬롯 새로고침
+    refresh_slots_from_service(true);
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_EQUIP_RESULT);
+    *res_env.mutable_gem_equip_result() = result;
+    send_envelope(res_env);
+}
+
+void Session::handle_gem_unequip(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_gem_unequip_request()) {
+        send_error("INVALID_REQUEST", "missing gem_unequip_request");
+        return;
+    }
+
+    const auto& req = env.gem_unequip_request();
+    auto result = gem_service_.handle_unequip(user_id_,
+                                              req.pickaxe_slot_index(),
+                                              req.gem_slot_index());
+
+    // 곡괭이 스탯이 변경되었으므로 채굴 시뮬레이션 슬롯 새로고침
+    refresh_slots_from_service(true);
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_UNEQUIP_RESULT);
+    *res_env.mutable_gem_unequip_result() = result;
+    send_envelope(res_env);
+}
+
+void Session::handle_gem_slot_unlock(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_gem_slot_unlock_request()) {
+        send_error("INVALID_REQUEST", "missing gem_slot_unlock_request");
+        return;
+    }
+
+    const auto& req = env.gem_slot_unlock_request();
+    auto result = gem_service_.handle_slot_unlock(user_id_,
+                                                   req.pickaxe_slot_index(),
+                                                   req.gem_slot_index());
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_SLOT_UNLOCK_RESULT);
+    *res_env.mutable_gem_slot_unlock_result() = result;
+    send_envelope(res_env);
+}
+
+void Session::handle_gem_inventory_expand(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_gem_inventory_expand_request()) {
+        send_error("INVALID_REQUEST", "missing gem_inventory_expand_request");
+        return;
+    }
+
+    auto result = gem_service_.handle_inventory_expand(user_id_);
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_INVENTORY_EXPAND_RESULT);
+    *res_env.mutable_gem_inventory_expand_result() = result;
+    send_envelope(res_env);
 }

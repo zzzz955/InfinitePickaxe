@@ -13,6 +13,7 @@ TcpServer::TcpServer(boost::asio::io_context& io,
                      SlotService& slot_service,
                      OfflineService& offline_service,
                      AdService& ad_service,
+                     GemService& gem_service,
                      RedisClient& redis_client,
                      const MetadataLoader& metadata)
     : acceptor_(io, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
@@ -26,6 +27,7 @@ TcpServer::TcpServer(boost::asio::io_context& io,
       slot_service_(slot_service),
       offline_service_(offline_service),
       ad_service_(ad_service),
+      gem_service_(gem_service),
       redis_client_(redis_client),
       metadata_(metadata) {
     rate_limiter_ = std::make_shared<ConnectionRateLimiter>(10, std::chrono::seconds(10));
@@ -71,6 +73,7 @@ void TcpServer::do_accept() {
                                                             slot_service_,
                                                             offline_service_,
                                                             ad_service_,
+                                                            gem_service_,
                                                             redis_client_,
                                                             registry_,
                                                             metadata_);

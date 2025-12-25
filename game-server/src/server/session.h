@@ -16,6 +16,7 @@
 #include "mission_service.h"
 #include "slot_service.h"
 #include "offline_service.h"
+#include "gem_service.h"
 #include "session_registry.h"
 
 class AdService;
@@ -53,6 +54,7 @@ public:
             SlotService& slot_service,
             OfflineService& offline_service,
             AdService& ad_service,
+            GemService& gem_service,
             RedisClient& redis_client,
             std::shared_ptr<SessionRegistry> registry,
             const class MetadataLoader& metadata);
@@ -81,6 +83,15 @@ private:
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
     void handle_all_slots(const infinitepickaxe::Envelope& env);
     void handle_offline_reward(const infinitepickaxe::Envelope& env);
+    void handle_gem_list(const infinitepickaxe::Envelope& env);
+    void handle_gem_gacha(const infinitepickaxe::Envelope& env);
+    void handle_gem_synthesis(const infinitepickaxe::Envelope& env);
+    void handle_gem_conversion(const infinitepickaxe::Envelope& env);
+    void handle_gem_discard(const infinitepickaxe::Envelope& env);
+    void handle_gem_equip(const infinitepickaxe::Envelope& env);
+    void handle_gem_unequip(const infinitepickaxe::Envelope& env);
+    void handle_gem_slot_unlock(const infinitepickaxe::Envelope& env);
+    void handle_gem_inventory_expand(const infinitepickaxe::Envelope& env);
     void init_router();
     void send_envelope(const infinitepickaxe::Envelope& env);
     void send_error(const std::string& code, const std::string& message);
@@ -114,6 +125,7 @@ private:
     SlotService& slot_service_;
     OfflineService& offline_service_;
     AdService& ad_service_;
+    GemService& gem_service_;
     RedisClient& redis_;
     std::shared_ptr<SessionRegistry> registry_;
     const class MetadataLoader& metadata_;

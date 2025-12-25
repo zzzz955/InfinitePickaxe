@@ -9,6 +9,7 @@
 #include "slot_service.h"
 #include "offline_service.h"
 #include "ad_service.h"
+#include "gem_service.h"
 #include "session_registry.h"
 #include "connection_rate_limiter.h"
 #include "redis_client.h"
@@ -30,6 +31,7 @@ public:
               SlotService& slot_service,
               OfflineService& offline_service,
               AdService& ad_service,
+              GemService& gem_service,
               RedisClient& redis_client,
               const class MetadataLoader& metadata);
     void start();
@@ -50,6 +52,7 @@ private:
     SlotService& slot_service_;
     OfflineService& offline_service_;
     AdService& ad_service_;
+    GemService& gem_service_;
     RedisClient& redis_client_;
     const class MetadataLoader& metadata_;
 };

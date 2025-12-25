@@ -30,6 +30,8 @@ add_executable(game-server
     src/server/session_registry.cpp
     src/server/connection_rate_limiter.cpp
     src/metadata/metadata_loader.cpp
+    src/server/gem_repository.cpp
+    src/server/gem_service.cpp
 )
 
 # Force module mode to avoid missing Boost config packages on distro builds
