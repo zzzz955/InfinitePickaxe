@@ -5,6 +5,7 @@
 
 bool MetadataLoader::load(const std::string& base_path) {
     try {
+        // 기존 데이터 클리어
         pickaxe_levels_.clear();
         minerals_.clear();
         missions_.clear();
@@ -14,12 +15,30 @@ bool MetadataLoader::load(const std::string& base_path) {
         daily_missions_config_ = DailyMissionConfig{};
         mission_reroll_ = MissionRerollMeta{};
         offline_defaults_ = OfflineDefaults{};
+        gem_types_.clear();
+        gem_grades_.clear();
+        gem_definitions_.clear();
+        gem_synthesis_rules_.clear();
+        gem_conversion_costs_.clear();
+        gem_discard_rewards_.clear();
+        gem_slot_unlock_costs_.clear();
+        gem_types_by_id_.clear();
+        gem_grades_by_id_.clear();
+        gem_definitions_by_id_.clear();
+        gem_gacha_ = GemGachaMeta{};
+        gem_inventory_config_ = GemInventoryConfig{};
 
-        // pickaxe_levels.json
+        // meta_bundle.json 읽기 (번들 기반 파싱)
+        std::ifstream f(base_path + "/meta_bundle.json");
+        if (!f.good()) {
+            return false;
+        }
+        nlohmann::json bundle;
+        f >> bundle;
+
+        // pickaxe_levels
         {
-            std::ifstream f(base_path + "/pickaxe_levels.json");
-            nlohmann::json j;
-            f >> j;
+            nlohmann::json j = bundle["pickaxe_levels"];
             for (auto& e : j) {
                 PickaxeLevel pl;
                 pl.level = e["level"].get<uint32_t>();
@@ -41,11 +60,9 @@ bool MetadataLoader::load(const std::string& base_path) {
             }
         }
 
-        // minerals.json
+        // minerals
         {
-            std::ifstream f(base_path + "/minerals.json");
-            nlohmann::json j;
-            f >> j;
+            nlohmann::json j = bundle["minerals"];
             if (j.is_array()) {
                 for (auto& e : j) {
                     MineralMeta mm;
@@ -61,11 +78,9 @@ bool MetadataLoader::load(const std::string& base_path) {
             }
         }
 
-        // daily_missions.json
+        // daily_missions
         {
-            std::ifstream f(base_path + "/daily_missions.json");
-            nlohmann::json j;
-            f >> j;
+            nlohmann::json j = bundle["daily_missions"];
             if (j.is_object()) {
                 daily_missions_config_.total_slots = j.value("total_slots", daily_missions_config_.total_slots);
                 daily_missions_config_.max_daily_assign = j.value("max_daily_assign", daily_missions_config_.max_daily_assign);
@@ -124,12 +139,10 @@ bool MetadataLoader::load(const std::string& base_path) {
             return fallback;
         };
 
-        // upgrade_rules.json (upgrade)
+        // upgrade_rules
         {
-            std::ifstream f(base_path + "/upgrade_rules.json");
-            if (f.good()) {
-                nlohmann::json j;
-                f >> j;
+            if (bundle.contains("upgrade_rules")) {
+                nlohmann::json j = bundle["upgrade_rules"];
                 upgrade_rules_.min_rate = to_rate(j["min_rate"], 0.3);
                 upgrade_rules_.bonus_rate = to_rate(j["bonus_rate"], 0.1);
                 if (j.contains("base_rate_by_tier")) {
@@ -147,12 +160,10 @@ bool MetadataLoader::load(const std::string& base_path) {
             }
         }
 
-        // ads.json (ad types)
+        // ads
         {
-            std::ifstream f(base_path + "/ads.json");
-            if (f.good()) {
-                nlohmann::json j;
-                f >> j;
+            if (bundle.contains("ads")) {
+                nlohmann::json j = bundle["ads"];
                 if (j.contains("ad_types") && j["ad_types"].is_array()) {
                     for (auto& e : j["ad_types"]) {
                         AdTypeMeta ad;
@@ -190,12 +201,10 @@ bool MetadataLoader::load(const std::string& base_path) {
             }
         }
 
-        // offline_defaults.json
+        // offline_defaults
         {
-            std::ifstream f(base_path + "/offline_defaults.json");
-            if (f.good()) {
-                nlohmann::json j;
-                f >> j;
+            if (bundle.contains("offline_defaults")) {
+                nlohmann::json j = bundle["offline_defaults"];
                 uint32_t hours = j.value("initial_offline_hours", 0);
                 offline_defaults_.initial_offline_seconds = hours * 3600;
             } else {
@@ -203,12 +212,10 @@ bool MetadataLoader::load(const std::string& base_path) {
             }
         }
 
-        // mission_reroll.json
+        // mission_reroll
         {
-            std::ifstream f(base_path + "/mission_reroll.json");
-            if (f.good()) {
-                nlohmann::json j;
-                f >> j;
+            if (bundle.contains("mission_reroll")) {
+                nlohmann::json j = bundle["mission_reroll"];
                 mission_reroll_.free_rerolls_per_day = j.value("free_rerolls_per_day", 0);
                 mission_reroll_.ad_rerolls_per_day = j.value("ad_rerolls_per_day", 0);
                 mission_reroll_.apply_to_all_slots = j.value("apply_to_slots", true);
@@ -220,6 +227,142 @@ bool MetadataLoader::load(const std::string& base_path) {
                 mission_reroll_.progress_reset_on_reroll = true;
             }
         }
+
+        // 보석 시스템 메타데이터 파싱
+
+        // gem_types
+        {
+            if (bundle.contains("gem_types")) {
+                nlohmann::json j = bundle["gem_types"];
+                for (auto& e : j) {
+                    GemTypeMeta gt;
+                    gt.id = e.value("id", 0);
+                    gt.type = e.value("type", "");
+                    gt.display_name = e.value("display_name", "");
+                    gt.description = e.value("description", "");
+                    gt.stat_key = e.value("stat_key", "");
+                    gem_types_.push_back(gt);
+                    gem_types_by_id_[gt.id] = gt;
+                }
+            }
+        }
+
+        // gem_grades
+        {
+            if (bundle.contains("gem_grades")) {
+                nlohmann::json j = bundle["gem_grades"];
+                for (auto& e : j) {
+                    GemGradeMeta gg;
+                    gg.id = e.value("id", 0);
+                    gg.grade = e.value("grade", "");
+                    gg.display_name = e.value("display_name", "");
+                    gem_grades_.push_back(gg);
+                    gem_grades_by_id_[gg.id] = gg;
+                }
+            }
+        }
+
+        // gem_definitions
+        {
+            if (bundle.contains("gem_definitions")) {
+                nlohmann::json j = bundle["gem_definitions"];
+                for (auto& e : j) {
+                    GemDefinition gd;
+                    gd.gem_id = e.value("gem_id", 0);
+                    gd.grade_id = e.value("grade_id", 0);
+                    gd.type_id = e.value("type_id", 0);
+                    gd.name = e.value("name", "");
+                    gd.icon = e.value("icon", "");
+                    gd.stat_multiplier = e.value("stat_multiplier", 0);
+                    gem_definitions_.push_back(gd);
+                    gem_definitions_by_id_[gd.gem_id] = gd;
+                }
+            }
+        }
+
+        // gem_gacha
+        {
+            if (bundle.contains("gem_gacha")) {
+                nlohmann::json j = bundle["gem_gacha"];
+                gem_gacha_.single_pull_cost = j.value("single_pull_cost", 0);
+                gem_gacha_.multi_pull_cost = j.value("multi_pull_cost", 0);
+                gem_gacha_.multi_pull_count = j.value("multi_pull_count", 0);
+                if (j.contains("grade_rates") && j["grade_rates"].is_array()) {
+                    for (auto& e : j["grade_rates"]) {
+                        GemGradeRate rate;
+                        rate.grade_id = e.value("grade_id", 0);
+                        rate.rate_percent = e.value("rate_percent", 0);
+                        gem_gacha_.grade_rates.push_back(rate);
+                    }
+                }
+            }
+        }
+
+        // gem_synthesis_rules
+        {
+            if (bundle.contains("gem_synthesis_rules")) {
+                nlohmann::json j = bundle["gem_synthesis_rules"];
+                for (auto& e : j) {
+                    GemSynthesisRule rule;
+                    rule.from_grade = e.value("from_grade", "");
+                    rule.to_grade = e.value("to_grade", "");
+                    rule.success_rate_percent = e.value("success_rate_percent", 0);
+                    gem_synthesis_rules_.push_back(rule);
+                }
+            }
+        }
+
+        // gem_conversion
+        {
+            if (bundle.contains("gem_conversion")) {
+                nlohmann::json j = bundle["gem_conversion"];
+                for (auto& e : j) {
+                    GemConversionCost cost;
+                    cost.grade_id = e.value("grade_id", 0);
+                    cost.random_cost = e.value("random_cost", 0);
+                    cost.fixed_cost = e.value("fixed_cost", 0);
+                    gem_conversion_costs_.push_back(cost);
+                }
+            }
+        }
+
+        // gem_discard
+        {
+            if (bundle.contains("gem_discard")) {
+                nlohmann::json j = bundle["gem_discard"];
+                for (auto& e : j) {
+                    GemDiscardReward reward;
+                    reward.grade_id = e.value("grade_id", 0);
+                    reward.crystal_reward = e.value("crystal_reward", 0);
+                    gem_discard_rewards_.push_back(reward);
+                }
+            }
+        }
+
+        // gem_inventory
+        {
+            if (bundle.contains("gem_inventory")) {
+                nlohmann::json j = bundle["gem_inventory"];
+                gem_inventory_config_.base_capacity = j.value("base_capacity", 48);
+                gem_inventory_config_.max_capacity = j.value("max_capacity", 128);
+                gem_inventory_config_.expand_step = j.value("expand_step", 8);
+                gem_inventory_config_.expand_cost = j.value("expand_cost", 200);
+            }
+        }
+
+        // gem_slot_unlock_costs
+        {
+            if (bundle.contains("gem_slot_unlock_costs")) {
+                nlohmann::json j = bundle["gem_slot_unlock_costs"];
+                for (auto& e : j) {
+                    GemSlotUnlockCost cost;
+                    cost.slot_index = e.value("slot_index", 0);
+                    cost.unlock_cost_crystal = e.value("unlock_cost_crystal", 0);
+                    gem_slot_unlock_costs_.push_back(cost);
+                }
+            }
+        }
+
         return true;
     } catch (...) {
         return false;
@@ -241,5 +384,23 @@ const MineralMeta* MetadataLoader::mineral(uint32_t id) const {
 const AdTypeMeta* MetadataLoader::ad_meta(const std::string& id) const {
     auto it = ad_types_by_id_.find(id);
     if (it == ad_types_by_id_.end()) return nullptr;
+    return &it->second;
+}
+
+const GemTypeMeta* MetadataLoader::gem_type(uint32_t id) const {
+    auto it = gem_types_by_id_.find(id);
+    if (it == gem_types_by_id_.end()) return nullptr;
+    return &it->second;
+}
+
+const GemGradeMeta* MetadataLoader::gem_grade(uint32_t id) const {
+    auto it = gem_grades_by_id_.find(id);
+    if (it == gem_grades_by_id_.end()) return nullptr;
+    return &it->second;
+}
+
+const GemDefinition* MetadataLoader::gem_definition(uint32_t gem_id) const {
+    auto it = gem_definitions_by_id_.find(gem_id);
+    if (it == gem_definitions_by_id_.end()) return nullptr;
     return &it->second;
 }

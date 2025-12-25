@@ -77,6 +77,71 @@ struct UpgradeRules {
     }
 };
 
+// 보석 시스템 메타데이터
+struct GemTypeMeta {
+    uint32_t id;
+    std::string type;        // ATTACK_SPEED, CRIT_RATE, CRIT_DMG
+    std::string display_name;
+    std::string description;
+    std::string stat_key;
+};
+
+struct GemGradeMeta {
+    uint32_t id;
+    std::string grade;       // COMMON, RARE, EPIC, HERO, LEGENDARY
+    std::string display_name;
+};
+
+struct GemDefinition {
+    uint32_t gem_id;
+    uint32_t grade_id;
+    uint32_t type_id;
+    std::string name;
+    std::string icon;
+    uint32_t stat_multiplier; // x100 basis
+};
+
+struct GemGradeRate {
+    uint32_t grade_id;
+    uint32_t rate_percent;   // basis 10000 (100.00%)
+};
+
+struct GemGachaMeta {
+    uint32_t single_pull_cost;
+    uint32_t multi_pull_cost;
+    uint32_t multi_pull_count;
+    std::vector<GemGradeRate> grade_rates;
+};
+
+struct GemSynthesisRule {
+    std::string from_grade;
+    std::string to_grade;
+    uint32_t success_rate_percent; // basis 10000
+};
+
+struct GemConversionCost {
+    uint32_t grade_id;
+    uint32_t random_cost;   // 크리스탈 비용 (랜덤 타입)
+    uint32_t fixed_cost;    // 크리스탈 비용 (고정 타입)
+};
+
+struct GemDiscardReward {
+    uint32_t grade_id;
+    uint32_t crystal_reward;
+};
+
+struct GemInventoryConfig {
+    uint32_t base_capacity{48};
+    uint32_t max_capacity{128};
+    uint32_t expand_step{8};
+    uint32_t expand_cost{200};
+};
+
+struct GemSlotUnlockCost {
+    uint32_t slot_index;    // 0-5
+    uint32_t unlock_cost_crystal;
+};
+
 class MetadataLoader {
 public:
     bool load(const std::string& base_path);
@@ -92,6 +157,21 @@ public:
     const OfflineDefaults& offline_defaults() const { return offline_defaults_; }
     const UpgradeRules& upgrade_rules() const { return upgrade_rules_; }
 
+    // 보석 시스템 getter
+    const std::vector<GemTypeMeta>& gem_types() const { return gem_types_; }
+    const std::vector<GemGradeMeta>& gem_grades() const { return gem_grades_; }
+    const std::vector<GemDefinition>& gem_definitions() const { return gem_definitions_; }
+    const GemGachaMeta& gem_gacha() const { return gem_gacha_; }
+    const std::vector<GemSynthesisRule>& gem_synthesis_rules() const { return gem_synthesis_rules_; }
+    const std::vector<GemConversionCost>& gem_conversion_costs() const { return gem_conversion_costs_; }
+    const std::vector<GemDiscardReward>& gem_discard_rewards() const { return gem_discard_rewards_; }
+    const GemInventoryConfig& gem_inventory_config() const { return gem_inventory_config_; }
+    const std::vector<GemSlotUnlockCost>& gem_slot_unlock_costs() const { return gem_slot_unlock_costs_; }
+
+    const GemTypeMeta* gem_type(uint32_t id) const;
+    const GemGradeMeta* gem_grade(uint32_t id) const;
+    const GemDefinition* gem_definition(uint32_t gem_id) const;
+
 private:
     std::unordered_map<uint32_t, PickaxeLevel> pickaxe_levels_;
     std::unordered_map<uint32_t, MineralMeta> minerals_;
@@ -103,4 +183,19 @@ private:
     MissionRerollMeta mission_reroll_;
     OfflineDefaults offline_defaults_;
     UpgradeRules upgrade_rules_;
+
+    // 보석 시스템 메타데이터
+    std::vector<GemTypeMeta> gem_types_;
+    std::vector<GemGradeMeta> gem_grades_;
+    std::vector<GemDefinition> gem_definitions_;
+    GemGachaMeta gem_gacha_;
+    std::vector<GemSynthesisRule> gem_synthesis_rules_;
+    std::vector<GemConversionCost> gem_conversion_costs_;
+    std::vector<GemDiscardReward> gem_discard_rewards_;
+    GemInventoryConfig gem_inventory_config_;
+    std::vector<GemSlotUnlockCost> gem_slot_unlock_costs_;
+
+    std::unordered_map<uint32_t, GemTypeMeta> gem_types_by_id_;
+    std::unordered_map<uint32_t, GemGradeMeta> gem_grades_by_id_;
+    std::unordered_map<uint32_t, GemDefinition> gem_definitions_by_id_;
 };
