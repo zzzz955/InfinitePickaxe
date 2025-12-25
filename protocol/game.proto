@@ -4,6 +4,24 @@ package infinitepickaxe;
 
 import "google/protobuf/wrappers.proto";
 
+// 보석 타입 Enum
+enum GemType {
+  GEM_TYPE_UNKNOWN = 0;
+  ATTACK_SPEED = 1;
+  CRIT_RATE = 2;
+  CRIT_DMG = 3;
+}
+
+// 보석 등급 Enum
+enum GemGrade {
+  GEM_GRADE_UNKNOWN = 0;
+  COMMON = 1;
+  RARE = 2;
+  EPIC = 3;
+  HERO = 4;
+  LEGENDARY = 5;
+}
+
 // 메시지 타입 Enum
 enum MessageType {
   UNKNOWN = 0;
@@ -65,6 +83,26 @@ enum MessageType {
 
   // 에러
   ERROR_NOTIFICATION = 100;
+
+  // 보석 시스템
+  GEM_LIST_REQUEST = 110;
+  GEM_LIST_RESPONSE = 111;
+  GEM_GACHA_REQUEST = 112;
+  GEM_GACHA_RESULT = 113;
+  GEM_SYNTHESIS_REQUEST = 114;
+  GEM_SYNTHESIS_RESULT = 115;
+  GEM_CONVERSION_REQUEST = 116;
+  GEM_CONVERSION_RESULT = 117;
+  GEM_DISCARD_REQUEST = 118;
+  GEM_DISCARD_RESULT = 119;
+  GEM_EQUIP_REQUEST = 120;
+  GEM_EQUIP_RESULT = 121;
+  GEM_UNEQUIP_REQUEST = 122;
+  GEM_UNEQUIP_RESULT = 123;
+  GEM_SLOT_UNLOCK_REQUEST = 124;
+  GEM_SLOT_UNLOCK_RESULT = 125;
+  GEM_INVENTORY_EXPAND_REQUEST = 126;
+  GEM_INVENTORY_EXPAND_RESULT = 127;
 }
 
 // 공통 Envelope: Type으로 메시지 구분
@@ -119,6 +157,25 @@ message Envelope {
     OfflineRewardResult offline_reward_result = 101;
 
     ErrorNotification error_notification = 110;
+
+    GemListRequest gem_list_request = 120;
+    GemListResponse gem_list_response = 121;
+    GemGachaRequest gem_gacha_request = 122;
+    GemGachaResult gem_gacha_result = 123;
+    GemSynthesisRequest gem_synthesis_request = 124;
+    GemSynthesisResult gem_synthesis_result = 125;
+    GemConversionRequest gem_conversion_request = 126;
+    GemConversionResult gem_conversion_result = 127;
+    GemDiscardRequest gem_discard_request = 128;
+    GemDiscardResult gem_discard_result = 129;
+    GemEquipRequest gem_equip_request = 130;
+    GemEquipResult gem_equip_result = 131;
+    GemUnequipRequest gem_unequip_request = 132;
+    GemUnequipResult gem_unequip_result = 133;
+    GemSlotUnlockRequest gem_slot_unlock_request = 134;
+    GemSlotUnlockResult gem_slot_unlock_result = 135;
+    GemInventoryExpandRequest gem_inventory_expand_request = 136;
+    GemInventoryExpandResult gem_inventory_expand_result = 137;
   }
 }
 
@@ -141,6 +198,7 @@ message PickaxeSlotInfo {
   uint64 dps = 8;                  // 이 슬롯의 DPS (크리티컬 포함 계산)
   uint32 pity_bonus = 9;           // 천장 보너스 (0-10000, basis 10000 = 100%)
   bool is_unlocked = 10;           // 슬롯 해금 여부
+  repeated GemSlotInfo gem_slots = 11; // 보석 슬롯 (최대 6개)
 }
 
 message AdCounter {
@@ -168,6 +226,10 @@ message UserDataSnapshot {
 
   // 미션 관련
   uint32 current_offline_hours = 11;             // 현재 보유 오프라인 시간(시간 단위)
+
+  // 보석 시스템
+  uint32 gem_inventory_capacity = 12;            // 보석 인벤토리 용량
+  uint32 total_gems = 13;                        // 현재 보유 보석 개수
 }
 
 message HandshakeResponse {
@@ -429,4 +491,153 @@ message OfflineRewardResult {
 message ErrorNotification {
   string error_code = 1;    // AUTH_FAILED, INVALID_PACKET, INSUFFICIENT_GOLD 등
   string message = 2;       // 상세 메시지
+}
+
+// -------------- 보석 시스템 --------------
+
+// 보석 정보
+message GemInfo {
+  string gem_instance_id = 1;     // UUID
+  uint32 gem_id = 2;              // 메타데이터 gem_id
+  GemGrade grade = 3;
+  GemType type = 4;
+  string name = 5;
+  string icon = 6;
+  uint32 stat_multiplier = 7;     // 스탯 배율 (x100)
+  uint64 acquired_at = 8;         // 획득 시간 (Unix timestamp ms)
+}
+
+// 곡괭이 슬롯의 보석 슬롯 정보
+message GemSlotInfo {
+  uint32 gem_slot_index = 1;      // 0-5
+  bool is_unlocked = 2;
+  GemInfo equipped_gem = 3;       // 장착된 보석 (없으면 null)
+}
+
+// 보석 목록 조회
+message GemListRequest {
+  // 빈 요청
+}
+
+message GemListResponse {
+  repeated GemInfo gems = 1;
+  uint32 total_gems = 2;
+  uint32 inventory_capacity = 3;
+}
+
+// 가챠
+message GemGachaRequest {
+  uint32 pull_count = 1;          // 1 or 11
+}
+
+message GemGachaResult {
+  bool success = 1;
+  repeated GemInfo gems = 2;      // 획득한 보석들
+  uint32 crystal_spent = 3;
+  uint32 remaining_crystal = 4;
+  uint32 total_gems = 5;          // 현재 보유 보석 개수
+  uint32 inventory_capacity = 6;
+  string error_code = 7;          // "INSUFFICIENT_CRYSTAL", "INVENTORY_FULL" 등
+}
+
+// 합성
+message GemSynthesisRequest {
+  repeated string gem_instance_ids = 1;  // 3개의 UUID (같은 등급, 같은 타입)
+}
+
+message GemSynthesisResult {
+  bool success = 1;
+  bool synthesis_success = 2;     // 합성 성공 여부 (확률)
+  GemInfo result_gem = 3;         // 합성 결과 보석 (성공 시)
+  uint32 total_gems = 4;
+  string error_code = 5;          // "INVALID_GEMS", "GRADE_MISMATCH" 등
+}
+
+// 타입 변환
+message GemConversionRequest {
+  string gem_instance_id = 1;
+  GemType target_type = 2;
+  bool use_fixed_cost = 3;        // true: 고정 비용, false: 랜덤
+}
+
+message GemConversionResult {
+  bool success = 1;
+  GemInfo converted_gem = 2;      // 변환된 보석
+  uint32 crystal_spent = 3;
+  uint32 remaining_crystal = 4;
+  string error_code = 5;          // "INSUFFICIENT_CRYSTAL", "SAME_TYPE" 등
+}
+
+// 분해
+message GemDiscardRequest {
+  repeated string gem_instance_ids = 1;
+}
+
+message GemDiscardResult {
+  bool success = 1;
+  uint32 crystal_earned = 2;
+  uint32 total_crystal = 3;
+  uint32 total_gems = 4;
+  string error_code = 5;
+}
+
+// 장착
+message GemEquipRequest {
+  uint32 pickaxe_slot_index = 1;  // 0-3
+  uint32 gem_slot_index = 2;      // 0-5
+  string gem_instance_id = 3;
+}
+
+message GemEquipResult {
+  bool success = 1;
+  uint32 pickaxe_slot_index = 2;
+  uint32 gem_slot_index = 3;
+  GemInfo equipped_gem = 4;
+  PickaxeSlotInfo updated_pickaxe = 5;  // 업데이트된 곡괭이 스탯
+  uint64 new_total_dps = 6;
+  string error_code = 7;          // "SLOT_NOT_UNLOCKED", "GEM_NOT_FOUND" 등
+}
+
+// 해제
+message GemUnequipRequest {
+  uint32 pickaxe_slot_index = 1;
+  uint32 gem_slot_index = 2;
+}
+
+message GemUnequipResult {
+  bool success = 1;
+  uint32 pickaxe_slot_index = 2;
+  uint32 gem_slot_index = 3;
+  GemInfo unequipped_gem = 4;
+  PickaxeSlotInfo updated_pickaxe = 5;
+  uint64 new_total_dps = 6;
+  string error_code = 7;
+}
+
+// 보석 슬롯 해금
+message GemSlotUnlockRequest {
+  uint32 pickaxe_slot_index = 1;
+  uint32 gem_slot_index = 2;
+}
+
+message GemSlotUnlockResult {
+  bool success = 1;
+  uint32 pickaxe_slot_index = 2;
+  uint32 gem_slot_index = 3;
+  uint32 crystal_spent = 4;
+  uint32 remaining_crystal = 5;
+  string error_code = 6;          // "ALREADY_UNLOCKED", "INSUFFICIENT_CRYSTAL" 등
+}
+
+// 인벤토리 확장
+message GemInventoryExpandRequest {
+  // 빈 요청 (8칸씩 자동 확장)
+}
+
+message GemInventoryExpandResult {
+  bool success = 1;
+  uint32 new_capacity = 2;
+  uint32 crystal_spent = 3;
+  uint32 remaining_crystal = 4;
+  string error_code = 5;          // "MAX_CAPACITY", "INSUFFICIENT_CRYSTAL" 등
 }
