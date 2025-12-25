@@ -1,0 +1,27 @@
+[
+  {
+    "id": 0,
+    "grade": "COMMON",
+    "display_name": "일반"
+  },
+  {
+    "id": 1,
+    "grade": "RARE",
+    "display_name": "고급"
+  },
+  {
+    "id": 2,
+    "grade": "EPIC",
+    "display_name": "희귀"
+  },
+  {
+    "id": 3,
+    "grade": "HERO",
+    "display_name": "영웅"
+  },
+  {
+    "id": 4,
+    "grade": "LEGENDARY",
+    "display_name": "전설"
+  }
+]

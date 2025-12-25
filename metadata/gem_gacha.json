@@ -1,0 +1,27 @@
+{
+  "single_pull_cost": 50,
+  "multi_pull_cost": 500,
+  "multi_pull_count": 11,
+  "grade_rates": [
+    {
+      "grade_id": 0,
+      "rate_percent": 7600
+    },
+    {
+      "grade_id": 1,
+      "rate_percent": 2000
+    },
+    {
+      "grade_id": 2,
+      "rate_percent": 345
+    },
+    {
+      "grade_id": 3,
+      "rate_percent": 50
+    },
+    {
+      "grade_id": 4,
+      "rate_percent": 5
+    }
+  ]
+}

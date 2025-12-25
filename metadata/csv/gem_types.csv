@@ -1,0 +1,4 @@
+id,type,display_name,description,stat_key
+0,ATTACK_SPEED,공격 속도,곡괭이의 공격 속도를 증가시킵니다,attack_speed_bonus_percent
+1,CRIT_RATE,크리티컬 확률,크리티컬 히트 발생 확률을 증가시킵니다,crit_rate_bonus_percent
+2,CRIT_DMG,크리티컬 데미지,크리티컬 히트 시 추가 데미지를 증가시킵니다,crit_dmg_bonus_percent

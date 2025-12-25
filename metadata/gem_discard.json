@@ -1,0 +1,22 @@
+[
+  {
+    "grade_id": 0,
+    "crystal_reward": 5
+  },
+  {
+    "grade_id": 1,
+    "crystal_reward": 15
+  },
+  {
+    "grade_id": 2,
+    "crystal_reward": 50
+  },
+  {
+    "grade_id": 3,
+    "crystal_reward": 150
+  },
+  {
+    "grade_id": 4,
+    "crystal_reward": 500
+  }
+]

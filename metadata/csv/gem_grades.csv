@@ -1,0 +1,6 @@
+id,grade,display_name
+0,COMMON,일반
+1,RARE,고급
+2,EPIC,희귀
+3,HERO,영웅
+4,LEGENDARY,전설

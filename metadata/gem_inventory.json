@@ -1,0 +1,6 @@
+{
+  "base_capacity": 48,
+  "max_capacity": 128,
+  "expand_step": 8,
+  "expand_cost": 200
+}

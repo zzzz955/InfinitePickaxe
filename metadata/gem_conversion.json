@@ -1,0 +1,27 @@
+[
+  {
+    "grade_id": 0,
+    "random_cost": 10,
+    "fixed_cost": 30
+  },
+  {
+    "grade_id": 1,
+    "random_cost": 30,
+    "fixed_cost": 90
+  },
+  {
+    "grade_id": 2,
+    "random_cost": 100,
+    "fixed_cost": 300
+  },
+  {
+    "grade_id": 3,
+    "random_cost": 300,
+    "fixed_cost": 900
+  },
+  {
+    "grade_id": 4,
+    "random_cost": 1000,
+    "fixed_cost": 3000
+  }
+]

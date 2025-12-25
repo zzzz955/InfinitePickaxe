@@ -1,0 +1,26 @@
+[
+  {
+    "slot_index": 0,
+    "unlock_cost_crystal": 0
+  },
+  {
+    "slot_index": 1,
+    "unlock_cost_crystal": 100
+  },
+  {
+    "slot_index": 2,
+    "unlock_cost_crystal": 200
+  },
+  {
+    "slot_index": 3,
+    "unlock_cost_crystal": 400
+  },
+  {
+    "slot_index": 4,
+    "unlock_cost_crystal": 800
+  },
+  {
+    "slot_index": 5,
+    "unlock_cost_crystal": 1600
+  }
+]

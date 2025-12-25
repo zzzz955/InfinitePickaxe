@@ -1,0 +1,16 @@
+gem_id,grade_id,type_id,name,icon,stat_multiplier
+0,0,0,일반 공격 속도 보석,gem_common_attack_speed,150
+1,0,1,일반 크리티컬 확률 보석,gem_common_crit_rate,60
+2,0,2,일반 크리티컬 데미지 보석,gem_common_crit_dmg,120
+100,1,0,고급 공격 속도 보석,gem_rare_attack_speed,375
+101,1,1,고급 크리티컬 확률 보석,gem_rare_crit_rate,150
+102,1,2,고급 크리티컬 데미지 보석,gem_rare_crit_dmg,300
+200,2,0,희귀 공격 속도 보석,gem_epic_attack_speed,900
+201,2,1,희귀 크리티컬 확률 보석,gem_epic_crit_rate,360
+202,2,2,희귀 크리티컬 데미지 보석,gem_epic_crit_dmg,720
+300,3,0,영웅 공격 속도 보석,gem_hero_attack_speed,1800
+301,3,1,영웅 크리티컬 확률 보석,gem_hero_crit_rate,720
+302,3,2,영웅 크리티컬 데미지 보석,gem_hero_crit_dmg,1440
+400,4,0,전설 공격 속도 보석,gem_legendary_attack_speed,3000
+401,4,1,전설 크리티컬 확률 보석,gem_legendary_crit_rate,1200
+402,4,2,전설 크리티컬 데미지 보석,gem_legendary_crit_dmg,2400

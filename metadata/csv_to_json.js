@@ -73,6 +73,11 @@ function keyValueCSVToObject(csvContent) {
   return obj;
 }
 
+// JSON 파일 저장 헬퍼 (개행 추가)
+function writeJSON(filename, data) {
+  fs.writeFileSync(filename, JSON.stringify(data, null, 2) + '\n', 'utf8');
+}
+
 // 1. minerals.csv -> minerals.json
 function convertMinerals() {
   const csvContent = fs.readFileSync('csv/minerals.csv', 'utf8');
@@ -88,7 +93,7 @@ function convertMinerals() {
     biome: row.biome
   }));
 
-  fs.writeFileSync('minerals.json', JSON.stringify(minerals, null, 2), 'utf8');
+  writeJSON('minerals.json', minerals);
   console.log('생성 완료: minerals.json');
 }
 
@@ -108,7 +113,7 @@ function convertPickaxeLevels() {
     cumulative_cost: parseInt(row.cumulative_cost)
   }));
 
-  fs.writeFileSync('pickaxe_levels.json', JSON.stringify(levels, null, 2), 'utf8');
+  writeJSON('pickaxe_levels.json', levels);
   console.log('생성 완료: pickaxe_levels.json');
 }
 
@@ -155,7 +160,7 @@ function convertDailyMissions() {
     milestone_offline_bonus_hours: milestones
   };
 
-  fs.writeFileSync('daily_missions.json', JSON.stringify(result, null, 2), 'utf8');
+  writeJSON('daily_missions.json', result);
   console.log('생성 완료: daily_missions.json');
 }
 
@@ -187,7 +192,7 @@ function convertAds() {
     ad_types: adTypes
   };
 
-  fs.writeFileSync('ads.json', JSON.stringify(result, null, 2), 'utf8');
+  writeJSON('ads.json', result);
   console.log('생성 완료: ads.json');
 }
 
@@ -200,7 +205,7 @@ function convertMissionReroll() {
   obj.apply_to_slots = obj.apply_to_slots === 'true';
   obj.progress_reset_on_reroll = obj.progress_reset_on_reroll === 'true';
 
-  fs.writeFileSync('mission_reroll.json', JSON.stringify(obj, null, 2), 'utf8');
+  writeJSON('mission_reroll.json', obj);
   console.log('생성 완료: mission_reroll.json');
 }
 
@@ -209,7 +214,7 @@ function convertOfflineDefaults() {
   const csvContent = fs.readFileSync('csv/offline_defaults.csv', 'utf8');
   const obj = keyValueCSVToObject(csvContent);
 
-  fs.writeFileSync('offline_defaults.json', JSON.stringify(obj, null, 2), 'utf8');
+  writeJSON('offline_defaults.json', obj);
   console.log('생성 완료: offline_defaults.json');
 }
 
@@ -234,8 +239,151 @@ function convertUpgradeRules() {
     base_rate_by_tier: baseRateByTier
   };
 
-  fs.writeFileSync('upgrade_rules.json', JSON.stringify(result, null, 2), 'utf8');
+  writeJSON('upgrade_rules.json', result);
   console.log('생성 완료: upgrade_rules.json');
+}
+
+// 8. gem_types.csv -> gem_types.json
+function convertGemTypes() {
+  const csvContent = fs.readFileSync('csv/gem_types.csv', 'utf8');
+  const rows = parseCSV(csvContent);
+
+  const types = rows.map(row => ({
+    id: parseInt(row.id),
+    type: row.type,
+    display_name: row.display_name,
+    description: row.description,
+    stat_key: row.stat_key
+  }));
+
+  writeJSON('gem_types.json', types);
+  console.log('생성 완료: gem_types.json');
+}
+
+// 9. gem_grades.csv -> gem_grades.json
+function convertGemGrades() {
+  const csvContent = fs.readFileSync('csv/gem_grades.csv', 'utf8');
+  const rows = parseCSV(csvContent);
+
+  const grades = rows.map(row => ({
+    id: parseInt(row.id),
+    grade: row.grade,
+    display_name: row.display_name
+  }));
+
+  writeJSON('gem_grades.json', grades);
+  console.log('생성 완료: gem_grades.json');
+}
+
+// 10. gem_definitions.csv -> gem_definitions.json
+function convertGemDefinitions() {
+  const csvContent = fs.readFileSync('csv/gem_definitions.csv', 'utf8');
+  const rows = parseCSV(csvContent);
+
+  const definitions = rows.map(row => ({
+    gem_id: parseInt(row.gem_id),
+    grade_id: parseInt(row.grade_id),
+    type_id: parseInt(row.type_id),
+    name: row.name,
+    icon: row.icon,
+    stat_multiplier: parseInt(row.stat_multiplier)
+  }));
+
+  writeJSON('gem_definitions.json', definitions);
+  console.log('생성 완료: gem_definitions.json');
+}
+
+// 11. gem_gacha (costs + rates) -> gem_gacha.json
+function convertGemGacha() {
+  // 비용 설정
+  const costsContent = fs.readFileSync('csv/gem_gacha_costs.csv', 'utf8');
+  const costs = keyValueCSVToObject(costsContent);
+
+  // 확률 설정
+  const ratesContent = fs.readFileSync('csv/gem_gacha_rates.csv', 'utf8');
+  const rateRows = parseCSV(ratesContent);
+
+  const rates = rateRows.map(row => ({
+    grade_id: parseInt(row.grade_id),
+    rate_percent: parseInt(row.rate_percent)
+  }));
+
+  const result = {
+    single_pull_cost: costs.single_pull_cost,
+    multi_pull_cost: costs.multi_pull_cost,
+    multi_pull_count: costs.multi_pull_count,
+    grade_rates: rates
+  };
+
+  writeJSON('gem_gacha.json', result);
+  console.log('생성 완료: gem_gacha.json');
+}
+
+// 12. gem_conversion_costs.csv -> gem_conversion.json
+function convertGemConversion() {
+  const csvContent = fs.readFileSync('csv/gem_conversion_costs.csv', 'utf8');
+  const rows = parseCSV(csvContent);
+
+  const conversion = rows.map(row => ({
+    grade_id: parseInt(row.grade_id),
+    random_cost: parseInt(row.random_cost),
+    fixed_cost: parseInt(row.fixed_cost)
+  }));
+
+  writeJSON('gem_conversion.json', conversion);
+  console.log('생성 완료: gem_conversion.json');
+}
+
+// 13. gem_discard_rewards.csv -> gem_discard.json
+function convertGemDiscard() {
+  const csvContent = fs.readFileSync('csv/gem_discard_rewards.csv', 'utf8');
+  const rows = parseCSV(csvContent);
+
+  const discard = rows.map(row => ({
+    grade_id: parseInt(row.grade_id),
+    crystal_reward: parseInt(row.crystal_reward)
+  }));
+
+  writeJSON('gem_discard.json', discard);
+  console.log('생성 완료: gem_discard.json');
+}
+
+// 14. gem_inventory_config.csv -> gem_inventory.json
+function convertGemInventory() {
+  const csvContent = fs.readFileSync('csv/gem_inventory_config.csv', 'utf8');
+  const config = keyValueCSVToObject(csvContent);
+
+  writeJSON('gem_inventory.json', config);
+  console.log('생성 완료: gem_inventory.json');
+}
+
+// 15. gem_synthesis_rules.csv -> gem_synthesis_rules.json
+function convertGemSynthesisRules() {
+  const csvContent = fs.readFileSync('csv/gem_synthesis_rules.csv', 'utf8');
+  const rows = parseCSV(csvContent);
+
+  const rules = rows.map(row => ({
+    from_grade: row.from_grade,
+    to_grade: row.to_grade,
+    success_rate_percent: parseInt(row.success_rate_percent)
+  }));
+
+  writeJSON('gem_synthesis_rules.json', rules);
+  console.log('생성 완료: gem_synthesis_rules.json');
+}
+
+// 16. gem_slot_unlock_costs.csv -> gem_slot_unlock_costs.json
+function convertGemSlotUnlockCosts() {
+  const csvContent = fs.readFileSync('csv/gem_slot_unlock_costs.csv', 'utf8');
+  const rows = parseCSV(csvContent);
+
+  const costs = rows.map(row => ({
+    slot_index: parseInt(row.slot_index),
+    unlock_cost_crystal: parseInt(row.unlock_cost_crystal)
+  }));
+
+  writeJSON('gem_slot_unlock_costs.json', costs);
+  console.log('생성 완료: gem_slot_unlock_costs.json');
 }
 
 // 메인 실행
@@ -249,6 +397,15 @@ try {
   convertMissionReroll();
   convertOfflineDefaults();
   convertUpgradeRules();
+  convertGemTypes();
+  convertGemGrades();
+  convertGemDefinitions();
+  convertGemGacha();
+  convertGemConversion();
+  convertGemDiscard();
+  convertGemInventory();
+  convertGemSynthesisRules();
+  convertGemSlotUnlockCosts();
 
   console.log('\n변환 완료!');
 } catch (error) {

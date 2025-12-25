@@ -1,0 +1,23 @@
+[
+  {
+    "id": 0,
+    "type": "ATTACK_SPEED",
+    "display_name": "공격 속도",
+    "description": "곡괭이의 공격 속도를 증가시킵니다",
+    "stat_key": "attack_speed_bonus_percent"
+  },
+  {
+    "id": 1,
+    "type": "CRIT_RATE",
+    "display_name": "크리티컬 확률",
+    "description": "크리티컬 히트 발생 확률을 증가시킵니다",
+    "stat_key": "crit_rate_bonus_percent"
+  },
+  {
+    "id": 2,
+    "type": "CRIT_DMG",
+    "display_name": "크리티컬 데미지",
+    "description": "크리티컬 히트 시 추가 데미지를 증가시킵니다",
+    "stat_key": "crit_dmg_bonus_percent"
+  }
+]

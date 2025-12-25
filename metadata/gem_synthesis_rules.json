@@ -1,0 +1,22 @@
+[
+  {
+    "from_grade": "COMMON",
+    "to_grade": "RARE",
+    "success_rate_percent": 10000
+  },
+  {
+    "from_grade": "RARE",
+    "to_grade": "EPIC",
+    "success_rate_percent": 7000
+  },
+  {
+    "from_grade": "EPIC",
+    "to_grade": "HERO",
+    "success_rate_percent": 5000
+  },
+  {
+    "from_grade": "HERO",
+    "to_grade": "LEGENDARY",
+    "success_rate_percent": 3000
+  }
+]

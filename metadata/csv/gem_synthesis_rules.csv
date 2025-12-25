@@ -1,0 +1,5 @@
+from_grade,to_grade,success_rate_percent
+COMMON,RARE,10000
+RARE,EPIC,7000
+EPIC,HERO,5000
+HERO,LEGENDARY,3000
