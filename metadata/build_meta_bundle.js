@@ -348,6 +348,174 @@ function buildUpgradeRules() {
   };
 }
 
+function buildGemTypes() {
+  const types = readCsv('gem_types.csv').map((row, idx) => {
+    const context = `gem_types.csv row ${idx + 2}`;
+
+    return {
+      id: toNumber(row.id, `${context} id`),
+      type: requireField(row.type, 'type', context),
+      display_name: requireField(row.display_name, 'display_name', context),
+      description: requireField(row.description, 'description', context),
+      stat_key: requireField(row.stat_key, 'stat_key', context),
+    };
+  });
+
+  return {
+    key: 'gem_types',
+    file: 'gem_types.json',
+    data: types,
+  };
+}
+
+function buildGemGrades() {
+  const grades = readCsv('gem_grades.csv').map((row, idx) => {
+    const context = `gem_grades.csv row ${idx + 2}`;
+
+    return {
+      id: toNumber(row.id, `${context} id`),
+      grade: requireField(row.grade, 'grade', context),
+      display_name: requireField(row.display_name, 'display_name', context),
+    };
+  });
+
+  return {
+    key: 'gem_grades',
+    file: 'gem_grades.json',
+    data: grades,
+  };
+}
+
+function buildGemDefinitions() {
+  const definitions = readCsv('gem_definitions.csv').map((row, idx) => {
+    const context = `gem_definitions.csv row ${idx + 2}`;
+
+    return {
+      gem_id: toNumber(row.gem_id, `${context} gem_id`),
+      grade_id: toNumber(row.grade_id, `${context} grade_id`),
+      type_id: toNumber(row.type_id, `${context} type_id`),
+      name: requireField(row.name, 'name', context),
+      icon: requireField(row.icon, 'icon', context),
+      stat_multiplier: toNumber(row.stat_multiplier, `${context} stat_multiplier`),
+    };
+  });
+
+  return {
+    key: 'gem_definitions',
+    file: 'gem_definitions.json',
+    data: definitions,
+  };
+}
+
+function buildGemGacha() {
+  const config = readKeyValueConfig('gem_gacha_costs.csv');
+
+  const rates = readCsv('gem_gacha_rates.csv').map((row, idx) => {
+    const context = `gem_gacha_rates.csv row ${idx + 2}`;
+
+    return {
+      grade_id: toNumber(row.grade_id, `${context} grade_id`),
+      rate_percent: toNumber(row.rate_percent, `${context} rate_percent`),
+    };
+  });
+
+  return {
+    key: 'gem_gacha',
+    file: 'gem_gacha.json',
+    data: {
+      single_pull_cost: toNumber(config.single_pull_cost, 'gem_gacha_costs.csv single_pull_cost'),
+      multi_pull_cost: toNumber(config.multi_pull_cost, 'gem_gacha_costs.csv multi_pull_cost'),
+      multi_pull_count: toNumber(config.multi_pull_count, 'gem_gacha_costs.csv multi_pull_count'),
+      grade_rates: rates,
+    },
+  };
+}
+
+function buildGemConversion() {
+  const conversion = readCsv('gem_conversion_costs.csv').map((row, idx) => {
+    const context = `gem_conversion_costs.csv row ${idx + 2}`;
+
+    return {
+      grade_id: toNumber(row.grade_id, `${context} grade_id`),
+      random_cost: toNumber(row.random_cost, `${context} random_cost`),
+      fixed_cost: toNumber(row.fixed_cost, `${context} fixed_cost`),
+    };
+  });
+
+  return {
+    key: 'gem_conversion',
+    file: 'gem_conversion.json',
+    data: conversion,
+  };
+}
+
+function buildGemDiscard() {
+  const discard = readCsv('gem_discard_rewards.csv').map((row, idx) => {
+    const context = `gem_discard_rewards.csv row ${idx + 2}`;
+
+    return {
+      grade_id: toNumber(row.grade_id, `${context} grade_id`),
+      crystal_reward: toNumber(row.crystal_reward, `${context} crystal_reward`),
+    };
+  });
+
+  return {
+    key: 'gem_discard',
+    file: 'gem_discard.json',
+    data: discard,
+  };
+}
+
+function buildGemInventory() {
+  const config = readKeyValueConfig('gem_inventory_config.csv');
+
+  return {
+    key: 'gem_inventory',
+    file: 'gem_inventory.json',
+    data: {
+      base_capacity: toNumber(config.base_capacity, 'gem_inventory_config.csv base_capacity'),
+      max_capacity: toNumber(config.max_capacity, 'gem_inventory_config.csv max_capacity'),
+      expand_step: toNumber(config.expand_step, 'gem_inventory_config.csv expand_step'),
+      expand_cost: toNumber(config.expand_cost, 'gem_inventory_config.csv expand_cost'),
+    },
+  };
+}
+
+function buildGemSynthesisRules() {
+  const rules = readCsv('gem_synthesis_rules.csv').map((row, idx) => {
+    const context = `gem_synthesis_rules.csv row ${idx + 2}`;
+
+    return {
+      from_grade: requireField(row.from_grade, 'from_grade', context),
+      to_grade: requireField(row.to_grade, 'to_grade', context),
+      success_rate_percent: toNumber(row.success_rate_percent, `${context} success_rate_percent`),
+    };
+  });
+
+  return {
+    key: 'gem_synthesis_rules',
+    file: 'gem_synthesis_rules.json',
+    data: rules,
+  };
+}
+
+function buildGemSlotUnlockCosts() {
+  const costs = readCsv('gem_slot_unlock_costs.csv').map((row, idx) => {
+    const context = `gem_slot_unlock_costs.csv row ${idx + 2}`;
+
+    return {
+      slot_index: toNumber(row.slot_index, `${context} slot_index`),
+      unlock_cost_crystal: toNumber(row.unlock_cost_crystal, `${context} unlock_cost_crystal`),
+    };
+  });
+
+  return {
+    key: 'gem_slot_unlock_costs',
+    file: 'gem_slot_unlock_costs.json',
+    data: costs,
+  };
+}
+
 const builders = [
   buildAds,
   buildDailyMissions,
@@ -356,6 +524,15 @@ const builders = [
   buildOfflineDefaults,
   buildPickaxeLevels,
   buildUpgradeRules,
+  buildGemTypes,
+  buildGemGrades,
+  buildGemDefinitions,
+  buildGemGacha,
+  buildGemConversion,
+  buildGemDiscard,
+  buildGemInventory,
+  buildGemSynthesisRules,
+  buildGemSlotUnlockCosts,
 ];
 
 const bundle = {};

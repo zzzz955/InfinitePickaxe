@@ -1724,5 +1724,307 @@
       "21": 3000,
       "22": 3000
     }
-  }
+  },
+  "gem_types": [
+    {
+      "id": 0,
+      "type": "ATTACK_SPEED",
+      "display_name": "공격 속도",
+      "description": "곡괭이의 공격 속도를 증가시킵니다",
+      "stat_key": "attack_speed_bonus_percent"
+    },
+    {
+      "id": 1,
+      "type": "CRIT_RATE",
+      "display_name": "크리티컬 확률",
+      "description": "크리티컬 히트 발생 확률을 증가시킵니다",
+      "stat_key": "crit_rate_bonus_percent"
+    },
+    {
+      "id": 2,
+      "type": "CRIT_DMG",
+      "display_name": "크리티컬 데미지",
+      "description": "크리티컬 히트 시 추가 데미지를 증가시킵니다",
+      "stat_key": "crit_dmg_bonus_percent"
+    }
+  ],
+  "gem_grades": [
+    {
+      "id": 0,
+      "grade": "COMMON",
+      "display_name": "일반"
+    },
+    {
+      "id": 1,
+      "grade": "RARE",
+      "display_name": "고급"
+    },
+    {
+      "id": 2,
+      "grade": "EPIC",
+      "display_name": "희귀"
+    },
+    {
+      "id": 3,
+      "grade": "HERO",
+      "display_name": "영웅"
+    },
+    {
+      "id": 4,
+      "grade": "LEGENDARY",
+      "display_name": "전설"
+    }
+  ],
+  "gem_definitions": [
+    {
+      "gem_id": 0,
+      "grade_id": 0,
+      "type_id": 0,
+      "name": "일반 공격 속도 보석",
+      "icon": "gem_common_attack_speed",
+      "stat_multiplier": 150
+    },
+    {
+      "gem_id": 1,
+      "grade_id": 0,
+      "type_id": 1,
+      "name": "일반 크리티컬 확률 보석",
+      "icon": "gem_common_crit_rate",
+      "stat_multiplier": 60
+    },
+    {
+      "gem_id": 2,
+      "grade_id": 0,
+      "type_id": 2,
+      "name": "일반 크리티컬 데미지 보석",
+      "icon": "gem_common_crit_dmg",
+      "stat_multiplier": 120
+    },
+    {
+      "gem_id": 100,
+      "grade_id": 1,
+      "type_id": 0,
+      "name": "고급 공격 속도 보석",
+      "icon": "gem_rare_attack_speed",
+      "stat_multiplier": 375
+    },
+    {
+      "gem_id": 101,
+      "grade_id": 1,
+      "type_id": 1,
+      "name": "고급 크리티컬 확률 보석",
+      "icon": "gem_rare_crit_rate",
+      "stat_multiplier": 150
+    },
+    {
+      "gem_id": 102,
+      "grade_id": 1,
+      "type_id": 2,
+      "name": "고급 크리티컬 데미지 보석",
+      "icon": "gem_rare_crit_dmg",
+      "stat_multiplier": 300
+    },
+    {
+      "gem_id": 200,
+      "grade_id": 2,
+      "type_id": 0,
+      "name": "희귀 공격 속도 보석",
+      "icon": "gem_epic_attack_speed",
+      "stat_multiplier": 900
+    },
+    {
+      "gem_id": 201,
+      "grade_id": 2,
+      "type_id": 1,
+      "name": "희귀 크리티컬 확률 보석",
+      "icon": "gem_epic_crit_rate",
+      "stat_multiplier": 360
+    },
+    {
+      "gem_id": 202,
+      "grade_id": 2,
+      "type_id": 2,
+      "name": "희귀 크리티컬 데미지 보석",
+      "icon": "gem_epic_crit_dmg",
+      "stat_multiplier": 720
+    },
+    {
+      "gem_id": 300,
+      "grade_id": 3,
+      "type_id": 0,
+      "name": "영웅 공격 속도 보석",
+      "icon": "gem_hero_attack_speed",
+      "stat_multiplier": 1800
+    },
+    {
+      "gem_id": 301,
+      "grade_id": 3,
+      "type_id": 1,
+      "name": "영웅 크리티컬 확률 보석",
+      "icon": "gem_hero_crit_rate",
+      "stat_multiplier": 720
+    },
+    {
+      "gem_id": 302,
+      "grade_id": 3,
+      "type_id": 2,
+      "name": "영웅 크리티컬 데미지 보석",
+      "icon": "gem_hero_crit_dmg",
+      "stat_multiplier": 1440
+    },
+    {
+      "gem_id": 400,
+      "grade_id": 4,
+      "type_id": 0,
+      "name": "전설 공격 속도 보석",
+      "icon": "gem_legendary_attack_speed",
+      "stat_multiplier": 3000
+    },
+    {
+      "gem_id": 401,
+      "grade_id": 4,
+      "type_id": 1,
+      "name": "전설 크리티컬 확률 보석",
+      "icon": "gem_legendary_crit_rate",
+      "stat_multiplier": 1200
+    },
+    {
+      "gem_id": 402,
+      "grade_id": 4,
+      "type_id": 2,
+      "name": "전설 크리티컬 데미지 보석",
+      "icon": "gem_legendary_crit_dmg",
+      "stat_multiplier": 2400
+    }
+  ],
+  "gem_gacha": {
+    "single_pull_cost": 50,
+    "multi_pull_cost": 500,
+    "multi_pull_count": 11,
+    "grade_rates": [
+      {
+        "grade_id": 0,
+        "rate_percent": 7600
+      },
+      {
+        "grade_id": 1,
+        "rate_percent": 2000
+      },
+      {
+        "grade_id": 2,
+        "rate_percent": 345
+      },
+      {
+        "grade_id": 3,
+        "rate_percent": 50
+      },
+      {
+        "grade_id": 4,
+        "rate_percent": 5
+      }
+    ]
+  },
+  "gem_conversion": [
+    {
+      "grade_id": 0,
+      "random_cost": 10,
+      "fixed_cost": 30
+    },
+    {
+      "grade_id": 1,
+      "random_cost": 30,
+      "fixed_cost": 90
+    },
+    {
+      "grade_id": 2,
+      "random_cost": 100,
+      "fixed_cost": 300
+    },
+    {
+      "grade_id": 3,
+      "random_cost": 300,
+      "fixed_cost": 900
+    },
+    {
+      "grade_id": 4,
+      "random_cost": 1000,
+      "fixed_cost": 3000
+    }
+  ],
+  "gem_discard": [
+    {
+      "grade_id": 0,
+      "crystal_reward": 5
+    },
+    {
+      "grade_id": 1,
+      "crystal_reward": 15
+    },
+    {
+      "grade_id": 2,
+      "crystal_reward": 50
+    },
+    {
+      "grade_id": 3,
+      "crystal_reward": 150
+    },
+    {
+      "grade_id": 4,
+      "crystal_reward": 500
+    }
+  ],
+  "gem_inventory": {
+    "base_capacity": 48,
+    "max_capacity": 128,
+    "expand_step": 8,
+    "expand_cost": 200
+  },
+  "gem_synthesis_rules": [
+    {
+      "from_grade": "COMMON",
+      "to_grade": "RARE",
+      "success_rate_percent": 10000
+    },
+    {
+      "from_grade": "RARE",
+      "to_grade": "EPIC",
+      "success_rate_percent": 7000
+    },
+    {
+      "from_grade": "EPIC",
+      "to_grade": "HERO",
+      "success_rate_percent": 5000
+    },
+    {
+      "from_grade": "HERO",
+      "to_grade": "LEGENDARY",
+      "success_rate_percent": 3000
+    }
+  ],
+  "gem_slot_unlock_costs": [
+    {
+      "slot_index": 0,
+      "unlock_cost_crystal": 0
+    },
+    {
+      "slot_index": 1,
+      "unlock_cost_crystal": 100
+    },
+    {
+      "slot_index": 2,
+      "unlock_cost_crystal": 200
+    },
+    {
+      "slot_index": 3,
+      "unlock_cost_crystal": 400
+    },
+    {
+      "slot_index": 4,
+      "unlock_cost_crystal": 800
+    },
+    {
+      "slot_index": 5,
+      "unlock_cost_crystal": 1600
+    }
+  ]
 }
