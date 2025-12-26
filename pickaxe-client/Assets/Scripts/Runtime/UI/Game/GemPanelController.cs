@@ -132,7 +132,7 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             EnsureGridItems(currentCapacity);
-            ApplyFilter(currentFilter);
+            RebuildGrid();
             SetMode(currentMode);
         }
 

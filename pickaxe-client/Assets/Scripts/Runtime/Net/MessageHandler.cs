@@ -39,6 +39,11 @@ namespace InfinitePickaxe.Client.Net
         private uint? lastCrystal;
         private UserDataSnapshot lastSnapshot;
 
+        // Gem pending requests (response에 consumed 정보가 없어서 request 추적 필요)
+        private List<string> pendingSynthesisGemIds;
+        private string pendingConversionGemId;
+        private List<string> pendingDiscardGemIds;
+
         // 핸드셰이크
         public event Action<HandshakeResponse> OnHandshakeResult;
 
@@ -583,7 +588,10 @@ namespace InfinitePickaxe.Client.Net
 
         private void HandleGemListResponse(GemListResponse response)
         {
-            Debug.Log($"젬 리스트 수신: {response.Gems.Count}개, 인벤토리 {response.CurrentInventorySlots}/{response.MaxInventorySlots}");
+            Debug.Log($"젬 리스트 수신: {response.Gems.Count}개, 인벤토리 용량 {response.InventoryCapacity}");
+            GemStateCache.Instance.UpdateFromGemListResponse(response);
+            // 장착 정보 동기화 (PickaxeStateCache로부터)
+            GemStateCache.Instance.SyncEquippedGemsFromSlots();
             OnGemListResponse?.Invoke(response);
         }
 
@@ -591,8 +599,9 @@ namespace InfinitePickaxe.Client.Net
         {
             if (result.Success)
             {
-                Debug.Log($"젬 뽑기 성공: {result.AcquiredGems.Count}개 획득, 남은 크리스탈 {result.RemainingCrystal}");
-                if (result.RemainingCrystal.HasValue)
+                Debug.Log($"젬 뽑기 성공: {result.Gems.Count}개 획득, 남은 크리스탈 {result.RemainingCrystal}");
+                GemStateCache.Instance.ApplyGachaResult(result);
+                if (result.RemainingCrystal > 0)
                 {
                     var currencyUpdate = new CurrencyUpdate
                     {
@@ -615,11 +624,18 @@ namespace InfinitePickaxe.Client.Net
         {
             if (result.Success)
             {
-                Debug.Log($"젬 합성 성공: {result.ResultGemId} 획득");
+                Debug.Log($"젬 합성 성공: 합성 {(result.SynthesisSuccess ? "성공" : "실패")}");
+                if (pendingSynthesisGemIds != null)
+                {
+                    GemStateCache.Instance.RemoveGems(pendingSynthesisGemIds);
+                    pendingSynthesisGemIds = null;
+                }
+                GemStateCache.Instance.ApplySynthesisResult(result);
             }
             else
             {
                 Debug.LogWarning($"젬 합성 실패: {result.ErrorCode}");
+                pendingSynthesisGemIds = null;
             }
             OnGemSynthesisResult?.Invoke(result);
         }
@@ -628,13 +644,15 @@ namespace InfinitePickaxe.Client.Net
         {
             if (result.Success)
             {
-                Debug.Log($"젬 전환 성공: 크리스탈 {result.CrystalGained}개 획득, 총 {result.TotalCrystal}개");
-                if (result.TotalCrystal.HasValue)
+                Debug.Log($"젬 타입 전환 성공: 크리스탈 {result.CrystalSpent}개 사용");
+                GemStateCache.Instance.ApplyConversionResult(result, pendingConversionGemId);
+                pendingConversionGemId = null;
+                if (result.RemainingCrystal > 0)
                 {
                     var currencyUpdate = new CurrencyUpdate
                     {
                         Gold = null,
-                        Crystal = result.TotalCrystal,
+                        Crystal = result.RemainingCrystal,
                         Reason = "gem_conversion"
                     };
                     CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
@@ -643,7 +661,8 @@ namespace InfinitePickaxe.Client.Net
             }
             else
             {
-                Debug.LogWarning($"젬 전환 실패: {result.ErrorCode}");
+                Debug.LogWarning($"젬 타입 전환 실패: {result.ErrorCode}");
+                pendingConversionGemId = null;
             }
             OnGemConversionResult?.Invoke(result);
         }
@@ -652,11 +671,25 @@ namespace InfinitePickaxe.Client.Net
         {
             if (result.Success)
             {
-                Debug.Log($"젬 폐기 성공: {result.DiscardedCount}개 폐기");
+                Debug.Log($"젬 분해 성공: 크리스탈 {result.CrystalEarned}개 획득");
+                GemStateCache.Instance.ApplyDiscardResult(result, pendingDiscardGemIds);
+                pendingDiscardGemIds = null;
+                if (result.TotalCrystal > 0)
+                {
+                    var currencyUpdate = new CurrencyUpdate
+                    {
+                        Gold = null,
+                        Crystal = result.TotalCrystal,
+                        Reason = "gem_discard"
+                    };
+                    CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                    OnCurrencyUpdate?.Invoke(currencyUpdate);
+                }
             }
             else
             {
-                Debug.LogWarning($"젬 폐기 실패: {result.ErrorCode}");
+                Debug.LogWarning($"젬 분해 실패: {result.ErrorCode}");
+                pendingDiscardGemIds = null;
             }
             OnGemDiscardResult?.Invoke(result);
         }
@@ -666,6 +699,7 @@ namespace InfinitePickaxe.Client.Net
             if (result.Success)
             {
                 Debug.Log($"젬 장착 성공: 곡괭이 슬롯 {result.PickaxeSlotIndex}, 젬 슬롯 {result.GemSlotIndex}");
+                GemStateCache.Instance.ApplyEquipResult(result);
             }
             else
             {
@@ -679,6 +713,7 @@ namespace InfinitePickaxe.Client.Net
             if (result.Success)
             {
                 Debug.Log($"젬 장착 해제 성공: 곡괭이 슬롯 {result.PickaxeSlotIndex}, 젬 슬롯 {result.GemSlotIndex}");
+                GemStateCache.Instance.ApplyUnequipResult(result);
             }
             else
             {
@@ -692,7 +727,8 @@ namespace InfinitePickaxe.Client.Net
             if (result.Success)
             {
                 Debug.Log($"젬 슬롯 해금 성공: 곡괭이 슬롯 {result.PickaxeSlotIndex}, 젬 슬롯 {result.GemSlotIndex}, 사용 크리스탈 {result.CrystalSpent}");
-                if (result.RemainingCrystal.HasValue)
+                GemStateCache.Instance.ApplySlotUnlockResult(result);
+                if (result.RemainingCrystal > 0)
                 {
                     var currencyUpdate = new CurrencyUpdate
                     {
@@ -715,8 +751,9 @@ namespace InfinitePickaxe.Client.Net
         {
             if (result.Success)
             {
-                Debug.Log($"젬 인벤토리 확장 성공: {result.NewMaxSlots}칸으로 확장, 사용 크리스탈 {result.CrystalSpent}");
-                if (result.RemainingCrystal.HasValue)
+                Debug.Log($"젬 인벤토리 확장 성공: {result.NewCapacity}칸으로 확장, 사용 크리스탈 {result.CrystalSpent}");
+                GemStateCache.Instance.ApplyInventoryExpandResult(result);
+                if (result.RemainingCrystal > 0)
                 {
                     var currencyUpdate = new CurrencyUpdate
                     {
@@ -933,6 +970,14 @@ namespace InfinitePickaxe.Client.Net
         /// </summary>
         public void RequestGemSynthesis(string gemInstanceId1, string gemInstanceId2, string gemInstanceId3)
         {
+            // pending 추적 (response에 consumed ID 없음)
+            pendingSynthesisGemIds = new System.Collections.Generic.List<string>
+            {
+                gemInstanceId1,
+                gemInstanceId2,
+                gemInstanceId3
+            };
+
             var request = new GemSynthesisRequest();
             request.GemInstanceIds.Add(gemInstanceId1);
             request.GemInstanceIds.Add(gemInstanceId2);
@@ -946,12 +991,19 @@ namespace InfinitePickaxe.Client.Net
         }
 
         /// <summary>
-        /// 젬 전환 요청 (크리스탈로 변환)
+        /// 젬 타입 전환 요청
         /// </summary>
-        public void RequestGemConversion(System.Collections.Generic.List<string> gemInstanceIds)
+        public void RequestGemConversion(string gemInstanceId, Infinitepickaxe.GemType targetType, bool useFixedCost)
         {
-            var request = new GemConversionRequest();
-            request.GemInstanceIds.AddRange(gemInstanceIds);
+            // pending 추적 (response에 원본 gem ID 없음)
+            pendingConversionGemId = gemInstanceId;
+
+            var request = new GemConversionRequest
+            {
+                GemInstanceId = gemInstanceId,
+                TargetType = targetType,
+                UseFixedCost = useFixedCost
+            };
             var envelope = new Envelope
             {
                 Type = MessageType.GemConversionRequest,
@@ -961,10 +1013,13 @@ namespace InfinitePickaxe.Client.Net
         }
 
         /// <summary>
-        /// 젬 폐기 요청
+        /// 젬 분해 요청
         /// </summary>
         public void RequestGemDiscard(System.Collections.Generic.List<string> gemInstanceIds)
         {
+            // pending 추적 (response에 분해된 gem ID 목록 없음)
+            pendingDiscardGemIds = new System.Collections.Generic.List<string>(gemInstanceIds);
+
             var request = new GemDiscardRequest();
             request.GemInstanceIds.AddRange(gemInstanceIds);
             var envelope = new Envelope
