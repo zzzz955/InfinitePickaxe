@@ -86,6 +86,17 @@ namespace InfinitePickaxe.Client.Net
         // 에러
         public event Action<ErrorNotification> OnErrorNotification;
 
+        // 젬
+        public event Action<GemListResponse> OnGemListResponse;
+        public event Action<GemGachaResult> OnGemGachaResult;
+        public event Action<GemSynthesisResult> OnGemSynthesisResult;
+        public event Action<GemConversionResult> OnGemConversionResult;
+        public event Action<GemDiscardResult> OnGemDiscardResult;
+        public event Action<GemEquipResult> OnGemEquipResult;
+        public event Action<GemUnequipResult> OnGemUnequipResult;
+        public event Action<GemSlotUnlockResult> OnGemSlotUnlockResult;
+        public event Action<GemInventoryExpandResult> OnGemInventoryExpandResult;
+
         #endregion
 
         #region Unity Lifecycle
@@ -222,6 +233,42 @@ namespace InfinitePickaxe.Client.Net
 
                     case MessageType.ErrorNotification:
                         HandleErrorNotification(envelope.ErrorNotification);
+                        break;
+
+                    case MessageType.GemListResponse:
+                        HandleGemListResponse(envelope.GemListResponse);
+                        break;
+
+                    case MessageType.GemGachaResult:
+                        HandleGemGachaResult(envelope.GemGachaResult);
+                        break;
+
+                    case MessageType.GemSynthesisResult:
+                        HandleGemSynthesisResult(envelope.GemSynthesisResult);
+                        break;
+
+                    case MessageType.GemConversionResult:
+                        HandleGemConversionResult(envelope.GemConversionResult);
+                        break;
+
+                    case MessageType.GemDiscardResult:
+                        HandleGemDiscardResult(envelope.GemDiscardResult);
+                        break;
+
+                    case MessageType.GemEquipResult:
+                        HandleGemEquipResult(envelope.GemEquipResult);
+                        break;
+
+                    case MessageType.GemUnequipResult:
+                        HandleGemUnequipResult(envelope.GemUnequipResult);
+                        break;
+
+                    case MessageType.GemSlotUnlockResult:
+                        HandleGemSlotUnlockResult(envelope.GemSlotUnlockResult);
+                        break;
+
+                    case MessageType.GemInventoryExpandResult:
+                        HandleGemInventoryExpandResult(envelope.GemInventoryExpandResult);
                         break;
 
                     default:
@@ -534,6 +581,160 @@ namespace InfinitePickaxe.Client.Net
             OnErrorNotification?.Invoke(error);
         }
 
+        private void HandleGemListResponse(GemListResponse response)
+        {
+            Debug.Log($"젬 리스트 수신: {response.Gems.Count}개, 인벤토리 {response.CurrentInventorySlots}/{response.MaxInventorySlots}");
+            OnGemListResponse?.Invoke(response);
+        }
+
+        private void HandleGemGachaResult(GemGachaResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"젬 뽑기 성공: {result.AcquiredGems.Count}개 획득, 남은 크리스탈 {result.RemainingCrystal}");
+                if (result.RemainingCrystal.HasValue)
+                {
+                    var currencyUpdate = new CurrencyUpdate
+                    {
+                        Gold = null,
+                        Crystal = result.RemainingCrystal,
+                        Reason = "gem_gacha"
+                    };
+                    CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                    OnCurrencyUpdate?.Invoke(currencyUpdate);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"젬 뽑기 실패: {result.ErrorCode}");
+            }
+            OnGemGachaResult?.Invoke(result);
+        }
+
+        private void HandleGemSynthesisResult(GemSynthesisResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"젬 합성 성공: {result.ResultGemId} 획득");
+            }
+            else
+            {
+                Debug.LogWarning($"젬 합성 실패: {result.ErrorCode}");
+            }
+            OnGemSynthesisResult?.Invoke(result);
+        }
+
+        private void HandleGemConversionResult(GemConversionResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"젬 전환 성공: 크리스탈 {result.CrystalGained}개 획득, 총 {result.TotalCrystal}개");
+                if (result.TotalCrystal.HasValue)
+                {
+                    var currencyUpdate = new CurrencyUpdate
+                    {
+                        Gold = null,
+                        Crystal = result.TotalCrystal,
+                        Reason = "gem_conversion"
+                    };
+                    CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                    OnCurrencyUpdate?.Invoke(currencyUpdate);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"젬 전환 실패: {result.ErrorCode}");
+            }
+            OnGemConversionResult?.Invoke(result);
+        }
+
+        private void HandleGemDiscardResult(GemDiscardResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"젬 폐기 성공: {result.DiscardedCount}개 폐기");
+            }
+            else
+            {
+                Debug.LogWarning($"젬 폐기 실패: {result.ErrorCode}");
+            }
+            OnGemDiscardResult?.Invoke(result);
+        }
+
+        private void HandleGemEquipResult(GemEquipResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"젬 장착 성공: 곡괭이 슬롯 {result.PickaxeSlotIndex}, 젬 슬롯 {result.GemSlotIndex}");
+            }
+            else
+            {
+                Debug.LogWarning($"젬 장착 실패: {result.ErrorCode}");
+            }
+            OnGemEquipResult?.Invoke(result);
+        }
+
+        private void HandleGemUnequipResult(GemUnequipResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"젬 장착 해제 성공: 곡괭이 슬롯 {result.PickaxeSlotIndex}, 젬 슬롯 {result.GemSlotIndex}");
+            }
+            else
+            {
+                Debug.LogWarning($"젬 장착 해제 실패: {result.ErrorCode}");
+            }
+            OnGemUnequipResult?.Invoke(result);
+        }
+
+        private void HandleGemSlotUnlockResult(GemSlotUnlockResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"젬 슬롯 해금 성공: 곡괭이 슬롯 {result.PickaxeSlotIndex}, 젬 슬롯 {result.GemSlotIndex}, 사용 크리스탈 {result.CrystalSpent}");
+                if (result.RemainingCrystal.HasValue)
+                {
+                    var currencyUpdate = new CurrencyUpdate
+                    {
+                        Gold = null,
+                        Crystal = result.RemainingCrystal,
+                        Reason = "gem_slot_unlock"
+                    };
+                    CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                    OnCurrencyUpdate?.Invoke(currencyUpdate);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"젬 슬롯 해금 실패: {result.ErrorCode}");
+            }
+            OnGemSlotUnlockResult?.Invoke(result);
+        }
+
+        private void HandleGemInventoryExpandResult(GemInventoryExpandResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"젬 인벤토리 확장 성공: {result.NewMaxSlots}칸으로 확장, 사용 크리스탈 {result.CrystalSpent}");
+                if (result.RemainingCrystal.HasValue)
+                {
+                    var currencyUpdate = new CurrencyUpdate
+                    {
+                        Gold = null,
+                        Crystal = result.RemainingCrystal,
+                        Reason = "gem_inventory_expand"
+                    };
+                    CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                    OnCurrencyUpdate?.Invoke(currencyUpdate);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"젬 인벤토리 확장 실패: {result.ErrorCode}");
+            }
+            OnGemInventoryExpandResult?.Invoke(result);
+        }
+
         #endregion
 
         #region Public Helper Methods
@@ -692,6 +893,153 @@ namespace InfinitePickaxe.Client.Net
             {
                 Type = MessageType.AdWatchComplete,
                 AdWatchComplete = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
+        /// 젬 리스트 요청
+        /// </summary>
+        public void RequestGemList()
+        {
+            var request = new GemListRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemListRequest,
+                GemListRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
+        /// 젬 뽑기 요청
+        /// </summary>
+        public void RequestGemGacha(uint pullCount)
+        {
+            var request = new GemGachaRequest
+            {
+                PullCount = pullCount
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemGachaRequest,
+                GemGachaRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
+        /// 젬 합성 요청
+        /// </summary>
+        public void RequestGemSynthesis(string gemInstanceId1, string gemInstanceId2, string gemInstanceId3)
+        {
+            var request = new GemSynthesisRequest();
+            request.GemInstanceIds.Add(gemInstanceId1);
+            request.GemInstanceIds.Add(gemInstanceId2);
+            request.GemInstanceIds.Add(gemInstanceId3);
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemSynthesisRequest,
+                GemSynthesisRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
+        /// 젬 전환 요청 (크리스탈로 변환)
+        /// </summary>
+        public void RequestGemConversion(System.Collections.Generic.List<string> gemInstanceIds)
+        {
+            var request = new GemConversionRequest();
+            request.GemInstanceIds.AddRange(gemInstanceIds);
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemConversionRequest,
+                GemConversionRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
+        /// 젬 폐기 요청
+        /// </summary>
+        public void RequestGemDiscard(System.Collections.Generic.List<string> gemInstanceIds)
+        {
+            var request = new GemDiscardRequest();
+            request.GemInstanceIds.AddRange(gemInstanceIds);
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemDiscardRequest,
+                GemDiscardRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
+        /// 젬 장착 요청
+        /// </summary>
+        public void RequestGemEquip(uint pickaxeSlotIndex, uint gemSlotIndex, string gemInstanceId)
+        {
+            var request = new GemEquipRequest
+            {
+                PickaxeSlotIndex = pickaxeSlotIndex,
+                GemSlotIndex = gemSlotIndex,
+                GemInstanceId = gemInstanceId
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemEquipRequest,
+                GemEquipRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
+        /// 젬 장착 해제 요청
+        /// </summary>
+        public void RequestGemUnequip(uint pickaxeSlotIndex, uint gemSlotIndex)
+        {
+            var request = new GemUnequipRequest
+            {
+                PickaxeSlotIndex = pickaxeSlotIndex,
+                GemSlotIndex = gemSlotIndex
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemUnequipRequest,
+                GemUnequipRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
+        /// 젬 슬롯 해금 요청
+        /// </summary>
+        public void RequestGemSlotUnlock(uint pickaxeSlotIndex, uint gemSlotIndex)
+        {
+            var request = new GemSlotUnlockRequest
+            {
+                PickaxeSlotIndex = pickaxeSlotIndex,
+                GemSlotIndex = gemSlotIndex
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemSlotUnlockRequest,
+                GemSlotUnlockRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        /// <summary>
+        /// 젬 인벤토리 확장 요청
+        /// </summary>
+        public void RequestGemInventoryExpand()
+        {
+            var request = new GemInventoryExpandRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemInventoryExpandRequest,
+                GemInventoryExpandRequest = request
             };
             NetworkManager.Instance.SendMessage(envelope);
         }

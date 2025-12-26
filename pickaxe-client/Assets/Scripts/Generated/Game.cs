@@ -25,7 +25,7 @@ namespace Infinitepickaxe {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgpnYW1lLnByb3RvEg9pbmZpbml0ZXBpY2theGUaHmdvb2dsZS9wcm90b2J1",
-            "Zi93cmFwcGVycy5wcm90byLTEQoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
+            "Zi93cmFwcGVycy5wcm90byKtGwoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
             "LmluZmluaXRlcGlja2F4ZS5NZXNzYWdlVHlwZRI2CgloYW5kc2hha2UYCiAB",
             "KAsyIS5pbmZpbml0ZXBpY2theGUuSGFuZHNoYWtlUmVxdWVzdEgAEj4KEGhh",
             "bmRzaGFrZV9yZXN1bHQYCyABKAsyIi5pbmZpbml0ZXBpY2theGUuSGFuZHNo",
@@ -75,135 +75,232 @@ namespace Infinitepickaxe {
             "UmV3YXJkUmVxdWVzdEgAEkUKFW9mZmxpbmVfcmV3YXJkX3Jlc3VsdBhlIAEo",
             "CzIkLmluZmluaXRlcGlja2F4ZS5PZmZsaW5lUmV3YXJkUmVzdWx0SAASQAoS",
             "ZXJyb3Jfbm90aWZpY2F0aW9uGG4gASgLMiIuaW5maW5pdGVwaWNrYXhlLkVy",
-            "cm9yTm90aWZpY2F0aW9uSABCCQoHbWVzc2FnZSJKChBIYW5kc2hha2VSZXF1",
-            "ZXN0EgsKA2p3dBgBIAEoCRIWCg5jbGllbnRfdmVyc2lvbhgCIAEoCRIRCglk",
-            "ZXZpY2VfaWQYAyABKAki4AEKD1BpY2theGVTbG90SW5mbxISCgpzbG90X2lu",
-            "ZGV4GAEgASgNEg0KBWxldmVsGAIgASgNEgwKBHRpZXIYAyABKA0SFAoMYXR0",
-            "YWNrX3Bvd2VyGAQgASgEEhkKEWF0dGFja19zcGVlZF94MTAwGAUgASgNEhwK",
-            "FGNyaXRpY2FsX2hpdF9wZXJjZW50GAYgASgNEhcKD2NyaXRpY2FsX2RhbWFn",
-            "ZRgHIAEoDRILCgNkcHMYCCABKAQSEgoKcGl0eV9ib251cxgJIAEoDRITCgtp",
-            "c191bmxvY2tlZBgKIAEoCCJDCglBZENvdW50ZXISDwoHYWRfdHlwZRgBIAEo",
-            "CRIQCghhZF9jb3VudBgCIAEoDRITCgtkYWlseV9saW1pdBgDIAEoDSL2AwoQ",
-            "VXNlckRhdGFTbmFwc2hvdBIqCgRnb2xkGAEgASgLMhwuZ29vZ2xlLnByb3Rv",
-            "YnVmLlVJbnQ2NFZhbHVlEi0KB2NyeXN0YWwYAiABKAsyHC5nb29nbGUucHJv",
-            "dG9idWYuVUludDMyVmFsdWUSFgoOdW5sb2NrZWRfc2xvdHMYAyADKAgSOAoS",
-            "Y3VycmVudF9taW5lcmFsX2lkGAQgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJ",
-            "bnQzMlZhbHVlEjAKCm1pbmVyYWxfaHAYBSABKAsyHC5nb29nbGUucHJvdG9i",
-            "dWYuVUludDY0VmFsdWUSNAoObWluZXJhbF9tYXhfaHAYBiABKAsyHC5nb29n",
-            "bGUucHJvdG9idWYuVUludDY0VmFsdWUSNwoNcGlja2F4ZV9zbG90cxgHIAMo",
-            "CzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8SEQoJdG90YWxf",
-            "ZHBzGAggASgEEjEKC3NlcnZlcl90aW1lGAkgASgLMhwuZ29vZ2xlLnByb3Rv",
-            "YnVmLlVJbnQ2NFZhbHVlEi8KC2FkX2NvdW50ZXJzGAogAygLMhouaW5maW5p",
-            "dGVwaWNrYXhlLkFkQ291bnRlchIdChVjdXJyZW50X29mZmxpbmVfaG91cnMY",
-            "CyABKA0iagoRSGFuZHNoYWtlUmVzcG9uc2USDwoHc3VjY2VzcxgBIAEoCBIP",
-            "CgdtZXNzYWdlGAIgASgJEjMKCHNuYXBzaG90GAMgASgLMiEuaW5maW5pdGVw",
-            "aWNrYXhlLlVzZXJEYXRhU25hcHNob3QiIwoJSGVhcnRiZWF0EhYKDmNsaWVu",
-            "dF90aW1lX21zGAEgASgEIiYKDEhlYXJ0YmVhdEFjaxIWCg5zZXJ2ZXJfdGlt",
-            "ZV9tcxgBIAEoBCIUChJNaW5lcmFsTGlzdFJlcXVlc3QiZwoLTWluZXJhbElu",
-            "Zm8SEgoKbWluZXJhbF9pZBgBIAEoDRIMCgRuYW1lGAIgASgJEg4KBm1heF9o",
-            "cBgDIAEoBBITCgtnb2xkX3Jld2FyZBgEIAEoBBIRCglpY29uX25hbWUYBSAB",
-            "KAkiRQoTTWluZXJhbExpc3RSZXNwb25zZRIuCghtaW5lcmFscxgBIAMoCzIc",
-            "LmluZmluaXRlcGlja2F4ZS5NaW5lcmFsSW5mbyIqChRDaGFuZ2VNaW5lcmFs",
-            "UmVxdWVzdBISCgptaW5lcmFsX2lkGAEgASgNInwKFUNoYW5nZU1pbmVyYWxS",
-            "ZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIEhIKCm1pbmVyYWxfaWQYAiABKA0S",
-            "EgoKbWluZXJhbF9ocBgDIAEoBBIWCg5taW5lcmFsX21heF9ocBgEIAEoBBIS",
-            "CgplcnJvcl9jb2RlGAUgASgJIkgKDVBpY2theGVBdHRhY2sSEgoKc2xvdF9p",
-            "bmRleBgBIAEoDRIOCgZkYW1hZ2UYAiABKAQSEwoLaXNfY3JpdGljYWwYAyAB",
-            "KAgikQEKDE1pbmluZ1VwZGF0ZRISCgptaW5lcmFsX2lkGAEgASgNEhIKCmN1",
-            "cnJlbnRfaHAYAiABKAQSDgoGbWF4X2hwGAMgASgEEi8KB2F0dGFja3MYBCAD",
-            "KAsyHi5pbmZpbml0ZXBpY2theGUuUGlja2F4ZUF0dGFjaxIYChBzZXJ2ZXJf",
-            "dGltZXN0YW1wGAUgASgEIpMBCg5NaW5pbmdDb21wbGV0ZRISCgptaW5lcmFs",
-            "X2lkGAEgASgNEhMKC2dvbGRfZWFybmVkGAIgASgEEhIKCnRvdGFsX2dvbGQY",
-            "AyABKAQSFAoMbWluaW5nX2NvdW50GAQgASgEEhQKDHJlc3Bhd25fdGltZRgF",
-            "IAEoDRIYChBzZXJ2ZXJfdGltZXN0YW1wGAYgASgEIhEKD0FsbFNsb3RzUmVx",
-            "dWVzdCJWChBBbGxTbG90c1Jlc3BvbnNlEi8KBXNsb3RzGAEgAygLMiAuaW5m",
-            "aW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIRCgl0b3RhbF9kcHMYAiAB",
-            "KAQiJAoOVXBncmFkZVJlcXVlc3QSEgoKc2xvdF9pbmRleBgBIAEoDSKRAwoN",
-            "VXBncmFkZVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhIKCnNsb3RfaW5kZXgY",
-            "AiABKA0SEQoJbmV3X2xldmVsGAMgASgNEhAKCG5ld190aWVyGAQgASgNEhgK",
-            "EG5ld19hdHRhY2tfcG93ZXIYBSABKAQSHQoVbmV3X2F0dGFja19zcGVlZF94",
-            "MTAwGAYgASgNEiAKGG5ld19jcml0aWNhbF9oaXRfcGVyY2VudBgHIAEoDRIb",
-            "ChNuZXdfY3JpdGljYWxfZGFtYWdlGAggASgNEg8KB25ld19kcHMYCSABKAQS",
-            "FQoNbmV3X3RvdGFsX2RwcxgKIAEoBBISCgpnb2xkX3NwZW50GAsgASgEEhYK",
-            "DnJlbWFpbmluZ19nb2xkGAwgASgEEhIKCmVycm9yX2NvZGUYDSABKAkSFAoM",
-            "YmFzZV9yYXRlX2JwGA4gASgNEhUKDWJvbnVzX3JhdGVfYnAYDyABKA0SFQoN",
-            "ZmluYWxfcmF0ZV9icBgQIAEoDRISCgpwaXR5X2JvbnVzGBEgASgNIhYKFERh",
-            "aWx5TWlzc2lvbnNSZXF1ZXN0IqICCgxNaXNzaW9uRW50cnkSDwoHc2xvdF9u",
-            "bxgBIAEoDRISCgptaXNzaW9uX2lkGAIgASgNEhQKDG1pc3Npb25fdHlwZRgD",
-            "IAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIUCgx0YXJnZXRfdmFsdWUYBSAB",
-            "KA0SFQoNY3VycmVudF92YWx1ZRgGIAEoDRIWCg5yZXdhcmRfY3J5c3RhbBgH",
-            "IAEoDRIOCgZzdGF0dXMYCCABKAkSEwoLYXNzaWduZWRfYXQYCSABKAQSEgoK",
-            "ZXhwaXJlc19hdBgKIAEoBBISCgpkaWZmaWN1bHR5GAsgASgJEjAKCm1pbmVy",
-            "YWxfaWQYDCABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDMyVmFsdWUi9wEK",
-            "FURhaWx5TWlzc2lvbnNSZXNwb25zZRIvCghtaXNzaW9ucxgBIAMoCzIdLmlu",
-            "ZmluaXRlcGlja2F4ZS5NaXNzaW9uRW50cnkSFwoPY29tcGxldGVkX2NvdW50",
-            "GAIgASgNEhQKDHJlcm9sbF9jb3VudBgDIAEoDRIvCgthZF9jb3VudGVycxgE",
-            "IAMoCzIaLmluZmluaXRlcGlja2F4ZS5BZENvdW50ZXISFAoMcmVyb2xsc19m",
-            "cmVlGAUgASgNEhsKE3Jlcm9sbHNfdG90YWxfbGltaXQYBiABKA0SGgoScmVz",
-            "ZXRfdGltZXN0YW1wX21zGAcgASgEInkKFU1pc3Npb25Qcm9ncmVzc1VwZGF0",
-            "ZRIPCgdzbG90X25vGAEgASgNEhIKCm1pc3Npb25faWQYAiABKA0SFQoNY3Vy",
-            "cmVudF92YWx1ZRgDIAEoDRIUCgx0YXJnZXRfdmFsdWUYBCABKA0SDgoGc3Rh",
-            "dHVzGAUgASgJIiIKD01pc3Npb25Db21wbGV0ZRIPCgdzbG90X25vGAEgASgN",
-            "IpABChVNaXNzaW9uQ29tcGxldGVSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIP",
-            "CgdzbG90X25vGAIgASgNEhIKCm1pc3Npb25faWQYAyABKA0SFgoOcmV3YXJk",
-            "X2NyeXN0YWwYBCABKA0SFQoNdG90YWxfY3J5c3RhbBgFIAEoDRISCgplcnJv",
-            "cl9jb2RlGAYgASgJIg8KDU1pc3Npb25SZXJvbGwiigEKE01pc3Npb25SZXJv",
-            "bGxSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBI4ChFyZXJvbGxlZF9taXNzaW9u",
-            "cxgCIAMoCzIdLmluZmluaXRlcGlja2F4ZS5NaXNzaW9uRW50cnkSFAoMcmVy",
-            "b2xsc191c2VkGAMgASgNEhIKCmVycm9yX2NvZGUYBCABKAkiKQoOTWlsZXN0",
-            "b25lQ2xhaW0SFwoPbWlsZXN0b25lX2NvdW50GAEgASgNIr4BChRNaWxlc3Rv",
-            "bmVDbGFpbVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhcKD21pbGVzdG9uZV9j",
-            "b3VudBgCIAEoDRIcChRvZmZsaW5lX2hvdXJzX2dhaW5lZBgDIAEoDRIbChN0",
-            "b3RhbF9vZmZsaW5lX2hvdXJzGAQgASgNEhYKDnJld2FyZF9jcnlzdGFsGAUg",
-            "ASgNEhUKDXRvdGFsX2NyeXN0YWwYBiABKA0SEgoKZXJyb3JfY29kZRgHIAEo",
-            "CSJhCg5NaWxlc3RvbmVTdGF0ZRIXCg9jb21wbGV0ZWRfY291bnQYASABKA0S",
-            "GgoSY2xhaW1lZF9taWxlc3RvbmVzGAIgAygNEhoKEnJlc2V0X3RpbWVzdGFt",
-            "cF9tcxgDIAEoBCIgCgpTbG90VW5sb2NrEhIKCnNsb3RfaW5kZXgYASABKA0i",
-            "xAEKEFNsb3RVbmxvY2tSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBISCgpzbG90",
-            "X2luZGV4GAIgASgNEhUKDWNyeXN0YWxfc3BlbnQYAyABKA0SGQoRcmVtYWlu",
-            "aW5nX2NyeXN0YWwYBCABKA0SEgoKZXJyb3JfY29kZRgFIAEoCRIyCghuZXdf",
-            "c2xvdBgGIAEoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8S",
-            "EQoJdG90YWxfZHBzGAcgASgEIiIKD0FkV2F0Y2hDb21wbGV0ZRIPCgdhZF90",
-            "eXBlGAEgASgJIqUBCg1BZFdhdGNoUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgS",
-            "DwoHYWRfdHlwZRgCIAEoCRIWCg5jcnlzdGFsX2Vhcm5lZBgDIAEoDRIVCg10",
-            "b3RhbF9jcnlzdGFsGAQgASgNEi8KC2FkX2NvdW50ZXJzGAUgAygLMhouaW5m",
-            "aW5pdGVwaWNrYXhlLkFkQ291bnRlchISCgplcnJvcl9jb2RlGAYgASgJIl4K",
-            "D0FkQ291bnRlcnNTdGF0ZRIvCgthZF9jb3VudGVycxgBIAMoCzIaLmluZmlu",
-            "aXRlcGlja2F4ZS5BZENvdW50ZXISGgoScmVzZXRfdGltZXN0YW1wX21zGAIg",
-            "ASgEInsKDkN1cnJlbmN5VXBkYXRlEioKBGdvbGQYASABKAsyHC5nb29nbGUu",
-            "cHJvdG9idWYuVUludDY0VmFsdWUSLQoHY3J5c3RhbBgCIAEoCzIcLmdvb2ds",
-            "ZS5wcm90b2J1Zi5VSW50MzJWYWx1ZRIOCgZyZWFzb24YAyABKAkiFgoUT2Zm",
-            "bGluZVJld2FyZFJlcXVlc3QibQoTT2ZmbGluZVJld2FyZFJlc3VsdBIXCg9l",
-            "bGFwc2VkX3NlY29uZHMYASABKAQSEwoLZ29sZF9lYXJuZWQYAiABKAQSFAoM",
-            "bWluaW5nX2NvdW50GAMgASgNEhIKCnRvdGFsX2dvbGQYBCABKAQiOAoRRXJy",
-            "b3JOb3RpZmljYXRpb24SEgoKZXJyb3JfY29kZRgBIAEoCRIPCgdtZXNzYWdl",
-            "GAIgASgJKrUGCgtNZXNzYWdlVHlwZRILCgdVTktOT1dOEAASDQoJSEFORFNI",
-            "QUtFEAESFAoQSEFORFNIQUtFX1JFU1VMVBACEg0KCUhFQVJUQkVBVBADEhEK",
-            "DUhFQVJUQkVBVF9BQ0sQBBIWChJVU0VSX0RBVEFfU05BUFNIT1QQChIYChRN",
-            "SU5FUkFMX0xJU1RfUkVRVUVTVBAUEhkKFU1JTkVSQUxfTElTVF9SRVNQT05T",
-            "RRAVEhoKFkNIQU5HRV9NSU5FUkFMX1JFUVVFU1QQFhIbChdDSEFOR0VfTUlO",
-            "RVJBTF9SRVNQT05TRRAXEhEKDU1JTklOR19VUERBVEUQIBITCg9NSU5JTkdf",
-            "Q09NUExFVEUQIRIVChFBTExfU0xPVFNfUkVRVUVTVBAoEhYKEkFMTF9TTE9U",
-            "U19SRVNQT05TRRApEg8KC1NMT1RfVU5MT0NLECoSFgoSU0xPVF9VTkxPQ0tf",
-            "UkVTVUxUECsSEwoPVVBHUkFERV9SRVFVRVNUEDISEgoOVVBHUkFERV9SRVNV",
-            "TFQQMxIaChZEQUlMWV9NSVNTSU9OU19SRVFVRVNUEDwSGwoXREFJTFlfTUlT",
-            "U0lPTlNfUkVTUE9OU0UQPRIbChdNSVNTSU9OX1BST0dSRVNTX1VQREFURRA+",
-            "EhQKEE1JU1NJT05fQ09NUExFVEUQPxIbChdNSVNTSU9OX0NPTVBMRVRFX1JF",
-            "U1VMVBBAEhIKDk1JU1NJT05fUkVST0xMEEESGQoVTUlTU0lPTl9SRVJPTExf",
-            "UkVTVUxUEEISEwoPTUlMRVNUT05FX0NMQUlNEEMSGgoWTUlMRVNUT05FX0NM",
-            "QUlNX1JFU1VMVBBEEhMKD01JTEVTVE9ORV9TVEFURRBFEhUKEUFEX1dBVENI",
-            "X0NPTVBMRVRFEEYSEwoPQURfV0FUQ0hfUkVTVUxUEEcSFQoRQURfQ09VTlRF",
-            "UlNfU1RBVEUQSBITCg9DVVJSRU5DWV9VUERBVEUQUBIaChZPRkZMSU5FX1JF",
-            "V0FSRF9SRVFVRVNUEFoSGQoVT0ZGTElORV9SRVdBUkRfUkVTVUxUEFsSFgoS",
-            "RVJST1JfTk9USUZJQ0FUSU9OEGRiBnByb3RvMw=="));
+            "cm9yTm90aWZpY2F0aW9uSAASOwoQZ2VtX2xpc3RfcmVxdWVzdBh4IAEoCzIf",
+            "LmluZmluaXRlcGlja2F4ZS5HZW1MaXN0UmVxdWVzdEgAEj0KEWdlbV9saXN0",
+            "X3Jlc3BvbnNlGHkgASgLMiAuaW5maW5pdGVwaWNrYXhlLkdlbUxpc3RSZXNw",
+            "b25zZUgAEj0KEWdlbV9nYWNoYV9yZXF1ZXN0GHogASgLMiAuaW5maW5pdGVw",
+            "aWNrYXhlLkdlbUdhY2hhUmVxdWVzdEgAEjsKEGdlbV9nYWNoYV9yZXN1bHQY",
+            "eyABKAsyHy5pbmZpbml0ZXBpY2theGUuR2VtR2FjaGFSZXN1bHRIABJFChVn",
+            "ZW1fc3ludGhlc2lzX3JlcXVlc3QYfCABKAsyJC5pbmZpbml0ZXBpY2theGUu",
+            "R2VtU3ludGhlc2lzUmVxdWVzdEgAEkMKFGdlbV9zeW50aGVzaXNfcmVzdWx0",
+            "GH0gASgLMiMuaW5maW5pdGVwaWNrYXhlLkdlbVN5bnRoZXNpc1Jlc3VsdEgA",
+            "EkcKFmdlbV9jb252ZXJzaW9uX3JlcXVlc3QYfiABKAsyJS5pbmZpbml0ZXBp",
+            "Y2theGUuR2VtQ29udmVyc2lvblJlcXVlc3RIABJFChVnZW1fY29udmVyc2lv",
+            "bl9yZXN1bHQYfyABKAsyJC5pbmZpbml0ZXBpY2theGUuR2VtQ29udmVyc2lv",
+            "blJlc3VsdEgAEkIKE2dlbV9kaXNjYXJkX3JlcXVlc3QYgAEgASgLMiIuaW5m",
+            "aW5pdGVwaWNrYXhlLkdlbURpc2NhcmRSZXF1ZXN0SAASQAoSZ2VtX2Rpc2Nh",
+            "cmRfcmVzdWx0GIEBIAEoCzIhLmluZmluaXRlcGlja2F4ZS5HZW1EaXNjYXJk",
+            "UmVzdWx0SAASPgoRZ2VtX2VxdWlwX3JlcXVlc3QYggEgASgLMiAuaW5maW5p",
+            "dGVwaWNrYXhlLkdlbUVxdWlwUmVxdWVzdEgAEjwKEGdlbV9lcXVpcF9yZXN1",
+            "bHQYgwEgASgLMh8uaW5maW5pdGVwaWNrYXhlLkdlbUVxdWlwUmVzdWx0SAAS",
+            "QgoTZ2VtX3VuZXF1aXBfcmVxdWVzdBiEASABKAsyIi5pbmZpbml0ZXBpY2th",
+            "eGUuR2VtVW5lcXVpcFJlcXVlc3RIABJAChJnZW1fdW5lcXVpcF9yZXN1bHQY",
+            "hQEgASgLMiEuaW5maW5pdGVwaWNrYXhlLkdlbVVuZXF1aXBSZXN1bHRIABJJ",
+            "ChdnZW1fc2xvdF91bmxvY2tfcmVxdWVzdBiGASABKAsyJS5pbmZpbml0ZXBp",
+            "Y2theGUuR2VtU2xvdFVubG9ja1JlcXVlc3RIABJHChZnZW1fc2xvdF91bmxv",
+            "Y2tfcmVzdWx0GIcBIAEoCzIkLmluZmluaXRlcGlja2F4ZS5HZW1TbG90VW5s",
+            "b2NrUmVzdWx0SAASUwocZ2VtX2ludmVudG9yeV9leHBhbmRfcmVxdWVzdBiI",
+            "ASABKAsyKi5pbmZpbml0ZXBpY2theGUuR2VtSW52ZW50b3J5RXhwYW5kUmVx",
+            "dWVzdEgAElEKG2dlbV9pbnZlbnRvcnlfZXhwYW5kX3Jlc3VsdBiJASABKAsy",
+            "KS5pbmZpbml0ZXBpY2theGUuR2VtSW52ZW50b3J5RXhwYW5kUmVzdWx0SABC",
+            "CQoHbWVzc2FnZSJKChBIYW5kc2hha2VSZXF1ZXN0EgsKA2p3dBgBIAEoCRIW",
+            "Cg5jbGllbnRfdmVyc2lvbhgCIAEoCRIRCglkZXZpY2VfaWQYAyABKAkikQIK",
+            "D1BpY2theGVTbG90SW5mbxISCgpzbG90X2luZGV4GAEgASgNEg0KBWxldmVs",
+            "GAIgASgNEgwKBHRpZXIYAyABKA0SFAoMYXR0YWNrX3Bvd2VyGAQgASgEEhkK",
+            "EWF0dGFja19zcGVlZF94MTAwGAUgASgNEhwKFGNyaXRpY2FsX2hpdF9wZXJj",
+            "ZW50GAYgASgNEhcKD2NyaXRpY2FsX2RhbWFnZRgHIAEoDRILCgNkcHMYCCAB",
+            "KAQSEgoKcGl0eV9ib251cxgJIAEoDRITCgtpc191bmxvY2tlZBgKIAEoCBIv",
+            "CglnZW1fc2xvdHMYCyADKAsyHC5pbmZpbml0ZXBpY2theGUuR2VtU2xvdElu",
+            "Zm8iQwoJQWRDb3VudGVyEg8KB2FkX3R5cGUYASABKAkSEAoIYWRfY291bnQY",
+            "AiABKA0SEwoLZGFpbHlfbGltaXQYAyABKA0iqgQKEFVzZXJEYXRhU25hcHNo",
+            "b3QSKgoEZ29sZBgBIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1",
+            "ZRItCgdjcnlzdGFsGAIgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQzMlZh",
+            "bHVlEhYKDnVubG9ja2VkX3Nsb3RzGAMgAygIEjgKEmN1cnJlbnRfbWluZXJh",
+            "bF9pZBgEIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJWYWx1ZRIwCgpt",
+            "aW5lcmFsX2hwGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZhbHVl",
+            "EjQKDm1pbmVyYWxfbWF4X2hwGAYgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJ",
+            "bnQ2NFZhbHVlEjcKDXBpY2theGVfc2xvdHMYByADKAsyIC5pbmZpbml0ZXBp",
+            "Y2theGUuUGlja2F4ZVNsb3RJbmZvEhEKCXRvdGFsX2RwcxgIIAEoBBIxCgtz",
+            "ZXJ2ZXJfdGltZRgJIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1",
+            "ZRIvCgthZF9jb3VudGVycxgKIAMoCzIaLmluZmluaXRlcGlja2F4ZS5BZENv",
+            "dW50ZXISHQoVY3VycmVudF9vZmZsaW5lX2hvdXJzGAsgASgNEh4KFmdlbV9p",
+            "bnZlbnRvcnlfY2FwYWNpdHkYDCABKA0SEgoKdG90YWxfZ2VtcxgNIAEoDSJq",
+            "ChFIYW5kc2hha2VSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIEg8KB21lc3Nh",
+            "Z2UYAiABKAkSMwoIc25hcHNob3QYAyABKAsyIS5pbmZpbml0ZXBpY2theGUu",
+            "VXNlckRhdGFTbmFwc2hvdCIjCglIZWFydGJlYXQSFgoOY2xpZW50X3RpbWVf",
+            "bXMYASABKAQiJgoMSGVhcnRiZWF0QWNrEhYKDnNlcnZlcl90aW1lX21zGAEg",
+            "ASgEIhQKEk1pbmVyYWxMaXN0UmVxdWVzdCJnCgtNaW5lcmFsSW5mbxISCgpt",
+            "aW5lcmFsX2lkGAEgASgNEgwKBG5hbWUYAiABKAkSDgoGbWF4X2hwGAMgASgE",
+            "EhMKC2dvbGRfcmV3YXJkGAQgASgEEhEKCWljb25fbmFtZRgFIAEoCSJFChNN",
+            "aW5lcmFsTGlzdFJlc3BvbnNlEi4KCG1pbmVyYWxzGAEgAygLMhwuaW5maW5p",
+            "dGVwaWNrYXhlLk1pbmVyYWxJbmZvIioKFENoYW5nZU1pbmVyYWxSZXF1ZXN0",
+            "EhIKCm1pbmVyYWxfaWQYASABKA0ifAoVQ2hhbmdlTWluZXJhbFJlc3BvbnNl",
+            "Eg8KB3N1Y2Nlc3MYASABKAgSEgoKbWluZXJhbF9pZBgCIAEoDRISCgptaW5l",
+            "cmFsX2hwGAMgASgEEhYKDm1pbmVyYWxfbWF4X2hwGAQgASgEEhIKCmVycm9y",
+            "X2NvZGUYBSABKAkiSAoNUGlja2F4ZUF0dGFjaxISCgpzbG90X2luZGV4GAEg",
+            "ASgNEg4KBmRhbWFnZRgCIAEoBBITCgtpc19jcml0aWNhbBgDIAEoCCKRAQoM",
+            "TWluaW5nVXBkYXRlEhIKCm1pbmVyYWxfaWQYASABKA0SEgoKY3VycmVudF9o",
+            "cBgCIAEoBBIOCgZtYXhfaHAYAyABKAQSLwoHYXR0YWNrcxgEIAMoCzIeLmlu",
+            "ZmluaXRlcGlja2F4ZS5QaWNrYXhlQXR0YWNrEhgKEHNlcnZlcl90aW1lc3Rh",
+            "bXAYBSABKAQikwEKDk1pbmluZ0NvbXBsZXRlEhIKCm1pbmVyYWxfaWQYASAB",
+            "KA0SEwoLZ29sZF9lYXJuZWQYAiABKAQSEgoKdG90YWxfZ29sZBgDIAEoBBIU",
+            "CgxtaW5pbmdfY291bnQYBCABKAQSFAoMcmVzcGF3bl90aW1lGAUgASgNEhgK",
+            "EHNlcnZlcl90aW1lc3RhbXAYBiABKAQiEQoPQWxsU2xvdHNSZXF1ZXN0IlYK",
+            "EEFsbFNsb3RzUmVzcG9uc2USLwoFc2xvdHMYASADKAsyIC5pbmZpbml0ZXBp",
+            "Y2theGUuUGlja2F4ZVNsb3RJbmZvEhEKCXRvdGFsX2RwcxgCIAEoBCIkCg5V",
+            "cGdyYWRlUmVxdWVzdBISCgpzbG90X2luZGV4GAEgASgNIpEDCg1VcGdyYWRl",
+            "UmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSEgoKc2xvdF9pbmRleBgCIAEoDRIR",
+            "CgluZXdfbGV2ZWwYAyABKA0SEAoIbmV3X3RpZXIYBCABKA0SGAoQbmV3X2F0",
+            "dGFja19wb3dlchgFIAEoBBIdChVuZXdfYXR0YWNrX3NwZWVkX3gxMDAYBiAB",
+            "KA0SIAoYbmV3X2NyaXRpY2FsX2hpdF9wZXJjZW50GAcgASgNEhsKE25ld19j",
+            "cml0aWNhbF9kYW1hZ2UYCCABKA0SDwoHbmV3X2RwcxgJIAEoBBIVCg1uZXdf",
+            "dG90YWxfZHBzGAogASgEEhIKCmdvbGRfc3BlbnQYCyABKAQSFgoOcmVtYWlu",
+            "aW5nX2dvbGQYDCABKAQSEgoKZXJyb3JfY29kZRgNIAEoCRIUCgxiYXNlX3Jh",
+            "dGVfYnAYDiABKA0SFQoNYm9udXNfcmF0ZV9icBgPIAEoDRIVCg1maW5hbF9y",
+            "YXRlX2JwGBAgASgNEhIKCnBpdHlfYm9udXMYESABKA0iFgoURGFpbHlNaXNz",
+            "aW9uc1JlcXVlc3QiogIKDE1pc3Npb25FbnRyeRIPCgdzbG90X25vGAEgASgN",
+            "EhIKCm1pc3Npb25faWQYAiABKA0SFAoMbWlzc2lvbl90eXBlGAMgASgJEhMK",
+            "C2Rlc2NyaXB0aW9uGAQgASgJEhQKDHRhcmdldF92YWx1ZRgFIAEoDRIVCg1j",
+            "dXJyZW50X3ZhbHVlGAYgASgNEhYKDnJld2FyZF9jcnlzdGFsGAcgASgNEg4K",
+            "BnN0YXR1cxgIIAEoCRITCgthc3NpZ25lZF9hdBgJIAEoBBISCgpleHBpcmVz",
+            "X2F0GAogASgEEhIKCmRpZmZpY3VsdHkYCyABKAkSMAoKbWluZXJhbF9pZBgM",
+            "IAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJWYWx1ZSL3AQoVRGFpbHlN",
+            "aXNzaW9uc1Jlc3BvbnNlEi8KCG1pc3Npb25zGAEgAygLMh0uaW5maW5pdGVw",
+            "aWNrYXhlLk1pc3Npb25FbnRyeRIXCg9jb21wbGV0ZWRfY291bnQYAiABKA0S",
+            "FAoMcmVyb2xsX2NvdW50GAMgASgNEi8KC2FkX2NvdW50ZXJzGAQgAygLMhou",
+            "aW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIUCgxyZXJvbGxzX2ZyZWUYBSAB",
+            "KA0SGwoTcmVyb2xsc190b3RhbF9saW1pdBgGIAEoDRIaChJyZXNldF90aW1l",
+            "c3RhbXBfbXMYByABKAQieQoVTWlzc2lvblByb2dyZXNzVXBkYXRlEg8KB3Ns",
+            "b3Rfbm8YASABKA0SEgoKbWlzc2lvbl9pZBgCIAEoDRIVCg1jdXJyZW50X3Zh",
+            "bHVlGAMgASgNEhQKDHRhcmdldF92YWx1ZRgEIAEoDRIOCgZzdGF0dXMYBSAB",
+            "KAkiIgoPTWlzc2lvbkNvbXBsZXRlEg8KB3Nsb3Rfbm8YASABKA0ikAEKFU1p",
+            "c3Npb25Db21wbGV0ZVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEg8KB3Nsb3Rf",
+            "bm8YAiABKA0SEgoKbWlzc2lvbl9pZBgDIAEoDRIWCg5yZXdhcmRfY3J5c3Rh",
+            "bBgEIAEoDRIVCg10b3RhbF9jcnlzdGFsGAUgASgNEhIKCmVycm9yX2NvZGUY",
+            "BiABKAkiDwoNTWlzc2lvblJlcm9sbCKKAQoTTWlzc2lvblJlcm9sbFJlc3Vs",
+            "dBIPCgdzdWNjZXNzGAEgASgIEjgKEXJlcm9sbGVkX21pc3Npb25zGAIgAygL",
+            "Mh0uaW5maW5pdGVwaWNrYXhlLk1pc3Npb25FbnRyeRIUCgxyZXJvbGxzX3Vz",
+            "ZWQYAyABKA0SEgoKZXJyb3JfY29kZRgEIAEoCSIpCg5NaWxlc3RvbmVDbGFp",
+            "bRIXCg9taWxlc3RvbmVfY291bnQYASABKA0ivgEKFE1pbGVzdG9uZUNsYWlt",
+            "UmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSFwoPbWlsZXN0b25lX2NvdW50GAIg",
+            "ASgNEhwKFG9mZmxpbmVfaG91cnNfZ2FpbmVkGAMgASgNEhsKE3RvdGFsX29m",
+            "ZmxpbmVfaG91cnMYBCABKA0SFgoOcmV3YXJkX2NyeXN0YWwYBSABKA0SFQoN",
+            "dG90YWxfY3J5c3RhbBgGIAEoDRISCgplcnJvcl9jb2RlGAcgASgJImEKDk1p",
+            "bGVzdG9uZVN0YXRlEhcKD2NvbXBsZXRlZF9jb3VudBgBIAEoDRIaChJjbGFp",
+            "bWVkX21pbGVzdG9uZXMYAiADKA0SGgoScmVzZXRfdGltZXN0YW1wX21zGAMg",
+            "ASgEIiAKClNsb3RVbmxvY2sSEgoKc2xvdF9pbmRleBgBIAEoDSLEAQoQU2xv",
+            "dFVubG9ja1Jlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhIKCnNsb3RfaW5kZXgY",
+            "AiABKA0SFQoNY3J5c3RhbF9zcGVudBgDIAEoDRIZChFyZW1haW5pbmdfY3J5",
+            "c3RhbBgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJEjIKCG5ld19zbG90GAYg",
+            "ASgLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIRCgl0b3Rh",
+            "bF9kcHMYByABKAQiIgoPQWRXYXRjaENvbXBsZXRlEg8KB2FkX3R5cGUYASAB",
+            "KAkipQEKDUFkV2F0Y2hSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIPCgdhZF90",
+            "eXBlGAIgASgJEhYKDmNyeXN0YWxfZWFybmVkGAMgASgNEhUKDXRvdGFsX2Ny",
+            "eXN0YWwYBCABKA0SLwoLYWRfY291bnRlcnMYBSADKAsyGi5pbmZpbml0ZXBp",
+            "Y2theGUuQWRDb3VudGVyEhIKCmVycm9yX2NvZGUYBiABKAkiXgoPQWRDb3Vu",
+            "dGVyc1N0YXRlEi8KC2FkX2NvdW50ZXJzGAEgAygLMhouaW5maW5pdGVwaWNr",
+            "YXhlLkFkQ291bnRlchIaChJyZXNldF90aW1lc3RhbXBfbXMYAiABKAQiewoO",
+            "Q3VycmVuY3lVcGRhdGUSKgoEZ29sZBgBIAEoCzIcLmdvb2dsZS5wcm90b2J1",
+            "Zi5VSW50NjRWYWx1ZRItCgdjcnlzdGFsGAIgASgLMhwuZ29vZ2xlLnByb3Rv",
+            "YnVmLlVJbnQzMlZhbHVlEg4KBnJlYXNvbhgDIAEoCSIWChRPZmZsaW5lUmV3",
+            "YXJkUmVxdWVzdCJtChNPZmZsaW5lUmV3YXJkUmVzdWx0EhcKD2VsYXBzZWRf",
+            "c2Vjb25kcxgBIAEoBBITCgtnb2xkX2Vhcm5lZBgCIAEoBBIUCgxtaW5pbmdf",
+            "Y291bnQYAyABKA0SEgoKdG90YWxfZ29sZBgEIAEoBCI4ChFFcnJvck5vdGlm",
+            "aWNhdGlvbhISCgplcnJvcl9jb2RlGAEgASgJEg8KB21lc3NhZ2UYAiABKAki",
+            "zgEKB0dlbUluZm8SFwoPZ2VtX2luc3RhbmNlX2lkGAEgASgJEg4KBmdlbV9p",
+            "ZBgCIAEoDRIoCgVncmFkZRgDIAEoDjIZLmluZmluaXRlcGlja2F4ZS5HZW1H",
+            "cmFkZRImCgR0eXBlGAQgASgOMhguaW5maW5pdGVwaWNrYXhlLkdlbVR5cGUS",
+            "DAoEbmFtZRgFIAEoCRIMCgRpY29uGAYgASgJEhcKD3N0YXRfbXVsdGlwbGll",
+            "chgHIAEoDRITCgthY3F1aXJlZF9hdBgIIAEoBCJqCgtHZW1TbG90SW5mbxIW",
+            "Cg5nZW1fc2xvdF9pbmRleBgBIAEoDRITCgtpc191bmxvY2tlZBgCIAEoCBIu",
+            "CgxlcXVpcHBlZF9nZW0YAyABKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5m",
+            "byIQCg5HZW1MaXN0UmVxdWVzdCJpCg9HZW1MaXN0UmVzcG9uc2USJgoEZ2Vt",
+            "cxgBIAMoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1JbmZvEhIKCnRvdGFsX2dl",
+            "bXMYAiABKA0SGgoSaW52ZW50b3J5X2NhcGFjaXR5GAMgASgNIiUKD0dlbUdh",
+            "Y2hhUmVxdWVzdBISCgpwdWxsX2NvdW50GAEgASgNIr8BCg5HZW1HYWNoYVJl",
+            "c3VsdBIPCgdzdWNjZXNzGAEgASgIEiYKBGdlbXMYAiADKAsyGC5pbmZpbml0",
+            "ZXBpY2theGUuR2VtSW5mbxIVCg1jcnlzdGFsX3NwZW50GAMgASgNEhkKEXJl",
+            "bWFpbmluZ19jcnlzdGFsGAQgASgNEhIKCnRvdGFsX2dlbXMYBSABKA0SGgoS",
+            "aW52ZW50b3J5X2NhcGFjaXR5GAYgASgNEhIKCmVycm9yX2NvZGUYByABKAki",
+            "LwoTR2VtU3ludGhlc2lzUmVxdWVzdBIYChBnZW1faW5zdGFuY2VfaWRzGAEg",
+            "AygJIpYBChJHZW1TeW50aGVzaXNSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIZ",
+            "ChFzeW50aGVzaXNfc3VjY2VzcxgCIAEoCBIsCgpyZXN1bHRfZ2VtGAMgASgL",
+            "MhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SEgoKdG90YWxfZ2VtcxgEIAEo",
+            "DRISCgplcnJvcl9jb2RlGAUgASgJInYKFEdlbUNvbnZlcnNpb25SZXF1ZXN0",
+            "EhcKD2dlbV9pbnN0YW5jZV9pZBgBIAEoCRItCgt0YXJnZXRfdHlwZRgCIAEo",
+            "DjIYLmluZmluaXRlcGlja2F4ZS5HZW1UeXBlEhYKDnVzZV9maXhlZF9jb3N0",
+            "GAMgASgIIp0BChNHZW1Db252ZXJzaW9uUmVzdWx0Eg8KB3N1Y2Nlc3MYASAB",
+            "KAgSLwoNY29udmVydGVkX2dlbRgCIAEoCzIYLmluZmluaXRlcGlja2F4ZS5H",
+            "ZW1JbmZvEhUKDWNyeXN0YWxfc3BlbnQYAyABKA0SGQoRcmVtYWluaW5nX2Ny",
+            "eXN0YWwYBCABKA0SEgoKZXJyb3JfY29kZRgFIAEoCSItChFHZW1EaXNjYXJk",
+            "UmVxdWVzdBIYChBnZW1faW5zdGFuY2VfaWRzGAEgAygJInoKEEdlbURpc2Nh",
+            "cmRSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIWCg5jcnlzdGFsX2Vhcm5lZBgC",
+            "IAEoDRIVCg10b3RhbF9jcnlzdGFsGAMgASgNEhIKCnRvdGFsX2dlbXMYBCAB",
+            "KA0SEgoKZXJyb3JfY29kZRgFIAEoCSJeCg9HZW1FcXVpcFJlcXVlc3QSGgoS",
+            "cGlja2F4ZV9zbG90X2luZGV4GAEgASgNEhYKDmdlbV9zbG90X2luZGV4GAIg",
+            "ASgNEhcKD2dlbV9pbnN0YW5jZV9pZBgDIAEoCSLrAQoOR2VtRXF1aXBSZXN1",
+            "bHQSDwoHc3VjY2VzcxgBIAEoCBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgYAiAB",
+            "KA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAyABKA0SLgoMZXF1aXBwZWRfZ2VtGAQg",
+            "ASgLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SOQoPdXBkYXRlZF9waWNr",
+            "YXhlGAUgASgLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIV",
+            "Cg1uZXdfdG90YWxfZHBzGAYgASgEEhIKCmVycm9yX2NvZGUYByABKAkiRwoR",
+            "R2VtVW5lcXVpcFJlcXVlc3QSGgoScGlja2F4ZV9zbG90X2luZGV4GAEgASgN",
+            "EhYKDmdlbV9zbG90X2luZGV4GAIgASgNIu8BChBHZW1VbmVxdWlwUmVzdWx0",
+            "Eg8KB3N1Y2Nlc3MYASABKAgSGgoScGlja2F4ZV9zbG90X2luZGV4GAIgASgN",
+            "EhYKDmdlbV9zbG90X2luZGV4GAMgASgNEjAKDnVuZXF1aXBwZWRfZ2VtGAQg",
+            "ASgLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SOQoPdXBkYXRlZF9waWNr",
+            "YXhlGAUgASgLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIV",
+            "Cg1uZXdfdG90YWxfZHBzGAYgASgEEhIKCmVycm9yX2NvZGUYByABKAkiSgoU",
+            "R2VtU2xvdFVubG9ja1JlcXVlc3QSGgoScGlja2F4ZV9zbG90X2luZGV4GAEg",
+            "ASgNEhYKDmdlbV9zbG90X2luZGV4GAIgASgNIqABChNHZW1TbG90VW5sb2Nr",
+            "UmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSGgoScGlja2F4ZV9zbG90X2luZGV4",
+            "GAIgASgNEhYKDmdlbV9zbG90X2luZGV4GAMgASgNEhUKDWNyeXN0YWxfc3Bl",
+            "bnQYBCABKA0SGQoRcmVtYWluaW5nX2NyeXN0YWwYBSABKA0SEgoKZXJyb3Jf",
+            "Y29kZRgGIAEoCSIbChlHZW1JbnZlbnRvcnlFeHBhbmRSZXF1ZXN0IocBChhH",
+            "ZW1JbnZlbnRvcnlFeHBhbmRSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIUCgxu",
+            "ZXdfY2FwYWNpdHkYAiABKA0SFQoNY3J5c3RhbF9zcGVudBgDIAEoDRIZChFy",
+            "ZW1haW5pbmdfY3J5c3RhbBgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJKk4K",
+            "B0dlbVR5cGUSFAoQR0VNX1RZUEVfVU5LTk9XThAAEhAKDEFUVEFDS19TUEVF",
+            "RBABEg0KCUNSSVRfUkFURRACEgwKCENSSVRfRE1HEAMqWgoIR2VtR3JhZGUS",
+            "FQoRR0VNX0dSQURFX1VOS05PV04QABIKCgZDT01NT04QARIICgRSQVJFEAIS",
+            "CAoERVBJQxADEggKBEhFUk8QBBINCglMRUdFTkRBUlkQBSqGCgoLTWVzc2Fn",
+            "ZVR5cGUSCwoHVU5LTk9XThAAEg0KCUhBTkRTSEFLRRABEhQKEEhBTkRTSEFL",
+            "RV9SRVNVTFQQAhINCglIRUFSVEJFQVQQAxIRCg1IRUFSVEJFQVRfQUNLEAQS",
+            "FgoSVVNFUl9EQVRBX1NOQVBTSE9UEAoSGAoUTUlORVJBTF9MSVNUX1JFUVVF",
+            "U1QQFBIZChVNSU5FUkFMX0xJU1RfUkVTUE9OU0UQFRIaChZDSEFOR0VfTUlO",
+            "RVJBTF9SRVFVRVNUEBYSGwoXQ0hBTkdFX01JTkVSQUxfUkVTUE9OU0UQFxIR",
+            "Cg1NSU5JTkdfVVBEQVRFECASEwoPTUlOSU5HX0NPTVBMRVRFECESFQoRQUxM",
+            "X1NMT1RTX1JFUVVFU1QQKBIWChJBTExfU0xPVFNfUkVTUE9OU0UQKRIPCgtT",
+            "TE9UX1VOTE9DSxAqEhYKElNMT1RfVU5MT0NLX1JFU1VMVBArEhMKD1VQR1JB",
+            "REVfUkVRVUVTVBAyEhIKDlVQR1JBREVfUkVTVUxUEDMSGgoWREFJTFlfTUlT",
+            "U0lPTlNfUkVRVUVTVBA8EhsKF0RBSUxZX01JU1NJT05TX1JFU1BPTlNFED0S",
+            "GwoXTUlTU0lPTl9QUk9HUkVTU19VUERBVEUQPhIUChBNSVNTSU9OX0NPTVBM",
+            "RVRFED8SGwoXTUlTU0lPTl9DT01QTEVURV9SRVNVTFQQQBISCg5NSVNTSU9O",
+            "X1JFUk9MTBBBEhkKFU1JU1NJT05fUkVST0xMX1JFU1VMVBBCEhMKD01JTEVT",
+            "VE9ORV9DTEFJTRBDEhoKFk1JTEVTVE9ORV9DTEFJTV9SRVNVTFQQRBITCg9N",
+            "SUxFU1RPTkVfU1RBVEUQRRIVChFBRF9XQVRDSF9DT01QTEVURRBGEhMKD0FE",
+            "X1dBVENIX1JFU1VMVBBHEhUKEUFEX0NPVU5URVJTX1NUQVRFEEgSEwoPQ1VS",
+            "UkVOQ1lfVVBEQVRFEFASGgoWT0ZGTElORV9SRVdBUkRfUkVRVUVTVBBaEhkK",
+            "FU9GRkxJTkVfUkVXQVJEX1JFU1VMVBBbEhYKEkVSUk9SX05PVElGSUNBVElP",
+            "ThBkEhQKEEdFTV9MSVNUX1JFUVVFU1QQbhIVChFHRU1fTElTVF9SRVNQT05T",
+            "RRBvEhUKEUdFTV9HQUNIQV9SRVFVRVNUEHASFAoQR0VNX0dBQ0hBX1JFU1VM",
+            "VBBxEhkKFUdFTV9TWU5USEVTSVNfUkVRVUVTVBByEhgKFEdFTV9TWU5USEVT",
+            "SVNfUkVTVUxUEHMSGgoWR0VNX0NPTlZFUlNJT05fUkVRVUVTVBB0EhkKFUdF",
+            "TV9DT05WRVJTSU9OX1JFU1VMVBB1EhcKE0dFTV9ESVNDQVJEX1JFUVVFU1QQ",
+            "dhIWChJHRU1fRElTQ0FSRF9SRVNVTFQQdxIVChFHRU1fRVFVSVBfUkVRVUVT",
+            "VBB4EhQKEEdFTV9FUVVJUF9SRVNVTFQQeRIXChNHRU1fVU5FUVVJUF9SRVFV",
+            "RVNUEHoSFgoSR0VNX1VORVFVSVBfUkVTVUxUEHsSGwoXR0VNX1NMT1RfVU5M",
+            "T0NLX1JFUVVFU1QQfBIaChZHRU1fU0xPVF9VTkxPQ0tfUkVTVUxUEH0SIAoc",
+            "R0VNX0lOVkVOVE9SWV9FWFBBTkRfUkVRVUVTVBB+Eh8KG0dFTV9JTlZFTlRP",
+            "UllfRVhQQU5EX1JFU1VMVBB/YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.MessageType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "MilestoneState", "AdWatchComplete", "AdWatchResult", "AdCountersState", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification" }, new[]{ "Message" }, null, null, null),
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.GemType), typeof(global::Infinitepickaxe.GemGrade), typeof(global::Infinitepickaxe.MessageType), }, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "MilestoneState", "AdWatchComplete", "AdWatchResult", "AdCountersState", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification", "GemListRequest", "GemListResponse", "GemGachaRequest", "GemGachaResult", "GemSynthesisRequest", "GemSynthesisResult", "GemConversionRequest", "GemConversionResult", "GemDiscardRequest", "GemDiscardResult", "GemEquipRequest", "GemEquipResult", "GemUnequipRequest", "GemUnequipResult", "GemSlotUnlockRequest", "GemSlotUnlockResult", "GemInventoryExpandRequest", "GemInventoryExpandResult" }, new[]{ "Message" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HandshakeRequest), global::Infinitepickaxe.HandshakeRequest.Parser, new[]{ "Jwt", "ClientVersion", "DeviceId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeSlotInfo), global::Infinitepickaxe.PickaxeSlotInfo.Parser, new[]{ "SlotIndex", "Level", "Tier", "AttackPower", "AttackSpeedX100", "CriticalHitPercent", "CriticalDamage", "Dps", "PityBonus", "IsUnlocked" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeSlotInfo), global::Infinitepickaxe.PickaxeSlotInfo.Parser, new[]{ "SlotIndex", "Level", "Tier", "AttackPower", "AttackSpeedX100", "CriticalHitPercent", "CriticalDamage", "Dps", "PityBonus", "IsUnlocked", "GemSlots" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdCounter), global::Infinitepickaxe.AdCounter.Parser, new[]{ "AdType", "AdCount", "DailyLimit" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UserDataSnapshot), global::Infinitepickaxe.UserDataSnapshot.Parser, new[]{ "Gold", "Crystal", "UnlockedSlots", "CurrentMineralId", "MineralHp", "MineralMaxHp", "PickaxeSlots", "TotalDps", "ServerTime", "AdCounters", "CurrentOfflineHours" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.UserDataSnapshot), global::Infinitepickaxe.UserDataSnapshot.Parser, new[]{ "Gold", "Crystal", "UnlockedSlots", "CurrentMineralId", "MineralHp", "MineralMaxHp", "PickaxeSlots", "TotalDps", "ServerTime", "AdCounters", "CurrentOfflineHours", "GemInventoryCapacity", "TotalGems" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HandshakeResponse), global::Infinitepickaxe.HandshakeResponse.Parser, new[]{ "Success", "Message", "Snapshot" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Heartbeat), global::Infinitepickaxe.Heartbeat.Parser, new[]{ "ClientTimeMs" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HeartbeatAck), global::Infinitepickaxe.HeartbeatAck.Parser, new[]{ "ServerTimeMs" }, null, null, null, null),
@@ -238,13 +335,55 @@ namespace Infinitepickaxe {
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.CurrencyUpdate), global::Infinitepickaxe.CurrencyUpdate.Parser, new[]{ "Gold", "Crystal", "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineRewardRequest), global::Infinitepickaxe.OfflineRewardRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineRewardResult), global::Infinitepickaxe.OfflineRewardResult.Parser, new[]{ "ElapsedSeconds", "GoldEarned", "MiningCount", "TotalGold" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.ErrorNotification), global::Infinitepickaxe.ErrorNotification.Parser, new[]{ "ErrorCode", "Message" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.ErrorNotification), global::Infinitepickaxe.ErrorNotification.Parser, new[]{ "ErrorCode", "Message" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemInfo), global::Infinitepickaxe.GemInfo.Parser, new[]{ "GemInstanceId", "GemId", "Grade", "Type", "Name", "Icon", "StatMultiplier", "AcquiredAt" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemSlotInfo), global::Infinitepickaxe.GemSlotInfo.Parser, new[]{ "GemSlotIndex", "IsUnlocked", "EquippedGem" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemListRequest), global::Infinitepickaxe.GemListRequest.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemListResponse), global::Infinitepickaxe.GemListResponse.Parser, new[]{ "Gems", "TotalGems", "InventoryCapacity" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemGachaRequest), global::Infinitepickaxe.GemGachaRequest.Parser, new[]{ "PullCount" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemGachaResult), global::Infinitepickaxe.GemGachaResult.Parser, new[]{ "Success", "Gems", "CrystalSpent", "RemainingCrystal", "TotalGems", "InventoryCapacity", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemSynthesisRequest), global::Infinitepickaxe.GemSynthesisRequest.Parser, new[]{ "GemInstanceIds" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemSynthesisResult), global::Infinitepickaxe.GemSynthesisResult.Parser, new[]{ "Success", "SynthesisSuccess", "ResultGem", "TotalGems", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemConversionRequest), global::Infinitepickaxe.GemConversionRequest.Parser, new[]{ "GemInstanceId", "TargetType", "UseFixedCost" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemConversionResult), global::Infinitepickaxe.GemConversionResult.Parser, new[]{ "Success", "ConvertedGem", "CrystalSpent", "RemainingCrystal", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemDiscardRequest), global::Infinitepickaxe.GemDiscardRequest.Parser, new[]{ "GemInstanceIds" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemDiscardResult), global::Infinitepickaxe.GemDiscardResult.Parser, new[]{ "Success", "CrystalEarned", "TotalCrystal", "TotalGems", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemEquipRequest), global::Infinitepickaxe.GemEquipRequest.Parser, new[]{ "PickaxeSlotIndex", "GemSlotIndex", "GemInstanceId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemEquipResult), global::Infinitepickaxe.GemEquipResult.Parser, new[]{ "Success", "PickaxeSlotIndex", "GemSlotIndex", "EquippedGem", "UpdatedPickaxe", "NewTotalDps", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemUnequipRequest), global::Infinitepickaxe.GemUnequipRequest.Parser, new[]{ "PickaxeSlotIndex", "GemSlotIndex" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemUnequipResult), global::Infinitepickaxe.GemUnequipResult.Parser, new[]{ "Success", "PickaxeSlotIndex", "GemSlotIndex", "UnequippedGem", "UpdatedPickaxe", "NewTotalDps", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemSlotUnlockRequest), global::Infinitepickaxe.GemSlotUnlockRequest.Parser, new[]{ "PickaxeSlotIndex", "GemSlotIndex" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemSlotUnlockResult), global::Infinitepickaxe.GemSlotUnlockResult.Parser, new[]{ "Success", "PickaxeSlotIndex", "GemSlotIndex", "CrystalSpent", "RemainingCrystal", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemInventoryExpandRequest), global::Infinitepickaxe.GemInventoryExpandRequest.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemInventoryExpandResult), global::Infinitepickaxe.GemInventoryExpandResult.Parser, new[]{ "Success", "NewCapacity", "CrystalSpent", "RemainingCrystal", "ErrorCode" }, null, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Enums
+  /// <summary>
+  /// 보석 타입 Enum
+  /// </summary>
+  public enum GemType {
+    [pbr::OriginalName("GEM_TYPE_UNKNOWN")] Unknown = 0,
+    [pbr::OriginalName("ATTACK_SPEED")] AttackSpeed = 1,
+    [pbr::OriginalName("CRIT_RATE")] CritRate = 2,
+    [pbr::OriginalName("CRIT_DMG")] CritDmg = 3,
+  }
+
+  /// <summary>
+  /// 보석 등급 Enum
+  /// </summary>
+  public enum GemGrade {
+    [pbr::OriginalName("GEM_GRADE_UNKNOWN")] Unknown = 0,
+    [pbr::OriginalName("COMMON")] Common = 1,
+    [pbr::OriginalName("RARE")] Rare = 2,
+    [pbr::OriginalName("EPIC")] Epic = 3,
+    [pbr::OriginalName("HERO")] Hero = 4,
+    [pbr::OriginalName("LEGENDARY")] Legendary = 5,
+  }
+
   /// <summary>
   /// 메시지 타입 Enum
   /// </summary>
@@ -322,6 +461,27 @@ namespace Infinitepickaxe {
     /// 에러
     /// </summary>
     [pbr::OriginalName("ERROR_NOTIFICATION")] ErrorNotification = 100,
+    /// <summary>
+    /// 보석 시스템
+    /// </summary>
+    [pbr::OriginalName("GEM_LIST_REQUEST")] GemListRequest = 110,
+    [pbr::OriginalName("GEM_LIST_RESPONSE")] GemListResponse = 111,
+    [pbr::OriginalName("GEM_GACHA_REQUEST")] GemGachaRequest = 112,
+    [pbr::OriginalName("GEM_GACHA_RESULT")] GemGachaResult = 113,
+    [pbr::OriginalName("GEM_SYNTHESIS_REQUEST")] GemSynthesisRequest = 114,
+    [pbr::OriginalName("GEM_SYNTHESIS_RESULT")] GemSynthesisResult = 115,
+    [pbr::OriginalName("GEM_CONVERSION_REQUEST")] GemConversionRequest = 116,
+    [pbr::OriginalName("GEM_CONVERSION_RESULT")] GemConversionResult = 117,
+    [pbr::OriginalName("GEM_DISCARD_REQUEST")] GemDiscardRequest = 118,
+    [pbr::OriginalName("GEM_DISCARD_RESULT")] GemDiscardResult = 119,
+    [pbr::OriginalName("GEM_EQUIP_REQUEST")] GemEquipRequest = 120,
+    [pbr::OriginalName("GEM_EQUIP_RESULT")] GemEquipResult = 121,
+    [pbr::OriginalName("GEM_UNEQUIP_REQUEST")] GemUnequipRequest = 122,
+    [pbr::OriginalName("GEM_UNEQUIP_RESULT")] GemUnequipResult = 123,
+    [pbr::OriginalName("GEM_SLOT_UNLOCK_REQUEST")] GemSlotUnlockRequest = 124,
+    [pbr::OriginalName("GEM_SLOT_UNLOCK_RESULT")] GemSlotUnlockResult = 125,
+    [pbr::OriginalName("GEM_INVENTORY_EXPAND_REQUEST")] GemInventoryExpandRequest = 126,
+    [pbr::OriginalName("GEM_INVENTORY_EXPAND_RESULT")] GemInventoryExpandResult = 127,
   }
 
   #endregion
@@ -468,6 +628,60 @@ namespace Infinitepickaxe {
           break;
         case MessageOneofCase.ErrorNotification:
           ErrorNotification = other.ErrorNotification.Clone();
+          break;
+        case MessageOneofCase.GemListRequest:
+          GemListRequest = other.GemListRequest.Clone();
+          break;
+        case MessageOneofCase.GemListResponse:
+          GemListResponse = other.GemListResponse.Clone();
+          break;
+        case MessageOneofCase.GemGachaRequest:
+          GemGachaRequest = other.GemGachaRequest.Clone();
+          break;
+        case MessageOneofCase.GemGachaResult:
+          GemGachaResult = other.GemGachaResult.Clone();
+          break;
+        case MessageOneofCase.GemSynthesisRequest:
+          GemSynthesisRequest = other.GemSynthesisRequest.Clone();
+          break;
+        case MessageOneofCase.GemSynthesisResult:
+          GemSynthesisResult = other.GemSynthesisResult.Clone();
+          break;
+        case MessageOneofCase.GemConversionRequest:
+          GemConversionRequest = other.GemConversionRequest.Clone();
+          break;
+        case MessageOneofCase.GemConversionResult:
+          GemConversionResult = other.GemConversionResult.Clone();
+          break;
+        case MessageOneofCase.GemDiscardRequest:
+          GemDiscardRequest = other.GemDiscardRequest.Clone();
+          break;
+        case MessageOneofCase.GemDiscardResult:
+          GemDiscardResult = other.GemDiscardResult.Clone();
+          break;
+        case MessageOneofCase.GemEquipRequest:
+          GemEquipRequest = other.GemEquipRequest.Clone();
+          break;
+        case MessageOneofCase.GemEquipResult:
+          GemEquipResult = other.GemEquipResult.Clone();
+          break;
+        case MessageOneofCase.GemUnequipRequest:
+          GemUnequipRequest = other.GemUnequipRequest.Clone();
+          break;
+        case MessageOneofCase.GemUnequipResult:
+          GemUnequipResult = other.GemUnequipResult.Clone();
+          break;
+        case MessageOneofCase.GemSlotUnlockRequest:
+          GemSlotUnlockRequest = other.GemSlotUnlockRequest.Clone();
+          break;
+        case MessageOneofCase.GemSlotUnlockResult:
+          GemSlotUnlockResult = other.GemSlotUnlockResult.Clone();
+          break;
+        case MessageOneofCase.GemInventoryExpandRequest:
+          GemInventoryExpandRequest = other.GemInventoryExpandRequest.Clone();
+          break;
+        case MessageOneofCase.GemInventoryExpandResult:
+          GemInventoryExpandResult = other.GemInventoryExpandResult.Clone();
           break;
       }
 
@@ -904,6 +1118,222 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "gem_list_request" field.</summary>
+    public const int GemListRequestFieldNumber = 120;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemListRequest GemListRequest {
+      get { return messageCase_ == MessageOneofCase.GemListRequest ? (global::Infinitepickaxe.GemListRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemListRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_list_response" field.</summary>
+    public const int GemListResponseFieldNumber = 121;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemListResponse GemListResponse {
+      get { return messageCase_ == MessageOneofCase.GemListResponse ? (global::Infinitepickaxe.GemListResponse) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemListResponse;
+      }
+    }
+
+    /// <summary>Field number for the "gem_gacha_request" field.</summary>
+    public const int GemGachaRequestFieldNumber = 122;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemGachaRequest GemGachaRequest {
+      get { return messageCase_ == MessageOneofCase.GemGachaRequest ? (global::Infinitepickaxe.GemGachaRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemGachaRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_gacha_result" field.</summary>
+    public const int GemGachaResultFieldNumber = 123;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemGachaResult GemGachaResult {
+      get { return messageCase_ == MessageOneofCase.GemGachaResult ? (global::Infinitepickaxe.GemGachaResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemGachaResult;
+      }
+    }
+
+    /// <summary>Field number for the "gem_synthesis_request" field.</summary>
+    public const int GemSynthesisRequestFieldNumber = 124;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemSynthesisRequest GemSynthesisRequest {
+      get { return messageCase_ == MessageOneofCase.GemSynthesisRequest ? (global::Infinitepickaxe.GemSynthesisRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemSynthesisRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_synthesis_result" field.</summary>
+    public const int GemSynthesisResultFieldNumber = 125;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemSynthesisResult GemSynthesisResult {
+      get { return messageCase_ == MessageOneofCase.GemSynthesisResult ? (global::Infinitepickaxe.GemSynthesisResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemSynthesisResult;
+      }
+    }
+
+    /// <summary>Field number for the "gem_conversion_request" field.</summary>
+    public const int GemConversionRequestFieldNumber = 126;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemConversionRequest GemConversionRequest {
+      get { return messageCase_ == MessageOneofCase.GemConversionRequest ? (global::Infinitepickaxe.GemConversionRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemConversionRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_conversion_result" field.</summary>
+    public const int GemConversionResultFieldNumber = 127;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemConversionResult GemConversionResult {
+      get { return messageCase_ == MessageOneofCase.GemConversionResult ? (global::Infinitepickaxe.GemConversionResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemConversionResult;
+      }
+    }
+
+    /// <summary>Field number for the "gem_discard_request" field.</summary>
+    public const int GemDiscardRequestFieldNumber = 128;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemDiscardRequest GemDiscardRequest {
+      get { return messageCase_ == MessageOneofCase.GemDiscardRequest ? (global::Infinitepickaxe.GemDiscardRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemDiscardRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_discard_result" field.</summary>
+    public const int GemDiscardResultFieldNumber = 129;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemDiscardResult GemDiscardResult {
+      get { return messageCase_ == MessageOneofCase.GemDiscardResult ? (global::Infinitepickaxe.GemDiscardResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemDiscardResult;
+      }
+    }
+
+    /// <summary>Field number for the "gem_equip_request" field.</summary>
+    public const int GemEquipRequestFieldNumber = 130;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemEquipRequest GemEquipRequest {
+      get { return messageCase_ == MessageOneofCase.GemEquipRequest ? (global::Infinitepickaxe.GemEquipRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemEquipRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_equip_result" field.</summary>
+    public const int GemEquipResultFieldNumber = 131;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemEquipResult GemEquipResult {
+      get { return messageCase_ == MessageOneofCase.GemEquipResult ? (global::Infinitepickaxe.GemEquipResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemEquipResult;
+      }
+    }
+
+    /// <summary>Field number for the "gem_unequip_request" field.</summary>
+    public const int GemUnequipRequestFieldNumber = 132;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemUnequipRequest GemUnequipRequest {
+      get { return messageCase_ == MessageOneofCase.GemUnequipRequest ? (global::Infinitepickaxe.GemUnequipRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemUnequipRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_unequip_result" field.</summary>
+    public const int GemUnequipResultFieldNumber = 133;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemUnequipResult GemUnequipResult {
+      get { return messageCase_ == MessageOneofCase.GemUnequipResult ? (global::Infinitepickaxe.GemUnequipResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemUnequipResult;
+      }
+    }
+
+    /// <summary>Field number for the "gem_slot_unlock_request" field.</summary>
+    public const int GemSlotUnlockRequestFieldNumber = 134;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemSlotUnlockRequest GemSlotUnlockRequest {
+      get { return messageCase_ == MessageOneofCase.GemSlotUnlockRequest ? (global::Infinitepickaxe.GemSlotUnlockRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemSlotUnlockRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_slot_unlock_result" field.</summary>
+    public const int GemSlotUnlockResultFieldNumber = 135;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemSlotUnlockResult GemSlotUnlockResult {
+      get { return messageCase_ == MessageOneofCase.GemSlotUnlockResult ? (global::Infinitepickaxe.GemSlotUnlockResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemSlotUnlockResult;
+      }
+    }
+
+    /// <summary>Field number for the "gem_inventory_expand_request" field.</summary>
+    public const int GemInventoryExpandRequestFieldNumber = 136;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemInventoryExpandRequest GemInventoryExpandRequest {
+      get { return messageCase_ == MessageOneofCase.GemInventoryExpandRequest ? (global::Infinitepickaxe.GemInventoryExpandRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemInventoryExpandRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_inventory_expand_result" field.</summary>
+    public const int GemInventoryExpandResultFieldNumber = 137;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemInventoryExpandResult GemInventoryExpandResult {
+      get { return messageCase_ == MessageOneofCase.GemInventoryExpandResult ? (global::Infinitepickaxe.GemInventoryExpandResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemInventoryExpandResult;
+      }
+    }
+
     private object message_;
     /// <summary>Enum of possible cases for the "message" oneof.</summary>
     public enum MessageOneofCase {
@@ -942,6 +1372,24 @@ namespace Infinitepickaxe {
       OfflineRewardRequest = 100,
       OfflineRewardResult = 101,
       ErrorNotification = 110,
+      GemListRequest = 120,
+      GemListResponse = 121,
+      GemGachaRequest = 122,
+      GemGachaResult = 123,
+      GemSynthesisRequest = 124,
+      GemSynthesisResult = 125,
+      GemConversionRequest = 126,
+      GemConversionResult = 127,
+      GemDiscardRequest = 128,
+      GemDiscardResult = 129,
+      GemEquipRequest = 130,
+      GemEquipResult = 131,
+      GemUnequipRequest = 132,
+      GemUnequipResult = 133,
+      GemSlotUnlockRequest = 134,
+      GemSlotUnlockResult = 135,
+      GemInventoryExpandRequest = 136,
+      GemInventoryExpandResult = 137,
     }
     private MessageOneofCase messageCase_ = MessageOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1007,6 +1455,24 @@ namespace Infinitepickaxe {
       if (!object.Equals(OfflineRewardRequest, other.OfflineRewardRequest)) return false;
       if (!object.Equals(OfflineRewardResult, other.OfflineRewardResult)) return false;
       if (!object.Equals(ErrorNotification, other.ErrorNotification)) return false;
+      if (!object.Equals(GemListRequest, other.GemListRequest)) return false;
+      if (!object.Equals(GemListResponse, other.GemListResponse)) return false;
+      if (!object.Equals(GemGachaRequest, other.GemGachaRequest)) return false;
+      if (!object.Equals(GemGachaResult, other.GemGachaResult)) return false;
+      if (!object.Equals(GemSynthesisRequest, other.GemSynthesisRequest)) return false;
+      if (!object.Equals(GemSynthesisResult, other.GemSynthesisResult)) return false;
+      if (!object.Equals(GemConversionRequest, other.GemConversionRequest)) return false;
+      if (!object.Equals(GemConversionResult, other.GemConversionResult)) return false;
+      if (!object.Equals(GemDiscardRequest, other.GemDiscardRequest)) return false;
+      if (!object.Equals(GemDiscardResult, other.GemDiscardResult)) return false;
+      if (!object.Equals(GemEquipRequest, other.GemEquipRequest)) return false;
+      if (!object.Equals(GemEquipResult, other.GemEquipResult)) return false;
+      if (!object.Equals(GemUnequipRequest, other.GemUnequipRequest)) return false;
+      if (!object.Equals(GemUnequipResult, other.GemUnequipResult)) return false;
+      if (!object.Equals(GemSlotUnlockRequest, other.GemSlotUnlockRequest)) return false;
+      if (!object.Equals(GemSlotUnlockResult, other.GemSlotUnlockResult)) return false;
+      if (!object.Equals(GemInventoryExpandRequest, other.GemInventoryExpandRequest)) return false;
+      if (!object.Equals(GemInventoryExpandResult, other.GemInventoryExpandResult)) return false;
       if (MessageCase != other.MessageCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1050,6 +1516,24 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.OfflineRewardRequest) hash ^= OfflineRewardRequest.GetHashCode();
       if (messageCase_ == MessageOneofCase.OfflineRewardResult) hash ^= OfflineRewardResult.GetHashCode();
       if (messageCase_ == MessageOneofCase.ErrorNotification) hash ^= ErrorNotification.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemListRequest) hash ^= GemListRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemListResponse) hash ^= GemListResponse.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemGachaRequest) hash ^= GemGachaRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemGachaResult) hash ^= GemGachaResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemSynthesisRequest) hash ^= GemSynthesisRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemSynthesisResult) hash ^= GemSynthesisResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemConversionRequest) hash ^= GemConversionRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemConversionResult) hash ^= GemConversionResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemDiscardRequest) hash ^= GemDiscardRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemDiscardResult) hash ^= GemDiscardResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemEquipRequest) hash ^= GemEquipRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemEquipResult) hash ^= GemEquipResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemUnequipRequest) hash ^= GemUnequipRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemUnequipResult) hash ^= GemUnequipResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemSlotUnlockRequest) hash ^= GemSlotUnlockRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemSlotUnlockResult) hash ^= GemSlotUnlockResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemInventoryExpandRequest) hash ^= GemInventoryExpandRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemInventoryExpandResult) hash ^= GemInventoryExpandResult.GetHashCode();
       hash ^= (int) messageCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1209,6 +1693,78 @@ namespace Infinitepickaxe {
         output.WriteRawTag(242, 6);
         output.WriteMessage(ErrorNotification);
       }
+      if (messageCase_ == MessageOneofCase.GemListRequest) {
+        output.WriteRawTag(194, 7);
+        output.WriteMessage(GemListRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemListResponse) {
+        output.WriteRawTag(202, 7);
+        output.WriteMessage(GemListResponse);
+      }
+      if (messageCase_ == MessageOneofCase.GemGachaRequest) {
+        output.WriteRawTag(210, 7);
+        output.WriteMessage(GemGachaRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemGachaResult) {
+        output.WriteRawTag(218, 7);
+        output.WriteMessage(GemGachaResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemSynthesisRequest) {
+        output.WriteRawTag(226, 7);
+        output.WriteMessage(GemSynthesisRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemSynthesisResult) {
+        output.WriteRawTag(234, 7);
+        output.WriteMessage(GemSynthesisResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemConversionRequest) {
+        output.WriteRawTag(242, 7);
+        output.WriteMessage(GemConversionRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemConversionResult) {
+        output.WriteRawTag(250, 7);
+        output.WriteMessage(GemConversionResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemDiscardRequest) {
+        output.WriteRawTag(130, 8);
+        output.WriteMessage(GemDiscardRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemDiscardResult) {
+        output.WriteRawTag(138, 8);
+        output.WriteMessage(GemDiscardResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemEquipRequest) {
+        output.WriteRawTag(146, 8);
+        output.WriteMessage(GemEquipRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemEquipResult) {
+        output.WriteRawTag(154, 8);
+        output.WriteMessage(GemEquipResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemUnequipRequest) {
+        output.WriteRawTag(162, 8);
+        output.WriteMessage(GemUnequipRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemUnequipResult) {
+        output.WriteRawTag(170, 8);
+        output.WriteMessage(GemUnequipResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemSlotUnlockRequest) {
+        output.WriteRawTag(178, 8);
+        output.WriteMessage(GemSlotUnlockRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemSlotUnlockResult) {
+        output.WriteRawTag(186, 8);
+        output.WriteMessage(GemSlotUnlockResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemInventoryExpandRequest) {
+        output.WriteRawTag(194, 8);
+        output.WriteMessage(GemInventoryExpandRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemInventoryExpandResult) {
+        output.WriteRawTag(202, 8);
+        output.WriteMessage(GemInventoryExpandResult);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1359,6 +1915,78 @@ namespace Infinitepickaxe {
         output.WriteRawTag(242, 6);
         output.WriteMessage(ErrorNotification);
       }
+      if (messageCase_ == MessageOneofCase.GemListRequest) {
+        output.WriteRawTag(194, 7);
+        output.WriteMessage(GemListRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemListResponse) {
+        output.WriteRawTag(202, 7);
+        output.WriteMessage(GemListResponse);
+      }
+      if (messageCase_ == MessageOneofCase.GemGachaRequest) {
+        output.WriteRawTag(210, 7);
+        output.WriteMessage(GemGachaRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemGachaResult) {
+        output.WriteRawTag(218, 7);
+        output.WriteMessage(GemGachaResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemSynthesisRequest) {
+        output.WriteRawTag(226, 7);
+        output.WriteMessage(GemSynthesisRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemSynthesisResult) {
+        output.WriteRawTag(234, 7);
+        output.WriteMessage(GemSynthesisResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemConversionRequest) {
+        output.WriteRawTag(242, 7);
+        output.WriteMessage(GemConversionRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemConversionResult) {
+        output.WriteRawTag(250, 7);
+        output.WriteMessage(GemConversionResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemDiscardRequest) {
+        output.WriteRawTag(130, 8);
+        output.WriteMessage(GemDiscardRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemDiscardResult) {
+        output.WriteRawTag(138, 8);
+        output.WriteMessage(GemDiscardResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemEquipRequest) {
+        output.WriteRawTag(146, 8);
+        output.WriteMessage(GemEquipRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemEquipResult) {
+        output.WriteRawTag(154, 8);
+        output.WriteMessage(GemEquipResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemUnequipRequest) {
+        output.WriteRawTag(162, 8);
+        output.WriteMessage(GemUnequipRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemUnequipResult) {
+        output.WriteRawTag(170, 8);
+        output.WriteMessage(GemUnequipResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemSlotUnlockRequest) {
+        output.WriteRawTag(178, 8);
+        output.WriteMessage(GemSlotUnlockRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemSlotUnlockResult) {
+        output.WriteRawTag(186, 8);
+        output.WriteMessage(GemSlotUnlockResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemInventoryExpandRequest) {
+        output.WriteRawTag(194, 8);
+        output.WriteMessage(GemInventoryExpandRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemInventoryExpandResult) {
+        output.WriteRawTag(202, 8);
+        output.WriteMessage(GemInventoryExpandResult);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1473,6 +2101,60 @@ namespace Infinitepickaxe {
       }
       if (messageCase_ == MessageOneofCase.ErrorNotification) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(ErrorNotification);
+      }
+      if (messageCase_ == MessageOneofCase.GemListRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemListRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemListResponse) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemListResponse);
+      }
+      if (messageCase_ == MessageOneofCase.GemGachaRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemGachaRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemGachaResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemGachaResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemSynthesisRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemSynthesisRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemSynthesisResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemSynthesisResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemConversionRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemConversionRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemConversionResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemConversionResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemDiscardRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemDiscardRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemDiscardResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemDiscardResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemEquipRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemEquipRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemEquipResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemEquipResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemUnequipRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemUnequipRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemUnequipResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemUnequipResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemSlotUnlockRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemSlotUnlockRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemSlotUnlockResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemSlotUnlockResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemInventoryExpandRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemInventoryExpandRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemInventoryExpandResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemInventoryExpandResult);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1693,6 +2375,114 @@ namespace Infinitepickaxe {
             ErrorNotification = new global::Infinitepickaxe.ErrorNotification();
           }
           ErrorNotification.MergeFrom(other.ErrorNotification);
+          break;
+        case MessageOneofCase.GemListRequest:
+          if (GemListRequest == null) {
+            GemListRequest = new global::Infinitepickaxe.GemListRequest();
+          }
+          GemListRequest.MergeFrom(other.GemListRequest);
+          break;
+        case MessageOneofCase.GemListResponse:
+          if (GemListResponse == null) {
+            GemListResponse = new global::Infinitepickaxe.GemListResponse();
+          }
+          GemListResponse.MergeFrom(other.GemListResponse);
+          break;
+        case MessageOneofCase.GemGachaRequest:
+          if (GemGachaRequest == null) {
+            GemGachaRequest = new global::Infinitepickaxe.GemGachaRequest();
+          }
+          GemGachaRequest.MergeFrom(other.GemGachaRequest);
+          break;
+        case MessageOneofCase.GemGachaResult:
+          if (GemGachaResult == null) {
+            GemGachaResult = new global::Infinitepickaxe.GemGachaResult();
+          }
+          GemGachaResult.MergeFrom(other.GemGachaResult);
+          break;
+        case MessageOneofCase.GemSynthesisRequest:
+          if (GemSynthesisRequest == null) {
+            GemSynthesisRequest = new global::Infinitepickaxe.GemSynthesisRequest();
+          }
+          GemSynthesisRequest.MergeFrom(other.GemSynthesisRequest);
+          break;
+        case MessageOneofCase.GemSynthesisResult:
+          if (GemSynthesisResult == null) {
+            GemSynthesisResult = new global::Infinitepickaxe.GemSynthesisResult();
+          }
+          GemSynthesisResult.MergeFrom(other.GemSynthesisResult);
+          break;
+        case MessageOneofCase.GemConversionRequest:
+          if (GemConversionRequest == null) {
+            GemConversionRequest = new global::Infinitepickaxe.GemConversionRequest();
+          }
+          GemConversionRequest.MergeFrom(other.GemConversionRequest);
+          break;
+        case MessageOneofCase.GemConversionResult:
+          if (GemConversionResult == null) {
+            GemConversionResult = new global::Infinitepickaxe.GemConversionResult();
+          }
+          GemConversionResult.MergeFrom(other.GemConversionResult);
+          break;
+        case MessageOneofCase.GemDiscardRequest:
+          if (GemDiscardRequest == null) {
+            GemDiscardRequest = new global::Infinitepickaxe.GemDiscardRequest();
+          }
+          GemDiscardRequest.MergeFrom(other.GemDiscardRequest);
+          break;
+        case MessageOneofCase.GemDiscardResult:
+          if (GemDiscardResult == null) {
+            GemDiscardResult = new global::Infinitepickaxe.GemDiscardResult();
+          }
+          GemDiscardResult.MergeFrom(other.GemDiscardResult);
+          break;
+        case MessageOneofCase.GemEquipRequest:
+          if (GemEquipRequest == null) {
+            GemEquipRequest = new global::Infinitepickaxe.GemEquipRequest();
+          }
+          GemEquipRequest.MergeFrom(other.GemEquipRequest);
+          break;
+        case MessageOneofCase.GemEquipResult:
+          if (GemEquipResult == null) {
+            GemEquipResult = new global::Infinitepickaxe.GemEquipResult();
+          }
+          GemEquipResult.MergeFrom(other.GemEquipResult);
+          break;
+        case MessageOneofCase.GemUnequipRequest:
+          if (GemUnequipRequest == null) {
+            GemUnequipRequest = new global::Infinitepickaxe.GemUnequipRequest();
+          }
+          GemUnequipRequest.MergeFrom(other.GemUnequipRequest);
+          break;
+        case MessageOneofCase.GemUnequipResult:
+          if (GemUnequipResult == null) {
+            GemUnequipResult = new global::Infinitepickaxe.GemUnequipResult();
+          }
+          GemUnequipResult.MergeFrom(other.GemUnequipResult);
+          break;
+        case MessageOneofCase.GemSlotUnlockRequest:
+          if (GemSlotUnlockRequest == null) {
+            GemSlotUnlockRequest = new global::Infinitepickaxe.GemSlotUnlockRequest();
+          }
+          GemSlotUnlockRequest.MergeFrom(other.GemSlotUnlockRequest);
+          break;
+        case MessageOneofCase.GemSlotUnlockResult:
+          if (GemSlotUnlockResult == null) {
+            GemSlotUnlockResult = new global::Infinitepickaxe.GemSlotUnlockResult();
+          }
+          GemSlotUnlockResult.MergeFrom(other.GemSlotUnlockResult);
+          break;
+        case MessageOneofCase.GemInventoryExpandRequest:
+          if (GemInventoryExpandRequest == null) {
+            GemInventoryExpandRequest = new global::Infinitepickaxe.GemInventoryExpandRequest();
+          }
+          GemInventoryExpandRequest.MergeFrom(other.GemInventoryExpandRequest);
+          break;
+        case MessageOneofCase.GemInventoryExpandResult:
+          if (GemInventoryExpandResult == null) {
+            GemInventoryExpandResult = new global::Infinitepickaxe.GemInventoryExpandResult();
+          }
+          GemInventoryExpandResult.MergeFrom(other.GemInventoryExpandResult);
           break;
       }
 
@@ -2025,6 +2815,168 @@ namespace Infinitepickaxe {
             ErrorNotification = subBuilder;
             break;
           }
+          case 962: {
+            global::Infinitepickaxe.GemListRequest subBuilder = new global::Infinitepickaxe.GemListRequest();
+            if (messageCase_ == MessageOneofCase.GemListRequest) {
+              subBuilder.MergeFrom(GemListRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemListRequest = subBuilder;
+            break;
+          }
+          case 970: {
+            global::Infinitepickaxe.GemListResponse subBuilder = new global::Infinitepickaxe.GemListResponse();
+            if (messageCase_ == MessageOneofCase.GemListResponse) {
+              subBuilder.MergeFrom(GemListResponse);
+            }
+            input.ReadMessage(subBuilder);
+            GemListResponse = subBuilder;
+            break;
+          }
+          case 978: {
+            global::Infinitepickaxe.GemGachaRequest subBuilder = new global::Infinitepickaxe.GemGachaRequest();
+            if (messageCase_ == MessageOneofCase.GemGachaRequest) {
+              subBuilder.MergeFrom(GemGachaRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemGachaRequest = subBuilder;
+            break;
+          }
+          case 986: {
+            global::Infinitepickaxe.GemGachaResult subBuilder = new global::Infinitepickaxe.GemGachaResult();
+            if (messageCase_ == MessageOneofCase.GemGachaResult) {
+              subBuilder.MergeFrom(GemGachaResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemGachaResult = subBuilder;
+            break;
+          }
+          case 994: {
+            global::Infinitepickaxe.GemSynthesisRequest subBuilder = new global::Infinitepickaxe.GemSynthesisRequest();
+            if (messageCase_ == MessageOneofCase.GemSynthesisRequest) {
+              subBuilder.MergeFrom(GemSynthesisRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemSynthesisRequest = subBuilder;
+            break;
+          }
+          case 1002: {
+            global::Infinitepickaxe.GemSynthesisResult subBuilder = new global::Infinitepickaxe.GemSynthesisResult();
+            if (messageCase_ == MessageOneofCase.GemSynthesisResult) {
+              subBuilder.MergeFrom(GemSynthesisResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemSynthesisResult = subBuilder;
+            break;
+          }
+          case 1010: {
+            global::Infinitepickaxe.GemConversionRequest subBuilder = new global::Infinitepickaxe.GemConversionRequest();
+            if (messageCase_ == MessageOneofCase.GemConversionRequest) {
+              subBuilder.MergeFrom(GemConversionRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemConversionRequest = subBuilder;
+            break;
+          }
+          case 1018: {
+            global::Infinitepickaxe.GemConversionResult subBuilder = new global::Infinitepickaxe.GemConversionResult();
+            if (messageCase_ == MessageOneofCase.GemConversionResult) {
+              subBuilder.MergeFrom(GemConversionResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemConversionResult = subBuilder;
+            break;
+          }
+          case 1026: {
+            global::Infinitepickaxe.GemDiscardRequest subBuilder = new global::Infinitepickaxe.GemDiscardRequest();
+            if (messageCase_ == MessageOneofCase.GemDiscardRequest) {
+              subBuilder.MergeFrom(GemDiscardRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemDiscardRequest = subBuilder;
+            break;
+          }
+          case 1034: {
+            global::Infinitepickaxe.GemDiscardResult subBuilder = new global::Infinitepickaxe.GemDiscardResult();
+            if (messageCase_ == MessageOneofCase.GemDiscardResult) {
+              subBuilder.MergeFrom(GemDiscardResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemDiscardResult = subBuilder;
+            break;
+          }
+          case 1042: {
+            global::Infinitepickaxe.GemEquipRequest subBuilder = new global::Infinitepickaxe.GemEquipRequest();
+            if (messageCase_ == MessageOneofCase.GemEquipRequest) {
+              subBuilder.MergeFrom(GemEquipRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemEquipRequest = subBuilder;
+            break;
+          }
+          case 1050: {
+            global::Infinitepickaxe.GemEquipResult subBuilder = new global::Infinitepickaxe.GemEquipResult();
+            if (messageCase_ == MessageOneofCase.GemEquipResult) {
+              subBuilder.MergeFrom(GemEquipResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemEquipResult = subBuilder;
+            break;
+          }
+          case 1058: {
+            global::Infinitepickaxe.GemUnequipRequest subBuilder = new global::Infinitepickaxe.GemUnequipRequest();
+            if (messageCase_ == MessageOneofCase.GemUnequipRequest) {
+              subBuilder.MergeFrom(GemUnequipRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemUnequipRequest = subBuilder;
+            break;
+          }
+          case 1066: {
+            global::Infinitepickaxe.GemUnequipResult subBuilder = new global::Infinitepickaxe.GemUnequipResult();
+            if (messageCase_ == MessageOneofCase.GemUnequipResult) {
+              subBuilder.MergeFrom(GemUnequipResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemUnequipResult = subBuilder;
+            break;
+          }
+          case 1074: {
+            global::Infinitepickaxe.GemSlotUnlockRequest subBuilder = new global::Infinitepickaxe.GemSlotUnlockRequest();
+            if (messageCase_ == MessageOneofCase.GemSlotUnlockRequest) {
+              subBuilder.MergeFrom(GemSlotUnlockRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemSlotUnlockRequest = subBuilder;
+            break;
+          }
+          case 1082: {
+            global::Infinitepickaxe.GemSlotUnlockResult subBuilder = new global::Infinitepickaxe.GemSlotUnlockResult();
+            if (messageCase_ == MessageOneofCase.GemSlotUnlockResult) {
+              subBuilder.MergeFrom(GemSlotUnlockResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemSlotUnlockResult = subBuilder;
+            break;
+          }
+          case 1090: {
+            global::Infinitepickaxe.GemInventoryExpandRequest subBuilder = new global::Infinitepickaxe.GemInventoryExpandRequest();
+            if (messageCase_ == MessageOneofCase.GemInventoryExpandRequest) {
+              subBuilder.MergeFrom(GemInventoryExpandRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemInventoryExpandRequest = subBuilder;
+            break;
+          }
+          case 1098: {
+            global::Infinitepickaxe.GemInventoryExpandResult subBuilder = new global::Infinitepickaxe.GemInventoryExpandResult();
+            if (messageCase_ == MessageOneofCase.GemInventoryExpandResult) {
+              subBuilder.MergeFrom(GemInventoryExpandResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemInventoryExpandResult = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -2352,6 +3304,168 @@ namespace Infinitepickaxe {
             }
             input.ReadMessage(subBuilder);
             ErrorNotification = subBuilder;
+            break;
+          }
+          case 962: {
+            global::Infinitepickaxe.GemListRequest subBuilder = new global::Infinitepickaxe.GemListRequest();
+            if (messageCase_ == MessageOneofCase.GemListRequest) {
+              subBuilder.MergeFrom(GemListRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemListRequest = subBuilder;
+            break;
+          }
+          case 970: {
+            global::Infinitepickaxe.GemListResponse subBuilder = new global::Infinitepickaxe.GemListResponse();
+            if (messageCase_ == MessageOneofCase.GemListResponse) {
+              subBuilder.MergeFrom(GemListResponse);
+            }
+            input.ReadMessage(subBuilder);
+            GemListResponse = subBuilder;
+            break;
+          }
+          case 978: {
+            global::Infinitepickaxe.GemGachaRequest subBuilder = new global::Infinitepickaxe.GemGachaRequest();
+            if (messageCase_ == MessageOneofCase.GemGachaRequest) {
+              subBuilder.MergeFrom(GemGachaRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemGachaRequest = subBuilder;
+            break;
+          }
+          case 986: {
+            global::Infinitepickaxe.GemGachaResult subBuilder = new global::Infinitepickaxe.GemGachaResult();
+            if (messageCase_ == MessageOneofCase.GemGachaResult) {
+              subBuilder.MergeFrom(GemGachaResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemGachaResult = subBuilder;
+            break;
+          }
+          case 994: {
+            global::Infinitepickaxe.GemSynthesisRequest subBuilder = new global::Infinitepickaxe.GemSynthesisRequest();
+            if (messageCase_ == MessageOneofCase.GemSynthesisRequest) {
+              subBuilder.MergeFrom(GemSynthesisRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemSynthesisRequest = subBuilder;
+            break;
+          }
+          case 1002: {
+            global::Infinitepickaxe.GemSynthesisResult subBuilder = new global::Infinitepickaxe.GemSynthesisResult();
+            if (messageCase_ == MessageOneofCase.GemSynthesisResult) {
+              subBuilder.MergeFrom(GemSynthesisResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemSynthesisResult = subBuilder;
+            break;
+          }
+          case 1010: {
+            global::Infinitepickaxe.GemConversionRequest subBuilder = new global::Infinitepickaxe.GemConversionRequest();
+            if (messageCase_ == MessageOneofCase.GemConversionRequest) {
+              subBuilder.MergeFrom(GemConversionRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemConversionRequest = subBuilder;
+            break;
+          }
+          case 1018: {
+            global::Infinitepickaxe.GemConversionResult subBuilder = new global::Infinitepickaxe.GemConversionResult();
+            if (messageCase_ == MessageOneofCase.GemConversionResult) {
+              subBuilder.MergeFrom(GemConversionResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemConversionResult = subBuilder;
+            break;
+          }
+          case 1026: {
+            global::Infinitepickaxe.GemDiscardRequest subBuilder = new global::Infinitepickaxe.GemDiscardRequest();
+            if (messageCase_ == MessageOneofCase.GemDiscardRequest) {
+              subBuilder.MergeFrom(GemDiscardRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemDiscardRequest = subBuilder;
+            break;
+          }
+          case 1034: {
+            global::Infinitepickaxe.GemDiscardResult subBuilder = new global::Infinitepickaxe.GemDiscardResult();
+            if (messageCase_ == MessageOneofCase.GemDiscardResult) {
+              subBuilder.MergeFrom(GemDiscardResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemDiscardResult = subBuilder;
+            break;
+          }
+          case 1042: {
+            global::Infinitepickaxe.GemEquipRequest subBuilder = new global::Infinitepickaxe.GemEquipRequest();
+            if (messageCase_ == MessageOneofCase.GemEquipRequest) {
+              subBuilder.MergeFrom(GemEquipRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemEquipRequest = subBuilder;
+            break;
+          }
+          case 1050: {
+            global::Infinitepickaxe.GemEquipResult subBuilder = new global::Infinitepickaxe.GemEquipResult();
+            if (messageCase_ == MessageOneofCase.GemEquipResult) {
+              subBuilder.MergeFrom(GemEquipResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemEquipResult = subBuilder;
+            break;
+          }
+          case 1058: {
+            global::Infinitepickaxe.GemUnequipRequest subBuilder = new global::Infinitepickaxe.GemUnequipRequest();
+            if (messageCase_ == MessageOneofCase.GemUnequipRequest) {
+              subBuilder.MergeFrom(GemUnequipRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemUnequipRequest = subBuilder;
+            break;
+          }
+          case 1066: {
+            global::Infinitepickaxe.GemUnequipResult subBuilder = new global::Infinitepickaxe.GemUnequipResult();
+            if (messageCase_ == MessageOneofCase.GemUnequipResult) {
+              subBuilder.MergeFrom(GemUnequipResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemUnequipResult = subBuilder;
+            break;
+          }
+          case 1074: {
+            global::Infinitepickaxe.GemSlotUnlockRequest subBuilder = new global::Infinitepickaxe.GemSlotUnlockRequest();
+            if (messageCase_ == MessageOneofCase.GemSlotUnlockRequest) {
+              subBuilder.MergeFrom(GemSlotUnlockRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemSlotUnlockRequest = subBuilder;
+            break;
+          }
+          case 1082: {
+            global::Infinitepickaxe.GemSlotUnlockResult subBuilder = new global::Infinitepickaxe.GemSlotUnlockResult();
+            if (messageCase_ == MessageOneofCase.GemSlotUnlockResult) {
+              subBuilder.MergeFrom(GemSlotUnlockResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemSlotUnlockResult = subBuilder;
+            break;
+          }
+          case 1090: {
+            global::Infinitepickaxe.GemInventoryExpandRequest subBuilder = new global::Infinitepickaxe.GemInventoryExpandRequest();
+            if (messageCase_ == MessageOneofCase.GemInventoryExpandRequest) {
+              subBuilder.MergeFrom(GemInventoryExpandRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemInventoryExpandRequest = subBuilder;
+            break;
+          }
+          case 1098: {
+            global::Infinitepickaxe.GemInventoryExpandResult subBuilder = new global::Infinitepickaxe.GemInventoryExpandResult();
+            if (messageCase_ == MessageOneofCase.GemInventoryExpandResult) {
+              subBuilder.MergeFrom(GemInventoryExpandResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemInventoryExpandResult = subBuilder;
             break;
           }
         }
@@ -2678,6 +3792,7 @@ namespace Infinitepickaxe {
       dps_ = other.dps_;
       pityBonus_ = other.pityBonus_;
       isUnlocked_ = other.isUnlocked_;
+      gemSlots_ = other.gemSlots_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2837,6 +3952,20 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "gem_slots" field.</summary>
+    public const int GemSlotsFieldNumber = 11;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.GemSlotInfo> _repeated_gemSlots_codec
+        = pb::FieldCodec.ForMessage(90, global::Infinitepickaxe.GemSlotInfo.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.GemSlotInfo> gemSlots_ = new pbc::RepeatedField<global::Infinitepickaxe.GemSlotInfo>();
+    /// <summary>
+    /// 보석 슬롯 (최대 6개)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.GemSlotInfo> GemSlots {
+      get { return gemSlots_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -2862,6 +3991,7 @@ namespace Infinitepickaxe {
       if (Dps != other.Dps) return false;
       if (PityBonus != other.PityBonus) return false;
       if (IsUnlocked != other.IsUnlocked) return false;
+      if(!gemSlots_.Equals(other.gemSlots_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2879,6 +4009,7 @@ namespace Infinitepickaxe {
       if (Dps != 0UL) hash ^= Dps.GetHashCode();
       if (PityBonus != 0) hash ^= PityBonus.GetHashCode();
       if (IsUnlocked != false) hash ^= IsUnlocked.GetHashCode();
+      hash ^= gemSlots_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2937,6 +4068,7 @@ namespace Infinitepickaxe {
         output.WriteRawTag(80);
         output.WriteBool(IsUnlocked);
       }
+      gemSlots_.WriteTo(output, _repeated_gemSlots_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2987,6 +4119,7 @@ namespace Infinitepickaxe {
         output.WriteRawTag(80);
         output.WriteBool(IsUnlocked);
       }
+      gemSlots_.WriteTo(ref output, _repeated_gemSlots_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3027,6 +4160,7 @@ namespace Infinitepickaxe {
       if (IsUnlocked != false) {
         size += 1 + 1;
       }
+      size += gemSlots_.CalculateSize(_repeated_gemSlots_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -3069,6 +4203,7 @@ namespace Infinitepickaxe {
       if (other.IsUnlocked != false) {
         IsUnlocked = other.IsUnlocked;
       }
+      gemSlots_.Add(other.gemSlots_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -3128,6 +4263,10 @@ namespace Infinitepickaxe {
             IsUnlocked = input.ReadBool();
             break;
           }
+          case 90: {
+            gemSlots_.AddEntriesFrom(input, _repeated_gemSlots_codec);
+            break;
+          }
         }
       }
     #endif
@@ -3185,6 +4324,10 @@ namespace Infinitepickaxe {
           }
           case 80: {
             IsUnlocked = input.ReadBool();
+            break;
+          }
+          case 90: {
+            gemSlots_.AddEntriesFrom(ref input, _repeated_gemSlots_codec);
             break;
           }
         }
@@ -3521,6 +4664,8 @@ namespace Infinitepickaxe {
       ServerTime = other.ServerTime;
       adCounters_ = other.adCounters_.Clone();
       currentOfflineHours_ = other.currentOfflineHours_;
+      gemInventoryCapacity_ = other.gemInventoryCapacity_;
+      totalGems_ = other.totalGems_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3686,6 +4831,36 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "gem_inventory_capacity" field.</summary>
+    public const int GemInventoryCapacityFieldNumber = 12;
+    private uint gemInventoryCapacity_;
+    /// <summary>
+    /// 보석 시스템
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GemInventoryCapacity {
+      get { return gemInventoryCapacity_; }
+      set {
+        gemInventoryCapacity_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_gems" field.</summary>
+    public const int TotalGemsFieldNumber = 13;
+    private uint totalGems_;
+    /// <summary>
+    /// 현재 보유 보석 개수
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalGems {
+      get { return totalGems_; }
+      set {
+        totalGems_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -3712,6 +4887,8 @@ namespace Infinitepickaxe {
       if (ServerTime != other.ServerTime) return false;
       if(!adCounters_.Equals(other.adCounters_)) return false;
       if (CurrentOfflineHours != other.CurrentOfflineHours) return false;
+      if (GemInventoryCapacity != other.GemInventoryCapacity) return false;
+      if (TotalGems != other.TotalGems) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3730,6 +4907,8 @@ namespace Infinitepickaxe {
       if (serverTime_ != null) hash ^= ServerTime.GetHashCode();
       hash ^= adCounters_.GetHashCode();
       if (CurrentOfflineHours != 0) hash ^= CurrentOfflineHours.GetHashCode();
+      if (GemInventoryCapacity != 0) hash ^= GemInventoryCapacity.GetHashCode();
+      if (TotalGems != 0) hash ^= TotalGems.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3777,6 +4956,14 @@ namespace Infinitepickaxe {
         output.WriteRawTag(88);
         output.WriteUInt32(CurrentOfflineHours);
       }
+      if (GemInventoryCapacity != 0) {
+        output.WriteRawTag(96);
+        output.WriteUInt32(GemInventoryCapacity);
+      }
+      if (TotalGems != 0) {
+        output.WriteRawTag(104);
+        output.WriteUInt32(TotalGems);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -3816,6 +5003,14 @@ namespace Infinitepickaxe {
         output.WriteRawTag(88);
         output.WriteUInt32(CurrentOfflineHours);
       }
+      if (GemInventoryCapacity != 0) {
+        output.WriteRawTag(96);
+        output.WriteUInt32(GemInventoryCapacity);
+      }
+      if (TotalGems != 0) {
+        output.WriteRawTag(104);
+        output.WriteUInt32(TotalGems);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3852,6 +5047,12 @@ namespace Infinitepickaxe {
       size += adCounters_.CalculateSize(_repeated_adCounters_codec);
       if (CurrentOfflineHours != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CurrentOfflineHours);
+      }
+      if (GemInventoryCapacity != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GemInventoryCapacity);
+      }
+      if (TotalGems != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalGems);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -3903,6 +5104,12 @@ namespace Infinitepickaxe {
       adCounters_.Add(other.adCounters_);
       if (other.CurrentOfflineHours != 0) {
         CurrentOfflineHours = other.CurrentOfflineHours;
+      }
+      if (other.GemInventoryCapacity != 0) {
+        GemInventoryCapacity = other.GemInventoryCapacity;
+      }
+      if (other.TotalGems != 0) {
+        TotalGems = other.TotalGems;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3986,6 +5193,14 @@ namespace Infinitepickaxe {
             CurrentOfflineHours = input.ReadUInt32();
             break;
           }
+          case 96: {
+            GemInventoryCapacity = input.ReadUInt32();
+            break;
+          }
+          case 104: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -4066,6 +5281,14 @@ namespace Infinitepickaxe {
           }
           case 88: {
             CurrentOfflineHours = input.ReadUInt32();
+            break;
+          }
+          case 96: {
+            GemInventoryCapacity = input.ReadUInt32();
+            break;
+          }
+          case 104: {
+            TotalGems = input.ReadUInt32();
             break;
           }
         }
@@ -14407,6 +15630,6085 @@ namespace Infinitepickaxe {
           }
           case 18: {
             Message = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 보석 정보
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemInfo : pb::IMessage<GemInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemInfo> _parser = new pb::MessageParser<GemInfo>(() => new GemInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[40]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemInfo(GemInfo other) : this() {
+      gemInstanceId_ = other.gemInstanceId_;
+      gemId_ = other.gemId_;
+      grade_ = other.grade_;
+      type_ = other.type_;
+      name_ = other.name_;
+      icon_ = other.icon_;
+      statMultiplier_ = other.statMultiplier_;
+      acquiredAt_ = other.acquiredAt_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemInfo Clone() {
+      return new GemInfo(this);
+    }
+
+    /// <summary>Field number for the "gem_instance_id" field.</summary>
+    public const int GemInstanceIdFieldNumber = 1;
+    private string gemInstanceId_ = "";
+    /// <summary>
+    /// UUID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string GemInstanceId {
+      get { return gemInstanceId_; }
+      set {
+        gemInstanceId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "gem_id" field.</summary>
+    public const int GemIdFieldNumber = 2;
+    private uint gemId_;
+    /// <summary>
+    /// 메타데이터 gem_id
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GemId {
+      get { return gemId_; }
+      set {
+        gemId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "grade" field.</summary>
+    public const int GradeFieldNumber = 3;
+    private global::Infinitepickaxe.GemGrade grade_ = global::Infinitepickaxe.GemGrade.Unknown;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemGrade Grade {
+      get { return grade_; }
+      set {
+        grade_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "type" field.</summary>
+    public const int TypeFieldNumber = 4;
+    private global::Infinitepickaxe.GemType type_ = global::Infinitepickaxe.GemType.Unknown;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemType Type {
+      get { return type_; }
+      set {
+        type_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 5;
+    private string name_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "icon" field.</summary>
+    public const int IconFieldNumber = 6;
+    private string icon_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Icon {
+      get { return icon_; }
+      set {
+        icon_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "stat_multiplier" field.</summary>
+    public const int StatMultiplierFieldNumber = 7;
+    private uint statMultiplier_;
+    /// <summary>
+    /// 스탯 배율 (x100)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint StatMultiplier {
+      get { return statMultiplier_; }
+      set {
+        statMultiplier_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "acquired_at" field.</summary>
+    public const int AcquiredAtFieldNumber = 8;
+    private ulong acquiredAt_;
+    /// <summary>
+    /// 획득 시간 (Unix timestamp ms)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong AcquiredAt {
+      get { return acquiredAt_; }
+      set {
+        acquiredAt_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (GemInstanceId != other.GemInstanceId) return false;
+      if (GemId != other.GemId) return false;
+      if (Grade != other.Grade) return false;
+      if (Type != other.Type) return false;
+      if (Name != other.Name) return false;
+      if (Icon != other.Icon) return false;
+      if (StatMultiplier != other.StatMultiplier) return false;
+      if (AcquiredAt != other.AcquiredAt) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (GemInstanceId.Length != 0) hash ^= GemInstanceId.GetHashCode();
+      if (GemId != 0) hash ^= GemId.GetHashCode();
+      if (Grade != global::Infinitepickaxe.GemGrade.Unknown) hash ^= Grade.GetHashCode();
+      if (Type != global::Infinitepickaxe.GemType.Unknown) hash ^= Type.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (Icon.Length != 0) hash ^= Icon.GetHashCode();
+      if (StatMultiplier != 0) hash ^= StatMultiplier.GetHashCode();
+      if (AcquiredAt != 0UL) hash ^= AcquiredAt.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (GemInstanceId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(GemInstanceId);
+      }
+      if (GemId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(GemId);
+      }
+      if (Grade != global::Infinitepickaxe.GemGrade.Unknown) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) Grade);
+      }
+      if (Type != global::Infinitepickaxe.GemType.Unknown) {
+        output.WriteRawTag(32);
+        output.WriteEnum((int) Type);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Name);
+      }
+      if (Icon.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Icon);
+      }
+      if (StatMultiplier != 0) {
+        output.WriteRawTag(56);
+        output.WriteUInt32(StatMultiplier);
+      }
+      if (AcquiredAt != 0UL) {
+        output.WriteRawTag(64);
+        output.WriteUInt64(AcquiredAt);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (GemInstanceId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(GemInstanceId);
+      }
+      if (GemId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(GemId);
+      }
+      if (Grade != global::Infinitepickaxe.GemGrade.Unknown) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) Grade);
+      }
+      if (Type != global::Infinitepickaxe.GemType.Unknown) {
+        output.WriteRawTag(32);
+        output.WriteEnum((int) Type);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Name);
+      }
+      if (Icon.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Icon);
+      }
+      if (StatMultiplier != 0) {
+        output.WriteRawTag(56);
+        output.WriteUInt32(StatMultiplier);
+      }
+      if (AcquiredAt != 0UL) {
+        output.WriteRawTag(64);
+        output.WriteUInt64(AcquiredAt);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (GemInstanceId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(GemInstanceId);
+      }
+      if (GemId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GemId);
+      }
+      if (Grade != global::Infinitepickaxe.GemGrade.Unknown) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Grade);
+      }
+      if (Type != global::Infinitepickaxe.GemType.Unknown) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
+      }
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (Icon.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Icon);
+      }
+      if (StatMultiplier != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(StatMultiplier);
+      }
+      if (AcquiredAt != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(AcquiredAt);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.GemInstanceId.Length != 0) {
+        GemInstanceId = other.GemInstanceId;
+      }
+      if (other.GemId != 0) {
+        GemId = other.GemId;
+      }
+      if (other.Grade != global::Infinitepickaxe.GemGrade.Unknown) {
+        Grade = other.Grade;
+      }
+      if (other.Type != global::Infinitepickaxe.GemType.Unknown) {
+        Type = other.Type;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.Icon.Length != 0) {
+        Icon = other.Icon;
+      }
+      if (other.StatMultiplier != 0) {
+        StatMultiplier = other.StatMultiplier;
+      }
+      if (other.AcquiredAt != 0UL) {
+        AcquiredAt = other.AcquiredAt;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            GemInstanceId = input.ReadString();
+            break;
+          }
+          case 16: {
+            GemId = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            Grade = (global::Infinitepickaxe.GemGrade) input.ReadEnum();
+            break;
+          }
+          case 32: {
+            Type = (global::Infinitepickaxe.GemType) input.ReadEnum();
+            break;
+          }
+          case 42: {
+            Name = input.ReadString();
+            break;
+          }
+          case 50: {
+            Icon = input.ReadString();
+            break;
+          }
+          case 56: {
+            StatMultiplier = input.ReadUInt32();
+            break;
+          }
+          case 64: {
+            AcquiredAt = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            GemInstanceId = input.ReadString();
+            break;
+          }
+          case 16: {
+            GemId = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            Grade = (global::Infinitepickaxe.GemGrade) input.ReadEnum();
+            break;
+          }
+          case 32: {
+            Type = (global::Infinitepickaxe.GemType) input.ReadEnum();
+            break;
+          }
+          case 42: {
+            Name = input.ReadString();
+            break;
+          }
+          case 50: {
+            Icon = input.ReadString();
+            break;
+          }
+          case 56: {
+            StatMultiplier = input.ReadUInt32();
+            break;
+          }
+          case 64: {
+            AcquiredAt = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 곡괭이 슬롯의 보석 슬롯 정보
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemSlotInfo : pb::IMessage<GemSlotInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemSlotInfo> _parser = new pb::MessageParser<GemSlotInfo>(() => new GemSlotInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemSlotInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[41]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSlotInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSlotInfo(GemSlotInfo other) : this() {
+      gemSlotIndex_ = other.gemSlotIndex_;
+      isUnlocked_ = other.isUnlocked_;
+      equippedGem_ = other.equippedGem_ != null ? other.equippedGem_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSlotInfo Clone() {
+      return new GemSlotInfo(this);
+    }
+
+    /// <summary>Field number for the "gem_slot_index" field.</summary>
+    public const int GemSlotIndexFieldNumber = 1;
+    private uint gemSlotIndex_;
+    /// <summary>
+    /// 0-5
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GemSlotIndex {
+      get { return gemSlotIndex_; }
+      set {
+        gemSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_unlocked" field.</summary>
+    public const int IsUnlockedFieldNumber = 2;
+    private bool isUnlocked_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsUnlocked {
+      get { return isUnlocked_; }
+      set {
+        isUnlocked_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "equipped_gem" field.</summary>
+    public const int EquippedGemFieldNumber = 3;
+    private global::Infinitepickaxe.GemInfo equippedGem_;
+    /// <summary>
+    /// 장착된 보석 (없으면 null)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemInfo EquippedGem {
+      get { return equippedGem_; }
+      set {
+        equippedGem_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemSlotInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemSlotInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (GemSlotIndex != other.GemSlotIndex) return false;
+      if (IsUnlocked != other.IsUnlocked) return false;
+      if (!object.Equals(EquippedGem, other.EquippedGem)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (GemSlotIndex != 0) hash ^= GemSlotIndex.GetHashCode();
+      if (IsUnlocked != false) hash ^= IsUnlocked.GetHashCode();
+      if (equippedGem_ != null) hash ^= EquippedGem.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (IsUnlocked != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(IsUnlocked);
+      }
+      if (equippedGem_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(EquippedGem);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (IsUnlocked != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(IsUnlocked);
+      }
+      if (equippedGem_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(EquippedGem);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (GemSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GemSlotIndex);
+      }
+      if (IsUnlocked != false) {
+        size += 1 + 1;
+      }
+      if (equippedGem_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(EquippedGem);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemSlotInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.GemSlotIndex != 0) {
+        GemSlotIndex = other.GemSlotIndex;
+      }
+      if (other.IsUnlocked != false) {
+        IsUnlocked = other.IsUnlocked;
+      }
+      if (other.equippedGem_ != null) {
+        if (equippedGem_ == null) {
+          EquippedGem = new global::Infinitepickaxe.GemInfo();
+        }
+        EquippedGem.MergeFrom(other.EquippedGem);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            IsUnlocked = input.ReadBool();
+            break;
+          }
+          case 26: {
+            if (equippedGem_ == null) {
+              EquippedGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(EquippedGem);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            IsUnlocked = input.ReadBool();
+            break;
+          }
+          case 26: {
+            if (equippedGem_ == null) {
+              EquippedGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(EquippedGem);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 보석 목록 조회
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemListRequest : pb::IMessage<GemListRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemListRequest> _parser = new pb::MessageParser<GemListRequest>(() => new GemListRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemListRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[42]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemListRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemListRequest(GemListRequest other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemListRequest Clone() {
+      return new GemListRequest(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemListRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemListRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemListRequest other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemListResponse : pb::IMessage<GemListResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemListResponse> _parser = new pb::MessageParser<GemListResponse>(() => new GemListResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemListResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[43]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemListResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemListResponse(GemListResponse other) : this() {
+      gems_ = other.gems_.Clone();
+      totalGems_ = other.totalGems_;
+      inventoryCapacity_ = other.inventoryCapacity_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemListResponse Clone() {
+      return new GemListResponse(this);
+    }
+
+    /// <summary>Field number for the "gems" field.</summary>
+    public const int GemsFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.GemInfo> _repeated_gems_codec
+        = pb::FieldCodec.ForMessage(10, global::Infinitepickaxe.GemInfo.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.GemInfo> gems_ = new pbc::RepeatedField<global::Infinitepickaxe.GemInfo>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.GemInfo> Gems {
+      get { return gems_; }
+    }
+
+    /// <summary>Field number for the "total_gems" field.</summary>
+    public const int TotalGemsFieldNumber = 2;
+    private uint totalGems_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalGems {
+      get { return totalGems_; }
+      set {
+        totalGems_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "inventory_capacity" field.</summary>
+    public const int InventoryCapacityFieldNumber = 3;
+    private uint inventoryCapacity_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint InventoryCapacity {
+      get { return inventoryCapacity_; }
+      set {
+        inventoryCapacity_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemListResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemListResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!gems_.Equals(other.gems_)) return false;
+      if (TotalGems != other.TotalGems) return false;
+      if (InventoryCapacity != other.InventoryCapacity) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= gems_.GetHashCode();
+      if (TotalGems != 0) hash ^= TotalGems.GetHashCode();
+      if (InventoryCapacity != 0) hash ^= InventoryCapacity.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      gems_.WriteTo(output, _repeated_gems_codec);
+      if (TotalGems != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(TotalGems);
+      }
+      if (InventoryCapacity != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(InventoryCapacity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      gems_.WriteTo(ref output, _repeated_gems_codec);
+      if (TotalGems != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(TotalGems);
+      }
+      if (InventoryCapacity != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(InventoryCapacity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += gems_.CalculateSize(_repeated_gems_codec);
+      if (TotalGems != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalGems);
+      }
+      if (InventoryCapacity != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(InventoryCapacity);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemListResponse other) {
+      if (other == null) {
+        return;
+      }
+      gems_.Add(other.gems_);
+      if (other.TotalGems != 0) {
+        TotalGems = other.TotalGems;
+      }
+      if (other.InventoryCapacity != 0) {
+        InventoryCapacity = other.InventoryCapacity;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            gems_.AddEntriesFrom(input, _repeated_gems_codec);
+            break;
+          }
+          case 16: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            InventoryCapacity = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            gems_.AddEntriesFrom(ref input, _repeated_gems_codec);
+            break;
+          }
+          case 16: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            InventoryCapacity = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 가챠
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemGachaRequest : pb::IMessage<GemGachaRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemGachaRequest> _parser = new pb::MessageParser<GemGachaRequest>(() => new GemGachaRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemGachaRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[44]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemGachaRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemGachaRequest(GemGachaRequest other) : this() {
+      pullCount_ = other.pullCount_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemGachaRequest Clone() {
+      return new GemGachaRequest(this);
+    }
+
+    /// <summary>Field number for the "pull_count" field.</summary>
+    public const int PullCountFieldNumber = 1;
+    private uint pullCount_;
+    /// <summary>
+    /// 1 or 11
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PullCount {
+      get { return pullCount_; }
+      set {
+        pullCount_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemGachaRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemGachaRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PullCount != other.PullCount) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PullCount != 0) hash ^= PullCount.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (PullCount != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(PullCount);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (PullCount != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(PullCount);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (PullCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PullCount);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemGachaRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PullCount != 0) {
+        PullCount = other.PullCount;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PullCount = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            PullCount = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemGachaResult : pb::IMessage<GemGachaResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemGachaResult> _parser = new pb::MessageParser<GemGachaResult>(() => new GemGachaResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemGachaResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[45]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemGachaResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemGachaResult(GemGachaResult other) : this() {
+      success_ = other.success_;
+      gems_ = other.gems_.Clone();
+      crystalSpent_ = other.crystalSpent_;
+      remainingCrystal_ = other.remainingCrystal_;
+      totalGems_ = other.totalGems_;
+      inventoryCapacity_ = other.inventoryCapacity_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemGachaResult Clone() {
+      return new GemGachaResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gems" field.</summary>
+    public const int GemsFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.GemInfo> _repeated_gems_codec
+        = pb::FieldCodec.ForMessage(18, global::Infinitepickaxe.GemInfo.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.GemInfo> gems_ = new pbc::RepeatedField<global::Infinitepickaxe.GemInfo>();
+    /// <summary>
+    /// 획득한 보석들
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.GemInfo> Gems {
+      get { return gems_; }
+    }
+
+    /// <summary>Field number for the "crystal_spent" field.</summary>
+    public const int CrystalSpentFieldNumber = 3;
+    private uint crystalSpent_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CrystalSpent {
+      get { return crystalSpent_; }
+      set {
+        crystalSpent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "remaining_crystal" field.</summary>
+    public const int RemainingCrystalFieldNumber = 4;
+    private uint remainingCrystal_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RemainingCrystal {
+      get { return remainingCrystal_; }
+      set {
+        remainingCrystal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_gems" field.</summary>
+    public const int TotalGemsFieldNumber = 5;
+    private uint totalGems_;
+    /// <summary>
+    /// 현재 보유 보석 개수
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalGems {
+      get { return totalGems_; }
+      set {
+        totalGems_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "inventory_capacity" field.</summary>
+    public const int InventoryCapacityFieldNumber = 6;
+    private uint inventoryCapacity_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint InventoryCapacity {
+      get { return inventoryCapacity_; }
+      set {
+        inventoryCapacity_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 7;
+    private string errorCode_ = "";
+    /// <summary>
+    /// "INSUFFICIENT_CRYSTAL", "INVENTORY_FULL" 등
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemGachaResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemGachaResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if(!gems_.Equals(other.gems_)) return false;
+      if (CrystalSpent != other.CrystalSpent) return false;
+      if (RemainingCrystal != other.RemainingCrystal) return false;
+      if (TotalGems != other.TotalGems) return false;
+      if (InventoryCapacity != other.InventoryCapacity) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      hash ^= gems_.GetHashCode();
+      if (CrystalSpent != 0) hash ^= CrystalSpent.GetHashCode();
+      if (RemainingCrystal != 0) hash ^= RemainingCrystal.GetHashCode();
+      if (TotalGems != 0) hash ^= TotalGems.GetHashCode();
+      if (InventoryCapacity != 0) hash ^= InventoryCapacity.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      gems_.WriteTo(output, _repeated_gems_codec);
+      if (CrystalSpent != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(RemainingCrystal);
+      }
+      if (TotalGems != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalGems);
+      }
+      if (InventoryCapacity != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(InventoryCapacity);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      gems_.WriteTo(ref output, _repeated_gems_codec);
+      if (CrystalSpent != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(RemainingCrystal);
+      }
+      if (TotalGems != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalGems);
+      }
+      if (InventoryCapacity != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(InventoryCapacity);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      size += gems_.CalculateSize(_repeated_gems_codec);
+      if (CrystalSpent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RemainingCrystal);
+      }
+      if (TotalGems != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalGems);
+      }
+      if (InventoryCapacity != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(InventoryCapacity);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemGachaResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      gems_.Add(other.gems_);
+      if (other.CrystalSpent != 0) {
+        CrystalSpent = other.CrystalSpent;
+      }
+      if (other.RemainingCrystal != 0) {
+        RemainingCrystal = other.RemainingCrystal;
+      }
+      if (other.TotalGems != 0) {
+        TotalGems = other.TotalGems;
+      }
+      if (other.InventoryCapacity != 0) {
+        InventoryCapacity = other.InventoryCapacity;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            gems_.AddEntriesFrom(input, _repeated_gems_codec);
+            break;
+          }
+          case 24: {
+            CrystalSpent = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            RemainingCrystal = input.ReadUInt32();
+            break;
+          }
+          case 40: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 48: {
+            InventoryCapacity = input.ReadUInt32();
+            break;
+          }
+          case 58: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            gems_.AddEntriesFrom(ref input, _repeated_gems_codec);
+            break;
+          }
+          case 24: {
+            CrystalSpent = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            RemainingCrystal = input.ReadUInt32();
+            break;
+          }
+          case 40: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 48: {
+            InventoryCapacity = input.ReadUInt32();
+            break;
+          }
+          case 58: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 합성
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemSynthesisRequest : pb::IMessage<GemSynthesisRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemSynthesisRequest> _parser = new pb::MessageParser<GemSynthesisRequest>(() => new GemSynthesisRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemSynthesisRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[46]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSynthesisRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSynthesisRequest(GemSynthesisRequest other) : this() {
+      gemInstanceIds_ = other.gemInstanceIds_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSynthesisRequest Clone() {
+      return new GemSynthesisRequest(this);
+    }
+
+    /// <summary>Field number for the "gem_instance_ids" field.</summary>
+    public const int GemInstanceIdsFieldNumber = 1;
+    private static readonly pb::FieldCodec<string> _repeated_gemInstanceIds_codec
+        = pb::FieldCodec.ForString(10);
+    private readonly pbc::RepeatedField<string> gemInstanceIds_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// 3개의 UUID (같은 등급, 같은 타입)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> GemInstanceIds {
+      get { return gemInstanceIds_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemSynthesisRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemSynthesisRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!gemInstanceIds_.Equals(other.gemInstanceIds_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= gemInstanceIds_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      gemInstanceIds_.WriteTo(output, _repeated_gemInstanceIds_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      gemInstanceIds_.WriteTo(ref output, _repeated_gemInstanceIds_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += gemInstanceIds_.CalculateSize(_repeated_gemInstanceIds_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemSynthesisRequest other) {
+      if (other == null) {
+        return;
+      }
+      gemInstanceIds_.Add(other.gemInstanceIds_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            gemInstanceIds_.AddEntriesFrom(input, _repeated_gemInstanceIds_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            gemInstanceIds_.AddEntriesFrom(ref input, _repeated_gemInstanceIds_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemSynthesisResult : pb::IMessage<GemSynthesisResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemSynthesisResult> _parser = new pb::MessageParser<GemSynthesisResult>(() => new GemSynthesisResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemSynthesisResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[47]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSynthesisResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSynthesisResult(GemSynthesisResult other) : this() {
+      success_ = other.success_;
+      synthesisSuccess_ = other.synthesisSuccess_;
+      resultGem_ = other.resultGem_ != null ? other.resultGem_.Clone() : null;
+      totalGems_ = other.totalGems_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSynthesisResult Clone() {
+      return new GemSynthesisResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "synthesis_success" field.</summary>
+    public const int SynthesisSuccessFieldNumber = 2;
+    private bool synthesisSuccess_;
+    /// <summary>
+    /// 합성 성공 여부 (확률)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool SynthesisSuccess {
+      get { return synthesisSuccess_; }
+      set {
+        synthesisSuccess_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "result_gem" field.</summary>
+    public const int ResultGemFieldNumber = 3;
+    private global::Infinitepickaxe.GemInfo resultGem_;
+    /// <summary>
+    /// 합성 결과 보석 (성공 시)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemInfo ResultGem {
+      get { return resultGem_; }
+      set {
+        resultGem_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_gems" field.</summary>
+    public const int TotalGemsFieldNumber = 4;
+    private uint totalGems_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalGems {
+      get { return totalGems_; }
+      set {
+        totalGems_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 5;
+    private string errorCode_ = "";
+    /// <summary>
+    /// "INVALID_GEMS", "GRADE_MISMATCH" 등
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemSynthesisResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemSynthesisResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (SynthesisSuccess != other.SynthesisSuccess) return false;
+      if (!object.Equals(ResultGem, other.ResultGem)) return false;
+      if (TotalGems != other.TotalGems) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (SynthesisSuccess != false) hash ^= SynthesisSuccess.GetHashCode();
+      if (resultGem_ != null) hash ^= ResultGem.GetHashCode();
+      if (TotalGems != 0) hash ^= TotalGems.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (SynthesisSuccess != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(SynthesisSuccess);
+      }
+      if (resultGem_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(ResultGem);
+      }
+      if (TotalGems != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(TotalGems);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (SynthesisSuccess != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(SynthesisSuccess);
+      }
+      if (resultGem_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(ResultGem);
+      }
+      if (TotalGems != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(TotalGems);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (SynthesisSuccess != false) {
+        size += 1 + 1;
+      }
+      if (resultGem_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ResultGem);
+      }
+      if (TotalGems != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalGems);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemSynthesisResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.SynthesisSuccess != false) {
+        SynthesisSuccess = other.SynthesisSuccess;
+      }
+      if (other.resultGem_ != null) {
+        if (resultGem_ == null) {
+          ResultGem = new global::Infinitepickaxe.GemInfo();
+        }
+        ResultGem.MergeFrom(other.ResultGem);
+      }
+      if (other.TotalGems != 0) {
+        TotalGems = other.TotalGems;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            SynthesisSuccess = input.ReadBool();
+            break;
+          }
+          case 26: {
+            if (resultGem_ == null) {
+              ResultGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(ResultGem);
+            break;
+          }
+          case 32: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            SynthesisSuccess = input.ReadBool();
+            break;
+          }
+          case 26: {
+            if (resultGem_ == null) {
+              ResultGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(ResultGem);
+            break;
+          }
+          case 32: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 타입 변환
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemConversionRequest : pb::IMessage<GemConversionRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemConversionRequest> _parser = new pb::MessageParser<GemConversionRequest>(() => new GemConversionRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemConversionRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[48]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemConversionRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemConversionRequest(GemConversionRequest other) : this() {
+      gemInstanceId_ = other.gemInstanceId_;
+      targetType_ = other.targetType_;
+      useFixedCost_ = other.useFixedCost_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemConversionRequest Clone() {
+      return new GemConversionRequest(this);
+    }
+
+    /// <summary>Field number for the "gem_instance_id" field.</summary>
+    public const int GemInstanceIdFieldNumber = 1;
+    private string gemInstanceId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string GemInstanceId {
+      get { return gemInstanceId_; }
+      set {
+        gemInstanceId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "target_type" field.</summary>
+    public const int TargetTypeFieldNumber = 2;
+    private global::Infinitepickaxe.GemType targetType_ = global::Infinitepickaxe.GemType.Unknown;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemType TargetType {
+      get { return targetType_; }
+      set {
+        targetType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "use_fixed_cost" field.</summary>
+    public const int UseFixedCostFieldNumber = 3;
+    private bool useFixedCost_;
+    /// <summary>
+    /// true: 고정 비용, false: 랜덤
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool UseFixedCost {
+      get { return useFixedCost_; }
+      set {
+        useFixedCost_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemConversionRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemConversionRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (GemInstanceId != other.GemInstanceId) return false;
+      if (TargetType != other.TargetType) return false;
+      if (UseFixedCost != other.UseFixedCost) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (GemInstanceId.Length != 0) hash ^= GemInstanceId.GetHashCode();
+      if (TargetType != global::Infinitepickaxe.GemType.Unknown) hash ^= TargetType.GetHashCode();
+      if (UseFixedCost != false) hash ^= UseFixedCost.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (GemInstanceId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(GemInstanceId);
+      }
+      if (TargetType != global::Infinitepickaxe.GemType.Unknown) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) TargetType);
+      }
+      if (UseFixedCost != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(UseFixedCost);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (GemInstanceId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(GemInstanceId);
+      }
+      if (TargetType != global::Infinitepickaxe.GemType.Unknown) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) TargetType);
+      }
+      if (UseFixedCost != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(UseFixedCost);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (GemInstanceId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(GemInstanceId);
+      }
+      if (TargetType != global::Infinitepickaxe.GemType.Unknown) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TargetType);
+      }
+      if (UseFixedCost != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemConversionRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.GemInstanceId.Length != 0) {
+        GemInstanceId = other.GemInstanceId;
+      }
+      if (other.TargetType != global::Infinitepickaxe.GemType.Unknown) {
+        TargetType = other.TargetType;
+      }
+      if (other.UseFixedCost != false) {
+        UseFixedCost = other.UseFixedCost;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            GemInstanceId = input.ReadString();
+            break;
+          }
+          case 16: {
+            TargetType = (global::Infinitepickaxe.GemType) input.ReadEnum();
+            break;
+          }
+          case 24: {
+            UseFixedCost = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            GemInstanceId = input.ReadString();
+            break;
+          }
+          case 16: {
+            TargetType = (global::Infinitepickaxe.GemType) input.ReadEnum();
+            break;
+          }
+          case 24: {
+            UseFixedCost = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemConversionResult : pb::IMessage<GemConversionResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemConversionResult> _parser = new pb::MessageParser<GemConversionResult>(() => new GemConversionResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemConversionResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[49]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemConversionResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemConversionResult(GemConversionResult other) : this() {
+      success_ = other.success_;
+      convertedGem_ = other.convertedGem_ != null ? other.convertedGem_.Clone() : null;
+      crystalSpent_ = other.crystalSpent_;
+      remainingCrystal_ = other.remainingCrystal_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemConversionResult Clone() {
+      return new GemConversionResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "converted_gem" field.</summary>
+    public const int ConvertedGemFieldNumber = 2;
+    private global::Infinitepickaxe.GemInfo convertedGem_;
+    /// <summary>
+    /// 변환된 보석
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemInfo ConvertedGem {
+      get { return convertedGem_; }
+      set {
+        convertedGem_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "crystal_spent" field.</summary>
+    public const int CrystalSpentFieldNumber = 3;
+    private uint crystalSpent_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CrystalSpent {
+      get { return crystalSpent_; }
+      set {
+        crystalSpent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "remaining_crystal" field.</summary>
+    public const int RemainingCrystalFieldNumber = 4;
+    private uint remainingCrystal_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RemainingCrystal {
+      get { return remainingCrystal_; }
+      set {
+        remainingCrystal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 5;
+    private string errorCode_ = "";
+    /// <summary>
+    /// "INSUFFICIENT_CRYSTAL", "SAME_TYPE" 등
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemConversionResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemConversionResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (!object.Equals(ConvertedGem, other.ConvertedGem)) return false;
+      if (CrystalSpent != other.CrystalSpent) return false;
+      if (RemainingCrystal != other.RemainingCrystal) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (convertedGem_ != null) hash ^= ConvertedGem.GetHashCode();
+      if (CrystalSpent != 0) hash ^= CrystalSpent.GetHashCode();
+      if (RemainingCrystal != 0) hash ^= RemainingCrystal.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (convertedGem_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ConvertedGem);
+      }
+      if (CrystalSpent != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(RemainingCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (convertedGem_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ConvertedGem);
+      }
+      if (CrystalSpent != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(RemainingCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (convertedGem_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ConvertedGem);
+      }
+      if (CrystalSpent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RemainingCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemConversionResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.convertedGem_ != null) {
+        if (convertedGem_ == null) {
+          ConvertedGem = new global::Infinitepickaxe.GemInfo();
+        }
+        ConvertedGem.MergeFrom(other.ConvertedGem);
+      }
+      if (other.CrystalSpent != 0) {
+        CrystalSpent = other.CrystalSpent;
+      }
+      if (other.RemainingCrystal != 0) {
+        RemainingCrystal = other.RemainingCrystal;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            if (convertedGem_ == null) {
+              ConvertedGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(ConvertedGem);
+            break;
+          }
+          case 24: {
+            CrystalSpent = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            RemainingCrystal = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            if (convertedGem_ == null) {
+              ConvertedGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(ConvertedGem);
+            break;
+          }
+          case 24: {
+            CrystalSpent = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            RemainingCrystal = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 분해
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemDiscardRequest : pb::IMessage<GemDiscardRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemDiscardRequest> _parser = new pb::MessageParser<GemDiscardRequest>(() => new GemDiscardRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemDiscardRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[50]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemDiscardRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemDiscardRequest(GemDiscardRequest other) : this() {
+      gemInstanceIds_ = other.gemInstanceIds_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemDiscardRequest Clone() {
+      return new GemDiscardRequest(this);
+    }
+
+    /// <summary>Field number for the "gem_instance_ids" field.</summary>
+    public const int GemInstanceIdsFieldNumber = 1;
+    private static readonly pb::FieldCodec<string> _repeated_gemInstanceIds_codec
+        = pb::FieldCodec.ForString(10);
+    private readonly pbc::RepeatedField<string> gemInstanceIds_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> GemInstanceIds {
+      get { return gemInstanceIds_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemDiscardRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemDiscardRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!gemInstanceIds_.Equals(other.gemInstanceIds_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= gemInstanceIds_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      gemInstanceIds_.WriteTo(output, _repeated_gemInstanceIds_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      gemInstanceIds_.WriteTo(ref output, _repeated_gemInstanceIds_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += gemInstanceIds_.CalculateSize(_repeated_gemInstanceIds_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemDiscardRequest other) {
+      if (other == null) {
+        return;
+      }
+      gemInstanceIds_.Add(other.gemInstanceIds_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            gemInstanceIds_.AddEntriesFrom(input, _repeated_gemInstanceIds_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            gemInstanceIds_.AddEntriesFrom(ref input, _repeated_gemInstanceIds_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemDiscardResult : pb::IMessage<GemDiscardResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemDiscardResult> _parser = new pb::MessageParser<GemDiscardResult>(() => new GemDiscardResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemDiscardResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[51]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemDiscardResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemDiscardResult(GemDiscardResult other) : this() {
+      success_ = other.success_;
+      crystalEarned_ = other.crystalEarned_;
+      totalCrystal_ = other.totalCrystal_;
+      totalGems_ = other.totalGems_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemDiscardResult Clone() {
+      return new GemDiscardResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "crystal_earned" field.</summary>
+    public const int CrystalEarnedFieldNumber = 2;
+    private uint crystalEarned_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CrystalEarned {
+      get { return crystalEarned_; }
+      set {
+        crystalEarned_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_crystal" field.</summary>
+    public const int TotalCrystalFieldNumber = 3;
+    private uint totalCrystal_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalCrystal {
+      get { return totalCrystal_; }
+      set {
+        totalCrystal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_gems" field.</summary>
+    public const int TotalGemsFieldNumber = 4;
+    private uint totalGems_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalGems {
+      get { return totalGems_; }
+      set {
+        totalGems_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 5;
+    private string errorCode_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemDiscardResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemDiscardResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (CrystalEarned != other.CrystalEarned) return false;
+      if (TotalCrystal != other.TotalCrystal) return false;
+      if (TotalGems != other.TotalGems) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (CrystalEarned != 0) hash ^= CrystalEarned.GetHashCode();
+      if (TotalCrystal != 0) hash ^= TotalCrystal.GetHashCode();
+      if (TotalGems != 0) hash ^= TotalGems.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (CrystalEarned != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(CrystalEarned);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(TotalCrystal);
+      }
+      if (TotalGems != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(TotalGems);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (CrystalEarned != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(CrystalEarned);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(TotalCrystal);
+      }
+      if (TotalGems != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(TotalGems);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (CrystalEarned != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CrystalEarned);
+      }
+      if (TotalCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalCrystal);
+      }
+      if (TotalGems != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalGems);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemDiscardResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.CrystalEarned != 0) {
+        CrystalEarned = other.CrystalEarned;
+      }
+      if (other.TotalCrystal != 0) {
+        TotalCrystal = other.TotalCrystal;
+      }
+      if (other.TotalGems != 0) {
+        TotalGems = other.TotalGems;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            CrystalEarned = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            CrystalEarned = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 장착
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemEquipRequest : pb::IMessage<GemEquipRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemEquipRequest> _parser = new pb::MessageParser<GemEquipRequest>(() => new GemEquipRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemEquipRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[52]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemEquipRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemEquipRequest(GemEquipRequest other) : this() {
+      pickaxeSlotIndex_ = other.pickaxeSlotIndex_;
+      gemSlotIndex_ = other.gemSlotIndex_;
+      gemInstanceId_ = other.gemInstanceId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemEquipRequest Clone() {
+      return new GemEquipRequest(this);
+    }
+
+    /// <summary>Field number for the "pickaxe_slot_index" field.</summary>
+    public const int PickaxeSlotIndexFieldNumber = 1;
+    private uint pickaxeSlotIndex_;
+    /// <summary>
+    /// 0-3
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PickaxeSlotIndex {
+      get { return pickaxeSlotIndex_; }
+      set {
+        pickaxeSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gem_slot_index" field.</summary>
+    public const int GemSlotIndexFieldNumber = 2;
+    private uint gemSlotIndex_;
+    /// <summary>
+    /// 0-5
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GemSlotIndex {
+      get { return gemSlotIndex_; }
+      set {
+        gemSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gem_instance_id" field.</summary>
+    public const int GemInstanceIdFieldNumber = 3;
+    private string gemInstanceId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string GemInstanceId {
+      get { return gemInstanceId_; }
+      set {
+        gemInstanceId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemEquipRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemEquipRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PickaxeSlotIndex != other.PickaxeSlotIndex) return false;
+      if (GemSlotIndex != other.GemSlotIndex) return false;
+      if (GemInstanceId != other.GemInstanceId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PickaxeSlotIndex != 0) hash ^= PickaxeSlotIndex.GetHashCode();
+      if (GemSlotIndex != 0) hash ^= GemSlotIndex.GetHashCode();
+      if (GemInstanceId.Length != 0) hash ^= GemInstanceId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (GemInstanceId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(GemInstanceId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (GemInstanceId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(GemInstanceId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (PickaxeSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GemSlotIndex);
+      }
+      if (GemInstanceId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(GemInstanceId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemEquipRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PickaxeSlotIndex != 0) {
+        PickaxeSlotIndex = other.PickaxeSlotIndex;
+      }
+      if (other.GemSlotIndex != 0) {
+        GemSlotIndex = other.GemSlotIndex;
+      }
+      if (other.GemInstanceId.Length != 0) {
+        GemInstanceId = other.GemInstanceId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 26: {
+            GemInstanceId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 26: {
+            GemInstanceId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemEquipResult : pb::IMessage<GemEquipResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemEquipResult> _parser = new pb::MessageParser<GemEquipResult>(() => new GemEquipResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemEquipResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[53]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemEquipResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemEquipResult(GemEquipResult other) : this() {
+      success_ = other.success_;
+      pickaxeSlotIndex_ = other.pickaxeSlotIndex_;
+      gemSlotIndex_ = other.gemSlotIndex_;
+      equippedGem_ = other.equippedGem_ != null ? other.equippedGem_.Clone() : null;
+      updatedPickaxe_ = other.updatedPickaxe_ != null ? other.updatedPickaxe_.Clone() : null;
+      newTotalDps_ = other.newTotalDps_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemEquipResult Clone() {
+      return new GemEquipResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "pickaxe_slot_index" field.</summary>
+    public const int PickaxeSlotIndexFieldNumber = 2;
+    private uint pickaxeSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PickaxeSlotIndex {
+      get { return pickaxeSlotIndex_; }
+      set {
+        pickaxeSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gem_slot_index" field.</summary>
+    public const int GemSlotIndexFieldNumber = 3;
+    private uint gemSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GemSlotIndex {
+      get { return gemSlotIndex_; }
+      set {
+        gemSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "equipped_gem" field.</summary>
+    public const int EquippedGemFieldNumber = 4;
+    private global::Infinitepickaxe.GemInfo equippedGem_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemInfo EquippedGem {
+      get { return equippedGem_; }
+      set {
+        equippedGem_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "updated_pickaxe" field.</summary>
+    public const int UpdatedPickaxeFieldNumber = 5;
+    private global::Infinitepickaxe.PickaxeSlotInfo updatedPickaxe_;
+    /// <summary>
+    /// 업데이트된 곡괭이 스탯
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.PickaxeSlotInfo UpdatedPickaxe {
+      get { return updatedPickaxe_; }
+      set {
+        updatedPickaxe_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "new_total_dps" field.</summary>
+    public const int NewTotalDpsFieldNumber = 6;
+    private ulong newTotalDps_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong NewTotalDps {
+      get { return newTotalDps_; }
+      set {
+        newTotalDps_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 7;
+    private string errorCode_ = "";
+    /// <summary>
+    /// "SLOT_NOT_UNLOCKED", "GEM_NOT_FOUND" 등
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemEquipResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemEquipResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (PickaxeSlotIndex != other.PickaxeSlotIndex) return false;
+      if (GemSlotIndex != other.GemSlotIndex) return false;
+      if (!object.Equals(EquippedGem, other.EquippedGem)) return false;
+      if (!object.Equals(UpdatedPickaxe, other.UpdatedPickaxe)) return false;
+      if (NewTotalDps != other.NewTotalDps) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (PickaxeSlotIndex != 0) hash ^= PickaxeSlotIndex.GetHashCode();
+      if (GemSlotIndex != 0) hash ^= GemSlotIndex.GetHashCode();
+      if (equippedGem_ != null) hash ^= EquippedGem.GetHashCode();
+      if (updatedPickaxe_ != null) hash ^= UpdatedPickaxe.GetHashCode();
+      if (NewTotalDps != 0UL) hash ^= NewTotalDps.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (equippedGem_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(EquippedGem);
+      }
+      if (updatedPickaxe_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(UpdatedPickaxe);
+      }
+      if (NewTotalDps != 0UL) {
+        output.WriteRawTag(48);
+        output.WriteUInt64(NewTotalDps);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (equippedGem_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(EquippedGem);
+      }
+      if (updatedPickaxe_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(UpdatedPickaxe);
+      }
+      if (NewTotalDps != 0UL) {
+        output.WriteRawTag(48);
+        output.WriteUInt64(NewTotalDps);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (PickaxeSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GemSlotIndex);
+      }
+      if (equippedGem_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(EquippedGem);
+      }
+      if (updatedPickaxe_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UpdatedPickaxe);
+      }
+      if (NewTotalDps != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(NewTotalDps);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemEquipResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.PickaxeSlotIndex != 0) {
+        PickaxeSlotIndex = other.PickaxeSlotIndex;
+      }
+      if (other.GemSlotIndex != 0) {
+        GemSlotIndex = other.GemSlotIndex;
+      }
+      if (other.equippedGem_ != null) {
+        if (equippedGem_ == null) {
+          EquippedGem = new global::Infinitepickaxe.GemInfo();
+        }
+        EquippedGem.MergeFrom(other.EquippedGem);
+      }
+      if (other.updatedPickaxe_ != null) {
+        if (updatedPickaxe_ == null) {
+          UpdatedPickaxe = new global::Infinitepickaxe.PickaxeSlotInfo();
+        }
+        UpdatedPickaxe.MergeFrom(other.UpdatedPickaxe);
+      }
+      if (other.NewTotalDps != 0UL) {
+        NewTotalDps = other.NewTotalDps;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 34: {
+            if (equippedGem_ == null) {
+              EquippedGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(EquippedGem);
+            break;
+          }
+          case 42: {
+            if (updatedPickaxe_ == null) {
+              UpdatedPickaxe = new global::Infinitepickaxe.PickaxeSlotInfo();
+            }
+            input.ReadMessage(UpdatedPickaxe);
+            break;
+          }
+          case 48: {
+            NewTotalDps = input.ReadUInt64();
+            break;
+          }
+          case 58: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 34: {
+            if (equippedGem_ == null) {
+              EquippedGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(EquippedGem);
+            break;
+          }
+          case 42: {
+            if (updatedPickaxe_ == null) {
+              UpdatedPickaxe = new global::Infinitepickaxe.PickaxeSlotInfo();
+            }
+            input.ReadMessage(UpdatedPickaxe);
+            break;
+          }
+          case 48: {
+            NewTotalDps = input.ReadUInt64();
+            break;
+          }
+          case 58: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 해제
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemUnequipRequest : pb::IMessage<GemUnequipRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemUnequipRequest> _parser = new pb::MessageParser<GemUnequipRequest>(() => new GemUnequipRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemUnequipRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[54]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemUnequipRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemUnequipRequest(GemUnequipRequest other) : this() {
+      pickaxeSlotIndex_ = other.pickaxeSlotIndex_;
+      gemSlotIndex_ = other.gemSlotIndex_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemUnequipRequest Clone() {
+      return new GemUnequipRequest(this);
+    }
+
+    /// <summary>Field number for the "pickaxe_slot_index" field.</summary>
+    public const int PickaxeSlotIndexFieldNumber = 1;
+    private uint pickaxeSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PickaxeSlotIndex {
+      get { return pickaxeSlotIndex_; }
+      set {
+        pickaxeSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gem_slot_index" field.</summary>
+    public const int GemSlotIndexFieldNumber = 2;
+    private uint gemSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GemSlotIndex {
+      get { return gemSlotIndex_; }
+      set {
+        gemSlotIndex_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemUnequipRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemUnequipRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PickaxeSlotIndex != other.PickaxeSlotIndex) return false;
+      if (GemSlotIndex != other.GemSlotIndex) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PickaxeSlotIndex != 0) hash ^= PickaxeSlotIndex.GetHashCode();
+      if (GemSlotIndex != 0) hash ^= GemSlotIndex.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (PickaxeSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GemSlotIndex);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemUnequipRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PickaxeSlotIndex != 0) {
+        PickaxeSlotIndex = other.PickaxeSlotIndex;
+      }
+      if (other.GemSlotIndex != 0) {
+        GemSlotIndex = other.GemSlotIndex;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemUnequipResult : pb::IMessage<GemUnequipResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemUnequipResult> _parser = new pb::MessageParser<GemUnequipResult>(() => new GemUnequipResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemUnequipResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[55]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemUnequipResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemUnequipResult(GemUnequipResult other) : this() {
+      success_ = other.success_;
+      pickaxeSlotIndex_ = other.pickaxeSlotIndex_;
+      gemSlotIndex_ = other.gemSlotIndex_;
+      unequippedGem_ = other.unequippedGem_ != null ? other.unequippedGem_.Clone() : null;
+      updatedPickaxe_ = other.updatedPickaxe_ != null ? other.updatedPickaxe_.Clone() : null;
+      newTotalDps_ = other.newTotalDps_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemUnequipResult Clone() {
+      return new GemUnequipResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "pickaxe_slot_index" field.</summary>
+    public const int PickaxeSlotIndexFieldNumber = 2;
+    private uint pickaxeSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PickaxeSlotIndex {
+      get { return pickaxeSlotIndex_; }
+      set {
+        pickaxeSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gem_slot_index" field.</summary>
+    public const int GemSlotIndexFieldNumber = 3;
+    private uint gemSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GemSlotIndex {
+      get { return gemSlotIndex_; }
+      set {
+        gemSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "unequipped_gem" field.</summary>
+    public const int UnequippedGemFieldNumber = 4;
+    private global::Infinitepickaxe.GemInfo unequippedGem_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemInfo UnequippedGem {
+      get { return unequippedGem_; }
+      set {
+        unequippedGem_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "updated_pickaxe" field.</summary>
+    public const int UpdatedPickaxeFieldNumber = 5;
+    private global::Infinitepickaxe.PickaxeSlotInfo updatedPickaxe_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.PickaxeSlotInfo UpdatedPickaxe {
+      get { return updatedPickaxe_; }
+      set {
+        updatedPickaxe_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "new_total_dps" field.</summary>
+    public const int NewTotalDpsFieldNumber = 6;
+    private ulong newTotalDps_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong NewTotalDps {
+      get { return newTotalDps_; }
+      set {
+        newTotalDps_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 7;
+    private string errorCode_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemUnequipResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemUnequipResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (PickaxeSlotIndex != other.PickaxeSlotIndex) return false;
+      if (GemSlotIndex != other.GemSlotIndex) return false;
+      if (!object.Equals(UnequippedGem, other.UnequippedGem)) return false;
+      if (!object.Equals(UpdatedPickaxe, other.UpdatedPickaxe)) return false;
+      if (NewTotalDps != other.NewTotalDps) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (PickaxeSlotIndex != 0) hash ^= PickaxeSlotIndex.GetHashCode();
+      if (GemSlotIndex != 0) hash ^= GemSlotIndex.GetHashCode();
+      if (unequippedGem_ != null) hash ^= UnequippedGem.GetHashCode();
+      if (updatedPickaxe_ != null) hash ^= UpdatedPickaxe.GetHashCode();
+      if (NewTotalDps != 0UL) hash ^= NewTotalDps.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (unequippedGem_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(UnequippedGem);
+      }
+      if (updatedPickaxe_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(UpdatedPickaxe);
+      }
+      if (NewTotalDps != 0UL) {
+        output.WriteRawTag(48);
+        output.WriteUInt64(NewTotalDps);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (unequippedGem_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(UnequippedGem);
+      }
+      if (updatedPickaxe_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(UpdatedPickaxe);
+      }
+      if (NewTotalDps != 0UL) {
+        output.WriteRawTag(48);
+        output.WriteUInt64(NewTotalDps);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (PickaxeSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GemSlotIndex);
+      }
+      if (unequippedGem_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UnequippedGem);
+      }
+      if (updatedPickaxe_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UpdatedPickaxe);
+      }
+      if (NewTotalDps != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(NewTotalDps);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemUnequipResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.PickaxeSlotIndex != 0) {
+        PickaxeSlotIndex = other.PickaxeSlotIndex;
+      }
+      if (other.GemSlotIndex != 0) {
+        GemSlotIndex = other.GemSlotIndex;
+      }
+      if (other.unequippedGem_ != null) {
+        if (unequippedGem_ == null) {
+          UnequippedGem = new global::Infinitepickaxe.GemInfo();
+        }
+        UnequippedGem.MergeFrom(other.UnequippedGem);
+      }
+      if (other.updatedPickaxe_ != null) {
+        if (updatedPickaxe_ == null) {
+          UpdatedPickaxe = new global::Infinitepickaxe.PickaxeSlotInfo();
+        }
+        UpdatedPickaxe.MergeFrom(other.UpdatedPickaxe);
+      }
+      if (other.NewTotalDps != 0UL) {
+        NewTotalDps = other.NewTotalDps;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 34: {
+            if (unequippedGem_ == null) {
+              UnequippedGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(UnequippedGem);
+            break;
+          }
+          case 42: {
+            if (updatedPickaxe_ == null) {
+              UpdatedPickaxe = new global::Infinitepickaxe.PickaxeSlotInfo();
+            }
+            input.ReadMessage(UpdatedPickaxe);
+            break;
+          }
+          case 48: {
+            NewTotalDps = input.ReadUInt64();
+            break;
+          }
+          case 58: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 34: {
+            if (unequippedGem_ == null) {
+              UnequippedGem = new global::Infinitepickaxe.GemInfo();
+            }
+            input.ReadMessage(UnequippedGem);
+            break;
+          }
+          case 42: {
+            if (updatedPickaxe_ == null) {
+              UpdatedPickaxe = new global::Infinitepickaxe.PickaxeSlotInfo();
+            }
+            input.ReadMessage(UpdatedPickaxe);
+            break;
+          }
+          case 48: {
+            NewTotalDps = input.ReadUInt64();
+            break;
+          }
+          case 58: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 보석 슬롯 해금
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemSlotUnlockRequest : pb::IMessage<GemSlotUnlockRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemSlotUnlockRequest> _parser = new pb::MessageParser<GemSlotUnlockRequest>(() => new GemSlotUnlockRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemSlotUnlockRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[56]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSlotUnlockRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSlotUnlockRequest(GemSlotUnlockRequest other) : this() {
+      pickaxeSlotIndex_ = other.pickaxeSlotIndex_;
+      gemSlotIndex_ = other.gemSlotIndex_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSlotUnlockRequest Clone() {
+      return new GemSlotUnlockRequest(this);
+    }
+
+    /// <summary>Field number for the "pickaxe_slot_index" field.</summary>
+    public const int PickaxeSlotIndexFieldNumber = 1;
+    private uint pickaxeSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PickaxeSlotIndex {
+      get { return pickaxeSlotIndex_; }
+      set {
+        pickaxeSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gem_slot_index" field.</summary>
+    public const int GemSlotIndexFieldNumber = 2;
+    private uint gemSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GemSlotIndex {
+      get { return gemSlotIndex_; }
+      set {
+        gemSlotIndex_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemSlotUnlockRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemSlotUnlockRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PickaxeSlotIndex != other.PickaxeSlotIndex) return false;
+      if (GemSlotIndex != other.GemSlotIndex) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PickaxeSlotIndex != 0) hash ^= PickaxeSlotIndex.GetHashCode();
+      if (GemSlotIndex != 0) hash ^= GemSlotIndex.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (PickaxeSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GemSlotIndex);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemSlotUnlockRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PickaxeSlotIndex != 0) {
+        PickaxeSlotIndex = other.PickaxeSlotIndex;
+      }
+      if (other.GemSlotIndex != 0) {
+        GemSlotIndex = other.GemSlotIndex;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemSlotUnlockResult : pb::IMessage<GemSlotUnlockResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemSlotUnlockResult> _parser = new pb::MessageParser<GemSlotUnlockResult>(() => new GemSlotUnlockResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemSlotUnlockResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[57]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSlotUnlockResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSlotUnlockResult(GemSlotUnlockResult other) : this() {
+      success_ = other.success_;
+      pickaxeSlotIndex_ = other.pickaxeSlotIndex_;
+      gemSlotIndex_ = other.gemSlotIndex_;
+      crystalSpent_ = other.crystalSpent_;
+      remainingCrystal_ = other.remainingCrystal_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemSlotUnlockResult Clone() {
+      return new GemSlotUnlockResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "pickaxe_slot_index" field.</summary>
+    public const int PickaxeSlotIndexFieldNumber = 2;
+    private uint pickaxeSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PickaxeSlotIndex {
+      get { return pickaxeSlotIndex_; }
+      set {
+        pickaxeSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gem_slot_index" field.</summary>
+    public const int GemSlotIndexFieldNumber = 3;
+    private uint gemSlotIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GemSlotIndex {
+      get { return gemSlotIndex_; }
+      set {
+        gemSlotIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "crystal_spent" field.</summary>
+    public const int CrystalSpentFieldNumber = 4;
+    private uint crystalSpent_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CrystalSpent {
+      get { return crystalSpent_; }
+      set {
+        crystalSpent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "remaining_crystal" field.</summary>
+    public const int RemainingCrystalFieldNumber = 5;
+    private uint remainingCrystal_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RemainingCrystal {
+      get { return remainingCrystal_; }
+      set {
+        remainingCrystal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 6;
+    private string errorCode_ = "";
+    /// <summary>
+    /// "ALREADY_UNLOCKED", "INSUFFICIENT_CRYSTAL" 등
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemSlotUnlockResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemSlotUnlockResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (PickaxeSlotIndex != other.PickaxeSlotIndex) return false;
+      if (GemSlotIndex != other.GemSlotIndex) return false;
+      if (CrystalSpent != other.CrystalSpent) return false;
+      if (RemainingCrystal != other.RemainingCrystal) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (PickaxeSlotIndex != 0) hash ^= PickaxeSlotIndex.GetHashCode();
+      if (GemSlotIndex != 0) hash ^= GemSlotIndex.GetHashCode();
+      if (CrystalSpent != 0) hash ^= CrystalSpent.GetHashCode();
+      if (RemainingCrystal != 0) hash ^= RemainingCrystal.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (CrystalSpent != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(RemainingCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (PickaxeSlotIndex != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(GemSlotIndex);
+      }
+      if (CrystalSpent != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(RemainingCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (PickaxeSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PickaxeSlotIndex);
+      }
+      if (GemSlotIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GemSlotIndex);
+      }
+      if (CrystalSpent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RemainingCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemSlotUnlockResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.PickaxeSlotIndex != 0) {
+        PickaxeSlotIndex = other.PickaxeSlotIndex;
+      }
+      if (other.GemSlotIndex != 0) {
+        GemSlotIndex = other.GemSlotIndex;
+      }
+      if (other.CrystalSpent != 0) {
+        CrystalSpent = other.CrystalSpent;
+      }
+      if (other.RemainingCrystal != 0) {
+        RemainingCrystal = other.RemainingCrystal;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            CrystalSpent = input.ReadUInt32();
+            break;
+          }
+          case 40: {
+            RemainingCrystal = input.ReadUInt32();
+            break;
+          }
+          case 50: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            PickaxeSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            GemSlotIndex = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            CrystalSpent = input.ReadUInt32();
+            break;
+          }
+          case 40: {
+            RemainingCrystal = input.ReadUInt32();
+            break;
+          }
+          case 50: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 인벤토리 확장
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemInventoryExpandRequest : pb::IMessage<GemInventoryExpandRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemInventoryExpandRequest> _parser = new pb::MessageParser<GemInventoryExpandRequest>(() => new GemInventoryExpandRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemInventoryExpandRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[58]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemInventoryExpandRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemInventoryExpandRequest(GemInventoryExpandRequest other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemInventoryExpandRequest Clone() {
+      return new GemInventoryExpandRequest(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemInventoryExpandRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemInventoryExpandRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemInventoryExpandRequest other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemInventoryExpandResult : pb::IMessage<GemInventoryExpandResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemInventoryExpandResult> _parser = new pb::MessageParser<GemInventoryExpandResult>(() => new GemInventoryExpandResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemInventoryExpandResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[59]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemInventoryExpandResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemInventoryExpandResult(GemInventoryExpandResult other) : this() {
+      success_ = other.success_;
+      newCapacity_ = other.newCapacity_;
+      crystalSpent_ = other.crystalSpent_;
+      remainingCrystal_ = other.remainingCrystal_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemInventoryExpandResult Clone() {
+      return new GemInventoryExpandResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "new_capacity" field.</summary>
+    public const int NewCapacityFieldNumber = 2;
+    private uint newCapacity_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint NewCapacity {
+      get { return newCapacity_; }
+      set {
+        newCapacity_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "crystal_spent" field.</summary>
+    public const int CrystalSpentFieldNumber = 3;
+    private uint crystalSpent_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CrystalSpent {
+      get { return crystalSpent_; }
+      set {
+        crystalSpent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "remaining_crystal" field.</summary>
+    public const int RemainingCrystalFieldNumber = 4;
+    private uint remainingCrystal_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RemainingCrystal {
+      get { return remainingCrystal_; }
+      set {
+        remainingCrystal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 5;
+    private string errorCode_ = "";
+    /// <summary>
+    /// "MAX_CAPACITY", "INSUFFICIENT_CRYSTAL" 등
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemInventoryExpandResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemInventoryExpandResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (NewCapacity != other.NewCapacity) return false;
+      if (CrystalSpent != other.CrystalSpent) return false;
+      if (RemainingCrystal != other.RemainingCrystal) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (NewCapacity != 0) hash ^= NewCapacity.GetHashCode();
+      if (CrystalSpent != 0) hash ^= CrystalSpent.GetHashCode();
+      if (RemainingCrystal != 0) hash ^= RemainingCrystal.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (NewCapacity != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(NewCapacity);
+      }
+      if (CrystalSpent != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(RemainingCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (NewCapacity != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(NewCapacity);
+      }
+      if (CrystalSpent != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(RemainingCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (NewCapacity != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NewCapacity);
+      }
+      if (CrystalSpent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CrystalSpent);
+      }
+      if (RemainingCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RemainingCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemInventoryExpandResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.NewCapacity != 0) {
+        NewCapacity = other.NewCapacity;
+      }
+      if (other.CrystalSpent != 0) {
+        CrystalSpent = other.CrystalSpent;
+      }
+      if (other.RemainingCrystal != 0) {
+        RemainingCrystal = other.RemainingCrystal;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            NewCapacity = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            CrystalSpent = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            RemainingCrystal = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            NewCapacity = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            CrystalSpent = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            RemainingCrystal = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            ErrorCode = input.ReadString();
             break;
           }
         }
