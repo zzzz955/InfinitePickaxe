@@ -90,43 +90,60 @@ void fill_slot_info(const PickaxeSlot& slot, infinitepickaxe::PickaxeSlotInfo* s
     slot_info->set_pity_bonus(slot.pity_bonus);
     slot_info->set_is_unlocked(true);
 
-    // 보석 슬롯 정보 추가
-    auto gem_slots = gem_repo.get_gem_slots_for_pickaxe(slot.slot_id);
-    for (const auto& gem_slot : gem_slots) {
+    // 보석 슬롯 정보 추가 (항상 6개 슬롯 정보 생성)
+    auto gem_slots_from_db = gem_repo.get_gem_slots_for_pickaxe(slot.slot_id);
+
+    // DB에서 가져온 보석 슬롯을 map으로 변환 (gem_slot_index -> GemSlotData)
+    std::unordered_map<uint32_t, GemSlotData> gem_slot_map;
+    for (const auto& gem_slot : gem_slots_from_db) {
+        gem_slot_map[gem_slot.gem_slot_index] = gem_slot;
+    }
+
+    // 0~5번 슬롯에 대해 항상 정보 생성
+    for (uint32_t slot_idx = 0; slot_idx < 6; ++slot_idx) {
         auto* gem_slot_info = slot_info->add_gem_slots();
-        gem_slot_info->set_gem_slot_index(gem_slot.gem_slot_index);
-        gem_slot_info->set_is_unlocked(gem_slot.is_unlocked);
+        gem_slot_info->set_gem_slot_index(slot_idx);
 
-        // 장착된 보석이 있는 경우
-        if (gem_slot.equipped_gem.has_value()) {
-            const auto& gem = gem_slot.equipped_gem.value();
-            auto* gem_info = gem_slot_info->mutable_equipped_gem();
-            gem_info->set_gem_instance_id(gem.gem_instance_id);
-            gem_info->set_gem_id(gem.gem_id);
-            gem_info->set_acquired_at(gem.acquired_at);
+        // DB에 해당 슬롯 데이터가 있는 경우
+        auto it = gem_slot_map.find(slot_idx);
+        if (it != gem_slot_map.end()) {
+            const auto& gem_slot = it->second;
+            gem_slot_info->set_is_unlocked(gem_slot.is_unlocked);
 
-            // 메타데이터에서 보석 상세 정보 조회
-            if (const auto* gem_def = meta.gem_definition(gem.gem_id)) {
-                gem_info->set_name(gem_def->name);
-                gem_info->set_icon(gem_def->icon);
-                gem_info->set_stat_multiplier(gem_def->stat_multiplier);
+            // 장착된 보석이 있는 경우
+            if (gem_slot.equipped_gem.has_value()) {
+                const auto& gem = gem_slot.equipped_gem.value();
+                auto* gem_info = gem_slot_info->mutable_equipped_gem();
+                gem_info->set_gem_instance_id(gem.gem_instance_id);
+                gem_info->set_gem_id(gem.gem_id);
+                gem_info->set_acquired_at(gem.acquired_at);
 
-                // GemGrade enum 변환
-                if (const auto* grade = meta.gem_grade(gem_def->grade_id)) {
-                    if (grade->grade == "COMMON") gem_info->set_grade(infinitepickaxe::COMMON);
-                    else if (grade->grade == "RARE") gem_info->set_grade(infinitepickaxe::RARE);
-                    else if (grade->grade == "EPIC") gem_info->set_grade(infinitepickaxe::EPIC);
-                    else if (grade->grade == "HERO") gem_info->set_grade(infinitepickaxe::HERO);
-                    else if (grade->grade == "LEGENDARY") gem_info->set_grade(infinitepickaxe::LEGENDARY);
-                }
+                // 메타데이터에서 보석 상세 정보 조회
+                if (const auto* gem_def = meta.gem_definition(gem.gem_id)) {
+                    gem_info->set_name(gem_def->name);
+                    gem_info->set_icon(gem_def->icon);
+                    gem_info->set_stat_multiplier(gem_def->stat_multiplier);
 
-                // GemType enum 변환
-                if (const auto* type = meta.gem_type(gem_def->type_id)) {
-                    if (type->type == "ATTACK_SPEED") gem_info->set_type(infinitepickaxe::ATTACK_SPEED);
-                    else if (type->type == "CRIT_RATE") gem_info->set_type(infinitepickaxe::CRIT_RATE);
-                    else if (type->type == "CRIT_DMG") gem_info->set_type(infinitepickaxe::CRIT_DMG);
+                    // GemGrade enum 변환
+                    if (const auto* grade = meta.gem_grade(gem_def->grade_id)) {
+                        if (grade->grade == "COMMON") gem_info->set_grade(infinitepickaxe::COMMON);
+                        else if (grade->grade == "RARE") gem_info->set_grade(infinitepickaxe::RARE);
+                        else if (grade->grade == "EPIC") gem_info->set_grade(infinitepickaxe::EPIC);
+                        else if (grade->grade == "HERO") gem_info->set_grade(infinitepickaxe::HERO);
+                        else if (grade->grade == "LEGENDARY") gem_info->set_grade(infinitepickaxe::LEGENDARY);
+                    }
+
+                    // GemType enum 변환
+                    if (const auto* type = meta.gem_type(gem_def->type_id)) {
+                        if (type->type == "ATTACK_SPEED") gem_info->set_type(infinitepickaxe::ATTACK_SPEED);
+                        else if (type->type == "CRIT_RATE") gem_info->set_type(infinitepickaxe::CRIT_RATE);
+                        else if (type->type == "CRIT_DMG") gem_info->set_type(infinitepickaxe::CRIT_DMG);
+                    }
                 }
             }
+        } else {
+            // DB에 없는 슬롯 = 잠긴 슬롯
+            gem_slot_info->set_is_unlocked(false);
         }
     }
 }

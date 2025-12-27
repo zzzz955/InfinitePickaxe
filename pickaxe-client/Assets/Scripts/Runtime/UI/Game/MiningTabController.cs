@@ -437,6 +437,7 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             EnsurePickaxeInfoModalCriticalTexts();
+            AutoBindPickaxeInfoGemSection();
         }
 
         private void EnsurePickaxeInfoModalCriticalTexts()
@@ -516,6 +517,7 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateSlotLevels();
             UpdatePickaxeSlotSprites();
             UpdateMineralSelectIcons();
+            UpdateAllGemIcons();
         }
 
         /// <summary>
@@ -1392,6 +1394,8 @@ namespace InfinitePickaxe.Client.UI.Game
                 var scale = pickaxeInfoImage.rectTransform.localScale;
                 pickaxeInfoImage.rectTransform.localScale = new Vector3(Mathf.Abs(scale.x), Mathf.Abs(scale.y), 1f);
             }
+
+            UpdatePickaxeInfoGemSlots(slotIndex, slotInfo);
         }
 
         /// <summary>

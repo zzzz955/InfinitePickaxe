@@ -13,8 +13,8 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             All = 0,
             AttackSpeed = 1,
-            CritChance = 2,
-            CritDamage = 3
+            CritRate = 2,      // 프로토콜과 일치
+            CritDmg = 3        // 프로토콜과 일치
         }
 
         private enum GemMode
@@ -62,8 +62,8 @@ namespace InfinitePickaxe.Client.UI.Game
         [Header("필터 탭")]
         [SerializeField] private Button filterAllButton;
         [SerializeField] private Button filterAttackSpeedButton;
-        [SerializeField] private Button filterCritChanceButton;
-        [SerializeField] private Button filterCritDamageButton;
+        [SerializeField] private Button filterCritRateButton;
+        [SerializeField] private Button filterCritDmgButton;
         [SerializeField] private Color filterSelectedColor = new Color(0.22f, 0.22f, 0.22f, 0.95f);
         [SerializeField] private Color filterUnselectedColor = new Color(0.1f, 0.1f, 0.1f, 0.7f);
 
@@ -99,24 +99,24 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI convertInfoText;
         [SerializeField] private Button convertRandomButton;
         [SerializeField] private Button convertFixedAttackSpeedButton;
-        [SerializeField] private Button convertFixedCritChanceButton;
-        [SerializeField] private Button convertFixedCritDamageButton;
+        [SerializeField] private Button convertFixedCritRateButton;
+        [SerializeField] private Button convertFixedCritDmgButton;
 
         [Header("스텁 데이터")]
         [SerializeField] private bool useStubData = true;
         [SerializeField] private int stubGemCount = 24;
 
-        private readonly List<GemData> allGems = new List<GemData>();
-        private readonly Dictionary<int, GemData> gemById = new Dictionary<int, GemData>();
+        private readonly List<GemUIData> allGems = new List<GemUIData>();
+        private readonly Dictionary<string, GemUIData> gemByInstanceId = new Dictionary<string, GemUIData>();
         private readonly List<GemGridItemView> gridItems = new List<GemGridItemView>();
-        private readonly List<int?> slotGemIds = new List<int?>();
+        private readonly List<string> slotGemInstanceIds = new List<string>();
         private int currentCapacity;
         private GemFilter currentFilter = GemFilter.All;
         private GemMode currentMode = GemMode.Fusion;
-        private int? selectedBaseGemId;
-        private int? selectedMaterialGemId;
-        private int? selectedConvertGemId;
-        private GemType? selectedConvertTarget;
+        private string selectedBaseGemId;
+        private string selectedMaterialGemId;
+        private string selectedConvertGemId;
+        private Infinitepickaxe.GemType? selectedConvertTarget;
 
         private void Awake()
         {
@@ -150,16 +150,16 @@ namespace InfinitePickaxe.Client.UI.Game
                 filterAttackSpeedButton.onClick.AddListener(() => SetFilter(GemFilter.AttackSpeed));
             }
 
-            if (filterCritChanceButton != null)
+            if (filterCritRateButton != null)
             {
-                filterCritChanceButton.onClick.RemoveAllListeners();
-                filterCritChanceButton.onClick.AddListener(() => SetFilter(GemFilter.CritChance));
+                filterCritRateButton.onClick.RemoveAllListeners();
+                filterCritRateButton.onClick.AddListener(() => SetFilter(GemFilter.CritRate));
             }
 
-            if (filterCritDamageButton != null)
+            if (filterCritDmgButton != null)
             {
-                filterCritDamageButton.onClick.RemoveAllListeners();
-                filterCritDamageButton.onClick.AddListener(() => SetFilter(GemFilter.CritDamage));
+                filterCritDmgButton.onClick.RemoveAllListeners();
+                filterCritDmgButton.onClick.AddListener(() => SetFilter(GemFilter.CritDmg));
             }
         }
 
@@ -201,19 +201,19 @@ namespace InfinitePickaxe.Client.UI.Game
             if (convertFixedAttackSpeedButton != null)
             {
                 convertFixedAttackSpeedButton.onClick.RemoveAllListeners();
-                convertFixedAttackSpeedButton.onClick.AddListener(() => OnConvertFixedClicked(GemType.AttackSpeed));
+                convertFixedAttackSpeedButton.onClick.AddListener(() => OnConvertFixedClicked(Infinitepickaxe.GemType.AttackSpeed));
             }
 
-            if (convertFixedCritChanceButton != null)
+            if (convertFixedCritRateButton != null)
             {
-                convertFixedCritChanceButton.onClick.RemoveAllListeners();
-                convertFixedCritChanceButton.onClick.AddListener(() => OnConvertFixedClicked(GemType.CritChance));
+                convertFixedCritRateButton.onClick.RemoveAllListeners();
+                convertFixedCritRateButton.onClick.AddListener(() => OnConvertFixedClicked(Infinitepickaxe.GemType.CritRate));
             }
 
-            if (convertFixedCritDamageButton != null)
+            if (convertFixedCritDmgButton != null)
             {
-                convertFixedCritDamageButton.onClick.RemoveAllListeners();
-                convertFixedCritDamageButton.onClick.AddListener(() => OnConvertFixedClicked(GemType.CritDamage));
+                convertFixedCritDmgButton.onClick.RemoveAllListeners();
+                convertFixedCritDmgButton.onClick.AddListener(() => OnConvertFixedClicked(Infinitepickaxe.GemType.CritDmg));
             }
         }
 
@@ -231,23 +231,39 @@ namespace InfinitePickaxe.Client.UI.Game
             slot.button.onClick.AddListener(() => onClick?.Invoke());
         }
 
+        /// <summary>
+        /// 스텁 데이터 생성 (임시)
+        /// TODO: GemStateCache에서 실제 데이터 가져오기
+        /// </summary>
         private void BuildStubGems()
         {
             allGems.Clear();
-            gemById.Clear();
+            gemByInstanceId.Clear();
 
             int id = 1;
-            var tiers = new[] { GemTier.Legend, GemTier.Epic, GemTier.Rare, GemTier.Uncommon, GemTier.Common };
+            var grades = new[] {
+                Infinitepickaxe.GemGrade.Legendary,
+                Infinitepickaxe.GemGrade.Hero,
+                Infinitepickaxe.GemGrade.Epic,
+                Infinitepickaxe.GemGrade.Rare,
+                Infinitepickaxe.GemGrade.Common
+            };
+
             for (int i = 0; i < stubGemCount; i++)
             {
-                var gem = new GemData
+                var gem = new GemUIData
                 {
-                    Id = id++,
-                    Tier = tiers[i % tiers.Length],
-                    Type = (GemType)(i % 3)
+                    GemInstanceId = $"stub_gem_{id}",
+                    GemId = (uint)id++,
+                    Grade = grades[i % grades.Length],
+                    Type = (Infinitepickaxe.GemType)((i % 3) + 1), // AttackSpeed=1, CritRate=2, CritDmg=3
+                    Name = $"보석 #{id}",
+                    IconName = "gem_default",
+                    StatMultiplier = 500, // 5.00%
+                    AcquiredAt = 0
                 };
                 allGems.Add(gem);
-                gemById[gem.Id] = gem;
+                gemByInstanceId[gem.GemInstanceId] = gem;
             }
         }
 
@@ -291,7 +307,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void RebuildGrid()
         {
             EnsureGridItems(currentCapacity);
-            slotGemIds.Clear();
+            slotGemInstanceIds.Clear();
 
             var filtered = GetFilteredGems();
             for (int i = 0; i < currentCapacity; i++)
@@ -300,12 +316,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (i < filtered.Count)
                 {
                     var gem = filtered[i];
-                    slotGemIds.Add(gem.Id);
-                    view.SetData(GetGemDisplayName(gem), GetTierLabel(gem.Tier), null);
+                    slotGemInstanceIds.Add(gem.GemInstanceId);
+                    view.SetData(GetGemDisplayName(gem), GetGradeLabel(gem.Grade), null);
                 }
                 else
                 {
-                    slotGemIds.Add(null);
+                    slotGemInstanceIds.Add(null);
                     view.SetEmpty();
                 }
             }
@@ -315,75 +331,75 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateExpandButtonState();
         }
 
-        private List<GemData> GetFilteredGems()
+        private List<GemUIData> GetFilteredGems()
         {
             return allGems
                 .Where(g => IsFilterMatch(g, currentFilter))
-                .OrderByDescending(g => g.Tier)
-                .ThenByDescending(g => g.Id)
+                .OrderByDescending(g => g.Grade)
+                .ThenByDescending(g => g.GemId)
                 .ToList();
         }
 
-        private bool IsFilterMatch(GemData gem, GemFilter filter)
+        private bool IsFilterMatch(GemUIData gem, GemFilter filter)
         {
             return filter switch
             {
-                GemFilter.AttackSpeed => gem.Type == GemType.AttackSpeed,
-                GemFilter.CritChance => gem.Type == GemType.CritChance,
-                GemFilter.CritDamage => gem.Type == GemType.CritDamage,
+                GemFilter.AttackSpeed => gem.Type == Infinitepickaxe.GemType.AttackSpeed,
+                GemFilter.CritRate => gem.Type == Infinitepickaxe.GemType.CritRate,
+                GemFilter.CritDmg => gem.Type == Infinitepickaxe.GemType.CritDmg,
                 _ => true
             };
         }
 
         private void OnGridItemClicked(int index)
         {
-            if (index < 0 || index >= slotGemIds.Count) return;
-            var gemId = slotGemIds[index];
-            if (!gemId.HasValue) return;
+            if (index < 0 || index >= slotGemInstanceIds.Count) return;
+            var gemInstanceId = slotGemInstanceIds[index];
+            if (string.IsNullOrEmpty(gemInstanceId)) return;
 
             if (currentMode == GemMode.Fusion)
             {
-                SelectFusionGem(gemId.Value);
+                SelectFusionGem(gemInstanceId);
             }
             else
             {
-                SelectConvertGem(gemId.Value);
+                SelectConvertGem(gemInstanceId);
             }
 
             UpdateSelectionUI();
         }
 
-        private void SelectFusionGem(int gemId)
+        private void SelectFusionGem(string gemInstanceId)
         {
-            if (selectedBaseGemId == gemId || selectedMaterialGemId == gemId) return;
+            if (selectedBaseGemId == gemInstanceId || selectedMaterialGemId == gemInstanceId) return;
 
-            var gem = GetGem(gemId);
+            var gem = GetGem(gemInstanceId);
             if (gem == null) return;
 
-            if (!selectedBaseGemId.HasValue)
+            if (string.IsNullOrEmpty(selectedBaseGemId))
             {
-                selectedBaseGemId = gemId;
+                selectedBaseGemId = gemInstanceId;
                 return;
             }
 
-            var baseGem = GetGem(selectedBaseGemId.Value);
+            var baseGem = GetGem(selectedBaseGemId);
             if (baseGem == null)
             {
-                selectedBaseGemId = gemId;
+                selectedBaseGemId = gemInstanceId;
                 return;
             }
 
-            if (gem.Tier != baseGem.Tier)
+            if (gem.Grade != baseGem.Grade)
             {
                 return;
             }
 
-            selectedMaterialGemId = gemId;
+            selectedMaterialGemId = gemInstanceId;
         }
 
-        private void SelectConvertGem(int gemId)
+        private void SelectConvertGem(string gemInstanceId)
         {
-            selectedConvertGemId = gemId;
+            selectedConvertGemId = gemInstanceId;
             selectedConvertTarget = null;
         }
 
@@ -431,17 +447,17 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void UpdateFusionSlots()
         {
-            var baseGem = selectedBaseGemId.HasValue ? GetGem(selectedBaseGemId.Value) : null;
-            var materialGem = selectedMaterialGemId.HasValue ? GetGem(selectedMaterialGemId.Value) : null;
+            var baseGem = !string.IsNullOrEmpty(selectedBaseGemId) ? GetGem(selectedBaseGemId) : null;
+            var materialGem = !string.IsNullOrEmpty(selectedMaterialGemId) ? GetGem(selectedMaterialGemId) : null;
 
             UpdateFusionSlotView(fusionBaseSlot, "기준", baseGem);
             UpdateFusionSlotView(fusionMaterialSlot, "재료", materialGem);
 
-            if (baseGem != null && baseGem.Tier != GemTier.Legend)
+            if (baseGem != null && baseGem.Grade != Infinitepickaxe.GemGrade.Legendary)
             {
-                var nextTier = GetNextTier(baseGem.Tier);
-                var previewName = GetGemDisplayName(baseGem.Type, nextTier);
-                var previewTier = GetTierLabel(nextTier);
+                var nextGrade = GetNextGrade(baseGem.Grade);
+                var previewName = GetGemDisplayName(baseGem.Type, nextGrade);
+                var previewTier = GetGradeLabel(nextGrade);
                 fusionResultSlot?.SetGem("성공 결과", previewName, previewTier, null);
             }
             else if (baseGem != null)
@@ -457,9 +473,9 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 fusionChanceText.text = baseGem == null
                     ? "성공 확률: -"
-                    : baseGem.Tier == GemTier.Legend
+                    : baseGem.Grade == Infinitepickaxe.GemGrade.Legendary
                         ? "성공 확률: -"
-                        : $"성공 확률: {GetFusionChance(baseGem.Tier)}%";
+                        : $"성공 확률: {GetFusionChance(baseGem.Grade)}%";
             }
 
             if (fusionWarningText != null)
@@ -471,13 +487,13 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 bool canFuse = baseGem != null
                     && materialGem != null
-                    && baseGem.Tier != GemTier.Legend
-                    && materialGem.Tier == baseGem.Tier;
+                    && baseGem.Grade != Infinitepickaxe.GemGrade.Legendary
+                    && materialGem.Grade == baseGem.Grade;
                 fusionButton.interactable = canFuse;
             }
         }
 
-        private void UpdateFusionSlotView(GemSlotView slot, string roleLabel, GemData gem)
+        private void UpdateFusionSlotView(GemSlotView slot, string roleLabel, GemUIData gem)
         {
             if (slot == null) return;
 
@@ -487,12 +503,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            slot.SetGem(roleLabel, GetGemDisplayName(gem), GetTierLabel(gem.Tier), null);
+            slot.SetGem(roleLabel, GetGemDisplayName(gem), GetGradeLabel(gem.Grade), null);
         }
 
         private void UpdateConvertSlots()
         {
-            var baseGem = selectedConvertGemId.HasValue ? GetGem(selectedConvertGemId.Value) : null;
+            var baseGem = !string.IsNullOrEmpty(selectedConvertGemId) ? GetGem(selectedConvertGemId) : null;
             if (baseGem == null)
             {
                 convertBaseSlot?.SetEmpty("현재 보석", "보석 선택");
@@ -501,17 +517,17 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            convertBaseSlot?.SetGem("현재 보석", GetGemDisplayName(baseGem), GetTierLabel(baseGem.Tier), null);
+            convertBaseSlot?.SetGem("현재 보석", GetGemDisplayName(baseGem), GetGradeLabel(baseGem.Grade), null);
 
             if (selectedConvertTarget.HasValue)
             {
                 var targetType = selectedConvertTarget.Value;
-                convertResultSlot?.SetGem("전환 결과", GetGemDisplayName(targetType, baseGem.Tier), GetTierLabel(baseGem.Tier), null);
+                convertResultSlot?.SetGem("전환 결과", GetGemDisplayName(targetType, baseGem.Grade), GetGradeLabel(baseGem.Grade), null);
                 if (convertInfoText != null) convertInfoText.text = "확정 전환: 선택 타입으로 변환";
             }
             else
             {
-                convertResultSlot?.SetGem("전환 결과", "랜덤 전환", GetTierLabel(baseGem.Tier), null);
+                convertResultSlot?.SetGem("전환 결과", "랜덤 전환", GetGradeLabel(baseGem.Grade), null);
                 if (convertInfoText != null) convertInfoText.text = "랜덤 전환: 현재 타입 제외";
             }
         }
@@ -520,20 +536,20 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             for (int i = 0; i < gridItems.Count; i++)
             {
-                if (i >= slotGemIds.Count) continue;
-                var gemId = slotGemIds[i];
+                if (i >= slotGemInstanceIds.Count) continue;
+                var gemInstanceId = slotGemInstanceIds[i];
                 var role = GemSelectionRole.None;
-                if (gemId.HasValue)
+                if (!string.IsNullOrEmpty(gemInstanceId))
                 {
-                    if (selectedBaseGemId.HasValue && gemId.Value == selectedBaseGemId.Value)
+                    if (!string.IsNullOrEmpty(selectedBaseGemId) && gemInstanceId == selectedBaseGemId)
                     {
                         role = GemSelectionRole.Base;
                     }
-                    else if (selectedMaterialGemId.HasValue && gemId.Value == selectedMaterialGemId.Value)
+                    else if (!string.IsNullOrEmpty(selectedMaterialGemId) && gemInstanceId == selectedMaterialGemId)
                     {
                         role = GemSelectionRole.Material;
                     }
-                    else if (selectedConvertGemId.HasValue && gemId.Value == selectedConvertGemId.Value)
+                    else if (!string.IsNullOrEmpty(selectedConvertGemId) && gemInstanceId == selectedConvertGemId)
                     {
                         role = GemSelectionRole.Convert;
                     }
@@ -547,8 +563,8 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             UpdateButtonState(filterAllButton, currentFilter == GemFilter.All, filterSelectedColor, filterUnselectedColor);
             UpdateButtonState(filterAttackSpeedButton, currentFilter == GemFilter.AttackSpeed, filterSelectedColor, filterUnselectedColor);
-            UpdateButtonState(filterCritChanceButton, currentFilter == GemFilter.CritChance, filterSelectedColor, filterUnselectedColor);
-            UpdateButtonState(filterCritDamageButton, currentFilter == GemFilter.CritDamage, filterSelectedColor, filterUnselectedColor);
+            UpdateButtonState(filterCritRateButton, currentFilter == GemFilter.CritRate, filterSelectedColor, filterUnselectedColor);
+            UpdateButtonState(filterCritDmgButton, currentFilter == GemFilter.CritDmg, filterSelectedColor, filterUnselectedColor);
         }
 
         private void UpdateModeButtons()
@@ -559,16 +575,16 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void UpdateConvertButtons()
         {
-            var baseGem = selectedConvertGemId.HasValue ? GetGem(selectedConvertGemId.Value) : null;
+            var baseGem = !string.IsNullOrEmpty(selectedConvertGemId) ? GetGem(selectedConvertGemId) : null;
             bool hasBase = baseGem != null;
 
             if (convertRandomButton != null) convertRandomButton.interactable = hasBase;
             if (convertFixedAttackSpeedButton != null)
-                convertFixedAttackSpeedButton.interactable = hasBase && baseGem.Type != GemType.AttackSpeed;
-            if (convertFixedCritChanceButton != null)
-                convertFixedCritChanceButton.interactable = hasBase && baseGem.Type != GemType.CritChance;
-            if (convertFixedCritDamageButton != null)
-                convertFixedCritDamageButton.interactable = hasBase && baseGem.Type != GemType.CritDamage;
+                convertFixedAttackSpeedButton.interactable = hasBase && baseGem.Type != Infinitepickaxe.GemType.AttackSpeed;
+            if (convertFixedCritRateButton != null)
+                convertFixedCritRateButton.interactable = hasBase && baseGem.Type != Infinitepickaxe.GemType.CritRate;
+            if (convertFixedCritDmgButton != null)
+                convertFixedCritDmgButton.interactable = hasBase && baseGem.Type != Infinitepickaxe.GemType.CritDmg;
         }
 
         private void UpdateButtonState(Button button, bool selected, Color selectedColor, Color unselectedColor)
@@ -584,7 +600,8 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void OnFusionClicked()
         {
-            // 합성 로직은 추후 서버 연동 시 처리
+            // TODO: 서버에 합성 요청 (GemSynthesisRequest)
+            Debug.Log($"합성 요청: base={selectedBaseGemId}, material={selectedMaterialGemId}");
         }
 
         private void OnConvertRandomClicked()
@@ -592,17 +609,21 @@ namespace InfinitePickaxe.Client.UI.Game
             selectedConvertTarget = null;
             UpdateConvertSlots();
             UpdateConvertButtons();
+            // TODO: 서버에 랜덤 전환 요청 (GemConversionRequest with random=true)
+            Debug.Log($"랜덤 전환 요청: gem={selectedConvertGemId}");
         }
 
-        private void OnConvertFixedClicked(GemType targetType)
+        private void OnConvertFixedClicked(Infinitepickaxe.GemType targetType)
         {
-            var baseGem = selectedConvertGemId.HasValue ? GetGem(selectedConvertGemId.Value) : null;
+            var baseGem = !string.IsNullOrEmpty(selectedConvertGemId) ? GetGem(selectedConvertGemId) : null;
             if (baseGem == null) return;
             if (baseGem.Type == targetType) return;
 
             selectedConvertTarget = targetType;
             UpdateConvertSlots();
             UpdateConvertButtons();
+            // TODO: 서버에 확정 전환 요청 (GemConversionRequest with target_type)
+            Debug.Log($"확정 전환 요청: gem={selectedConvertGemId}, target={targetType}");
         }
 
         private void OnExpandRowClicked()
@@ -611,6 +632,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             currentCapacity = Mathf.Min(currentCapacity + capacityStep, maxCapacity);
             RebuildGrid();
+            // TODO: 서버에 인벤토리 확장 요청
         }
 
         private void UpdateExpandButtonState()
@@ -634,65 +656,66 @@ namespace InfinitePickaxe.Client.UI.Game
             }
         }
 
-        private GemData GetGem(int gemId)
+        private GemUIData GetGem(string gemInstanceId)
         {
-            return gemById.TryGetValue(gemId, out var gem) ? gem : null;
+            return gemByInstanceId.TryGetValue(gemInstanceId, out var gem) ? gem : null;
         }
 
-        private string GetGemDisplayName(GemData gem)
+        private string GetGemDisplayName(GemUIData gem)
         {
-            return GetGemDisplayName(gem.Type, gem.Tier);
+            return GetGemDisplayName(gem.Type, gem.Grade);
         }
 
-        private string GetGemDisplayName(GemType type, GemTier tier)
+        private string GetGemDisplayName(Infinitepickaxe.GemType type, Infinitepickaxe.GemGrade grade)
         {
             return $"{GetTypeLabel(type)} 보석";
         }
 
-        private string GetTypeLabel(GemType type)
+        private string GetTypeLabel(Infinitepickaxe.GemType type)
         {
             return type switch
             {
-                GemType.AttackSpeed => "공격속도",
-                GemType.CritChance => "크확",
-                GemType.CritDamage => "크뎀",
+                Infinitepickaxe.GemType.AttackSpeed => "공격속도",
+                Infinitepickaxe.GemType.CritRate => "크확",
+                Infinitepickaxe.GemType.CritDmg => "크뎀",
                 _ => "보석"
             };
         }
 
-        private string GetTierLabel(GemTier tier)
+        private string GetGradeLabel(Infinitepickaxe.GemGrade grade)
         {
-            return tier switch
+            return grade switch
             {
-                GemTier.Common => "커먼",
-                GemTier.Uncommon => "언커먼",
-                GemTier.Rare => "레어",
-                GemTier.Epic => "에픽",
-                GemTier.Legend => "레전드",
+                Infinitepickaxe.GemGrade.Common => "커먼",
+                Infinitepickaxe.GemGrade.Rare => "레어",
+                Infinitepickaxe.GemGrade.Epic => "에픽",
+                Infinitepickaxe.GemGrade.Hero => "히어로",
+                Infinitepickaxe.GemGrade.Legendary => "레전드",
                 _ => "커먼"
             };
         }
 
-        private GemTier GetNextTier(GemTier tier)
+        private Infinitepickaxe.GemGrade GetNextGrade(Infinitepickaxe.GemGrade grade)
         {
-            return tier switch
+            return grade switch
             {
-                GemTier.Common => GemTier.Uncommon,
-                GemTier.Uncommon => GemTier.Rare,
-                GemTier.Rare => GemTier.Epic,
-                GemTier.Epic => GemTier.Legend,
-                _ => GemTier.Legend
+                Infinitepickaxe.GemGrade.Common => Infinitepickaxe.GemGrade.Rare,
+                Infinitepickaxe.GemGrade.Rare => Infinitepickaxe.GemGrade.Epic,
+                Infinitepickaxe.GemGrade.Epic => Infinitepickaxe.GemGrade.Hero,
+                Infinitepickaxe.GemGrade.Hero => Infinitepickaxe.GemGrade.Legendary,
+                _ => Infinitepickaxe.GemGrade.Legendary
             };
         }
 
-        private int GetFusionChance(GemTier tier)
+        private int GetFusionChance(Infinitepickaxe.GemGrade grade)
         {
-            return tier switch
+            // TODO: 서버 메타데이터 또는 설정에서 가져오기
+            return grade switch
             {
-                GemTier.Common => 100,
-                GemTier.Uncommon => 70,
-                GemTier.Rare => 50,
-                GemTier.Epic => 30,
+                Infinitepickaxe.GemGrade.Common => 100,
+                Infinitepickaxe.GemGrade.Rare => 70,
+                Infinitepickaxe.GemGrade.Epic => 50,
+                Infinitepickaxe.GemGrade.Hero => 30,
                 _ => 0
             };
         }
