@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using Infinitepickaxe;
+using InfinitePickaxe.Client.Core;
+using InfinitePickaxe.Client.Net;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -81,7 +83,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // 젬 슬롯 아이템 생성/업데이트
             EnsureGemSlotItems(slotInfo.GemSlots.Count);
-            UpdateGemSlotItems(slotInfo.GemSlots);
+            UpdateGemSlotItems((uint)slotIndex, slotInfo.GemSlots);
         }
 
         /// <summary>
@@ -155,7 +157,7 @@ namespace InfinitePickaxe.Client.UI.Game
         /// <summary>
         /// 젬 슬롯 아이템 데이터 업데이트
         /// </summary>
-        private void UpdateGemSlotItems(IReadOnlyList<GemSlotInfo> gemSlots)
+        private void UpdateGemSlotItems(uint pickaxeSlotIndex, IReadOnlyList<GemSlotInfo> gemSlots)
         {
             if (gemSlots == null) return;
 
@@ -167,6 +169,11 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (view != null && view.gameObject != null)
                 {
                     view.gameObject.SetActive(true);
+
+                    // Setup() 호출하여 버튼 이벤트 등록
+                    view.Setup(pickaxeSlotIndex, (uint)i, this);
+
+                    // 슬롯 데이터 업데이트
                     view.UpdateSlot(slot);
                 }
             }
@@ -184,6 +191,11 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI gemStatsText;
         [SerializeField] private GameObject lockedOverlay;
         [SerializeField] private GameObject emptyOverlay;
+
+        // 슬롯 인덱스 및 컨트롤러 참조
+        private uint pickaxeSlotIndex;
+        private uint gemSlotIndex;
+        private MiningTabController controller;
 
         // Visual Settings는 필요 없음 - EmptyOverlay와 LockedOverlay가 직접 관리
 
@@ -399,6 +411,90 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 gemStatsText.enabled = false;
             }
+        }
+
+        /// <summary>
+        /// 슬롯 인덱스 및 컨트롤러 설정
+        /// </summary>
+        public void Setup(uint pickaxeIndex, uint gemIndex, MiningTabController ctrl)
+        {
+            pickaxeSlotIndex = pickaxeIndex;
+            gemSlotIndex = gemIndex;
+            controller = ctrl;
+
+            // AutoBind가 아직 실행되지 않았으면 먼저 실행
+            if (lockedOverlay == null)
+            {
+                Debug.Log($"[GemSlotItemView] Setup: lockedOverlay가 null → AutoBind 실행");
+                AutoBindReferences();
+            }
+
+            Debug.Log($"[GemSlotItemView] Setup 호출: pickaxe={pickaxeIndex}, gem={gemIndex}, lockedOverlay={(lockedOverlay != null ? "있음" : "null")}");
+
+            // LockedOverlay에 Button 컴포넌트 추가하여 클릭 이벤트 등록
+            if (lockedOverlay != null)
+            {
+                var button = lockedOverlay.GetComponent<Button>();
+                if (button == null)
+                {
+                    button = lockedOverlay.AddComponent<Button>();
+                    Debug.Log($"[GemSlotItemView] LockedOverlay에 Button 추가");
+                }
+                else
+                {
+                    Debug.Log($"[GemSlotItemView] LockedOverlay에 Button 이미 존재");
+                }
+
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(OnLockedOverlayClicked);
+
+                Debug.Log($"[GemSlotItemView] LockedOverlay 클릭 이벤트 등록 완료");
+            }
+            else
+            {
+                Debug.LogWarning($"[GemSlotItemView] lockedOverlay가 null입니다! 클릭 이벤트를 등록할 수 없습니다.");
+            }
+        }
+
+        /// <summary>
+        /// LockedOverlay 클릭 시 호출
+        /// </summary>
+        private void OnLockedOverlayClicked()
+        {
+            Debug.Log($"[GemSlotItemView] OnLockedOverlayClicked 호출됨! pickaxe={pickaxeSlotIndex}, gem={gemSlotIndex}");
+
+            if (controller == null)
+            {
+                Debug.LogWarning("[GemSlotItemView] Controller 참조가 null입니다");
+                return;
+            }
+
+            // 현재 슬롯들의 해금 상태 및 보유 크리스탈 정보 수집
+            var cache = PickaxeStateCache.Instance;
+            if (cache == null)
+            {
+                Debug.LogWarning("[GemSlotItemView] PickaxeStateCache가 null입니다");
+                return;
+            }
+
+            // 해당 곡괭이 슬롯의 젬 슬롯 해금 정보 가져오기
+            bool[] unlockedSlots = new bool[6];
+            if (cache.TryGetSlot(pickaxeSlotIndex, out var pickaxeSlot) && pickaxeSlot.GemSlots != null)
+            {
+                foreach (var gemSlot in pickaxeSlot.GemSlots)
+                {
+                    if (gemSlot != null && gemSlot.GemSlotIndex < 6)
+                    {
+                        unlockedSlots[gemSlot.GemSlotIndex] = gemSlot.IsUnlocked;
+                    }
+                }
+            }
+
+            // 현재 보유 크리스탈 정보 가져오기
+            var messageHandler = MessageHandler.Instance;
+            uint currentCrystal = messageHandler?.LastCrystal ?? 0;
+
+            controller.OnLockedGemSlotClicked(pickaxeSlotIndex, gemSlotIndex, unlockedSlots, currentCrystal);
         }
 
         /// <summary>

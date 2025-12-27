@@ -228,6 +228,10 @@ namespace InfinitePickaxe.Client.UI.Game
             // 모달 닫기 버튼 이벤트 등록
             SetupModalCloseButtons();
 
+            // 보석 슬롯 해금 모달 초기화
+            AutoBindGemSlotUnlockModal();
+            SetupGemSlotUnlockModalButtons();
+
             InitializeSubTabs();
 
             // 초기 UI 업데이트
@@ -282,6 +286,7 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnChangeMineralResponse += HandleChangeMineralResponse;
             messageHandler.OnAllSlotsResponse += HandleAllSlotsResponse;
             messageHandler.OnUpgradeResult += HandleUpgradeResult;
+            messageHandler.OnGemSlotUnlockResult += OnGemSlotUnlockResult;
             messageSubscribed = true;
         }
 
@@ -295,6 +300,7 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnChangeMineralResponse -= HandleChangeMineralResponse;
             messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
             messageHandler.OnUpgradeResult -= HandleUpgradeResult;
+            messageHandler.OnGemSlotUnlockResult -= OnGemSlotUnlockResult;
             messageSubscribed = false;
         }
 

@@ -39,6 +39,16 @@ namespace InfinitePickaxe.Client.Net
         private uint? lastCrystal;
         private UserDataSnapshot lastSnapshot;
 
+        /// <summary>
+        /// 마지막으로 수신한 골드 값 (읽기 전용)
+        /// </summary>
+        public ulong? LastGold => lastGold;
+
+        /// <summary>
+        /// 마지막으로 수신한 크리스탈 값 (읽기 전용)
+        /// </summary>
+        public uint? LastCrystal => lastCrystal;
+
         // Gem pending requests (response에 consumed 정보가 없어서 request 추적 필요)
         private List<string> pendingSynthesisGemIds;
         private string pendingConversionGemId;

@@ -2,6 +2,7 @@
 #include <spdlog/spdlog.h>
 #include <random>
 #include <cmath>
+#include <set>
 
 namespace {
 // 랜덤 넘버 생성기
@@ -600,6 +601,29 @@ infinitepickaxe::GemSlotUnlockResult GemService::handle_slot_unlock(const std::s
         result.set_success(false);
         result.set_error_code("NO_UNLOCK_COST");
         return result;
+    }
+
+    // 순차 해금 검증: 0번부터 gem_slot_index-1번까지 모두 해금되었는지 확인
+    if (gem_slot_index > 0) {
+        auto all_gem_slots = gem_repo_.get_gem_slots_for_pickaxe(slot.slot_id);
+        std::set<uint32_t> unlocked_indices;
+
+        for (const auto& gs : all_gem_slots) {
+            if (gs.is_unlocked) {
+                unlocked_indices.insert(gs.gem_slot_index);
+            }
+        }
+
+        // 0부터 gem_slot_index-1까지 모두 해금되었는지 확인
+        for (uint32_t i = 0; i < gem_slot_index; ++i) {
+            if (unlocked_indices.find(i) == unlocked_indices.end()) {
+                result.set_success(false);
+                result.set_error_code("PREVIOUS_SLOT_LOCKED");
+                spdlog::warn("handle_slot_unlock: PREVIOUS_SLOT_LOCKED user={} gem_slot={} missing_slot={}",
+                             user_id, gem_slot_index, i);
+                return result;
+            }
+        }
     }
 
     // Repository 호출
