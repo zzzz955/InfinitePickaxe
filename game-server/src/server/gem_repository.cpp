@@ -15,7 +15,7 @@ std::vector<GemSlotData> GemRepository::get_gem_slots_for_pickaxe(const std::str
             "  pgs.is_unlocked, "
             "  peg.gem_instance_id, "
             "  ug.gem_id, "
-            "  EXTRACT(EPOCH FROM ug.acquired_at) * 1000 AS acquired_at_ms "
+            "  FLOOR(EXTRACT(EPOCH FROM ug.acquired_at) * 1000)::BIGINT AS acquired_at_ms "
             "FROM game_schema.pickaxe_gem_slots pgs "
             "LEFT JOIN game_schema.pickaxe_equipped_gems peg "
             "  ON pgs.pickaxe_slot_id = peg.pickaxe_slot_id "
@@ -57,7 +57,7 @@ std::vector<GemInstanceData> GemRepository::get_user_gems(const std::string& use
 
         auto result = tx.exec_params(
             "SELECT gem_instance_id, gem_id, "
-            "  EXTRACT(EPOCH FROM acquired_at) * 1000 AS acquired_at_ms "
+            "  FLOOR(EXTRACT(EPOCH FROM acquired_at) * 1000)::BIGINT AS acquired_at_ms "
             "FROM game_schema.user_gems "
             "WHERE user_id = $1::uuid "
             "ORDER BY acquired_at DESC",
@@ -85,7 +85,7 @@ std::optional<GemInstanceData> GemRepository::get_gem_by_instance_id(const std::
 
         auto result = tx.exec_params(
             "SELECT gem_instance_id, gem_id, "
-            "  EXTRACT(EPOCH FROM acquired_at) * 1000 AS acquired_at_ms "
+            "  FLOOR(EXTRACT(EPOCH FROM acquired_at) * 1000)::BIGINT AS acquired_at_ms "
             "FROM game_schema.user_gems "
             "WHERE gem_instance_id = $1::uuid",
             gem_instance_id);
@@ -135,7 +135,7 @@ std::optional<GemInstanceData> GemRepository::create_gem(const std::string& user
             "INSERT INTO game_schema.user_gems (user_id, gem_id) "
             "VALUES ($1::uuid, $2) "
             "RETURNING gem_instance_id, gem_id, "
-            "  EXTRACT(EPOCH FROM acquired_at) * 1000 AS acquired_at_ms",
+            "  FLOOR(EXTRACT(EPOCH FROM acquired_at) * 1000)::BIGINT AS acquired_at_ms",
             user_id, static_cast<int32_t>(gem_id));
 
         if (result.empty()) {
@@ -258,7 +258,7 @@ GachaResult GemRepository::gacha_pull(const std::string& user_id, uint32_t cryst
                 "INSERT INTO game_schema.user_gems (user_id, gem_id) "
                 "VALUES ($1::uuid, $2) "
                 "RETURNING gem_instance_id, gem_id, "
-                "  EXTRACT(EPOCH FROM acquired_at) * 1000 AS acquired_at_ms",
+                "  FLOOR(EXTRACT(EPOCH FROM acquired_at) * 1000)::BIGINT AS acquired_at_ms",
                 user_id, static_cast<int32_t>(gem_id));
 
             GemInstanceData gem;
@@ -309,7 +309,7 @@ SynthesisResult GemRepository::synthesize_gems(const std::string& user_id,
                 "INSERT INTO game_schema.user_gems (user_id, gem_id) "
                 "VALUES ($1::uuid, $2) "
                 "RETURNING gem_instance_id, gem_id, "
-                "  EXTRACT(EPOCH FROM acquired_at) * 1000 AS acquired_at_ms",
+                "  FLOOR(EXTRACT(EPOCH FROM acquired_at) * 1000)::BIGINT AS acquired_at_ms",
                 user_id, static_cast<int32_t>(result_gem_id));
 
             GemInstanceData gem;

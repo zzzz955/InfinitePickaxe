@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,9 +25,13 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private GameObject iapShopSubTab;
 
         [Header("Gem Shop UI")]
-        [SerializeField] private TextMeshProUGUI gemCurrentCrystalText;
         [SerializeField] private Button gemSinglePullButton;
         [SerializeField] private Button gemMultiPullButton;
+
+        [Header("Toast Modal")]
+        [SerializeField] private GameObject toastModal;
+        [SerializeField] private TextMeshProUGUI toastMessageText;
+        [SerializeField] private Button toastConfirmButton;
 
         [Header("Ad UI References (임시, Step 3에서 HUD로 이동)")]
         [SerializeField] private Button watchAdButton1;
@@ -95,6 +100,9 @@ namespace InfinitePickaxe.Client.UI.Game
             // 서브탭 AutoBind
             AutoBindSubTabs();
 
+            // 토스트 모달 AutoBind
+            AutoBindToastModal();
+
             // 기본 탭 활성화
             SwitchToGemTab();
             RefreshData();
@@ -143,7 +151,6 @@ namespace InfinitePickaxe.Client.UI.Game
         public override void RefreshData()
         {
             UpdateAdCount();
-            UpdateGemShopUI();
         }
 
         #region Tab Switching
@@ -162,12 +169,6 @@ namespace InfinitePickaxe.Client.UI.Game
                         gemShopSubTab.name = "GemShopSubTab";
 
                         // UI 컴포넌트 바인딩
-                        var currentCrystalTf = FindChildRecursive(gemShopSubTab.transform, "CurrentCrystalText");
-                        if (currentCrystalTf != null)
-                        {
-                            gemCurrentCrystalText = currentCrystalTf.GetComponent<TextMeshProUGUI>();
-                        }
-
                         var singleBtnTf = FindChildRecursive(gemShopSubTab.transform, "SinglePullButton");
                         if (singleBtnTf != null)
                         {
@@ -252,7 +253,6 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // 탭 버튼 색상 업데이트
             UpdateTabButtonColors();
-            UpdateGemShopUI();
         }
 
         private void SwitchToIAPTab()
@@ -295,43 +295,142 @@ namespace InfinitePickaxe.Client.UI.Game
 
         #endregion
 
-        #region Gem Shop UI
+        #region Toast Modal
 
-        private void UpdateGemShopUI()
+        private void AutoBindToastModal()
         {
-            // 크리스탈 보유량 업데이트
-            if (gemCurrentCrystalText != null)
+            if (toastModal == null)
             {
-                gemCurrentCrystalText.text = $"보유: {currentCrystal} 💎";
+                var existingModal = GameObject.Find("ToastModal");
+                if (existingModal == null)
+                {
+                    var prefab = Resources.Load<GameObject>("UI/Modal");
+                    if (prefab != null)
+                    {
+                        toastModal = Instantiate(prefab, transform.root);
+                        toastModal.name = "ToastModal";
+                        toastModal.SetActive(false);
+
+                        // UI 컴포넌트 바인딩
+                        var modalPanel = toastModal.transform.Find("ModalPanel");
+                        if (modalPanel != null)
+                        {
+                            var messageTf = FindChildRecursive(modalPanel, "MessageText");
+                            if (messageTf != null)
+                            {
+                                toastMessageText = messageTf.GetComponent<TextMeshProUGUI>();
+                            }
+
+                            var confirmBtnTf = FindChildRecursive(modalPanel, "ConfirmButton");
+                            if (confirmBtnTf != null)
+                            {
+                                toastConfirmButton = confirmBtnTf.GetComponent<Button>();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    toastModal = existingModal;
+                }
             }
 
-            // 단일 뽑기 버튼 활성화/비활성화
-            if (gemSinglePullButton != null)
+            // 확인 버튼 이벤트 설정
+            if (toastConfirmButton != null)
             {
-                gemSinglePullButton.interactable = currentCrystal >= SinglePullCost;
-            }
-
-            // 멀티 뽑기 버튼 활성화/비활성화
-            if (gemMultiPullButton != null)
-            {
-                gemMultiPullButton.interactable = currentCrystal >= MultiPullCost;
+                toastConfirmButton.onClick.RemoveAllListeners();
+                toastConfirmButton.onClick.AddListener(() => HideToastModal());
             }
         }
+
+        private void ShowToastMessage(string message)
+        {
+            if (toastModal == null)
+            {
+                Debug.LogWarning("ShopTabController: Toast modal not found");
+                return;
+            }
+
+            if (toastMessageText != null)
+            {
+                toastMessageText.text = message;
+            }
+
+            toastModal.SetActive(true);
+            toastModal.transform.SetAsLastSibling();
+        }
+
+        private void HideToastModal()
+        {
+            if (toastModal != null)
+            {
+                toastModal.SetActive(false);
+            }
+        }
+
+        #endregion
+
+        #region Gem Shop UI
 
         private void OnGemPullClicked(bool isMulti)
         {
             int cost = isMulti ? MultiPullCost : SinglePullCost;
             int count = isMulti ? MultiPullCount : 1;
 
+            // 크리스탈 부족 체크
             if (currentCrystal < cost)
             {
-                Debug.LogWarning($"ShopTabController: 크리스탈 부족 (필요: {cost}, 보유: {currentCrystal})");
+                ShowToastMessage($"크리스탈이 부족합니다.\n필요: {cost} / 보유: {currentCrystal}");
                 return;
             }
 
-            // 서버로 보석 뽑기 요청 전송 (프로토콜 추가 필요)
-            Debug.Log($"ShopTabController: 보석 뽑기 요청 (개수: {count}, 비용: {cost} 💎)");
-            // TODO: messageHandler?.RequestGemPull(isMulti);
+            // 서버로 보석 뽑기 요청 전송
+            var request = new GemGachaRequest
+            {
+                PullCount = (uint)count
+            };
+
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemGachaRequest,
+                GemGachaRequest = request
+            };
+
+            NetworkManager.Instance.SendMessage(envelope);
+            Debug.Log($"ShopTabController: 보석 뽑기 요청 전송 (개수: {count}, 비용: {cost})");
+        }
+
+        private void OnGemGachaResult(GemGachaResult result)
+        {
+            if (result == null)
+            {
+                Debug.LogError("ShopTabController: GemGachaResult is null");
+                return;
+            }
+
+            if (!result.Success)
+            {
+                Debug.LogWarning($"ShopTabController: 보석 뽑기 실패 - {result.ErrorCode}");
+
+                string errorMessage = result.ErrorCode switch
+                {
+                    "INSUFFICIENT_CRYSTAL" => "크리스탈이 부족합니다.",
+                    "INVENTORY_FULL" => "보석 인벤토리가 가득 찼습니다.",
+                    _ => $"보석 뽑기 실패: {result.ErrorCode}"
+                };
+
+                ShowToastMessage(errorMessage);
+                return;
+            }
+
+            // 성공 처리
+            Debug.Log($"ShopTabController: 보석 뽑기 성공 - 획득 보석 {result.Gems.Count}개, 사용 크리스탈 {result.CrystalSpent}, 남은 크리스탈 {result.RemainingCrystal}");
+
+            // 크리스탈 UI는 MessageHandler가 자동으로 동기화
+            currentCrystal = result.RemainingCrystal;
+
+            // TODO: 보석 획득 결과 모달 표시
+            ShowToastMessage($"보석 {result.Gems.Count}개 획득!\n남은 크리스탈: {result.RemainingCrystal}");
         }
 
         #endregion
@@ -417,6 +516,7 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnHandshakeResult += HandleHandshake;
             messageHandler.OnUserDataSnapshot += HandleSnapshot;
             messageHandler.OnCurrencyUpdate += HandleCurrencyUpdate;
+            messageHandler.OnGemGachaResult += OnGemGachaResult;
 
             ApplyLastKnownCurrency();
         }
@@ -428,6 +528,7 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnHandshakeResult -= HandleHandshake;
             messageHandler.OnUserDataSnapshot -= HandleSnapshot;
             messageHandler.OnCurrencyUpdate -= HandleCurrencyUpdate;
+            messageHandler.OnGemGachaResult -= OnGemGachaResult;
         }
 
         private void SubscribeAdState()
