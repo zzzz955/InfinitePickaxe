@@ -252,6 +252,10 @@ namespace InfinitePickaxe.Client.UI.Game
             AutoBindGemInventoryExpandResultModal();
             SetupGemInventoryExpandResultModalButtons();
 
+            // 곡괭이 슬롯 해금 모달 초기화
+            AutoBindPickaxeSlotUnlockModal();
+            SetupPickaxeSlotUnlockModalButtons();
+
             InitializeSubTabs();
 
             // 초기 UI 업데이트
@@ -314,6 +318,7 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnChangeMineralResponse += HandleChangeMineralResponse;
             messageHandler.OnAllSlotsResponse += HandleAllSlotsResponse;
             messageHandler.OnUpgradeResult += HandleUpgradeResult;
+            messageHandler.OnSlotUnlockResult += OnSlotUnlockResult;
             messageHandler.OnGemSlotUnlockResult += OnGemSlotUnlockResult;
 
             // 보석 관련 이벤트
@@ -335,6 +340,7 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnChangeMineralResponse -= HandleChangeMineralResponse;
             messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
             messageHandler.OnUpgradeResult -= HandleUpgradeResult;
+            messageHandler.OnSlotUnlockResult -= OnSlotUnlockResult;
             messageHandler.OnGemSlotUnlockResult -= OnGemSlotUnlockResult;
 
             // 보석 관련 이벤트
@@ -1218,8 +1224,9 @@ namespace InfinitePickaxe.Client.UI.Game
             }
             else
             {
-                // 잠긴 슬롯: 잠금 안내 모달 열기
-                OpenLockedSlotModal();
+                // 잠긴 슬롯: 슬롯 해금 모달 열기
+                uint currentCrystal = MessageHandler.Instance != null ? (MessageHandler.Instance.LastCrystal ?? 0) : 0;
+                OnLockedPickaxeSlotClicked((uint)slotIndex, currentCrystal);
             }
         }
 
