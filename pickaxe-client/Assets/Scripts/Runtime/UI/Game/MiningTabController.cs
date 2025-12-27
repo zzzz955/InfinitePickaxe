@@ -232,6 +232,26 @@ namespace InfinitePickaxe.Client.UI.Game
             AutoBindGemSlotUnlockModal();
             SetupGemSlotUnlockModalButtons();
 
+            // 보석 장착 모달 초기화
+            AutoBindGemEquipModal();
+            SetupGemEquipModalButtons();
+
+            // 보석 액션 리스트 모달 초기화
+            AutoBindGemActionListModal();
+            SetupGemActionListModalButtons();
+
+            // 보석 분해 모달 초기화
+            AutoBindGemDiscardModal();
+            SetupGemDiscardModalButtons();
+
+            // 보석 인벤토리 확장 확인 모달 초기화
+            AutoBindGemInventoryExpandConfirmModal();
+            SetupGemInventoryExpandConfirmModalButtons();
+
+            // 보석 인벤토리 확장 결과 모달 초기화
+            AutoBindGemInventoryExpandResultModal();
+            SetupGemInventoryExpandResultModalButtons();
+
             InitializeSubTabs();
 
             // 초기 UI 업데이트

@@ -39,6 +39,20 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button gemDiscardConfirmButton;
         [SerializeField] private Button gemDiscardCancelButton;
 
+        [Header("Gem Inventory Expand Confirm Modal")]
+        [SerializeField] private GameObject gemInventoryExpandConfirmModal;
+        [SerializeField] private TextMeshProUGUI expandConfirmCapacityText;
+        [SerializeField] private TextMeshProUGUI expandConfirmCostText;
+        [SerializeField] private TextMeshProUGUI expandConfirmCurrentCrystalText;
+        [SerializeField] private Button expandConfirmButton;
+        [SerializeField] private Button expandCancelButton;
+
+        [Header("Gem Inventory Expand Result Modal")]
+        [SerializeField] private GameObject gemInventoryExpandResultModal;
+        [SerializeField] private TextMeshProUGUI expandResultTitleText;
+        [SerializeField] private TextMeshProUGUI expandResultMessageText;
+        [SerializeField] private Button expandResultCloseButton;
+
         // 보석 인벤토리 데이터 (서버로부터 수신)
         private List<GemInfo> gemInventory = new List<GemInfo>();
         private uint gemInventoryCapacity = 48;
@@ -221,6 +235,191 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
+        /// 보석 인벤토리 확장 확인 모달 AutoBind
+        /// </summary>
+        private void AutoBindGemInventoryExpandConfirmModal()
+        {
+            if (gemInventoryExpandConfirmModal == null)
+            {
+                var modalObj = GameObject.Find("GemInventoryExpandConfirmModal");
+                if (modalObj == null)
+                {
+                    // Resources에서 로드
+                    var prefab = Resources.Load<GameObject>("UI/GemInventoryExpandConfirmModal");
+                    if (prefab != null)
+                    {
+                        gemInventoryExpandConfirmModal = Instantiate(prefab, transform.root);
+                        gemInventoryExpandConfirmModal.name = "GemInventoryExpandConfirmModal";
+                        gemInventoryExpandConfirmModal.SetActive(false);
+                    }
+                }
+                else
+                {
+                    gemInventoryExpandConfirmModal = modalObj;
+                }
+            }
+
+            if (gemInventoryExpandConfirmModal == null) return;
+
+            var modalPanel = gemInventoryExpandConfirmModal.transform.Find("ModalPanel");
+            if (modalPanel == null) return;
+
+            if (expandConfirmCapacityText == null)
+            {
+                expandConfirmCapacityText = modalPanel.Find("CapacityText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (expandConfirmCostText == null)
+            {
+                expandConfirmCostText = modalPanel.Find("CostText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (expandConfirmCurrentCrystalText == null)
+            {
+                expandConfirmCurrentCrystalText = modalPanel.Find("CurrentCrystalText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            var buttonPanel = modalPanel.Find("ButtonPanel");
+            if (buttonPanel != null)
+            {
+                if (expandCancelButton == null)
+                {
+                    expandCancelButton = buttonPanel.Find("CancelButton")?.GetComponent<Button>();
+                }
+
+                if (expandConfirmButton == null)
+                {
+                    expandConfirmButton = buttonPanel.Find("ConfirmButton")?.GetComponent<Button>();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 보석 인벤토리 확장 결과 모달 AutoBind
+        /// </summary>
+        private void AutoBindGemInventoryExpandResultModal()
+        {
+            if (gemInventoryExpandResultModal == null)
+            {
+                var modalObj = GameObject.Find("GemInventoryExpandResultModal");
+                if (modalObj == null)
+                {
+                    // Resources에서 로드
+                    var prefab = Resources.Load<GameObject>("UI/GemInventoryExpandResultModal");
+                    if (prefab != null)
+                    {
+                        gemInventoryExpandResultModal = Instantiate(prefab, transform.root);
+                        gemInventoryExpandResultModal.name = "GemInventoryExpandResultModal";
+                        gemInventoryExpandResultModal.SetActive(false);
+                    }
+                }
+                else
+                {
+                    gemInventoryExpandResultModal = modalObj;
+                }
+            }
+
+            if (gemInventoryExpandResultModal == null) return;
+
+            var modalPanel = gemInventoryExpandResultModal.transform.Find("ModalPanel");
+            if (modalPanel == null) return;
+
+            if (expandResultTitleText == null)
+            {
+                expandResultTitleText = modalPanel.Find("TitleText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (expandResultMessageText == null)
+            {
+                expandResultMessageText = modalPanel.Find("MessageText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (expandResultCloseButton == null)
+            {
+                expandResultCloseButton = modalPanel.Find("CloseButton")?.GetComponent<Button>();
+            }
+        }
+
+        /// <summary>
+        /// 보석 인벤토리 확장 확인 모달 버튼 이벤트 등록
+        /// </summary>
+        private void SetupGemInventoryExpandConfirmModalButtons()
+        {
+            if (gemInventoryExpandConfirmModal == null) return;
+
+            // 배경 클릭으로 닫기
+            var backgroundButton = gemInventoryExpandConfirmModal.GetComponent<Button>();
+            if (backgroundButton != null)
+            {
+                backgroundButton.onClick.RemoveAllListeners();
+                backgroundButton.onClick.AddListener(CloseGemInventoryExpandConfirmModal);
+            }
+
+            // ModalPanel 클릭 이벤트 차단
+            var modalPanel = gemInventoryExpandConfirmModal.transform.Find("ModalPanel");
+            if (modalPanel != null)
+            {
+                var panelButton = modalPanel.GetComponent<Button>();
+                if (panelButton == null)
+                {
+                    panelButton = modalPanel.gameObject.AddComponent<Button>();
+                    panelButton.transition = UnityEngine.UI.Selectable.Transition.None;
+                }
+                panelButton.onClick.RemoveAllListeners();
+            }
+
+            // 취소 버튼
+            if (expandCancelButton != null)
+            {
+                expandCancelButton.onClick.RemoveAllListeners();
+                expandCancelButton.onClick.AddListener(CloseGemInventoryExpandConfirmModal);
+            }
+
+            // 확인 버튼
+            if (expandConfirmButton != null)
+            {
+                expandConfirmButton.onClick.RemoveAllListeners();
+                expandConfirmButton.onClick.AddListener(OnConfirmGemInventoryExpand);
+            }
+        }
+
+        /// <summary>
+        /// 보석 인벤토리 확장 결과 모달 버튼 이벤트 등록
+        /// </summary>
+        private void SetupGemInventoryExpandResultModalButtons()
+        {
+            if (gemInventoryExpandResultModal == null) return;
+
+            // 배경 클릭으로 닫기
+            var backgroundButton = gemInventoryExpandResultModal.GetComponent<Button>();
+            if (backgroundButton != null)
+            {
+                backgroundButton.onClick.RemoveAllListeners();
+                backgroundButton.onClick.AddListener(CloseGemInventoryExpandResultModal);
+            }
+
+            // ModalPanel 클릭 이벤트 차단
+            var modalPanel = gemInventoryExpandResultModal.transform.Find("ModalPanel");
+            if (modalPanel != null)
+            {
+                var panelButton = modalPanel.GetComponent<Button>();
+                if (panelButton == null)
+                {
+                    panelButton = modalPanel.gameObject.AddComponent<Button>();
+                    panelButton.transition = UnityEngine.UI.Selectable.Transition.None;
+                }
+                panelButton.onClick.RemoveAllListeners();
+            }
+
+            // 닫기 버튼
+            if (expandResultCloseButton != null)
+            {
+                expandResultCloseButton.onClick.RemoveAllListeners();
+                expandResultCloseButton.onClick.AddListener(CloseGemInventoryExpandResultModal);
+            }
+        }
+
+        /// <summary>
         /// 해금된 보석 슬롯 클릭 시 호출 (PickaxeInfoModal에서)
         /// </summary>
         public void OnUnlockedGemSlotClicked(uint pickaxeSlotIndex, uint gemSlotIndex)
@@ -361,6 +560,67 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void OnExpandInventoryClicked()
         {
+            // 확인 모달 열기
+            OpenGemInventoryExpandConfirmModal();
+        }
+
+        /// <summary>
+        /// 보석 인벤토리 확장 확인 모달 열기
+        /// </summary>
+        private void OpenGemInventoryExpandConfirmModal()
+        {
+            if (gemInventoryExpandConfirmModal == null) return;
+
+            // 현재 보유 크리스탈 (MessageHandler에서 가져오기)
+            uint currentCrystal = MessageHandler.Instance != null ? (MessageHandler.Instance.LastCrystal ?? 0) : 0;
+
+            // 확장 비용 (메타데이터 또는 하드코딩)
+            uint expandCost = 200;
+
+            // 확장 크기
+            uint expandSize = 8;
+
+            // UI 업데이트
+            if (expandConfirmCapacityText != null)
+            {
+                expandConfirmCapacityText.text = $"현재 용량: {gemInventoryCapacity} / {maxGemCapacity}";
+            }
+
+            if (expandConfirmCostText != null)
+            {
+                expandConfirmCostText.text = $"필요 크리스탈: {expandCost}";
+            }
+
+            if (expandConfirmCurrentCrystalText != null)
+            {
+                expandConfirmCurrentCrystalText.text = $"보유: {currentCrystal}";
+            }
+
+            // 확인 버튼 활성화/비활성화
+            if (expandConfirmButton != null)
+            {
+                expandConfirmButton.interactable = (currentCrystal >= expandCost && gemInventoryCapacity < maxGemCapacity);
+            }
+
+            gemInventoryExpandConfirmModal.SetActive(true);
+        }
+
+        /// <summary>
+        /// 보석 인벤토리 확장 확인 모달 닫기
+        /// </summary>
+        private void CloseGemInventoryExpandConfirmModal()
+        {
+            if (gemInventoryExpandConfirmModal != null)
+            {
+                gemInventoryExpandConfirmModal.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 확인 버튼 클릭 시 서버 요청
+        /// </summary>
+        private void OnConfirmGemInventoryExpand()
+        {
             var request = new GemInventoryExpandRequest();
             var envelope = new Envelope
             {
@@ -369,6 +629,10 @@ namespace InfinitePickaxe.Client.UI.Game
             };
 
             NetworkManager.Instance.SendMessage(envelope);
+            Debug.Log("[MiningTabController] GemInventoryExpandRequest 전송");
+
+            // 확인 모달 닫기
+            CloseGemInventoryExpandConfirmModal();
         }
 
         /// <summary>
@@ -378,23 +642,85 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (!result.Success)
             {
-                string errorMessage = result.ErrorCode switch
-                {
-                    "MAX_CAPACITY" => "최대 용량에 도달했습니다.",
-                    "INSUFFICIENT_CRYSTAL" => "크리스탈이 부족합니다.",
-                    _ => $"확장 실패: {result.ErrorCode}"
-                };
-                Debug.LogError(errorMessage);
+                // 실패 모달 표시
+                OpenGemInventoryExpandResultModal(false, result.ErrorCode, 0);
                 return;
             }
 
+            // 성공 처리
+            uint oldCapacity = gemInventoryCapacity;
             gemInventoryCapacity = result.NewCapacity;
             UpdateCrystalUI(result.RemainingCrystal);
 
-            Debug.Log($"[MiningTabController] 인벤토리 확장 완료: {result.NewCapacity}");
+            Debug.Log($"[MiningTabController] 인벤토리 확장 완료: {oldCapacity} → {result.NewCapacity}");
 
             // Grid 갱신
             UpdateGemGrid();
+
+            // 성공 모달 표시
+            OpenGemInventoryExpandResultModal(true, "", result.NewCapacity);
+        }
+
+        /// <summary>
+        /// 보석 인벤토리 확장 결과 모달 열기
+        /// </summary>
+        /// <param name="success">성공 여부</param>
+        /// <param name="errorCode">에러 코드 (실패 시)</param>
+        /// <param name="newCapacity">새 용량 (성공 시)</param>
+        private void OpenGemInventoryExpandResultModal(bool success, string errorCode, uint newCapacity)
+        {
+            if (gemInventoryExpandResultModal == null) return;
+
+            if (success)
+            {
+                // 성공 메시지
+                if (expandResultTitleText != null)
+                {
+                    expandResultTitleText.text = "확장 성공";
+                    expandResultTitleText.color = new Color(0.5f, 1f, 0.5f, 1f); // 녹색
+                }
+
+                if (expandResultMessageText != null)
+                {
+                    uint oldCapacity = gemInventoryCapacity - 8; // 확장 크기 8
+                    expandResultMessageText.text = $"보석 가방이 {oldCapacity}에서 {newCapacity}로 확장되었습니다!";
+                    expandResultMessageText.color = new Color(0.9f, 0.9f, 0.9f, 1f);
+                }
+            }
+            else
+            {
+                // 실패 메시지
+                if (expandResultTitleText != null)
+                {
+                    expandResultTitleText.text = "확장 실패";
+                    expandResultTitleText.color = new Color(1f, 0.5f, 0.5f, 1f); // 빨간색
+                }
+
+                if (expandResultMessageText != null)
+                {
+                    string message = errorCode switch
+                    {
+                        "MAX_CAPACITY" => $"최대 용량에 도달했습니다. ({maxGemCapacity}/{maxGemCapacity})",
+                        "INSUFFICIENT_CRYSTAL" => "크리스탈이 부족합니다. (필요: 200)",
+                        _ => $"확장 실패: {errorCode}"
+                    };
+                    expandResultMessageText.text = message;
+                    expandResultMessageText.color = new Color(0.9f, 0.9f, 0.9f, 1f);
+                }
+            }
+
+            gemInventoryExpandResultModal.SetActive(true);
+        }
+
+        /// <summary>
+        /// 보석 인벤토리 확장 결과 모달 닫기
+        /// </summary>
+        private void CloseGemInventoryExpandResultModal()
+        {
+            if (gemInventoryExpandResultModal != null)
+            {
+                gemInventoryExpandResultModal.SetActive(false);
+            }
         }
 
         /// <summary>
