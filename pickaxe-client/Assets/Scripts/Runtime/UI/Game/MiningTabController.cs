@@ -256,6 +256,14 @@ namespace InfinitePickaxe.Client.UI.Game
             ApplyLastSnapshotIfAvailable();
             SyncInitialLoadingState();
             RefreshData();
+
+            // 보석 장착 모달 초기화
+            AutoBindGemEquipModal();
+            SetupGemEquipModalButtons();
+            AutoBindGemActionListModal();
+            SetupGemActionListModalButtons();
+            AutoBindGemDiscardModal();
+            SetupGemDiscardModalButtons();
         }
 
         protected override void OnDisable()
@@ -287,6 +295,13 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnAllSlotsResponse += HandleAllSlotsResponse;
             messageHandler.OnUpgradeResult += HandleUpgradeResult;
             messageHandler.OnGemSlotUnlockResult += OnGemSlotUnlockResult;
+
+            // 보석 관련 이벤트
+            messageHandler.OnGemListResponse += OnGemListResponse;
+            messageHandler.OnGemEquipResult += OnGemEquipResult;
+            messageHandler.OnGemDiscardResult += OnGemDiscardResult;
+            messageHandler.OnGemInventoryExpandResult += OnGemInventoryExpandResult;
+
             messageSubscribed = true;
         }
 
@@ -301,6 +316,13 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnAllSlotsResponse -= HandleAllSlotsResponse;
             messageHandler.OnUpgradeResult -= HandleUpgradeResult;
             messageHandler.OnGemSlotUnlockResult -= OnGemSlotUnlockResult;
+
+            // 보석 관련 이벤트
+            messageHandler.OnGemListResponse -= OnGemListResponse;
+            messageHandler.OnGemEquipResult -= OnGemEquipResult;
+            messageHandler.OnGemDiscardResult -= OnGemDiscardResult;
+            messageHandler.OnGemInventoryExpandResult -= OnGemInventoryExpandResult;
+
             messageSubscribed = false;
         }
 

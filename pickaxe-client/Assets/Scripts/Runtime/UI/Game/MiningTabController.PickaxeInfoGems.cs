@@ -363,6 +363,18 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 emptyOverlay.SetActive(true);
                 Debug.Log($"[GemSlotItemView] EmptyOverlay 활성화");
+
+                // EmptyOverlay에 Button 추가하여 클릭 시 보석 장착 모달 열기
+                var button = emptyOverlay.GetComponent<Button>();
+                if (button == null)
+                {
+                    button = emptyOverlay.AddComponent<Button>();
+                    Debug.Log($"[GemSlotItemView] EmptyOverlay에 Button 추가");
+                }
+
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(OnEmptyOverlayClicked);
+                Debug.Log($"[GemSlotItemView] EmptyOverlay 클릭 이벤트 등록 완료");
             }
             else
             {
@@ -495,6 +507,23 @@ namespace InfinitePickaxe.Client.UI.Game
             uint currentCrystal = messageHandler?.LastCrystal ?? 0;
 
             controller.OnLockedGemSlotClicked(pickaxeSlotIndex, gemSlotIndex, unlockedSlots, currentCrystal);
+        }
+
+        /// <summary>
+        /// EmptyOverlay 클릭 시 호출 (해금된 빈 슬롯 클릭)
+        /// </summary>
+        private void OnEmptyOverlayClicked()
+        {
+            Debug.Log($"[GemSlotItemView] OnEmptyOverlayClicked 호출: pickaxe={pickaxeSlotIndex}, gem={gemSlotIndex}");
+
+            if (controller == null)
+            {
+                Debug.LogWarning("[GemSlotItemView] Controller 참조가 null입니다");
+                return;
+            }
+
+            // 보석 장착 모달 열기
+            controller.OnUnlockedGemSlotClicked(pickaxeSlotIndex, gemSlotIndex);
         }
 
         /// <summary>
