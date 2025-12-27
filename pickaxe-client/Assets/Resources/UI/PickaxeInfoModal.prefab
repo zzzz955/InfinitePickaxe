@@ -1834,6 +1834,7 @@ GameObject:
   - component: {fileID: 5809748506980801608}
   - component: {fileID: 7646715642475196280}
   - component: {fileID: 3612405589201374638}
+  - component: {fileID: 1234567890123456789}
   - component: {fileID: 7404218616691012053}
   m_Layer: 0
   m_Name: ModalPanel
@@ -1902,6 +1903,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &1234567890123456789
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5129246019560110446}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &7404218616691012053
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1200,6 +1200,20 @@ namespace InfinitePickaxe.Client.UI.Game
                     bgButton.onClick.AddListener(() => CloseModal(pickaxeInfoModal));
                 }
 
+                // ModalPanel 클릭 시 이벤트 전파 차단 (모달 내부 클릭 시 닫히지 않도록)
+                var modalPanel = pickaxeInfoModal.transform.Find("ModalPanel");
+                if (modalPanel != null)
+                {
+                    var panelButton = modalPanel.GetComponent<Button>();
+                    if (panelButton == null)
+                    {
+                        panelButton = modalPanel.gameObject.AddComponent<Button>();
+                        panelButton.transition = UnityEngine.UI.Selectable.Transition.None;
+                    }
+                    panelButton.onClick.RemoveAllListeners();
+                    // 아무것도 하지 않음 - 클릭 이벤트 차단
+                }
+
                 // 강화 버튼 (모달 닫고 업그레이드 탭으로 이동)
                 var upgradeButton = pickaxeInfoModal.transform.Find("ModalPanel/ButtonRow/UpgradeButton");
                 if (upgradeButton != null)
@@ -1232,6 +1246,20 @@ namespace InfinitePickaxe.Client.UI.Game
                     bgButton.onClick.AddListener(() => CloseModal(lockedSlotModal));
                 }
 
+                // ModalPanel 클릭 시 이벤트 전파 차단 (모달 내부 클릭 시 닫히지 않도록)
+                var modalPanel = lockedSlotModal.transform.Find("ModalPanel");
+                if (modalPanel != null)
+                {
+                    var panelButton = modalPanel.GetComponent<Button>();
+                    if (panelButton == null)
+                    {
+                        panelButton = modalPanel.gameObject.AddComponent<Button>();
+                        panelButton.transition = UnityEngine.UI.Selectable.Transition.None;
+                    }
+                    panelButton.onClick.RemoveAllListeners();
+                    // 아무것도 하지 않음 - 클릭 이벤트 차단
+                }
+
                 // 상점 버튼 (모달 닫고 상점 탭으로 이동)
                 var shopButton = lockedSlotModal.transform.Find("ModalPanel/ButtonRow/ShopButton");
                 if (shopButton != null)
@@ -1262,6 +1290,20 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (bgButton != null)
                 {
                     bgButton.onClick.AddListener(() => CloseModal(mineralSelectModal));
+                }
+
+                // ModalPanel 클릭 시 이벤트 전파 차단 (모달 내부 클릭 시 닫히지 않도록)
+                var modalPanel = mineralSelectModal.transform.Find("ModalPanel");
+                if (modalPanel != null)
+                {
+                    var panelButton = modalPanel.GetComponent<Button>();
+                    if (panelButton == null)
+                    {
+                        panelButton = modalPanel.gameObject.AddComponent<Button>();
+                        panelButton.transition = UnityEngine.UI.Selectable.Transition.None;
+                    }
+                    panelButton.onClick.RemoveAllListeners();
+                    // 아무것도 하지 않음 - 클릭 이벤트 차단
                 }
             }
         }
