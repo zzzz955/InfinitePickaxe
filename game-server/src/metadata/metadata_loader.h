@@ -65,6 +65,17 @@ struct OfflineDefaults {
     uint32_t initial_offline_seconds{0}; // hours -> seconds 변환 저장
 };
 
+struct NewUserDefaults {
+    uint64_t initial_gold{0};
+    uint32_t initial_crystal{0};
+    uint32_t initial_pickaxe_level{0};
+    uint32_t initial_critical_hit_percent{500};
+    uint32_t initial_critical_damage{15000};
+    uint32_t initial_pity_bonus{0};
+    std::vector<uint32_t> initial_unlocked_pickaxe_slots{0};
+    std::vector<uint32_t> initial_unlocked_gem_slots{0};
+};
+
 struct UpgradeRules {
     double min_rate = 0.3;   // 30%
     double bonus_rate = 0.1; // additive bonus rate
@@ -155,6 +166,7 @@ public:
     const AdTypeMeta* ad_meta(const std::string& id) const;
     const MissionRerollMeta& mission_reroll() const { return mission_reroll_; }
     const OfflineDefaults& offline_defaults() const { return offline_defaults_; }
+    const NewUserDefaults& new_user_defaults() const { return new_user_defaults_; }
     const UpgradeRules& upgrade_rules() const { return upgrade_rules_; }
 
     // 보석 시스템 getter
@@ -182,6 +194,7 @@ private:
     std::unordered_map<std::string, AdTypeMeta> ad_types_by_id_;
     MissionRerollMeta mission_reroll_;
     OfflineDefaults offline_defaults_;
+    NewUserDefaults new_user_defaults_;
     UpgradeRules upgrade_rules_;
 
     // 보석 시스템 메타데이터

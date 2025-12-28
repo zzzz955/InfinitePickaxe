@@ -595,6 +595,20 @@
   "offline_defaults": {
     "initial_offline_hours": 4
   },
+  "new_user_defaults": {
+    "initial_gold": 5,
+    "initial_crystal": 0,
+    "initial_pickaxe_level": 0,
+    "initial_critical_hit_percent": 1000,
+    "initial_critical_damage": 20000,
+    "initial_pity_bonus": 0,
+    "initial_unlocked_pickaxe_slots": [
+      0
+    ],
+    "initial_unlocked_gem_slots": [
+      0
+    ]
+  },
   "pickaxe_levels": [
     {
       "level": 0,
@@ -1782,7 +1796,7 @@
       "type_id": 0,
       "name": "일반 공격 속도 보석",
       "icon": "gem_common_attack_speed",
-      "stat_multiplier": 1500
+      "stat_multiplier": 600
     },
     {
       "gem_id": 1,
@@ -1790,7 +1804,7 @@
       "type_id": 1,
       "name": "일반 크리티컬 확률 보석",
       "icon": "gem_common_crit_rate",
-      "stat_multiplier": 50
+      "stat_multiplier": 300
     },
     {
       "gem_id": 2,
@@ -1798,7 +1812,7 @@
       "type_id": 2,
       "name": "일반 크리티컬 데미지 보석",
       "icon": "gem_common_crit_dmg",
-      "stat_multiplier": 150
+      "stat_multiplier": 900
     },
     {
       "gem_id": 100,
@@ -1806,7 +1820,7 @@
       "type_id": 0,
       "name": "고급 공격 속도 보석",
       "icon": "gem_rare_attack_speed",
-      "stat_multiplier": 2500
+      "stat_multiplier": 1000
     },
     {
       "gem_id": 101,
@@ -1814,7 +1828,7 @@
       "type_id": 1,
       "name": "고급 크리티컬 확률 보석",
       "icon": "gem_rare_crit_rate",
-      "stat_multiplier": 100
+      "stat_multiplier": 500
     },
     {
       "gem_id": 102,
@@ -1822,7 +1836,7 @@
       "type_id": 2,
       "name": "고급 크리티컬 데미지 보석",
       "icon": "gem_rare_crit_dmg",
-      "stat_multiplier": 250
+      "stat_multiplier": 1800
     },
     {
       "gem_id": 200,
@@ -1830,7 +1844,7 @@
       "type_id": 0,
       "name": "희귀 공격 속도 보석",
       "icon": "gem_epic_attack_speed",
-      "stat_multiplier": 4000
+      "stat_multiplier": 1800
     },
     {
       "gem_id": 201,
@@ -1838,7 +1852,7 @@
       "type_id": 1,
       "name": "희귀 크리티컬 확률 보석",
       "icon": "gem_epic_crit_rate",
-      "stat_multiplier": 250
+      "stat_multiplier": 900
     },
     {
       "gem_id": 202,
@@ -1846,7 +1860,7 @@
       "type_id": 2,
       "name": "희귀 크리티컬 데미지 보석",
       "icon": "gem_epic_crit_dmg",
-      "stat_multiplier": 500
+      "stat_multiplier": 3600
     },
     {
       "gem_id": 300,
@@ -1854,7 +1868,7 @@
       "type_id": 0,
       "name": "영웅 공격 속도 보석",
       "icon": "gem_hero_attack_speed",
-      "stat_multiplier": 8000
+      "stat_multiplier": 3500
     },
     {
       "gem_id": 301,
@@ -1862,7 +1876,7 @@
       "type_id": 1,
       "name": "영웅 크리티컬 확률 보석",
       "icon": "gem_hero_crit_rate",
-      "stat_multiplier": 500
+      "stat_multiplier": 1600
     },
     {
       "gem_id": 302,
@@ -1870,7 +1884,7 @@
       "type_id": 2,
       "name": "영웅 크리티컬 데미지 보석",
       "icon": "gem_hero_crit_dmg",
-      "stat_multiplier": 1000
+      "stat_multiplier": 7200
     },
     {
       "gem_id": 400,
@@ -1878,7 +1892,7 @@
       "type_id": 0,
       "name": "전설 공격 속도 보석",
       "icon": "gem_legendary_attack_speed",
-      "stat_multiplier": 15000
+      "stat_multiplier": 6000
     },
     {
       "gem_id": 401,
@@ -1886,7 +1900,7 @@
       "type_id": 1,
       "name": "전설 크리티컬 확률 보석",
       "icon": "gem_legendary_crit_rate",
-      "stat_multiplier": 1000
+      "stat_multiplier": 3000
     },
     {
       "gem_id": 402,
@@ -1894,7 +1908,7 @@
       "type_id": 2,
       "name": "전설 크리티컬 데미지 보석",
       "icon": "gem_legendary_crit_dmg",
-      "stat_multiplier": 2000
+      "stat_multiplier": 14400
     }
   ],
   "gem_gacha": {

@@ -15,6 +15,7 @@ bool MetadataLoader::load(const std::string& base_path) {
         daily_missions_config_ = DailyMissionConfig{};
         mission_reroll_ = MissionRerollMeta{};
         offline_defaults_ = OfflineDefaults{};
+        new_user_defaults_ = NewUserDefaults{};
         gem_types_.clear();
         gem_grades_.clear();
         gem_definitions_.clear();
@@ -209,6 +210,37 @@ bool MetadataLoader::load(const std::string& base_path) {
                 offline_defaults_.initial_offline_seconds = hours * 3600;
             } else {
                 offline_defaults_.initial_offline_seconds = 0;
+            }
+        }
+
+        // new_user_defaults
+        {
+            if (bundle.contains("new_user_defaults")) {
+                nlohmann::json j = bundle["new_user_defaults"];
+                new_user_defaults_.initial_gold = j.value("initial_gold", 0);
+                new_user_defaults_.initial_crystal = j.value("initial_crystal", 0);
+                new_user_defaults_.initial_pickaxe_level = j.value("initial_pickaxe_level", 0);
+                new_user_defaults_.initial_critical_hit_percent = j.value("initial_critical_hit_percent", 500);
+                new_user_defaults_.initial_critical_damage = j.value("initial_critical_damage", 15000);
+                new_user_defaults_.initial_pity_bonus = j.value("initial_pity_bonus", 0);
+                if (j.contains("initial_unlocked_pickaxe_slots") && j["initial_unlocked_pickaxe_slots"].is_array()) {
+                    new_user_defaults_.initial_unlocked_pickaxe_slots.clear();
+                    for (auto& e : j["initial_unlocked_pickaxe_slots"]) {
+                        new_user_defaults_.initial_unlocked_pickaxe_slots.push_back(e.get<uint32_t>());
+                    }
+                }
+                if (j.contains("initial_unlocked_gem_slots") && j["initial_unlocked_gem_slots"].is_array()) {
+                    new_user_defaults_.initial_unlocked_gem_slots.clear();
+                    for (auto& e : j["initial_unlocked_gem_slots"]) {
+                        new_user_defaults_.initial_unlocked_gem_slots.push_back(e.get<uint32_t>());
+                    }
+                }
+            }
+            if (new_user_defaults_.initial_unlocked_pickaxe_slots.empty()) {
+                new_user_defaults_.initial_unlocked_pickaxe_slots.push_back(0);
+            }
+            if (new_user_defaults_.initial_unlocked_gem_slots.empty()) {
+                new_user_defaults_.initial_unlocked_gem_slots.push_back(0);
             }
         }
 

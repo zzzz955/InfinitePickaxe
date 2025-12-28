@@ -1,0 +1,14 @@
+{
+  "initial_gold": 5,
+  "initial_crystal": 0,
+  "initial_pickaxe_level": 0,
+  "initial_critical_hit_percent": 1000,
+  "initial_critical_damage": 20000,
+  "initial_pity_bonus": 0,
+  "initial_unlocked_pickaxe_slots": [
+    0
+  ],
+  "initial_unlocked_gem_slots": [
+    0
+  ]
+}

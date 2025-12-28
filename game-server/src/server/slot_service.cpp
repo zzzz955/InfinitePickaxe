@@ -4,10 +4,7 @@
 #include <cmath>
 
 namespace {
-constexpr uint32_t kDefaultAttackSpeed = 10000;     // 1.0 APS (basis 10000)
-constexpr uint32_t kDefaultCritPercent = 500;       // 5%
-constexpr uint32_t kDefaultCritDamage = 15000;      // 150%
-constexpr uint32_t kDefaultPity = 0;
+constexpr uint32_t kFallbackAttackSpeed = 10000;     // 1.0 APS (basis 10000)
 constexpr std::array<uint32_t, 4> kSlotCrystalCosts = {0, 400, 2000, 4000};
 
 std::optional<uint32_t> crystal_cost_for_slot(uint32_t slot_index)
@@ -41,23 +38,31 @@ PickaxeSlot build_base_slot(const std::string& user_id, uint32_t slot_index, con
     PickaxeSlot slot{};
     slot.user_id = user_id;
     slot.slot_index = slot_index;
-    slot.level = 0;
+
+    const auto& defaults = meta.new_user_defaults();
+    slot.level = defaults.initial_pickaxe_level;
     slot.tier = 1;
     slot.attack_power = 10;
-    slot.attack_speed = kDefaultAttackSpeed;
-    slot.critical_hit_percent = kDefaultCritPercent;
-    slot.critical_damage = kDefaultCritDamage;
-    slot.pity_bonus = kDefaultPity;
+    slot.attack_speed = kFallbackAttackSpeed;
+    slot.critical_hit_percent = defaults.initial_critical_hit_percent;
+    slot.critical_damage = defaults.initial_critical_damage;
+    slot.pity_bonus = defaults.initial_pity_bonus;
 
-    if (const auto* base = meta.pickaxe_level(0))
+    const auto* base = meta.pickaxe_level(slot.level);
+    if (!base && slot.level != 0)
+    {
+        base = meta.pickaxe_level(0);
+    }
+
+    if (base)
     {
         slot.level = base->level;
         slot.tier = base->tier;
         slot.attack_power = base->attack_power;
-        slot.attack_speed = base->attack_speed;
+        slot.attack_speed = static_cast<uint32_t>(std::llround(base->attack_speed));
         if (slot.attack_speed == 0)
         {
-            slot.attack_speed = 10000;
+            slot.attack_speed = kFallbackAttackSpeed;
         }
         slot.dps = compute_expected_dps(slot.attack_power, slot.attack_speed,
                                         slot.critical_hit_percent, slot.critical_damage,
@@ -71,6 +76,7 @@ PickaxeSlot build_base_slot(const std::string& user_id, uint32_t slot_index, con
     }
     return slot;
 }
+
 
 void fill_slot_info(const PickaxeSlot& slot, infinitepickaxe::PickaxeSlotInfo* slot_info,
                     GemRepository& gem_repo, const MetadataLoader& meta)

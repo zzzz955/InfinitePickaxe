@@ -303,6 +303,29 @@ function buildOfflineDefaults() {
   };
 }
 
+function buildNewUserDefaults() {
+  const row = readKeyValueConfig('new_user_defaults.csv');
+  const pickaxeSlots =
+    toList(row.initial_unlocked_pickaxe_slots, (v, c) => toNumber(v, c), 'new_user_defaults.csv initial_unlocked_pickaxe_slots') || [0];
+  const gemSlots =
+    toList(row.initial_unlocked_gem_slots, (v, c) => toNumber(v, c), 'new_user_defaults.csv initial_unlocked_gem_slots') || [0];
+
+  return {
+    key: 'new_user_defaults',
+    file: 'new_user_defaults.json',
+    data: {
+      initial_gold: toNumber(row.initial_gold, 'new_user_defaults.csv initial_gold'),
+      initial_crystal: toNumber(row.initial_crystal, 'new_user_defaults.csv initial_crystal'),
+      initial_pickaxe_level: toNumber(row.initial_pickaxe_level, 'new_user_defaults.csv initial_pickaxe_level'),
+      initial_critical_hit_percent: toNumber(row.initial_critical_hit_percent, 'new_user_defaults.csv initial_critical_hit_percent'),
+      initial_critical_damage: toNumber(row.initial_critical_damage, 'new_user_defaults.csv initial_critical_damage'),
+      initial_pity_bonus: toNumber(row.initial_pity_bonus, 'new_user_defaults.csv initial_pity_bonus'),
+      initial_unlocked_pickaxe_slots: pickaxeSlots,
+      initial_unlocked_gem_slots: gemSlots,
+    },
+  };
+}
+
 function buildPickaxeLevels() {
   const levels = readCsv('pickaxe_levels.csv').map((row, idx) => {
     const context = `pickaxe_levels.csv row ${idx + 2}`;
@@ -522,6 +545,7 @@ const builders = [
   buildMinerals,
   buildMissionReroll,
   buildOfflineDefaults,
+  buildNewUserDefaults,
   buildPickaxeLevels,
   buildUpgradeRules,
   buildGemTypes,
