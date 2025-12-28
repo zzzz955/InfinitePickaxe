@@ -767,7 +767,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 currentGemPanel.SetActive(equippedGem != null);
             }
 
-            if (equippedGem == null) return;
+            if (equippedGem == null)
+            {
+                // 빈 슬롯일 경우 툴팁 트리거 제거
+                RemoveCurrentGemTooltipTrigger();
+                return;
+            }
 
             // 등급 테두리 색상
             if (currentGemGradeBorder != null)
@@ -781,6 +786,42 @@ namespace InfinitePickaxe.Client.UI.Game
                 var sprite = GemSpriteLoader.GetGemSprite(equippedGem);
                 currentGemIcon.sprite = sprite;
                 currentGemIcon.enabled = (sprite != null);
+
+                // 툴팁 트리거 추가
+                AddCurrentGemTooltipTrigger(equippedGem);
+            }
+        }
+
+        /// <summary>
+        /// CurrentGemPanel 아이콘에 툴팁 트리거 추가
+        /// </summary>
+        private void AddCurrentGemTooltipTrigger(GemInfo gem)
+        {
+            if (currentGemIcon == null || gem == null) return;
+
+            // 기존 트리거 제거
+            var existingTrigger = currentGemIcon.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
+            }
+
+            // 새 트리거 추가
+            var trigger = currentGemIcon.gameObject.AddComponent<GemTooltipTrigger>();
+            trigger.SetGemInfo(gem);
+        }
+
+        /// <summary>
+        /// CurrentGemPanel 아이콘에서 툴팁 트리거 제거
+        /// </summary>
+        private void RemoveCurrentGemTooltipTrigger()
+        {
+            if (currentGemIcon == null) return;
+
+            var existingTrigger = currentGemIcon.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
             }
         }
 
@@ -1810,6 +1851,9 @@ namespace InfinitePickaxe.Client.UI.Game
                 gemIcon.sprite = sprite;
                 gemIcon.enabled = (sprite != null);
                 gemIcon.gameObject.SetActive(sprite != null);
+
+                // 툴팁 트리거 추가
+                AddTooltipTrigger(gem);
             }
 
             if (emptyState != null)
@@ -1823,6 +1867,25 @@ namespace InfinitePickaxe.Client.UI.Game
                 bool isEquipped = InfinitePickaxe.Client.Core.GemStateCache.Instance.IsEquipped(gem.GemInstanceId);
                 equippedLabel.gameObject.SetActive(isEquipped);
             }
+        }
+
+        /// <summary>
+        /// 아이콘에 툴팁 트리거 추가
+        /// </summary>
+        private void AddTooltipTrigger(GemInfo gem)
+        {
+            if (gemIcon == null || gem == null) return;
+
+            // 기존 트리거 제거
+            var existingTrigger = gemIcon.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
+            }
+
+            // 새 트리거 추가
+            var trigger = gemIcon.gameObject.AddComponent<GemTooltipTrigger>();
+            trigger.SetGemInfo(gem);
         }
 
         /// <summary>
@@ -1841,6 +1904,9 @@ namespace InfinitePickaxe.Client.UI.Game
             if (gemIcon != null)
             {
                 gemIcon.gameObject.SetActive(false);
+
+                // 툴팁 트리거 제거
+                RemoveTooltipTrigger();
             }
 
             if (emptyState != null)
@@ -1852,6 +1918,20 @@ namespace InfinitePickaxe.Client.UI.Game
             if (equippedLabel != null)
             {
                 equippedLabel.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 아이콘에서 툴팁 트리거 제거
+        /// </summary>
+        private void RemoveTooltipTrigger()
+        {
+            if (gemIcon == null) return;
+
+            var existingTrigger = gemIcon.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
             }
         }
 

@@ -45,7 +45,29 @@ namespace InfinitePickaxe.Client.UI.Game
                 var sprite = GemSpriteLoader.GetGemSprite(gem);
                 gemIcon.sprite = sprite;
                 gemIcon.enabled = (sprite != null);
+
+                // 툴팁 트리거 추가
+                AddTooltipTrigger(gem);
             }
+        }
+
+        /// <summary>
+        /// 아이콘에 툴팁 트리거 추가
+        /// </summary>
+        private void AddTooltipTrigger(GemInfo gem)
+        {
+            if (gemIcon == null || gem == null) return;
+
+            // 기존 트리거 제거
+            var existingTrigger = gemIcon.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
+            }
+
+            // 새 트리거 추가
+            var trigger = gemIcon.gameObject.AddComponent<GemTooltipTrigger>();
+            trigger.SetGemInfo(gem);
         }
 
         /// <summary>

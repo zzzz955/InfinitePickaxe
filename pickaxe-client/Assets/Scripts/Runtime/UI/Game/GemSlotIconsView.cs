@@ -109,6 +109,28 @@ namespace InfinitePickaxe.Client.UI.Game
             icon.sprite = sprite;
             icon.color = equippedColor;
             icon.enabled = sprite != null; // 스프라이트가 있을 때만 표시
+
+            // 툴팁 트리거 추가
+            AddTooltipTrigger(icon, gem);
+        }
+
+        /// <summary>
+        /// 아이콘에 툴팁 트리거 추가
+        /// </summary>
+        private void AddTooltipTrigger(Image icon, Infinitepickaxe.GemInfo gem)
+        {
+            if (icon == null || gem == null) return;
+
+            // 기존 트리거 제거
+            var existingTrigger = icon.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
+            }
+
+            // 새 트리거 추가
+            var trigger = icon.gameObject.AddComponent<GemTooltipTrigger>();
+            trigger.SetGemInfo(gem);
         }
 
         /// <summary>
@@ -120,6 +142,9 @@ namespace InfinitePickaxe.Client.UI.Game
 
             icon.sprite = null;
             icon.enabled = false; // 빈 슬롯은 숨김
+
+            // 툴팁 트리거 제거
+            RemoveTooltipTrigger(icon);
         }
 
         /// <summary>
@@ -131,6 +156,23 @@ namespace InfinitePickaxe.Client.UI.Game
 
             icon.sprite = null;
             icon.enabled = false; // 잠긴 슬롯도 숨김
+
+            // 툴팁 트리거 제거
+            RemoveTooltipTrigger(icon);
+        }
+
+        /// <summary>
+        /// 아이콘에서 툴팁 트리거 제거
+        /// </summary>
+        private void RemoveTooltipTrigger(Image icon)
+        {
+            if (icon == null) return;
+
+            var existingTrigger = icon.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
+            }
         }
 
         /// <summary>

@@ -328,6 +328,9 @@ namespace InfinitePickaxe.Client.UI.Game
                 gemIcon.color = Color.white;
                 gemIcon.enabled = (sprite != null); // 스프라이트가 있을 때만 표시
                 gemIcon.gameObject.SetActive(sprite != null); // GameObject도 활성화
+
+                // 툴팁 트리거 추가
+                AddTooltipTrigger(gem);
             }
 
             // 젬 이름
@@ -358,6 +361,25 @@ namespace InfinitePickaxe.Client.UI.Game
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => OnEquippedGemClicked(gem));
             Debug.Log($"[GemSlotItemView] SetEquipped: 클릭 이벤트 등록 완료 - gem={gem.GemInstanceId}");
+        }
+
+        /// <summary>
+        /// 아이콘에 툴팁 트리거 추가
+        /// </summary>
+        private void AddTooltipTrigger(GemInfo gem)
+        {
+            if (gemIcon == null || gem == null) return;
+
+            // 기존 트리거 제거
+            var existingTrigger = gemIcon.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
+            }
+
+            // 새 트리거 추가
+            var trigger = gemIcon.gameObject.AddComponent<GemTooltipTrigger>();
+            trigger.SetGemInfo(gem);
         }
 
         private void SetEmpty()
@@ -403,6 +425,9 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 gemIcon.enabled = false;
                 gemIcon.gameObject.SetActive(false);
+
+                // 툴팁 트리거 제거
+                RemoveTooltipTrigger();
             }
 
             if (gemNameText != null)
@@ -432,6 +457,9 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 gemIcon.enabled = false;
                 gemIcon.gameObject.SetActive(false);
+
+                // 툴팁 트리거 제거
+                RemoveTooltipTrigger();
             }
 
             if (gemNameText != null)
@@ -444,6 +472,20 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 gemStatsText.enabled = false;
                 gemStatsText.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 아이콘에서 툴팁 트리거 제거
+        /// </summary>
+        private void RemoveTooltipTrigger()
+        {
+            if (gemIcon == null) return;
+
+            var existingTrigger = gemIcon.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
             }
         }
 

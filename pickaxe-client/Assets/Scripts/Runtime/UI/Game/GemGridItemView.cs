@@ -24,6 +24,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private int boundIndex;
         private Action<int> clickHandler;
         private bool hasData;
+        private Infinitepickaxe.GemInfo currentGemInfo;
 
         public void Bind(int index, Action<int> onClick)
         {
@@ -45,6 +46,8 @@ namespace InfinitePickaxe.Client.UI.Game
         public void SetEmpty()
         {
             hasData = false;
+            currentGemInfo = null;
+
             if (emptyState != null) emptyState.SetActive(true);
             if (filledState != null) filledState.SetActive(false);
 
@@ -54,6 +57,9 @@ namespace InfinitePickaxe.Client.UI.Game
             if (badgeText != null) badgeText.text = string.Empty;
 
             ApplyBackgroundColor(emptyColor);
+
+            // 툴팁 트리거 제거
+            RemoveTooltipTrigger();
         }
 
         public void SetData(string displayName, string tierLabel, Sprite icon)
@@ -72,6 +78,21 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             ApplyBackgroundColor(normalColor);
+
+            // currentGemInfo가 있으면 툴팁 트리거 추가
+            if (currentGemInfo != null)
+            {
+                AddTooltipTrigger();
+            }
+        }
+
+        /// <summary>
+        /// 보석 정보와 함께 데이터 설정 (툴팁 지원)
+        /// </summary>
+        public void SetData(string displayName, string tierLabel, Sprite icon, Infinitepickaxe.GemInfo gemInfo)
+        {
+            currentGemInfo = gemInfo;
+            SetData(displayName, tierLabel, icon);
         }
 
         public void SetSelectionRole(GemSelectionRole role)
@@ -111,6 +132,39 @@ namespace InfinitePickaxe.Client.UI.Game
             if (backgroundImage != null)
             {
                 backgroundImage.color = color;
+            }
+        }
+
+        /// <summary>
+        /// 아이콘에 툴팁 트리거 추가
+        /// </summary>
+        private void AddTooltipTrigger()
+        {
+            if (iconImage == null || currentGemInfo == null) return;
+
+            // 기존 트리거 제거
+            var existingTrigger = iconImage.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
+            }
+
+            // 새 트리거 추가
+            var trigger = iconImage.gameObject.AddComponent<GemTooltipTrigger>();
+            trigger.SetGemInfo(currentGemInfo);
+        }
+
+        /// <summary>
+        /// 아이콘에서 툴팁 트리거 제거
+        /// </summary>
+        private void RemoveTooltipTrigger()
+        {
+            if (iconImage == null) return;
+
+            var existingTrigger = iconImage.GetComponent<GemTooltipTrigger>();
+            if (existingTrigger != null)
+            {
+                Destroy(existingTrigger);
             }
         }
     }
