@@ -237,6 +237,18 @@ namespace InfinitePickaxe.Client.UI.Game
             gemEquipCloseButton?.onClick.AddListener(CloseGemEquipModal);
             gemEquipUnequipButton?.onClick.AddListener(OnGemUnequipButtonClicked);
 
+            var modalPanel = gemEquipModal != null ? gemEquipModal.transform.Find("ModalPanel") : null;
+            if (modalPanel != null)
+            {
+                var panelButton = modalPanel.GetComponent<Button>();
+                if (panelButton == null)
+                {
+                    panelButton = modalPanel.gameObject.AddComponent<Button>();
+                    panelButton.transition = Selectable.Transition.None;
+                }
+                panelButton.onClick.RemoveAllListeners();
+            }
+
             // 배경 클릭으로 닫기
             var backgroundButton = gemEquipModal.GetComponent<Button>();
             if (backgroundButton != null)
