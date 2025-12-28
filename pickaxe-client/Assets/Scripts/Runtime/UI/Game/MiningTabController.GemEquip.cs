@@ -649,9 +649,8 @@ namespace InfinitePickaxe.Client.UI.Game
             selectedPickaxeSlotIndex = pickaxeSlotIndex;
             selectedGemSlotIndex = gemSlotIndex;
 
-            // 해제 확인 모달 열기 (TODO: 전용 UI 구현 필요)
-            // 현재는 바로 해제 요청 전송
-            OpenGemUnequipConfirmModal();
+            // GemEquipModal을 열고 CurrentGemPanel 활성화
+            RequestGemList();
         }
 
         /// <summary>
@@ -1369,6 +1368,15 @@ namespace InfinitePickaxe.Client.UI.Game
 
             Debug.Log($"[MiningTabController] 보석 해제 완료: {result.UnequippedGem.Name}");
 
+            // GemEquipModal 닫기
+            CloseGemEquipModal();
+
+            // GemGridContent에서 해당 보석의 EquippedLabel 비활성화
+            if (result.UnequippedGem != null && !string.IsNullOrWhiteSpace(result.UnequippedGem.GemInstanceId))
+            {
+                UpdateGemInventoryItemEquippedLabel(result.UnequippedGem.GemInstanceId, false);
+            }
+
             // 곡괭이 정보 갱신 (PickaxeInfoModal이 열려있다면)
             RefreshPickaxeInfoGemSlots();
 
@@ -1705,6 +1713,32 @@ namespace InfinitePickaxe.Client.UI.Game
             CloseGemReequipConfirmModal();
             CloseGemActionListModal();
             CloseGemEquipModal();
+        }
+
+        /// <summary>
+        /// GemGridContent에서 특정 보석의 EquippedLabel 활성화/비활성화
+        /// </summary>
+        private void UpdateGemInventoryItemEquippedLabel(string gemInstanceId, bool isEquipped)
+        {
+            if (string.IsNullOrWhiteSpace(gemInstanceId)) return;
+
+            // gemInventoryItemPool에서 해당 보석 찾기
+            foreach (var itemView in gemInventoryItemPool)
+            {
+                if (itemView == null) continue;
+
+                // GemInventoryItemView의 내부 상태 확인 (public 프로퍼티나 메서드 필요)
+                // 현재는 private이므로 리플렉션이나 public 메서드 추가 필요
+                // 임시로 GemStateCache를 통해 갱신
+            }
+
+            // GemStateCache를 통해 전체 인벤토리 갱신
+            // 이미 GemStateCache.Instance.ApplyUnequipResult()가 호출되어 상태가 업데이트되었으므로
+            // UI만 갱신하면 됨
+            if (gemEquipModal != null && gemEquipModal.activeSelf)
+            {
+                UpdateGemGrid();
+            }
         }
     }
 

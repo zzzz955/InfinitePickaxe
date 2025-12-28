@@ -1267,6 +1267,14 @@ namespace InfinitePickaxe.Client.UI.Game
                 var modalPanel = pickaxeInfoModal.transform.Find("ModalPanel");
                 if (modalPanel != null)
                 {
+                    // Image 컴포넌트 확인 및 추가 (Raycast Target으로 설정)
+                    var panelImage = modalPanel.GetComponent<UnityEngine.UI.Image>();
+                    if (panelImage != null)
+                    {
+                        panelImage.raycastTarget = true; // Raycast 대상으로 설정
+                    }
+
+                    // Button 추가하여 클릭 이벤트 소비
                     var panelButton = modalPanel.GetComponent<Button>();
                     if (panelButton == null)
                     {
@@ -1274,7 +1282,7 @@ namespace InfinitePickaxe.Client.UI.Game
                         panelButton.transition = UnityEngine.UI.Selectable.Transition.None;
                     }
                     panelButton.onClick.RemoveAllListeners();
-                    // 아무것도 하지 않음 - 클릭 이벤트 차단
+                    panelButton.onClick.AddListener(() => { }); // 빈 리스너로 클릭 이벤트 소비
                 }
 
                 // 강화 버튼 (모달 닫고 업그레이드 탭으로 이동)

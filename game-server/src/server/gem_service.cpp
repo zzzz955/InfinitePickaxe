@@ -561,27 +561,18 @@ infinitepickaxe::GemUnequipResult GemService::handle_unequip(const std::string& 
         return result;
     }
 
-    // 보석 보너스 계산 (해제 후)
-    auto gem_bonus = calculate_pickaxe_stats_with_gems(slot.slot_id);
+    // 스탯 재계산 (메타데이터 기본 스탯 기준으로)
+    recalculate_slot_stats(user_id, pickaxe_slot_index);
 
-    // 기본 스탯 + 보석 보너스 적용 (퍼센트 곱셈)
-    PickaxeSlot updated_slot = slot;
-    // attack_speed: basis 10000, 보너스 1500 = 15% 증가 → final = base * (10000 + 1500) / 10000
-    updated_slot.attack_speed = static_cast<uint32_t>(
-        (static_cast<uint64_t>(slot.attack_speed) * (10000 + gem_bonus.attack_speed)) / 10000);
-    updated_slot.critical_hit_percent = slot.critical_hit_percent + gem_bonus.critical_hit_percent;
-    updated_slot.critical_damage = slot.critical_damage + gem_bonus.critical_damage;
+    // 갱신된 슬롯 정보 조회
+    auto updated_slot_opt = slot_repo_.get_slot(user_id, pickaxe_slot_index);
+    if (!updated_slot_opt.has_value()) {
+        result.set_success(false);
+        result.set_error_code("SLOT_NOT_FOUND_AFTER_UPDATE");
+        return result;
+    }
 
-    // DPS 재계산
-    updated_slot.dps = compute_expected_dps(updated_slot.attack_power, updated_slot.attack_speed,
-                                            updated_slot.critical_hit_percent, updated_slot.critical_damage);
-
-    // DB 업데이트
-    slot_repo_.update_slot(user_id, pickaxe_slot_index,
-                          updated_slot.level, updated_slot.tier,
-                          updated_slot.attack_power, updated_slot.attack_speed,
-                          updated_slot.critical_hit_percent, updated_slot.critical_damage,
-                          updated_slot.dps, updated_slot.pity_bonus);
+    const auto& updated_slot = updated_slot_opt.value();
 
     // 해제된 gem 정보
     if (unequipped_gem.has_value()) {

@@ -327,12 +327,14 @@ namespace InfinitePickaxe.Client.UI.Game
                 gemIcon.sprite = sprite;
                 gemIcon.color = Color.white;
                 gemIcon.enabled = (sprite != null); // 스프라이트가 있을 때만 표시
+                gemIcon.gameObject.SetActive(sprite != null); // GameObject도 활성화
             }
 
             // 젬 이름
             if (gemNameText != null)
             {
                 gemNameText.enabled = true; // 텍스트 활성화
+                gemNameText.gameObject.SetActive(true); // GameObject도 활성화
                 gemNameText.text = GetGemDisplayName(gem);
                 gemNameText.color = GetGemGradeColor((uint)gem.Grade);
             }
@@ -341,6 +343,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (gemStatsText != null)
             {
                 gemStatsText.enabled = true; // 텍스트 활성화
+                gemStatsText.gameObject.SetActive(true); // GameObject도 활성화
                 gemStatsText.text = GetGemStatsText(gem);
             }
 
@@ -399,16 +402,19 @@ namespace InfinitePickaxe.Client.UI.Game
             if (gemIcon != null)
             {
                 gemIcon.enabled = false;
+                gemIcon.gameObject.SetActive(false);
             }
 
             if (gemNameText != null)
             {
                 gemNameText.enabled = false;
+                gemNameText.gameObject.SetActive(false);
             }
 
             if (gemStatsText != null)
             {
                 gemStatsText.enabled = false;
+                gemStatsText.gameObject.SetActive(false);
             }
 
             Debug.Log($"[GemSlotItemView] SetEmpty() 완료");
@@ -425,16 +431,19 @@ namespace InfinitePickaxe.Client.UI.Game
             if (gemIcon != null)
             {
                 gemIcon.enabled = false;
+                gemIcon.gameObject.SetActive(false);
             }
 
             if (gemNameText != null)
             {
                 gemNameText.enabled = false;
+                gemNameText.gameObject.SetActive(false);
             }
 
             if (gemStatsText != null)
             {
                 gemStatsText.enabled = false;
+                gemStatsText.gameObject.SetActive(false);
             }
         }
 
@@ -557,16 +566,42 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
-        /// 젬 표시 이름 가져오기 (TODO: GemMetaResolver 연동)
+        /// 젬 표시 이름 가져오기 (메타데이터 기반)
         /// </summary>
         private string GetGemDisplayName(GemInfo gem)
         {
             if (gem == null) return "알 수 없음";
 
-            // TODO: GemMetaResolver.Instance.TryGetDefinition(gem.GemId, out var meta)
-            // return meta?.Name ?? $"보석 #{gem.GemId}";
+            // gem_id에 따른 이름 매핑 (gem_definitions.json 기반)
+            return gem.GemId switch
+            {
+                // 일반 (grade_id: 0)
+                0 => "일반 공격 속도 보석",
+                1 => "일반 크리티컬 확률 보석",
+                2 => "일반 크리티컬 데미지 보석",
 
-            return $"보석 #{gem.GemId}";
+                // 고급 (grade_id: 1)
+                100 => "고급 공격 속도 보석",
+                101 => "고급 크리티컬 확률 보석",
+                102 => "고급 크리티컬 데미지 보석",
+
+                // 희귀 (grade_id: 2)
+                200 => "희귀 공격 속도 보석",
+                201 => "희귀 크리티컬 확률 보석",
+                202 => "희귀 크리티컬 데미지 보석",
+
+                // 영웅 (grade_id: 3)
+                300 => "영웅 공격 속도 보석",
+                301 => "영웅 크리티컬 확률 보석",
+                302 => "영웅 크리티컬 데미지 보석",
+
+                // 전설 (grade_id: 4)
+                400 => "전설 공격 속도 보석",
+                401 => "전설 크리티컬 확률 보석",
+                402 => "전설 크리티컬 데미지 보석",
+
+                _ => $"보석 #{gem.GemId}"
+            };
         }
 
         /// <summary>

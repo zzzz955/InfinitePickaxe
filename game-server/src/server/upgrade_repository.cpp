@@ -139,8 +139,11 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
             // attack_speed: 퍼센트 곱셈 (base * (10000 + bonus) / 10000)
             uint32_t final_attack_speed = static_cast<uint32_t>(
                 (static_cast<uint64_t>(target_attack_speed) * (10000 + attack_speed_bonus)) / 10000);
-            uint32_t final_critical_hit_percent = critical_hit_percent + crit_rate_bonus;
-            uint32_t final_critical_damage = critical_damage + crit_damage_bonus;
+            // 크리티컬 스탯: 기본값(500, 15000) + 보석 보너스
+            constexpr uint32_t DEFAULT_CRITICAL_HIT_PERCENT = 500;    // 5% (basis 10000)
+            constexpr uint32_t DEFAULT_CRITICAL_DAMAGE = 15000;       // 150% (basis 10000)
+            uint32_t final_critical_hit_percent = DEFAULT_CRITICAL_HIT_PERCENT + crit_rate_bonus;
+            uint32_t final_critical_damage = DEFAULT_CRITICAL_DAMAGE + crit_damage_bonus;
 
             // DPS 재계산 (보석 효과 적용된 스탯 사용)
             double attack_speed_value = static_cast<double>(final_attack_speed) / 10000.0;
