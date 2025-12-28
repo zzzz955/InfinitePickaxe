@@ -432,6 +432,60 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
+        /// 장착된 보석 클릭 시 호출 (PickaxeInfoModal에서)
+        /// </summary>
+        public void OnEquippedGemClicked(uint pickaxeSlotIndex, uint gemSlotIndex, GemInfo gem)
+        {
+            Debug.Log($"[MiningTabController] OnEquippedGemClicked: pickaxe={pickaxeSlotIndex}, gemSlot={gemSlotIndex}, gem={gem.GemInstanceId}");
+
+            selectedGem = gem;
+            selectedPickaxeSlotIndex = pickaxeSlotIndex;
+            selectedGemSlotIndex = gemSlotIndex;
+
+            // 해제 확인 모달 열기 (TODO: 전용 UI 구현 필요)
+            // 현재는 바로 해제 요청 전송
+            OpenGemUnequipConfirmModal();
+        }
+
+        /// <summary>
+        /// 보석 해제 확인 모달 열기
+        /// </summary>
+        private void OpenGemUnequipConfirmModal()
+        {
+            if (selectedGem == null) return;
+
+            // TODO: 전용 해제 확인 UI 구현 필요
+            // 임시로 바로 해제 요청 전송 (추후 확인 모달 추가)
+            Debug.Log($"[MiningTabController] 보석 해제 요청: {selectedGem.Name}");
+            RequestGemUnequip();
+        }
+
+        /// <summary>
+        /// 보석 해제 요청
+        /// </summary>
+        private void RequestGemUnequip()
+        {
+            if (selectedGem == null) return;
+
+            var request = new GemUnequipRequest
+            {
+                PickaxeSlotIndex = selectedPickaxeSlotIndex,
+                GemSlotIndex = selectedGemSlotIndex
+            };
+
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemUnequipRequest,
+                GemUnequipRequest = request
+            };
+
+            NetworkManager.Instance.SendMessage(envelope);
+            Debug.Log($"[MiningTabController] GemUnequipRequest 전송: pickaxe={selectedPickaxeSlotIndex}, gemSlot={selectedGemSlotIndex}");
+
+            // 서버 응답 후 UI는 OnGemUnequipResult에서 자동 갱신됨
+        }
+
+        /// <summary>
         /// 보석 목록 요청
         /// </summary>
         private void RequestGemList()
@@ -982,6 +1036,32 @@ namespace InfinitePickaxe.Client.UI.Game
                 GemGrade.Legendary => 500,
                 _ => 0
             };
+        }
+
+        /// <summary>
+        /// 보석 해제 결과 처리
+        /// </summary>
+        public void OnGemUnequipResult(GemUnequipResult result)
+        {
+            if (!result.Success)
+            {
+                string errorMessage = result.ErrorCode switch
+                {
+                    "SLOT_NOT_FOUND" => "슬롯을 찾을 수 없습니다.",
+                    "NO_GEM_EQUIPPED" => "장착된 보석이 없습니다.",
+                    _ => $"해제 실패: {result.ErrorCode}"
+                };
+                Debug.LogError($"[MiningTabController] {errorMessage}");
+                return;
+            }
+
+            Debug.Log($"[MiningTabController] 보석 해제 완료: {result.UnequippedGem.Name}");
+
+            // 곡괭이 정보 갱신 (PickaxeInfoModal이 열려있다면)
+            RefreshPickaxeInfoGemSlots();
+
+            // 선택 초기화
+            selectedGem = null;
         }
     }
 

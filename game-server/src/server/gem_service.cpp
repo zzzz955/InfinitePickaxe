@@ -9,6 +9,10 @@ namespace {
 std::random_device rd;
 std::mt19937 gen(rd());
 
+// 크리티컬 스탯 기본 값 (database/game_schema/schema.sql의 DEFAULT 값)
+constexpr uint32_t DEFAULT_CRITICAL_HIT_PERCENT = 500;    // 5% (basis 10000)
+constexpr uint32_t DEFAULT_CRITICAL_DAMAGE = 15000;       // 150% (basis 10000)
+
 // DPS 계산 (slot_service.cpp와 동일)
 uint64_t compute_expected_dps(uint64_t attack_power, uint32_t attack_speed,
                               uint32_t crit_percent, uint32_t crit_damage) {
@@ -437,7 +441,38 @@ infinitepickaxe::GemEquipResult GemService::handle_equip(const std::string& user
 
     const auto& slot = slot_opt.value();
 
-    // Repository 호출
+    // 보석이 이미 다른 슬롯에 장착되어 있는지 확인
+    auto equipped_loc = gem_repo_.find_equipped_location(gem_instance_id);
+    std::optional<uint32_t> previous_pickaxe_slot_index;
+
+    if (equipped_loc.has_value()) {
+        const auto& loc = equipped_loc.value();
+
+        // 이미 같은 슬롯에 장착되어 있다면 중복 작업 방지
+        if (loc.pickaxe_slot_id == slot.slot_id && loc.gem_slot_index == gem_slot_index) {
+            spdlog::warn("handle_equip: gem already equipped at same location user={} gem={}",
+                        user_id, gem_instance_id);
+            result.set_success(false);
+            result.set_error_code("ALREADY_EQUIPPED");
+            return result;
+        }
+
+        // 다른 슬롯에 장착되어 있다면 먼저 해제
+        bool unequip_success = gem_repo_.unequip_gem(loc.pickaxe_slot_id, loc.gem_slot_index);
+        if (!unequip_success) {
+            result.set_success(false);
+            result.set_error_code("UNEQUIP_FAILED");
+            return result;
+        }
+
+        // 이전 슬롯 재계산 필요 (나중에 처리)
+        previous_pickaxe_slot_index = loc.pickaxe_slot_index;
+
+        spdlog::debug("handle_equip: auto-unequipped from pickaxe={} gem_slot={}",
+                     loc.pickaxe_slot_index, loc.gem_slot_index);
+    }
+
+    // 새로운 슬롯에 장착
     bool equip_success = gem_repo_.equip_gem(slot.slot_id, gem_slot_index, gem_instance_id);
     if (!equip_success) {
         result.set_success(false);
@@ -445,27 +480,24 @@ infinitepickaxe::GemEquipResult GemService::handle_equip(const std::string& user
         return result;
     }
 
-    // 보석 보너스 계산
-    auto gem_bonus = calculate_pickaxe_stats_with_gems(slot.slot_id);
+    // 이전 슬롯 스탯 재계산 (보석이 제거되었으므로)
+    if (previous_pickaxe_slot_index.has_value()) {
+        recalculate_slot_stats(user_id, previous_pickaxe_slot_index.value());
+        spdlog::debug("handle_equip: recalculated previous slot={}", previous_pickaxe_slot_index.value());
+    }
 
-    // 기본 스탯 + 보석 보너스 적용 (퍼센트 곱셈)
-    PickaxeSlot updated_slot = slot;
-    // attack_speed: basis 10000, 보너스 1500 = 15% 증가 → final = base * (10000 + 1500) / 10000
-    updated_slot.attack_speed = static_cast<uint32_t>(
-        (static_cast<uint64_t>(slot.attack_speed) * (10000 + gem_bonus.attack_speed)) / 10000);
-    updated_slot.critical_hit_percent = slot.critical_hit_percent + gem_bonus.critical_hit_percent;
-    updated_slot.critical_damage = slot.critical_damage + gem_bonus.critical_damage;
+    // 새로운 슬롯 스탯 재계산 (보석이 추가되었으므로)
+    recalculate_slot_stats(user_id, pickaxe_slot_index);
 
-    // DPS 재계산
-    updated_slot.dps = compute_expected_dps(updated_slot.attack_power, updated_slot.attack_speed,
-                                            updated_slot.critical_hit_percent, updated_slot.critical_damage);
+    // 갱신된 슬롯 정보 조회
+    auto updated_slot_opt = slot_repo_.get_slot(user_id, pickaxe_slot_index);
+    if (!updated_slot_opt.has_value()) {
+        result.set_success(false);
+        result.set_error_code("SLOT_NOT_FOUND_AFTER_UPDATE");
+        return result;
+    }
 
-    // DB 업데이트
-    slot_repo_.update_slot(user_id, pickaxe_slot_index,
-                          updated_slot.level, updated_slot.tier,
-                          updated_slot.attack_power, updated_slot.attack_speed,
-                          updated_slot.critical_hit_percent, updated_slot.critical_damage,
-                          updated_slot.dps, updated_slot.pity_bonus);
+    const auto& updated_slot = updated_slot_opt.value();
 
     // 장착된 gem 정보 조회
     auto equipped_gem = gem_repo_.get_gem_by_instance_id(gem_instance_id);
@@ -490,8 +522,9 @@ infinitepickaxe::GemEquipResult GemService::handle_equip(const std::string& user
     result.set_gem_slot_index(gem_slot_index);
     result.set_new_total_dps(total_dps);
 
-    spdlog::info("handle_equip: user={} pickaxe_slot={} gem_slot={} gem={}",
-                 user_id, pickaxe_slot_index, gem_slot_index, gem_instance_id);
+    spdlog::info("handle_equip: user={} pickaxe_slot={} gem_slot={} gem={} prev_slot={}",
+                 user_id, pickaxe_slot_index, gem_slot_index, gem_instance_id,
+                 previous_pickaxe_slot_index.value_or(999));
     return result;
 }
 
@@ -575,6 +608,87 @@ infinitepickaxe::GemUnequipResult GemService::handle_unequip(const std::string& 
     spdlog::info("handle_unequip: user={} pickaxe_slot={} gem_slot={}",
                  user_id, pickaxe_slot_index, gem_slot_index);
     return result;
+}
+
+bool GemService::recalculate_slot_stats(const std::string& user_id, uint32_t pickaxe_slot_index) {
+    // 슬롯 정보 조회
+    auto slot_opt = slot_repo_.get_slot(user_id, pickaxe_slot_index);
+    if (!slot_opt.has_value()) {
+        spdlog::error("recalculate_slot_stats: slot not found user={} slot_index={}",
+                     user_id, pickaxe_slot_index);
+        return false;
+    }
+
+    const auto& slot = slot_opt.value();
+
+    // 메타데이터에서 기본 스탯 조회
+    const auto* pl = meta_.pickaxe_level(slot.level);
+    if (!pl) {
+        spdlog::error("recalculate_slot_stats: pickaxe level metadata not found level={}",
+                     slot.level);
+        return false;
+    }
+
+    uint32_t base_attack_speed = pl->attack_speed;  // 기본 공격속도
+
+    // 보석 보너스 계산
+    auto gem_slots = gem_repo_.get_gem_slots_for_pickaxe(slot.slot_id);
+    uint32_t attack_speed_bonus = 0;    // basis 10000
+    uint32_t crit_rate_bonus = 0;       // basis 10000
+    uint32_t crit_damage_bonus = 0;     // basis 10000
+
+    for (const auto& gem_slot : gem_slots) {
+        if (!gem_slot.equipped_gem.has_value()) {
+            continue;
+        }
+
+        const auto& gem = gem_slot.equipped_gem.value();
+        const auto* gem_def = meta_.gem_definition(gem.gem_id);
+        if (!gem_def) {
+            continue;
+        }
+
+        const auto* type = meta_.gem_type(gem_def->type_id);
+        if (!type) {
+            continue;
+        }
+
+        uint32_t multiplier = gem_def->stat_multiplier;  // basis 10000
+
+        if (type->type == "ATTACK_SPEED") {
+            attack_speed_bonus += multiplier;
+        } else if (type->type == "CRIT_RATE") {
+            crit_rate_bonus += multiplier;
+        } else if (type->type == "CRIT_DMG") {
+            crit_damage_bonus += multiplier;
+        }
+    }
+
+    // 기본 스탯 + 보석 보너스 적용
+    uint32_t final_attack_speed = static_cast<uint32_t>(
+        (static_cast<uint64_t>(base_attack_speed) * (10000 + attack_speed_bonus)) / 10000);
+    uint32_t final_critical_hit_percent = DEFAULT_CRITICAL_HIT_PERCENT + crit_rate_bonus;
+    uint32_t final_critical_damage = DEFAULT_CRITICAL_DAMAGE + crit_damage_bonus;
+
+    // DPS 재계산
+    uint64_t final_dps = compute_expected_dps(slot.attack_power, final_attack_speed,
+                                              final_critical_hit_percent, final_critical_damage);
+
+    // DB 업데이트
+    slot_repo_.update_slot(user_id, pickaxe_slot_index,
+                          slot.level, slot.tier,
+                          slot.attack_power, final_attack_speed,
+                          final_critical_hit_percent, final_critical_damage,
+                          final_dps, slot.pity_bonus);
+
+    spdlog::debug("recalculate_slot_stats: user={} slot={} as={} (base={} +{}%) crit={}% (+{}%) critdmg={}% (+{}%) dps={}",
+                 user_id, pickaxe_slot_index,
+                 final_attack_speed, base_attack_speed, attack_speed_bonus,
+                 final_critical_hit_percent / 100.0, crit_rate_bonus / 100.0,
+                 final_critical_damage / 100.0, crit_damage_bonus / 100.0,
+                 final_dps);
+
+    return true;
 }
 
 infinitepickaxe::GemSlotUnlockResult GemService::handle_slot_unlock(const std::string& user_id,

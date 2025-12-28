@@ -324,6 +324,7 @@ namespace InfinitePickaxe.Client.UI.Game
             // 보석 관련 이벤트
             messageHandler.OnGemListResponse += OnGemListResponse;
             messageHandler.OnGemEquipResult += OnGemEquipResult;
+            messageHandler.OnGemUnequipResult += OnGemUnequipResult;
             messageHandler.OnGemDiscardResult += OnGemDiscardResult;
             messageHandler.OnGemInventoryExpandResult += OnGemInventoryExpandResult;
 
@@ -346,6 +347,7 @@ namespace InfinitePickaxe.Client.UI.Game
             // 보석 관련 이벤트
             messageHandler.OnGemListResponse -= OnGemListResponse;
             messageHandler.OnGemEquipResult -= OnGemEquipResult;
+            messageHandler.OnGemUnequipResult -= OnGemUnequipResult;
             messageHandler.OnGemDiscardResult -= OnGemDiscardResult;
             messageHandler.OnGemInventoryExpandResult -= OnGemInventoryExpandResult;
 

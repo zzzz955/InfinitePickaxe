@@ -64,6 +64,9 @@ private:
     // 보석 장착/해제 시 곡괭이 스탯 보너스 계산
     PickaxeSlot calculate_pickaxe_stats_with_gems(const std::string& pickaxe_slot_id);
 
+    // 슬롯의 스탯을 보석 보너스 포함하여 재계산 및 DB 업데이트
+    bool recalculate_slot_stats(const std::string& user_id, uint32_t pickaxe_slot_index);
+
     // PickaxeSlot → PickaxeSlotInfo protobuf 변환 (gem_slots 포함)
     void populate_pickaxe_slot_info(const PickaxeSlot& slot, infinitepickaxe::PickaxeSlotInfo* slot_info);
 };

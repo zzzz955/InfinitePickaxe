@@ -66,6 +66,14 @@ struct InventoryExpandResult {
     uint32_t remaining_crystal{0};
 };
 
+// 보석이 장착된 위치 정보
+struct EquippedLocation {
+    std::string pickaxe_slot_id;   // 곡괭이 슬롯 ID (UUID)
+    uint32_t gem_slot_index;       // 보석 슬롯 인덱스 (0-5)
+    std::string user_id;           // 사용자 ID (UUID)
+    uint32_t pickaxe_slot_index;   // 곡괭이 슬롯 인덱스 (0-3)
+};
+
 class GemRepository {
 public:
     explicit GemRepository(ConnectionPool& pool) : pool_(pool) {}
@@ -84,6 +92,7 @@ public:
     bool equip_gem(const std::string& pickaxe_slot_id, uint32_t gem_slot_index,
                    const std::string& gem_instance_id);
     bool unequip_gem(const std::string& pickaxe_slot_id, uint32_t gem_slot_index);
+    std::optional<EquippedLocation> find_equipped_location(const std::string& gem_instance_id);
 
     // 트랜잭션
     GachaResult gacha_pull(const std::string& user_id, uint32_t crystal_cost,

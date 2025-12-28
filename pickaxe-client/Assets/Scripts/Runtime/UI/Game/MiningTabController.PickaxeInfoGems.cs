@@ -343,6 +343,18 @@ namespace InfinitePickaxe.Client.UI.Game
                 gemStatsText.enabled = true; // 텍스트 활성화
                 gemStatsText.text = GetGemStatsText(gem);
             }
+
+            // 장착된 보석 클릭 이벤트 등록 (해제 기능)
+            var button = gameObject.GetComponent<Button>();
+            if (button == null)
+            {
+                button = gameObject.AddComponent<Button>();
+                Debug.Log($"[GemSlotItemView] SetEquipped: Button 추가");
+            }
+
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() => OnEquippedGemClicked(gem));
+            Debug.Log($"[GemSlotItemView] SetEquipped: 클릭 이벤트 등록 완료 - gem={gem.GemInstanceId}");
         }
 
         private void SetEmpty()
@@ -525,6 +537,23 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // 보석 장착 모달 열기
             controller.OnUnlockedGemSlotClicked(pickaxeSlotIndex, gemSlotIndex);
+        }
+
+        /// <summary>
+        /// 장착된 보석 클릭 시 호출 (해제 기능)
+        /// </summary>
+        private void OnEquippedGemClicked(GemInfo gem)
+        {
+            Debug.Log($"[GemSlotItemView] OnEquippedGemClicked 호출: pickaxe={pickaxeSlotIndex}, gem={gemSlotIndex}, gemInstance={gem.GemInstanceId}");
+
+            if (controller == null)
+            {
+                Debug.LogWarning("[GemSlotItemView] Controller 참조가 null입니다");
+                return;
+            }
+
+            // 보석 해제 모달 열기
+            controller.OnEquippedGemClicked(pickaxeSlotIndex, gemSlotIndex, gem);
         }
 
         /// <summary>

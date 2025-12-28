@@ -214,6 +214,36 @@ bool GemRepository::unequip_gem(const std::string& pickaxe_slot_id, uint32_t gem
     }
 }
 
+std::optional<EquippedLocation> GemRepository::find_equipped_location(const std::string& gem_instance_id) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        auto result = tx.exec_params(
+            "SELECT peg.pickaxe_slot_id, peg.gem_slot_index, ps.user_id, ps.slot_index "
+            "FROM game_schema.pickaxe_equipped_gems peg "
+            "JOIN game_schema.pickaxe_slots ps ON peg.pickaxe_slot_id = ps.slot_id "
+            "WHERE peg.gem_instance_id = $1::uuid",
+            gem_instance_id);
+
+        if (result.empty()) {
+            return std::nullopt;
+        }
+
+        EquippedLocation loc;
+        loc.pickaxe_slot_id = result[0][0].as<std::string>();
+        loc.gem_slot_index = result[0][1].as<uint32_t>();
+        loc.user_id = result[0][2].as<std::string>();
+        loc.pickaxe_slot_index = result[0][3].as<uint32_t>();
+
+        tx.commit();
+        return loc;
+    } catch (const std::exception& ex) {
+        spdlog::error("find_equipped_location failed: {}", ex.what());
+        return std::nullopt;
+    }
+}
+
 GachaResult GemRepository::gacha_pull(const std::string& user_id, uint32_t crystal_cost,
                                        const std::vector<uint32_t>& gem_ids) {
     GachaResult result;
