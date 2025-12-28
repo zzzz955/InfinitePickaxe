@@ -34,8 +34,6 @@
 | last_refreshed_at | TIMESTAMP | DEFAULT now                     |                                |
 | expires_at        | TIMESTAMP | NOT NULL                        |                                |
 | revoked_at        | TIMESTAMP |                                 |                                |
-| refresh_count     | INTEGER   | DEFAULT 0                       |                                |
-| max_refresh_count | INTEGER   | DEFAULT 100, CHECK              |                                |
 
 ## jwt_tokens
 | column     | type      | constraint/default              | note          |

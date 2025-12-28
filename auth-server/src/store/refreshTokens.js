@@ -3,7 +3,6 @@ import { pool } from '../db/index.js';
 
 const REFRESH_TTL_DAYS = 30;           // token-level sliding window
 const FAMILY_MAX_DAYS = 90;            // hard cap from initial family creation
-const MAX_REFRESH_COUNT = 200;
 
 export async function rotateRefreshToken({ userId, deviceId, familyId = null }) {
   const client = await pool.connect();
@@ -20,7 +19,10 @@ export async function rotateRefreshToken({ userId, deviceId, familyId = null }) 
       const { rows } = await client.query(
         `SELECT family_id, expires_at
          FROM auth_schema.jwt_families
-         WHERE family_id = $1 AND user_id = $2 AND expires_at > NOW()`,
+         WHERE family_id = $1 AND user_id = $2
+           AND is_active = TRUE
+           AND is_revoked = FALSE
+           AND expires_at > NOW()`,
         [familyId, userId]
       );
       familyRow = rows[0] || null;
@@ -31,6 +33,8 @@ export async function rotateRefreshToken({ userId, deviceId, familyId = null }) 
         `SELECT family_id, expires_at
          FROM auth_schema.jwt_families
          WHERE user_id = $1
+           AND is_active = TRUE
+           AND is_revoked = FALSE
            AND expires_at > NOW()
          ORDER BY (CASE WHEN device_id IS NOT NULL AND device_id = $2 THEN 1 ELSE 0 END) DESC,
                   COALESCE(last_refreshed_at, created_at, NOW()) DESC
@@ -42,11 +46,29 @@ export async function rotateRefreshToken({ userId, deviceId, familyId = null }) 
 
     // 2) 없으면 새 family 생성
     if (!familyRow) {
+      if (familyId) {
+        const error = new Error('FAMILY_EXPIRED');
+        error.code = 'FAMILY_EXPIRED';
+        throw error;
+      }
+
+      await client.query(
+        `UPDATE auth_schema.jwt_families
+         SET is_active = FALSE,
+             is_revoked = TRUE,
+             revoked_reason = 'EXPIRED',
+             revoked_at = NOW()
+         WHERE user_id = $1
+           AND is_active = TRUE
+           AND expires_at <= NOW();`,
+        [userId]
+      );
+
       const famRes = await client.query(
-        `INSERT INTO auth_schema.jwt_families (user_id, device_id, expires_at, max_refresh_count)
-         VALUES ($1, $2, NOW() + INTERVAL '${FAMILY_MAX_DAYS} days', $3)
-         RETURNING family_id, expires_at, refresh_count, max_refresh_count;`,
-        [userId, deviceId || null, MAX_REFRESH_COUNT]
+        `INSERT INTO auth_schema.jwt_families (user_id, device_id, expires_at)
+         VALUES ($1, $2, NOW() + INTERVAL '${FAMILY_MAX_DAYS} days')
+         RETURNING family_id, expires_at;`,
+        [userId, deviceId || null]
       );
       familyRow = famRes.rows[0];
     }
@@ -76,11 +98,12 @@ export async function rotateRefreshToken({ userId, deviceId, familyId = null }) 
 
     await client.query(
       `UPDATE auth_schema.jwt_families
-       SET refresh_count = refresh_count + 1,
-           last_refreshed_at = NOW(),
+       SET last_refreshed_at = NOW(),
            device_id = $2,
            expires_at = LEAST(expires_at, NOW() + INTERVAL '${FAMILY_MAX_DAYS} days')
-       WHERE family_id = $1;`,
+       WHERE family_id = $1
+         AND is_active = TRUE
+         AND is_revoked = FALSE;`,
       [useFamilyId, deviceId]
     );
 
@@ -100,7 +123,9 @@ export async function verifyRefreshToken({ token, deviceId }) {
   const client = await pool.connect();
   try {
     const { rows } = await client.query(
-      `SELECT t.token_id, t.family_id, t.user_id, t.expires_at, t.is_valid, f.device_id, u.external_id, u.provider
+      `SELECT t.token_id, t.family_id, t.user_id, t.expires_at, t.is_valid,
+              f.device_id, f.is_active, f.is_revoked, f.expires_at AS family_expires_at,
+              u.external_id, u.provider
        FROM auth_schema.jwt_tokens t
        JOIN auth_schema.jwt_families f ON f.family_id = t.family_id
        JOIN auth_schema.users u ON u.user_id = t.user_id
@@ -112,6 +137,12 @@ export async function verifyRefreshToken({ token, deviceId }) {
     }
 
     const row = rows[0];
+    if (!row.is_active || row.is_revoked) {
+      return { valid: false, error: 'FAMILY_REVOKED' };
+    }
+    if (new Date(row.family_expires_at) < now) {
+      return { valid: false, error: 'FAMILY_EXPIRED' };
+    }
     if (new Date(row.expires_at) < now) {
       return { valid: false, error: 'REFRESH_EXPIRED' };
     }

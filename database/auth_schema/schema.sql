@@ -34,10 +34,7 @@ CREATE TABLE IF NOT EXISTS auth_schema.jwt_families (
     created_at         TIMESTAMP NOT NULL DEFAULT NOW(),
     last_refreshed_at  TIMESTAMP NOT NULL DEFAULT NOW(),
     expires_at         TIMESTAMP NOT NULL,
-    revoked_at         TIMESTAMP,
-    refresh_count      INTEGER NOT NULL DEFAULT 0,
-    max_refresh_count  INTEGER NOT NULL DEFAULT 100,
-    CONSTRAINT chk_refresh_limit CHECK (refresh_count <= max_refresh_count)
+    revoked_at         TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_jwt_families_user ON auth_schema.jwt_families(user_id);
 CREATE INDEX IF NOT EXISTS idx_jwt_families_active ON auth_schema.jwt_families(user_id, is_active) WHERE is_active = TRUE;
