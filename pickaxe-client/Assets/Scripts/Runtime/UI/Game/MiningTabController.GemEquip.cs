@@ -1851,9 +1851,6 @@ namespace InfinitePickaxe.Client.UI.Game
                 gemIcon.sprite = sprite;
                 gemIcon.enabled = (sprite != null);
                 gemIcon.gameObject.SetActive(sprite != null);
-
-                // 툴팁 트리거 추가
-                AddTooltipTrigger(gem);
             }
 
             if (emptyState != null)
@@ -1867,25 +1864,6 @@ namespace InfinitePickaxe.Client.UI.Game
                 bool isEquipped = InfinitePickaxe.Client.Core.GemStateCache.Instance.IsEquipped(gem.GemInstanceId);
                 equippedLabel.gameObject.SetActive(isEquipped);
             }
-        }
-
-        /// <summary>
-        /// 아이콘에 툴팁 트리거 추가
-        /// </summary>
-        private void AddTooltipTrigger(GemInfo gem)
-        {
-            if (gemIcon == null || gem == null) return;
-
-            // 기존 트리거 제거
-            var existingTrigger = gemIcon.GetComponent<GemTooltipTrigger>();
-            if (existingTrigger != null)
-            {
-                Destroy(existingTrigger);
-            }
-
-            // 새 트리거 추가
-            var trigger = gemIcon.gameObject.AddComponent<GemTooltipTrigger>();
-            trigger.SetGemInfo(gem);
         }
 
         /// <summary>
@@ -1904,9 +1882,6 @@ namespace InfinitePickaxe.Client.UI.Game
             if (gemIcon != null)
             {
                 gemIcon.gameObject.SetActive(false);
-
-                // 툴팁 트리거 제거
-                RemoveTooltipTrigger();
             }
 
             if (emptyState != null)
@@ -1918,20 +1893,6 @@ namespace InfinitePickaxe.Client.UI.Game
             if (equippedLabel != null)
             {
                 equippedLabel.gameObject.SetActive(false);
-            }
-        }
-
-        /// <summary>
-        /// 아이콘에서 툴팁 트리거 제거
-        /// </summary>
-        private void RemoveTooltipTrigger()
-        {
-            if (gemIcon == null) return;
-
-            var existingTrigger = gemIcon.GetComponent<GemTooltipTrigger>();
-            if (existingTrigger != null)
-            {
-                Destroy(existingTrigger);
             }
         }
 
