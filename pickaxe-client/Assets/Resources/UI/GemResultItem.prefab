@@ -125,8 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3f263d6e31861c44a58093111214955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gradeBorder: {fileID: 0}
-  gemIcon: {fileID: 0}
+  gradeBorder: {fileID: 115373128213879867}
+  gemIcon: {fileID: 8167606323842473733}
   commonColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   rareColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   epicColor: {r: 0.6, g: 0.2, b: 1, a: 1}

@@ -549,11 +549,11 @@ namespace InfinitePickaxe.Client.UI.Game
             // 임시: 등급별 색상
             return gradeId switch
             {
-                1 => new Color(0.7f, 0.7f, 0.7f), // 일반 (회색)
-                2 => new Color(0.3f, 0.9f, 0.3f), // 고급 (초록)
-                3 => new Color(0.3f, 0.6f, 1.0f), // 희귀 (파랑)
-                4 => new Color(0.8f, 0.3f, 0.9f), // 영웅 (보라)
-                5 => new Color(1.0f, 0.6f, 0.2f), // 전설 (주황)
+                1 => Color.white, // 일반 (흰색)
+                2 => new Color(0.3f, 0.9f, 0.3f), // 고급 (연두색)
+                3 => new Color(0.3f, 0.6f, 1.0f), // 희귀 (파란색)
+                4 => new Color(0.8f, 0.3f, 0.9f), // 영웅 (보라색)
+                5 => new Color(1.0f, 1.0f, 0.2f), // 전설 (노란색)
                 _ => Color.white
             };
         }

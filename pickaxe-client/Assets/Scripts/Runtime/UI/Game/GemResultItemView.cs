@@ -16,11 +16,11 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Image gemIcon;
 
         [Header("Grade Colors")]
-        [SerializeField] private Color commonColor = new Color(0.6f, 0.6f, 0.6f);
-        [SerializeField] private Color rareColor = new Color(0.2f, 0.5f, 1f);
-        [SerializeField] private Color epicColor = new Color(0.6f, 0.2f, 1f);
-        [SerializeField] private Color heroColor = new Color(1f, 0.7f, 0f);
-        [SerializeField] private Color legendaryColor = new Color(1f, 0.3f, 0f);
+        [SerializeField] private Color commonColor = Color.white; // 일반 (흰색)
+        [SerializeField] private Color rareColor = new Color(0.3f, 0.9f, 0.3f); // 고급 (연두색)
+        [SerializeField] private Color epicColor = new Color(0.3f, 0.6f, 1.0f); // 희귀 (파란색)
+        [SerializeField] private Color heroColor = new Color(0.8f, 0.3f, 0.9f); // 영웅 (보라색)
+        [SerializeField] private Color legendaryColor = new Color(1.0f, 1.0f, 0.2f); // 전설 (노란색)
 
         /// <summary>
         /// 보석 데이터 설정
