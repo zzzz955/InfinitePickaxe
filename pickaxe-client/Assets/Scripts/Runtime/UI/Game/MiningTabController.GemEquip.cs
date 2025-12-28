@@ -19,6 +19,10 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Transform gemGridContent;
         [SerializeField] private Button gemEquipExpandButton;
         [SerializeField] private Button gemEquipCloseButton;
+        [SerializeField] private Button gemEquipUnequipButton;  // 장착 해제 버튼
+        [SerializeField] private GameObject currentGemPanel;     // 현재 장착된 보석 패널
+        [SerializeField] private Image currentGemIcon;
+        [SerializeField] private Image currentGemGradeBorder;
 
         [Header("Gem Inventory Item Template")]
         [SerializeField] private GameObject gemInventoryItemTemplate;
@@ -52,6 +56,26 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI expandResultTitleText;
         [SerializeField] private TextMeshProUGUI expandResultMessageText;
         [SerializeField] private Button expandResultCloseButton;
+
+        [Header("Gem Reequip Confirm Modal")]
+        [SerializeField] private GameObject gemReequipConfirmModal;
+        [SerializeField] private TextMeshProUGUI reequipConfirmMessageText;
+        // 기존 보석 (현재 장착 중)
+        [SerializeField] private Image oldGemIcon;
+        [SerializeField] private Image oldGemGradeBorder;
+        [SerializeField] private TextMeshProUGUI oldGemNameText;
+        [SerializeField] private TextMeshProUGUI oldGemTypeText;
+        [SerializeField] private TextMeshProUGUI oldGemStatText;
+        [SerializeField] private TextMeshProUGUI oldGemLocationText;
+        // 새 보석 (장착하려는)
+        [SerializeField] private Image newGemIcon;
+        [SerializeField] private Image newGemGradeBorder;
+        [SerializeField] private TextMeshProUGUI newGemNameText;
+        [SerializeField] private TextMeshProUGUI newGemTypeText;
+        [SerializeField] private TextMeshProUGUI newGemStatText;
+        // 버튼
+        [SerializeField] private Button reequipConfirmButton;
+        [SerializeField] private Button reequipCancelButton;
 
         // 보석 인벤토리 데이터 (서버로부터 수신)
         private List<GemInfo> gemInventory = new List<GemInfo>();
@@ -95,6 +119,30 @@ namespace InfinitePickaxe.Client.UI.Game
             if (gemEquipCloseButton == null)
             {
                 gemEquipCloseButton = gemEquipModal.transform.Find("ModalPanel/CloseButton")?.GetComponent<Button>();
+            }
+
+            if (gemEquipUnequipButton == null)
+            {
+                gemEquipUnequipButton = gemEquipModal.transform.Find("ModalPanel/UnequipButton")?.GetComponent<Button>();
+            }
+
+            // 현재 장착 보석 패널
+            if (currentGemPanel == null)
+            {
+                currentGemPanel = gemEquipModal.transform.Find("ModalPanel/CurrentGemPanel")?.gameObject;
+            }
+
+            if (currentGemPanel != null)
+            {
+                if (currentGemGradeBorder == null)
+                {
+                    currentGemGradeBorder = currentGemPanel.transform.Find("GradeBorder")?.GetComponent<Image>();
+                }
+
+                if (currentGemIcon == null)
+                {
+                    currentGemIcon = currentGemPanel.transform.Find("GradeBorder/GemIcon")?.GetComponent<Image>();
+                }
             }
         }
 
@@ -187,6 +235,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             gemEquipExpandButton?.onClick.AddListener(OnExpandInventoryClicked);
             gemEquipCloseButton?.onClick.AddListener(CloseGemEquipModal);
+            gemEquipUnequipButton?.onClick.AddListener(OnGemUnequipButtonClicked);
 
             // 배경 클릭으로 닫기
             var backgroundButton = gemEquipModal.GetComponent<Button>();
@@ -420,6 +469,164 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
+        /// 재장착 확인 모달 AutoBind
+        /// </summary>
+        private void AutoBindGemReequipConfirmModal()
+        {
+            if (gemReequipConfirmModal == null)
+            {
+                var modalObj = GameObject.Find("GemReequipConfirmModal");
+                if (modalObj == null)
+                {
+                    // Resources에서 로드
+                    var prefab = Resources.Load<GameObject>("UI/GemReequipConfirmModal");
+                    if (prefab != null)
+                    {
+                        gemReequipConfirmModal = Instantiate(prefab, transform.root);
+                        gemReequipConfirmModal.name = "GemReequipConfirmModal";
+                        gemReequipConfirmModal.SetActive(false);
+                    }
+                }
+                else
+                {
+                    gemReequipConfirmModal = modalObj;
+                }
+            }
+
+            if (gemReequipConfirmModal == null) return;
+
+            var modalPanel = gemReequipConfirmModal.transform.Find("ModalPanel");
+            if (modalPanel == null) return;
+
+            if (reequipConfirmMessageText == null)
+            {
+                reequipConfirmMessageText = modalPanel.Find("MessageText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            // 기존 보석 (Old Gem)
+            var oldGemPanel = modalPanel.Find("OldGemPanel");
+            if (oldGemPanel != null)
+            {
+                if (oldGemIcon == null)
+                {
+                    oldGemIcon = oldGemPanel.Find("GemIcon")?.GetComponent<Image>();
+                }
+
+                if (oldGemGradeBorder == null)
+                {
+                    oldGemGradeBorder = oldGemPanel.Find("GradeBorder")?.GetComponent<Image>();
+                }
+
+                if (oldGemNameText == null)
+                {
+                    oldGemNameText = oldGemPanel.Find("GemNameText")?.GetComponent<TextMeshProUGUI>();
+                }
+
+                if (oldGemTypeText == null)
+                {
+                    oldGemTypeText = oldGemPanel.Find("GemTypeText")?.GetComponent<TextMeshProUGUI>();
+                }
+
+                if (oldGemStatText == null)
+                {
+                    oldGemStatText = oldGemPanel.Find("GemStatText")?.GetComponent<TextMeshProUGUI>();
+                }
+
+                if (oldGemLocationText == null)
+                {
+                    oldGemLocationText = oldGemPanel.Find("LocationText")?.GetComponent<TextMeshProUGUI>();
+                }
+            }
+
+            // 새 보석 (New Gem)
+            var newGemPanel = modalPanel.Find("NewGemPanel");
+            if (newGemPanel != null)
+            {
+                if (newGemIcon == null)
+                {
+                    newGemIcon = newGemPanel.Find("GemIcon")?.GetComponent<Image>();
+                }
+
+                if (newGemGradeBorder == null)
+                {
+                    newGemGradeBorder = newGemPanel.Find("GradeBorder")?.GetComponent<Image>();
+                }
+
+                if (newGemNameText == null)
+                {
+                    newGemNameText = newGemPanel.Find("GemNameText")?.GetComponent<TextMeshProUGUI>();
+                }
+
+                if (newGemTypeText == null)
+                {
+                    newGemTypeText = newGemPanel.Find("GemTypeText")?.GetComponent<TextMeshProUGUI>();
+                }
+
+                if (newGemStatText == null)
+                {
+                    newGemStatText = newGemPanel.Find("GemStatText")?.GetComponent<TextMeshProUGUI>();
+                }
+            }
+
+            var buttonPanel = modalPanel.Find("ButtonPanel");
+            if (buttonPanel != null)
+            {
+                if (reequipCancelButton == null)
+                {
+                    reequipCancelButton = buttonPanel.Find("CancelButton")?.GetComponent<Button>();
+                }
+
+                if (reequipConfirmButton == null)
+                {
+                    reequipConfirmButton = buttonPanel.Find("ConfirmButton")?.GetComponent<Button>();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 재장착 확인 모달 버튼 이벤트 등록
+        /// </summary>
+        private void SetupGemReequipConfirmModalButtons()
+        {
+            if (gemReequipConfirmModal == null) return;
+
+            // 배경 클릭으로 닫기
+            var backgroundButton = gemReequipConfirmModal.GetComponent<Button>();
+            if (backgroundButton != null)
+            {
+                backgroundButton.onClick.RemoveAllListeners();
+                backgroundButton.onClick.AddListener(CloseGemReequipConfirmModal);
+            }
+
+            // ModalPanel 클릭 이벤트 차단
+            var modalPanel = gemReequipConfirmModal.transform.Find("ModalPanel");
+            if (modalPanel != null)
+            {
+                var panelButton = modalPanel.GetComponent<Button>();
+                if (panelButton == null)
+                {
+                    panelButton = modalPanel.gameObject.AddComponent<Button>();
+                    panelButton.transition = UnityEngine.UI.Selectable.Transition.None;
+                }
+                panelButton.onClick.RemoveAllListeners();
+            }
+
+            // 취소 버튼
+            if (reequipCancelButton != null)
+            {
+                reequipCancelButton.onClick.RemoveAllListeners();
+                reequipCancelButton.onClick.AddListener(CloseGemReequipConfirmModal);
+            }
+
+            // 확인 버튼
+            if (reequipConfirmButton != null)
+            {
+                reequipConfirmButton.onClick.RemoveAllListeners();
+                reequipConfirmButton.onClick.AddListener(OnConfirmGemReequip);
+            }
+        }
+
+        /// <summary>
         /// 해금된 보석 슬롯 클릭 시 호출 (PickaxeInfoModal에서)
         /// </summary>
         public void OnUnlockedGemSlotClicked(uint pickaxeSlotIndex, uint gemSlotIndex)
@@ -525,6 +732,75 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // 보석 Grid 갱신
             UpdateGemGrid();
+
+            // 현재 장착된 보석 정보 표시
+            UpdateCurrentGemDisplay();
+
+            // 장착 해제 버튼 활성화/비활성화 (현재 슬롯에 보석이 장착되어 있을 때만 활성화)
+            if (gemEquipUnequipButton != null)
+            {
+                bool hasEquippedGem = IsCurrentSlotOccupied();
+                gemEquipUnequipButton.gameObject.SetActive(hasEquippedGem);
+            }
+        }
+
+        /// <summary>
+        /// 현재 장착된 보석 정보 표시 (GemEquipModal)
+        /// </summary>
+        private void UpdateCurrentGemDisplay()
+        {
+            var equippedGem = GetCurrentSlotEquippedGem();
+
+            if (currentGemPanel != null)
+            {
+                currentGemPanel.SetActive(equippedGem != null);
+            }
+
+            if (equippedGem == null) return;
+
+            // 등급 테두리 색상
+            if (currentGemGradeBorder != null)
+            {
+                currentGemGradeBorder.color = GetGradeColor(equippedGem.Grade);
+            }
+
+            // 아이콘 설정
+            if (currentGemIcon != null)
+            {
+                var sprite = GemSpriteLoader.GetGemSprite(equippedGem);
+                currentGemIcon.sprite = sprite;
+                currentGemIcon.enabled = (sprite != null);
+            }
+        }
+
+        /// <summary>
+        /// 보석 타입 한글 이름 반환
+        /// </summary>
+        private string GetGemTypeDisplayName(GemType type)
+        {
+            return type switch
+            {
+                GemType.AttackSpeed => "공격속도",
+                GemType.CritRate => "치명타 확률",
+                GemType.CritDmg => "치명타 데미지",
+                _ => type.ToString()
+            };
+        }
+
+        /// <summary>
+        /// 등급별 색상 반환
+        /// </summary>
+        private Color GetGradeColor(GemGrade grade)
+        {
+            return grade switch
+            {
+                GemGrade.Common => Color.white,          // 흰색
+                GemGrade.Rare => Color.green,            // 녹색
+                GemGrade.Epic => Color.blue,             // 파란색
+                GemGrade.Hero => new Color(0.6f, 0.4f, 0.7f),  // 보라색
+                GemGrade.Legendary => Color.yellow,      // 노란색
+                _ => Color.gray
+            };
         }
 
         /// <summary>
@@ -784,6 +1060,9 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (gemActionListModal == null || selectedGem == null) return;
 
+            // 보석 장착/교체 버튼 텍스트 동적 변경
+            UpdateEquipActionButtonText();
+
             gemActionListModal.SetActive(true);
 
             // 모달 위치 조정 (선택된 보석 위치 기준)
@@ -791,6 +1070,21 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 PositionModalNearGem(gemActionListModal.GetComponent<RectTransform>(), selectedGemRectTransform);
             }
+        }
+
+        /// <summary>
+        /// 장착 액션 버튼 텍스트 동적 변경 (장착/교체)
+        /// </summary>
+        private void UpdateEquipActionButtonText()
+        {
+            if (equipActionButton == null) return;
+
+            var buttonText = equipActionButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText == null) return;
+
+            // 현재 슬롯에 이미 보석이 장착되어 있으면 "교체", 아니면 "장착"
+            bool isOccupied = IsCurrentSlotOccupied();
+            buttonText.text = isOccupied ? "교체" : "장착";
         }
 
         /// <summary>
@@ -869,6 +1163,24 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (selectedGem == null) return;
 
+            // 케이스 판단:
+            // - 선택된 보석이 이미 다른 슬롯에 장착되어 있는가?
+            // - 현재 슬롯에 이미 보석이 장착되어 있는가?
+
+            bool isGemEquipped = IsGemAlreadyEquipped(selectedGem.GemInstanceId);
+            bool isCurrentSlotOccupied = IsCurrentSlotOccupied();
+
+            // 케이스 2 또는 케이스 4: 이미 장착된 보석을 선택한 경우
+            if (isGemEquipped)
+            {
+                // 재장착 확인 모달 열기
+                CloseGemActionListModal();
+                OpenGemReequipConfirmModal();
+                return;
+            }
+
+            // 케이스 1 또는 케이스 3: 장착되지 않은 보석을 선택한 경우
+            // 서버에 장착 요청 전송
             var request = new GemEquipRequest
             {
                 PickaxeSlotIndex = selectedPickaxeSlotIndex,
@@ -1062,6 +1374,337 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // 선택 초기화
             selectedGem = null;
+        }
+
+        // ==================== 보석 장착 여부 체크 헬퍼 메서드 ====================
+
+        /// <summary>
+        /// 보석이 이미 다른 슬롯에 장착되어 있는지 확인
+        /// </summary>
+        private bool IsGemAlreadyEquipped(string gemInstanceId)
+        {
+            var pickaxeCache = PickaxeStateCache.Instance;
+            if (pickaxeCache == null) return false;
+
+            foreach (var slotKvp in pickaxeCache.Slots)
+            {
+                var slot = slotKvp.Value;
+                if (slot == null || slot.GemSlots == null) continue;
+
+                foreach (var gemSlot in slot.GemSlots)
+                {
+                    if (gemSlot.IsUnlocked && gemSlot.EquippedGem != null &&
+                        gemSlot.EquippedGem.GemInstanceId == gemInstanceId)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 보석이 장착된 위치 반환 (슬롯 인덱스, 보석 슬롯 인덱스)
+        /// </summary>
+        private (uint pickaxeSlotIndex, uint gemSlotIndex)? GetGemEquippedLocation(string gemInstanceId)
+        {
+            var pickaxeCache = PickaxeStateCache.Instance;
+            if (pickaxeCache == null) return null;
+
+            foreach (var slotKvp in pickaxeCache.Slots)
+            {
+                var slot = slotKvp.Value;
+                if (slot == null || slot.GemSlots == null) continue;
+
+                foreach (var gemSlot in slot.GemSlots)
+                {
+                    if (gemSlot.IsUnlocked && gemSlot.EquippedGem != null &&
+                        gemSlot.EquippedGem.GemInstanceId == gemInstanceId)
+                    {
+                        return (slot.SlotIndex, gemSlot.GemSlotIndex);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 현재 선택된 슬롯에 이미 보석이 장착되어 있는지 확인
+        /// </summary>
+        private bool IsCurrentSlotOccupied()
+        {
+            var pickaxeCache = PickaxeStateCache.Instance;
+            if (pickaxeCache == null) return false;
+
+            if (!pickaxeCache.TryGetSlot(selectedPickaxeSlotIndex, out var slot))
+                return false;
+
+            if (slot == null || slot.GemSlots == null)
+                return false;
+
+            foreach (var gemSlot in slot.GemSlots)
+            {
+                if (gemSlot.GemSlotIndex == selectedGemSlotIndex &&
+                    gemSlot.IsUnlocked &&
+                    gemSlot.EquippedGem != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 현재 선택된 슬롯에 장착된 보석 정보 반환
+        /// </summary>
+        private GemInfo GetCurrentSlotEquippedGem()
+        {
+            var pickaxeCache = PickaxeStateCache.Instance;
+            if (pickaxeCache == null) return null;
+
+            if (!pickaxeCache.TryGetSlot(selectedPickaxeSlotIndex, out var slot))
+                return null;
+
+            if (slot == null || slot.GemSlots == null)
+                return null;
+
+            foreach (var gemSlot in slot.GemSlots)
+            {
+                if (gemSlot.GemSlotIndex == selectedGemSlotIndex &&
+                    gemSlot.IsUnlocked &&
+                    gemSlot.EquippedGem != null)
+                {
+                    return gemSlot.EquippedGem;
+                }
+            }
+
+            return null;
+        }
+
+        // ==================== 버튼 클릭 핸들러 ====================
+
+        /// <summary>
+        /// 장착 해제 버튼 클릭 (GemEquipModal 내부)
+        /// </summary>
+        private void OnGemUnequipButtonClicked()
+        {
+            // 현재 슬롯에 장착된 보석 가져오기
+            var equippedGem = GetCurrentSlotEquippedGem();
+            if (equippedGem == null)
+            {
+                Debug.LogWarning("[MiningTabController] 장착된 보석이 없습니다.");
+                return;
+            }
+
+            // selectedGem 설정 (해제 확인 모달에서 사용)
+            selectedGem = equippedGem;
+
+            // 해제 확인 모달 열기
+            OpenGemUnequipConfirmModal();
+        }
+
+        // ==================== 재장착 확인 모달 ====================
+
+        /// <summary>
+        /// 재장착 확인 모달 열기
+        /// </summary>
+        private void OpenGemReequipConfirmModal()
+        {
+            if (gemReequipConfirmModal == null || selectedGem == null) return;
+
+            var location = GetGemEquippedLocation(selectedGem.GemInstanceId);
+            if (!location.HasValue)
+            {
+                Debug.LogWarning("[MiningTabController] 보석이 장착되어 있지 않습니다.");
+                return;
+            }
+
+            // 메시지 설정
+            if (reequipConfirmMessageText != null)
+            {
+                reequipConfirmMessageText.text = "이 보석을 다른 슬롯에서 해제하고 현재 슬롯에 장착하시겠습니까?";
+            }
+
+            // 기존 보석 정보 설정 (현재 장착 중인 보석 = selectedGem)
+            SetupOldGemDisplay(selectedGem, location.Value);
+
+            // 새 보석 정보 설정 (장착하려는 위치의 보석, 없을 수도 있음)
+            var currentSlotGem = GetCurrentSlotEquippedGem();
+            SetupNewGemDisplay(currentSlotGem);
+
+            gemReequipConfirmModal.SetActive(true);
+        }
+
+        /// <summary>
+        /// 기존 보석 정보 표시 (현재 장착 중)
+        /// </summary>
+        private void SetupOldGemDisplay(GemInfo gem, (uint pickaxeSlotIndex, uint gemSlotIndex) location)
+        {
+            if (gem == null) return;
+
+            // 아이콘
+            if (oldGemIcon != null)
+            {
+                var sprite = GemSpriteLoader.GetGemSprite(gem);
+                oldGemIcon.sprite = sprite;
+                oldGemIcon.enabled = (sprite != null);
+            }
+
+            // 등급 테두리
+            if (oldGemGradeBorder != null)
+            {
+                oldGemGradeBorder.color = GetGradeColor(gem.Grade);
+            }
+
+            // 이름
+            if (oldGemNameText != null)
+            {
+                oldGemNameText.text = gem.Name;
+            }
+
+            // 타입
+            if (oldGemTypeText != null)
+            {
+                oldGemTypeText.text = GetGemTypeDisplayName(gem.Type);
+            }
+
+            // 스탯
+            if (oldGemStatText != null)
+            {
+                oldGemStatText.text = $"+{gem.StatMultiplier / 100f:F1}%";
+            }
+
+            // 현재 위치
+            if (oldGemLocationText != null)
+            {
+                oldGemLocationText.text = $"곡괭이 슬롯 {location.pickaxeSlotIndex + 1} - 보석 슬롯 {location.gemSlotIndex + 1}";
+            }
+        }
+
+        /// <summary>
+        /// 새 보석 정보 표시 (장착하려는 위치에 이미 있는 보석, nullable)
+        /// </summary>
+        private void SetupNewGemDisplay(GemInfo gem)
+        {
+            if (gem == null)
+            {
+                // 빈 슬롯 표시
+                if (newGemIcon != null)
+                {
+                    newGemIcon.enabled = false;
+                }
+
+                if (newGemGradeBorder != null)
+                {
+                    newGemGradeBorder.color = Color.gray;
+                }
+
+                if (newGemNameText != null)
+                {
+                    newGemNameText.text = "빈 슬롯";
+                }
+
+                if (newGemTypeText != null)
+                {
+                    newGemTypeText.text = "-";
+                }
+
+                if (newGemStatText != null)
+                {
+                    newGemStatText.text = "-";
+                }
+
+                return;
+            }
+
+            // 아이콘
+            if (newGemIcon != null)
+            {
+                var sprite = GemSpriteLoader.GetGemSprite(gem);
+                newGemIcon.sprite = sprite;
+                newGemIcon.enabled = (sprite != null);
+            }
+
+            // 등급 테두리
+            if (newGemGradeBorder != null)
+            {
+                newGemGradeBorder.color = GetGradeColor(gem.Grade);
+            }
+
+            // 이름
+            if (newGemNameText != null)
+            {
+                newGemNameText.text = gem.Name;
+            }
+
+            // 타입
+            if (newGemTypeText != null)
+            {
+                newGemTypeText.text = GetGemTypeDisplayName(gem.Type);
+            }
+
+            // 스탯
+            if (newGemStatText != null)
+            {
+                // 비교: 새 보석과 기존 보석의 스탯 차이 표시
+                float oldStat = selectedGem != null ? selectedGem.StatMultiplier / 100f : 0f;
+                float newStat = gem.StatMultiplier / 100f;
+                float diff = newStat - oldStat;
+
+                string statText = $"+{newStat:F1}%";
+                if (diff > 0)
+                {
+                    statText += $" <color=#00FF00>(+{diff:F1}%)</color>";
+                }
+                else if (diff < 0)
+                {
+                    statText += $" <color=#FF0000>({diff:F1}%)</color>";
+                }
+
+                newGemStatText.text = statText;
+            }
+        }
+
+        /// <summary>
+        /// 재장착 확인 모달 닫기
+        /// </summary>
+        private void CloseGemReequipConfirmModal()
+        {
+            if (gemReequipConfirmModal != null)
+            {
+                gemReequipConfirmModal.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 재장착 확인 버튼 클릭
+        /// </summary>
+        private void OnConfirmGemReequip()
+        {
+            if (selectedGem == null) return;
+
+            // 서버에 장착 요청 전송 (서버가 자동으로 이전 슬롯에서 해제함)
+            var request = new GemEquipRequest
+            {
+                PickaxeSlotIndex = selectedPickaxeSlotIndex,
+                GemSlotIndex = selectedGemSlotIndex,
+                GemInstanceId = selectedGem.GemInstanceId
+            };
+
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemEquipRequest,
+                GemEquipRequest = request
+            };
+
+            NetworkManager.Instance.SendMessage(envelope);
+
+            CloseGemReequipConfirmModal();
+            CloseGemActionListModal();
+            CloseGemEquipModal();
         }
     }
 
