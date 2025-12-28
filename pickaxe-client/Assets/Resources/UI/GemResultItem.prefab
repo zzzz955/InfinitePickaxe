@@ -127,11 +127,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gradeBorder: {fileID: 115373128213879867}
   gemIcon: {fileID: 8167606323842473733}
-  commonColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
-  rareColor: {r: 0.2, g: 0.5, b: 1, a: 1}
-  epicColor: {r: 0.6, g: 0.2, b: 1, a: 1}
-  heroColor: {r: 1, g: 0.7, b: 0, a: 1}
-  legendaryColor: {r: 1, g: 0.3, b: 0, a: 1}
+  commonColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+  rareColor: {r: 0.20795389, g: 0.8962264, b: 0.13950695, a: 1}
+  epicColor: {r: 0.21226418, g: 0.22313054, b: 1, a: 1}
+  heroColor: {r: 0.66276956, g: 0.16509432, b: 1, a: 1}
+  legendaryColor: {r: 1, g: 0.7672142, b: 0.1462264, a: 1}
 --- !u!1 &6444827285677894544
 GameObject:
   m_ObjectHideFlags: 0

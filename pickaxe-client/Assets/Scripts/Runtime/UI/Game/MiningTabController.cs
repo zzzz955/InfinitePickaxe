@@ -252,6 +252,10 @@ namespace InfinitePickaxe.Client.UI.Game
             AutoBindGemInventoryExpandResultModal();
             SetupGemInventoryExpandResultModalButtons();
 
+            // 보석 재장착 확인 모달 초기화
+            AutoBindGemReequipConfirmModal();
+            SetupGemReequipConfirmModalButtons();
+
             // 곡괭이 슬롯 해금 모달 초기화
             AutoBindPickaxeSlotUnlockModal();
             SetupPickaxeSlotUnlockModalButtons();
@@ -288,6 +292,8 @@ namespace InfinitePickaxe.Client.UI.Game
             SetupGemActionListModalButtons();
             AutoBindGemDiscardModal();
             SetupGemDiscardModalButtons();
+            AutoBindGemReequipConfirmModal();
+            SetupGemReequipConfirmModalButtons();
         }
 
         protected override void OnDisable()

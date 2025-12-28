@@ -1716,6 +1716,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private Image gradeBorder;
         private Image gemIcon;
         private GameObject emptyState;
+        private Image equippedLabel;  // 장착됨 라벨 이미지
         private Button button;
 
         private GemInfo gemData;
@@ -1731,6 +1732,7 @@ namespace InfinitePickaxe.Client.UI.Game
             gradeBorder = transform.Find("GradeBorder")?.GetComponent<Image>();
             gemIcon = transform.Find("GemIcon")?.GetComponent<Image>();
             emptyState = transform.Find("EmptyState")?.gameObject;
+            equippedLabel = transform.Find("EquippedLabel")?.GetComponent<Image>();
 
             button = GetComponent<Button>();
             if (button == null)
@@ -1768,6 +1770,13 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 emptyState.SetActive(false);
             }
+
+            // 장착 여부 확인하여 라벨 표시
+            if (equippedLabel != null)
+            {
+                bool isEquipped = InfinitePickaxe.Client.Core.GemStateCache.Instance.IsEquipped(gem.GemInstanceId);
+                equippedLabel.gameObject.SetActive(isEquipped);
+            }
         }
 
         /// <summary>
@@ -1791,6 +1800,12 @@ namespace InfinitePickaxe.Client.UI.Game
             if (emptyState != null)
             {
                 emptyState.SetActive(true);
+            }
+
+            // 장착 라벨 숨김
+            if (equippedLabel != null)
+            {
+                equippedLabel.gameObject.SetActive(false);
             }
         }
 
