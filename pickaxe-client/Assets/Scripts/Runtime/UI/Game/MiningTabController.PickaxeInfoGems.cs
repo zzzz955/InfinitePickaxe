@@ -320,15 +320,16 @@ namespace InfinitePickaxe.Client.UI.Game
             if (lockedOverlay != null) lockedOverlay.SetActive(false);
             if (emptyOverlay != null) emptyOverlay.SetActive(false);
 
-            // 젬 아이콘 (TODO: SpriteAtlasCache 연동)
+            // 젬 아이콘
             if (gemIcon != null)
             {
-                gemIcon.sprite = null; // TODO: GetGemSprite(gem.GemId)
+                var sprite = GemSpriteLoader.GetGemSprite(gem);
+                gemIcon.sprite = sprite;
                 gemIcon.color = Color.white;
-                gemIcon.enabled = true; // 스프라이트가 있으면 표시, 없으면 숨김 (TODO 연동 후)
+                gemIcon.enabled = (sprite != null); // 스프라이트가 있을 때만 표시
             }
 
-            // 젬 이름 (TODO: GemMetaResolver 연동)
+            // 젬 이름
             if (gemNameText != null)
             {
                 gemNameText.enabled = true; // 텍스트 활성화

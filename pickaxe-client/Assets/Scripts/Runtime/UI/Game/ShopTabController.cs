@@ -28,10 +28,11 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button gemSinglePullButton;
         [SerializeField] private Button gemMultiPullButton;
 
-        [Header("Toast Modal")]
+        [Header("Modals")]
         [SerializeField] private GameObject toastModal;
         [SerializeField] private TextMeshProUGUI toastMessageText;
         [SerializeField] private Button toastConfirmButton;
+        [SerializeField] private GemGachaResultModalController gemGachaResultModal;
 
         [Header("Ad UI References (임시, Step 3에서 HUD로 이동)")]
         [SerializeField] private Button watchAdButton1;
@@ -429,8 +430,40 @@ namespace InfinitePickaxe.Client.UI.Game
             // 크리스탈 UI는 MessageHandler가 자동으로 동기화
             currentCrystal = result.RemainingCrystal;
 
-            // TODO: 보석 획득 결과 모달 표시
-            ShowToastMessage($"보석 {result.Gems.Count}개 획득!\n남은 크리스탈: {result.RemainingCrystal}");
+            // 보석 획득 결과 모달 표시
+            ShowGemGachaResultModal(result);
+        }
+
+        /// <summary>
+        /// 보석 가챠 결과 모달 표시
+        /// </summary>
+        private void ShowGemGachaResultModal(GemGachaResult result)
+        {
+            if (gemGachaResultModal == null)
+            {
+                Debug.LogWarning("ShopTabController: gemGachaResultModal is null");
+                return;
+            }
+
+            // 뽑기 횟수 추정 (1개면 1회, 11개면 11회)
+            int pullCount = result.Gems.Count >= 10 ? MultiPullCount : 1;
+
+            // 모달 표시
+            gemGachaResultModal.SetResult(
+                result,
+                pullCount,
+                currentCrystal,
+                OnPullAgainFromModal
+            );
+        }
+
+        /// <summary>
+        /// 모달에서 "한번 더 뽑기" 클릭 시 콜백
+        /// </summary>
+        private void OnPullAgainFromModal(int pullCount)
+        {
+            bool isMulti = (pullCount == MultiPullCount);
+            OnGemPullClicked(isMulti);
         }
 
         #endregion
@@ -582,6 +615,12 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 currentCrystal = update.Crystal.Value;
                 RefreshData();
+
+                // 가챠 결과 모달이 열려있으면 크리스탈 업데이트
+                if (gemGachaResultModal != null && gemGachaResultModal.gameObject.activeSelf)
+                {
+                    gemGachaResultModal.UpdateCrystal(currentCrystal);
+                }
             }
         }
 

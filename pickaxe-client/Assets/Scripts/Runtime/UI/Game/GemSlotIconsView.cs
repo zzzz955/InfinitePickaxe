@@ -148,13 +148,11 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
-        /// 젬 스프라이트 가져오기 (추후 SpriteAtlasCache 또는 GemMetaResolver와 연동)
+        /// 젬 스프라이트 가져오기
         /// </summary>
         private Sprite GetGemSprite(uint gemId)
         {
-            // TODO: SpriteAtlasCache.GetGemSprite(gemId) 구현 후 연동
-            // 현재는 null 반환 (emptySlotSprite 사용)
-            return null;
+            return GemSpriteLoader.GetGemSprite(gemId);
         }
     }
 }

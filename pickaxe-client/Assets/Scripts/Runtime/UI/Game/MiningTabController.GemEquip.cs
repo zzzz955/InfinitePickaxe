@@ -881,8 +881,13 @@ namespace InfinitePickaxe.Client.UI.Game
             uint reward = GetDiscardReward(selectedGem.Grade);
             gemDiscardRewardText.text = $"분해 보상: {reward} 크리스탈";
 
-            // 아이콘 설정 (TODO: 실제 스프라이트 로드)
-            // gemDiscardIcon.sprite = ...
+            // 아이콘 설정
+            if (gemDiscardIcon != null)
+            {
+                var sprite = GemSpriteLoader.GetGemSprite(selectedGem);
+                gemDiscardIcon.sprite = sprite;
+                gemDiscardIcon.enabled = (sprite != null);
+            }
 
             gemDiscardModal.SetActive(true);
         }
@@ -1027,11 +1032,13 @@ namespace InfinitePickaxe.Client.UI.Game
                 gradeBorder.color = GetGradeColor(gem.Grade);
             }
 
-            // 아이콘 설정 (TODO: 실제 스프라이트 로드)
+            // 아이콘 설정
             if (gemIcon != null)
             {
-                gemIcon.gameObject.SetActive(true);
-                // gemIcon.sprite = Resources.Load<Sprite>($"Gems/{gem.Icon}");
+                var sprite = GemSpriteLoader.GetGemSprite(gem);
+                gemIcon.sprite = sprite;
+                gemIcon.enabled = (sprite != null);
+                gemIcon.gameObject.SetActive(sprite != null);
             }
 
             if (emptyState != null)
