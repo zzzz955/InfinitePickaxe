@@ -15,20 +15,20 @@ infinitepickaxe::UpgradeResult UpgradeService::handle_upgrade(const std::string&
     }
 
     uint64_t attack_power = pl->attack_power;
-    uint32_t attack_speed_x100 = static_cast<uint32_t>(pl->attack_speed * 100.0);
+    uint32_t attack_speed = pl->attack_speed;
     uint64_t dps = pl->dps;
     uint64_t cost = pl->cost;
 
     const auto& rules = meta_.upgrade_rules();
     auto repo_result = repo_.try_upgrade_with_probability(
         user_id, slot_index, target_level, pl->tier,
-        attack_power, attack_speed_x100, dps, cost, rules);
+        attack_power, attack_speed, dps, cost, rules);
 
     res.set_success(repo_result.success);
     res.set_new_level(repo_result.final_level);
     res.set_new_tier(repo_result.final_tier);
     res.set_new_attack_power(repo_result.final_attack_power);
-    res.set_new_attack_speed_x100(repo_result.final_attack_speed_x100);
+    res.set_new_attack_speed(repo_result.final_attack_speed);
     res.set_new_critical_hit_percent(repo_result.final_critical_hit_percent);
     res.set_new_critical_damage(repo_result.final_critical_damage);
     res.set_new_dps(repo_result.final_dps);

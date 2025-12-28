@@ -9,7 +9,7 @@ std::vector<PickaxeSlot> SlotRepository::get_user_slots(const std::string& user_
         pqxx::work tx(*conn);
         auto res = tx.exec_params(
             "SELECT slot_id, user_id, slot_index, level, tier, "
-            "       attack_power, attack_speed_x100, critical_hit_percent, "
+            "       attack_power, attack_speed, critical_hit_percent, "
             "       critical_damage, dps, pity_bonus "
             "FROM game_schema.pickaxe_slots "
             "WHERE user_id = $1 "
@@ -25,7 +25,7 @@ std::vector<PickaxeSlot> SlotRepository::get_user_slots(const std::string& user_
             slot.level = row["level"].as<uint32_t>();
             slot.tier = row["tier"].as<uint32_t>();
             slot.attack_power = row["attack_power"].as<uint64_t>();
-            slot.attack_speed_x100 = row["attack_speed_x100"].as<uint32_t>();
+            slot.attack_speed = row["attack_speed"].as<uint32_t>();
             slot.critical_hit_percent = row["critical_hit_percent"].as<uint32_t>();
             slot.critical_damage = row["critical_damage"].as<uint32_t>();
             slot.dps = row["dps"].as<uint64_t>();
@@ -44,7 +44,7 @@ std::optional<PickaxeSlot> SlotRepository::get_slot(const std::string& user_id, 
         pqxx::work tx(*conn);
         auto res = tx.exec_params(
             "SELECT slot_id, user_id, slot_index, level, tier, "
-            "       attack_power, attack_speed_x100, critical_hit_percent, "
+            "       attack_power, attack_speed, critical_hit_percent, "
             "       critical_damage, dps, pity_bonus "
             "FROM game_schema.pickaxe_slots "
             "WHERE user_id = $1 AND slot_index = $2",
@@ -63,7 +63,7 @@ std::optional<PickaxeSlot> SlotRepository::get_slot(const std::string& user_id, 
         slot.level = row["level"].as<uint32_t>();
         slot.tier = row["tier"].as<uint32_t>();
         slot.attack_power = row["attack_power"].as<uint64_t>();
-        slot.attack_speed_x100 = row["attack_speed_x100"].as<uint32_t>();
+        slot.attack_speed = row["attack_speed"].as<uint32_t>();
         slot.critical_hit_percent = row["critical_hit_percent"].as<uint32_t>();
         slot.critical_damage = row["critical_damage"].as<uint32_t>();
         slot.dps = row["dps"].as<uint64_t>();
@@ -77,7 +77,7 @@ std::optional<PickaxeSlot> SlotRepository::get_slot(const std::string& user_id, 
 
 bool SlotRepository::create_slot(const std::string& user_id, uint32_t slot_index,
                                    uint32_t level, uint32_t tier,
-                                   uint64_t attack_power, uint32_t attack_speed_x100,
+                                   uint64_t attack_power, uint32_t attack_speed,
                                    uint32_t critical_hit_percent, uint32_t critical_damage,
                                    uint64_t dps) {
     try {
@@ -85,16 +85,16 @@ bool SlotRepository::create_slot(const std::string& user_id, uint32_t slot_index
         pqxx::work tx(*conn);
         tx.exec_params(
             "INSERT INTO game_schema.pickaxe_slots "
-            "(user_id, slot_index, level, tier, attack_power, attack_speed_x100, "
+            "(user_id, slot_index, level, tier, attack_power, attack_speed, "
             " critical_hit_percent, critical_damage, dps, pity_bonus) "
             "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 0) "
             "ON CONFLICT (user_id, slot_index) DO NOTHING",
-            user_id, slot_index, level, tier, attack_power, attack_speed_x100,
+            user_id, slot_index, level, tier, attack_power, attack_speed,
             critical_hit_percent, critical_damage, dps
         );
         tx.commit();
         spdlog::debug("create_slot: user={} slot={} level={} attack_power={} crit={}%",
-                      user_id, slot_index, level, attack_power, critical_hit_percent / 100.0);
+                      user_id, slot_index, level, attack_power, critical_hit_percent / 10000.0);
         return true;
     } catch (const std::exception& ex) {
         spdlog::error("create_slot failed for user {} slot {}: {}", user_id, slot_index, ex.what());
@@ -104,7 +104,7 @@ bool SlotRepository::create_slot(const std::string& user_id, uint32_t slot_index
 
 bool SlotRepository::update_slot(const std::string& user_id, uint32_t slot_index,
                                    uint32_t new_level, uint32_t new_tier,
-                                   uint64_t new_attack_power, uint32_t new_attack_speed_x100,
+                                   uint64_t new_attack_power, uint32_t new_attack_speed,
                                    uint32_t new_critical_hit_percent, uint32_t new_critical_damage,
                                    uint64_t new_dps, uint32_t new_pity_bonus) {
     try {
@@ -112,18 +112,18 @@ bool SlotRepository::update_slot(const std::string& user_id, uint32_t slot_index
         pqxx::work tx(*conn);
         tx.exec_params(
             "UPDATE game_schema.pickaxe_slots "
-            "SET level = $3, tier = $4, attack_power = $5, attack_speed_x100 = $6, "
+            "SET level = $3, tier = $4, attack_power = $5, attack_speed = $6, "
             "    critical_hit_percent = $7, critical_damage = $8, "
             "    dps = $9, pity_bonus = $10, last_upgraded_at = NOW() "
             "WHERE user_id = $1 AND slot_index = $2",
             user_id, slot_index, new_level, new_tier,
-            new_attack_power, new_attack_speed_x100,
+            new_attack_power, new_attack_speed,
             new_critical_hit_percent, new_critical_damage,
             new_dps, new_pity_bonus
         );
         tx.commit();
         spdlog::debug("update_slot: user={} slot={} level={} tier={} dps={} crit={}%",
-                      user_id, slot_index, new_level, new_tier, new_dps, new_critical_hit_percent / 100.0);
+                      user_id, slot_index, new_level, new_tier, new_dps, new_critical_hit_percent / 10000.0);
         return true;
     } catch (const std::exception& ex) {
         spdlog::error("update_slot failed for user {} slot {}: {}", user_id, slot_index, ex.what());
@@ -166,12 +166,12 @@ SlotUnlockDBResult SlotRepository::create_and_unlock_slot(const PickaxeSlot& slo
         // 슬롯 생성
         tx.exec_params(
             "INSERT INTO game_schema.pickaxe_slots "
-            "(user_id, slot_index, level, tier, attack_power, attack_speed_x100, "
+            "(user_id, slot_index, level, tier, attack_power, attack_speed, "
             " critical_hit_percent, critical_damage, dps, pity_bonus) "
             "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) "
             "ON CONFLICT (user_id, slot_index) DO NOTHING",
             slot.user_id, slot.slot_index, slot.level, slot.tier, slot.attack_power,
-            slot.attack_speed_x100, slot.critical_hit_percent, slot.critical_damage,
+            slot.attack_speed, slot.critical_hit_percent, slot.critical_damage,
             slot.dps, slot.pity_bonus);
 
         // 크리스탈 차감 + 해금 플래그 + total_dps 갱신

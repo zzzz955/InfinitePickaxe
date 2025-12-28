@@ -479,7 +479,7 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope &env)
 
     if (res.success() && mining_state_.is_mining)
     {
-        float new_attack_speed = static_cast<float>(res.new_attack_speed_x100()) / 100.0f;
+        float new_attack_speed = static_cast<float>(res.new_attack_speed()) / 10000.0f;
         apply_slot_update(res.slot_index(), res.new_attack_power(), new_attack_speed,
                           res.new_critical_hit_percent(), res.new_critical_damage());
     }
@@ -1128,7 +1128,7 @@ void Session::refresh_slots_from_service(bool preserve_timers)
         SlotMiningState slot{};
         slot.slot_index = slot_info.slot_index();
         slot.attack_power = slot_info.attack_power();
-        slot.attack_speed = static_cast<float>(slot_info.attack_speed_x100()) / 100.0f;
+        slot.attack_speed = static_cast<float>(slot_info.attack_speed()) / 10000.0f;
         if (slot.attack_speed <= 0.0f)
         {
             slot.attack_speed = 0.01f;

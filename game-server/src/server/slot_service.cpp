@@ -4,7 +4,7 @@
 #include <cmath>
 
 namespace {
-constexpr uint32_t kDefaultAttackSpeedX100 = 100;   // 1.0 APS
+constexpr uint32_t kDefaultAttackSpeed = 10000;     // 1.0 APS (basis 10000)
 constexpr uint32_t kDefaultCritPercent = 500;       // 5%
 constexpr uint32_t kDefaultCritDamage = 15000;      // 150%
 constexpr uint32_t kDefaultPity = 0;
@@ -19,14 +19,14 @@ std::optional<uint32_t> crystal_cost_for_slot(uint32_t slot_index)
     return kSlotCrystalCosts[slot_index];
 }
 
-uint64_t compute_expected_dps(uint64_t attack_power, uint32_t attack_speed_x100,
+uint64_t compute_expected_dps(uint64_t attack_power, uint32_t attack_speed,
                               uint32_t crit_percent, uint32_t crit_damage,
                               uint64_t fallback_dps)
 {
-    double attack_speed = static_cast<double>(attack_speed_x100) / 100.0;
+    double attack_speed_value = static_cast<double>(attack_speed) / 10000.0;
     double crit_rate = static_cast<double>(crit_percent) / 10000.0;
     double crit_mult = static_cast<double>(crit_damage) / 10000.0;
-    double expected = static_cast<double>(attack_power) * attack_speed *
+    double expected = static_cast<double>(attack_power) * attack_speed_value *
                       (1.0 + crit_rate * (crit_mult - 1.0));
     uint64_t dps = static_cast<uint64_t>(std::llround(expected));
     if (dps == 0)
@@ -44,7 +44,7 @@ PickaxeSlot build_base_slot(const std::string& user_id, uint32_t slot_index, con
     slot.level = 0;
     slot.tier = 1;
     slot.attack_power = 10;
-    slot.attack_speed_x100 = kDefaultAttackSpeedX100;
+    slot.attack_speed = kDefaultAttackSpeed;
     slot.critical_hit_percent = kDefaultCritPercent;
     slot.critical_damage = kDefaultCritDamage;
     slot.pity_bonus = kDefaultPity;
@@ -54,18 +54,18 @@ PickaxeSlot build_base_slot(const std::string& user_id, uint32_t slot_index, con
         slot.level = base->level;
         slot.tier = base->tier;
         slot.attack_power = base->attack_power;
-        slot.attack_speed_x100 = static_cast<uint32_t>(std::lround(base->attack_speed * 100.0));
-        if (slot.attack_speed_x100 == 0)
+        slot.attack_speed = base->attack_speed;
+        if (slot.attack_speed == 0)
         {
-            slot.attack_speed_x100 = 1;
+            slot.attack_speed = 10000;
         }
-        slot.dps = compute_expected_dps(slot.attack_power, slot.attack_speed_x100,
+        slot.dps = compute_expected_dps(slot.attack_power, slot.attack_speed,
                                         slot.critical_hit_percent, slot.critical_damage,
                                         base->dps);
     }
     else
     {
-        slot.dps = compute_expected_dps(slot.attack_power, slot.attack_speed_x100,
+        slot.dps = compute_expected_dps(slot.attack_power, slot.attack_speed,
                                         slot.critical_hit_percent, slot.critical_damage,
                                         slot.attack_power);
     }
@@ -83,7 +83,7 @@ void fill_slot_info(const PickaxeSlot& slot, infinitepickaxe::PickaxeSlotInfo* s
     slot_info->set_level(slot.level);
     slot_info->set_tier(slot.tier);
     slot_info->set_attack_power(slot.attack_power);
-    slot_info->set_attack_speed_x100(slot.attack_speed_x100);
+    slot_info->set_attack_speed(slot.attack_speed);
     slot_info->set_critical_hit_percent(slot.critical_hit_percent);
     slot_info->set_critical_damage(slot.critical_damage);
     slot_info->set_dps(slot.dps);

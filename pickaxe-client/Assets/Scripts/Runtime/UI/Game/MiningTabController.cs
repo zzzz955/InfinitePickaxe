@@ -1453,7 +1453,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (pickaxeInfoAttackSpeedText != null)
             {
-                float attackSpeed = slotInfo.AttackSpeedX100 / 100f;
+                float attackSpeed = slotInfo.AttackSpeed / 10000f;
                 pickaxeInfoAttackSpeedText.text = $"공격속도: {attackSpeed:0.0#}";
             }
 
@@ -2203,9 +2203,9 @@ namespace InfinitePickaxe.Client.UI.Game
             if (slotIndex >= swingStates.Length) return;
 
             float duration = Mathf.Max(0.03f, swingDuration);
-            if (slotInfos.TryGetValue(slotIndex, out var info) && info.AttackSpeedX100 > 0)
+            if (slotInfos.TryGetValue(slotIndex, out var info) && info.AttackSpeed > 0)
             {
-                float speedMul = info.AttackSpeedX100 / 100f;
+                float speedMul = info.AttackSpeed / 10000f;
                 duration = Mathf.Max(0.03f, swingDuration / speedMul);
             }
 

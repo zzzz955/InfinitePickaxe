@@ -963,7 +963,7 @@ namespace InfinitePickaxe.Client.UI.Game
                     Level = 0,
                     Tier = 1,
                     AttackPower = 0,
-                    AttackSpeedX100 = 100,
+                    AttackSpeed = 10000,
                     CriticalDamage = 15000,
                     CriticalHitPercent = 500,
                     Dps = 0,

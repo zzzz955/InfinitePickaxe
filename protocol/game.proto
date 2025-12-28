@@ -192,7 +192,7 @@ message PickaxeSlotInfo {
   uint32 level = 2;                // 곡괭이 레벨 (0-109)
   uint32 tier = 3;                 // 곡괭이 티어 (1-22)
   uint64 attack_power = 4;         // 공격력
-  uint32 attack_speed_x100 = 5;    // 공격속도 * 100 (예: 1.5 APS = 150, 최대 2500)
+  uint32 attack_speed = 5;         // 공격속도 * 10000 (예: 1.5 APS = 15000, 기본 10000 = 100%)
   uint32 critical_hit_percent = 6; // 크리티컬 확률 * 10000 (예: 500 = 5%, 범위 0-10000)
   uint32 critical_damage = 7;      // 크리티컬 데미지 * 100 (예: 15000 = 150%)
   uint64 dps = 8;                  // 이 슬롯의 DPS (크리티컬 포함 계산)
@@ -331,7 +331,7 @@ message UpgradeResult {
   uint32 new_level = 3;
   uint32 new_tier = 4;                     // 강화 후 티어
   uint64 new_attack_power = 5;             // 강화 후 공격력
-  uint32 new_attack_speed_x100 = 6;        // 강화 후 공격속도 * 100
+  uint32 new_attack_speed = 6;             // 강화 후 공격속도 * 10000
   uint32 new_critical_hit_percent = 7;     // 강화 후 크리티컬 확률 * 10000
   uint32 new_critical_damage = 8;          // 강화 후 크리티컬 데미지 * 100
   uint64 new_dps = 9;                      // 강화 후 이 슬롯의 DPS

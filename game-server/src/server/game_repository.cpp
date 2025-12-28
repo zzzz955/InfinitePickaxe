@@ -22,7 +22,7 @@ bool GameRepository::ensure_user_initialized(const std::string& user_id) {
         uint32_t level = 0;
         uint32_t tier = 1;
         uint64_t attack_power = 10;
-        uint32_t attack_speed_x100 = 100;
+        uint32_t attack_speed = 10000;
         constexpr uint32_t kCritPercent = 500;   // 5%
         constexpr uint32_t kCritDamage = 15000;  // 150%
         uint64_t dps = 10;
@@ -31,14 +31,14 @@ bool GameRepository::ensure_user_initialized(const std::string& user_id) {
             level = pl->level;
             tier = pl->tier;
             attack_power = pl->attack_power;
-            attack_speed_x100 = static_cast<uint32_t>(std::lround(pl->attack_speed * 100.0));
-            if (attack_speed_x100 == 0) {
-                attack_speed_x100 = 1;
+            attack_speed = pl->attack_speed;
+            if (attack_speed == 0) {
+                attack_speed = 10000;
             }
-            double attack_speed = static_cast<double>(attack_speed_x100) / 100.0;
+            double attack_speed_value = static_cast<double>(attack_speed) / 10000.0;
             double crit_rate = static_cast<double>(kCritPercent) / 10000.0;
             double crit_mult = static_cast<double>(kCritDamage) / 10000.0;
-            double expected_dps = static_cast<double>(attack_power) * attack_speed *
+            double expected_dps = static_cast<double>(attack_power) * attack_speed_value *
                                   (1.0 + crit_rate * (crit_mult - 1.0));
             dps = static_cast<uint64_t>(std::llround(expected_dps));
             if (dps == 0) {
@@ -50,12 +50,12 @@ bool GameRepository::ensure_user_initialized(const std::string& user_id) {
 
         auto slot_insert = tx.exec_params(
             "INSERT INTO game_schema.pickaxe_slots "
-            "(user_id, slot_index, level, tier, attack_power, attack_speed_x100, "
+            "(user_id, slot_index, level, tier, attack_power, attack_speed, "
             " critical_hit_percent, critical_damage, dps, pity_bonus) "
             "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 0) "
             "ON CONFLICT (user_id, slot_index) DO NOTHING RETURNING slot_id",
             user_id, 0, static_cast<int32_t>(level), static_cast<int32_t>(tier),
-            static_cast<int64_t>(attack_power), static_cast<int32_t>(attack_speed_x100),
+            static_cast<int64_t>(attack_power), static_cast<int32_t>(attack_speed),
             static_cast<int32_t>(kCritPercent), static_cast<int32_t>(kCritDamage),
             static_cast<int64_t>(dps));
 
@@ -95,8 +95,8 @@ bool GameRepository::ensure_user_initialized(const std::string& user_id) {
             }
         }
         tx.commit();
-        spdlog::debug("User {} initialized with slot 0 (level={}, tier={}, ap={}, as_x100={}, dps={})",
-                      user_id, level, tier, attack_power, attack_speed_x100, dps);
+        spdlog::debug("User {} initialized with slot 0 (level={}, tier={}, ap={}, as={}, dps={})",
+                      user_id, level, tier, attack_power, attack_speed, dps);
         return true;
     } catch (const std::exception& ex) {
         spdlog::error("DB init failed for user {}: {}", user_id, ex.what());

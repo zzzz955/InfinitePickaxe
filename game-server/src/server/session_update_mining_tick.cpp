@@ -91,7 +91,7 @@ void Session::start_new_mineral() {
             SlotMiningState slot;
             slot.slot_index = slot_info.slot_index();
             slot.attack_power = slot_info.attack_power();
-            slot.attack_speed = slot_info.attack_speed_x100() / 100.0f;  // 100 → 1.0 APS
+            slot.attack_speed = slot_info.attack_speed() / 10000.0f;  // 10000 → 1.0 APS
 
             // 초기 공격 타이머: 랜덤하게 분산 (모든 슬롯이 동시에 공격하지 않도록)
             slot.next_attack_timer_ms = (float)(std::rand() % 1000) / 1000.0f * (1000.0f / slot.attack_speed);

@@ -10,12 +10,12 @@ std::random_device rd;
 std::mt19937 gen(rd());
 
 // DPS 계산 (slot_service.cpp와 동일)
-uint64_t compute_expected_dps(uint64_t attack_power, uint32_t attack_speed_x100,
+uint64_t compute_expected_dps(uint64_t attack_power, uint32_t attack_speed,
                               uint32_t crit_percent, uint32_t crit_damage) {
-    double attack_speed = static_cast<double>(attack_speed_x100) / 100.0;
+    double attack_speed_value = static_cast<double>(attack_speed) / 10000.0;
     double crit_rate = static_cast<double>(crit_percent) / 10000.0;
     double crit_mult = static_cast<double>(crit_damage) / 10000.0;
-    double expected = static_cast<double>(attack_power) * attack_speed *
+    double expected = static_cast<double>(attack_power) * attack_speed_value *
                       (1.0 + crit_rate * (crit_mult - 1.0));
     return static_cast<uint64_t>(std::llround(expected));
 }
@@ -448,20 +448,22 @@ infinitepickaxe::GemEquipResult GemService::handle_equip(const std::string& user
     // 보석 보너스 계산
     auto gem_bonus = calculate_pickaxe_stats_with_gems(slot.slot_id);
 
-    // 기본 스탯 + 보석 보너스 적용
+    // 기본 스탯 + 보석 보너스 적용 (퍼센트 곱셈)
     PickaxeSlot updated_slot = slot;
-    updated_slot.attack_speed_x100 = slot.attack_speed_x100 + gem_bonus.attack_speed_x100;
+    // attack_speed: basis 10000, 보너스 1500 = 15% 증가 → final = base * (10000 + 1500) / 10000
+    updated_slot.attack_speed = static_cast<uint32_t>(
+        (static_cast<uint64_t>(slot.attack_speed) * (10000 + gem_bonus.attack_speed)) / 10000);
     updated_slot.critical_hit_percent = slot.critical_hit_percent + gem_bonus.critical_hit_percent;
     updated_slot.critical_damage = slot.critical_damage + gem_bonus.critical_damage;
 
     // DPS 재계산
-    updated_slot.dps = compute_expected_dps(updated_slot.attack_power, updated_slot.attack_speed_x100,
+    updated_slot.dps = compute_expected_dps(updated_slot.attack_power, updated_slot.attack_speed,
                                             updated_slot.critical_hit_percent, updated_slot.critical_damage);
 
     // DB 업데이트
     slot_repo_.update_slot(user_id, pickaxe_slot_index,
                           updated_slot.level, updated_slot.tier,
-                          updated_slot.attack_power, updated_slot.attack_speed_x100,
+                          updated_slot.attack_power, updated_slot.attack_speed,
                           updated_slot.critical_hit_percent, updated_slot.critical_damage,
                           updated_slot.dps, updated_slot.pity_bonus);
 
@@ -529,20 +531,22 @@ infinitepickaxe::GemUnequipResult GemService::handle_unequip(const std::string& 
     // 보석 보너스 계산 (해제 후)
     auto gem_bonus = calculate_pickaxe_stats_with_gems(slot.slot_id);
 
-    // 기본 스탯 + 보석 보너스 적용
+    // 기본 스탯 + 보석 보너스 적용 (퍼센트 곱셈)
     PickaxeSlot updated_slot = slot;
-    updated_slot.attack_speed_x100 = slot.attack_speed_x100 + gem_bonus.attack_speed_x100;
+    // attack_speed: basis 10000, 보너스 1500 = 15% 증가 → final = base * (10000 + 1500) / 10000
+    updated_slot.attack_speed = static_cast<uint32_t>(
+        (static_cast<uint64_t>(slot.attack_speed) * (10000 + gem_bonus.attack_speed)) / 10000);
     updated_slot.critical_hit_percent = slot.critical_hit_percent + gem_bonus.critical_hit_percent;
     updated_slot.critical_damage = slot.critical_damage + gem_bonus.critical_damage;
 
     // DPS 재계산
-    updated_slot.dps = compute_expected_dps(updated_slot.attack_power, updated_slot.attack_speed_x100,
+    updated_slot.dps = compute_expected_dps(updated_slot.attack_power, updated_slot.attack_speed,
                                             updated_slot.critical_hit_percent, updated_slot.critical_damage);
 
     // DB 업데이트
     slot_repo_.update_slot(user_id, pickaxe_slot_index,
                           updated_slot.level, updated_slot.tier,
-                          updated_slot.attack_power, updated_slot.attack_speed_x100,
+                          updated_slot.attack_power, updated_slot.attack_speed,
                           updated_slot.critical_hit_percent, updated_slot.critical_damage,
                           updated_slot.dps, updated_slot.pity_bonus);
 
@@ -774,9 +778,9 @@ PickaxeSlot GemService::calculate_pickaxe_stats_with_gems(const std::string& pic
     // 장착된 보석들의 스탯 보너스 계산
     auto gem_slots = gem_repo_.get_gem_slots_for_pickaxe(pickaxe_slot_id);
 
-    uint32_t attack_speed_bonus = 0;     // basis 100
+    uint32_t attack_speed_bonus = 0;     // basis 10000 퍼센트 보너스 (1500 = 15% 증가)
     uint32_t crit_rate_bonus = 0;        // basis 10000
-    uint32_t crit_damage_bonus = 0;      // basis 100
+    uint32_t crit_damage_bonus = 0;      // basis 10000
 
     for (const auto& gem_slot : gem_slots) {
         if (!gem_slot.equipped_gem.has_value()) {
@@ -794,15 +798,16 @@ PickaxeSlot GemService::calculate_pickaxe_stats_with_gems(const std::string& pic
             continue;
         }
 
-        uint32_t multiplier = gem_def->stat_multiplier; // x100
+        uint32_t multiplier = gem_def->stat_multiplier; // basis 10000 (1500 = 15%)
 
         if (type->type == "ATTACK_SPEED") {
-            attack_speed_bonus += multiplier; // x100
+            // 퍼센트 보너스 누적 (1500 + 3750 = 5250 = 52.5% 증가)
+            attack_speed_bonus += multiplier;
         } else if (type->type == "CRIT_RATE") {
-            // multiplier는 x100 (예: 500 = 5%), basis 10000으로 변환 (500 -> 5000)
-            crit_rate_bonus += multiplier * 100;
+            // multiplier는 basis 10000 (1500 = 15%)
+            crit_rate_bonus += multiplier;
         } else if (type->type == "CRIT_DMG") {
-            crit_damage_bonus += multiplier; // x100
+            crit_damage_bonus += multiplier; // basis 10000
         }
     }
 
@@ -810,7 +815,7 @@ PickaxeSlot GemService::calculate_pickaxe_stats_with_gems(const std::string& pic
     // 임시로 빈 슬롯에 보너스만 담아 반환 (handle_equip/unequip에서 직접 적용)
     PickaxeSlot bonus_slot{};
     bonus_slot.slot_id = pickaxe_slot_id;
-    bonus_slot.attack_speed_x100 = attack_speed_bonus;
+    bonus_slot.attack_speed = attack_speed_bonus;
     bonus_slot.critical_hit_percent = crit_rate_bonus;
     bonus_slot.critical_damage = crit_damage_bonus;
 
@@ -822,7 +827,7 @@ void GemService::populate_pickaxe_slot_info(const PickaxeSlot& slot, infinitepic
     slot_info->set_level(slot.level);
     slot_info->set_tier(slot.tier);
     slot_info->set_attack_power(slot.attack_power);
-    slot_info->set_attack_speed_x100(slot.attack_speed_x100);
+    slot_info->set_attack_speed(slot.attack_speed);
     slot_info->set_critical_hit_percent(slot.critical_hit_percent);
     slot_info->set_critical_damage(slot.critical_damage);
     slot_info->set_dps(slot.dps);

@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS game_schema.pickaxe_slots (
     level             INTEGER NOT NULL DEFAULT 0 CHECK (level >= 0 AND level <= 109),
     tier              INTEGER NOT NULL DEFAULT 1 CHECK (tier BETWEEN 1 AND 22),
     attack_power      BIGINT NOT NULL DEFAULT 10 CHECK (attack_power > 0),
-    attack_speed_x100 INTEGER NOT NULL DEFAULT 100 CHECK (attack_speed_x100 BETWEEN 100 AND 2500),
+    attack_speed      INTEGER NOT NULL DEFAULT 10000 CHECK (attack_speed BETWEEN 10000 AND 250000),
     critical_hit_percent INTEGER NOT NULL DEFAULT 500 CHECK (critical_hit_percent BETWEEN 0 AND 10000),
     critical_damage   INTEGER NOT NULL DEFAULT 15000 CHECK (critical_damage >= 0),
     dps               BIGINT NOT NULL DEFAULT 10 CHECK (dps > 0),

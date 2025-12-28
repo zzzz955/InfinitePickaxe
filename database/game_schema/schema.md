@@ -27,7 +27,7 @@
 | level | INTEGER | DEFAULT 0, CHECK 0-109 | 레벨 |
 | tier | INTEGER | DEFAULT 1, CHECK 1-22 | 티어 |
 | attack_power | BIGINT | DEFAULT 10, CHECK >0 | 공격력 |
-| attack_speed_x100 | INTEGER | DEFAULT 100, CHECK 100-2500 | 100=1회/s, 2500=25회/s |
+| attack_speed | INTEGER | DEFAULT 100, CHECK 100-2500 | 100=1회/s, 2500=25회/s |
 | critical_hit_percent | INTEGER | DEFAULT 500, CHECK 0-10000 | 크리확(x100) |
 | critical_damage | INTEGER | DEFAULT 15000, CHECK >=0 | 크리뎀(x100, 15000=150%) |
 | dps | BIGINT | DEFAULT 10, CHECK >0 | DPS |

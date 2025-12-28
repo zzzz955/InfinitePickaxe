@@ -16,7 +16,7 @@ public:
         uint32_t final_level{0};
         uint32_t final_tier{1};
         uint64_t final_attack_power{0};
-        uint32_t final_attack_speed_x100{100};
+        uint32_t final_attack_speed{10000};
         uint32_t final_critical_hit_percent{500};   // 기본 5%
         uint32_t final_critical_damage{15000};      // 기본 150%
         uint64_t final_dps{0};
@@ -32,7 +32,7 @@ public:
                                                       uint32_t target_level,
                                                       uint32_t target_tier,
                                                       uint64_t target_attack_power,
-                                                      uint32_t target_attack_speed_x100,
+                                                      uint32_t target_attack_speed,
                                                       uint64_t target_dps,
                                                       uint64_t cost,
                                                       const UpgradeRules& rules);
