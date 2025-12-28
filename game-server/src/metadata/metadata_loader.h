@@ -148,6 +148,11 @@ struct GemInventoryConfig {
     uint32_t expand_cost{200};
 };
 
+struct PickaxeSlotUnlockCost {
+    uint32_t slot_index;    // 0~3 슬롯
+    uint32_t unlock_cost_crystal;
+};
+
 struct GemSlotUnlockCost {
     uint32_t slot_index;    // 0-5
     uint32_t unlock_cost_crystal;
@@ -179,6 +184,7 @@ public:
     const std::vector<GemDiscardReward>& gem_discard_rewards() const { return gem_discard_rewards_; }
     const GemInventoryConfig& gem_inventory_config() const { return gem_inventory_config_; }
     const std::vector<GemSlotUnlockCost>& gem_slot_unlock_costs() const { return gem_slot_unlock_costs_; }
+    const std::vector<PickaxeSlotUnlockCost>& pickaxe_slot_unlock_costs() const { return pickaxe_slot_unlock_costs_; }
 
     const GemTypeMeta* gem_type(uint32_t id) const;
     const GemGradeMeta* gem_grade(uint32_t id) const;
@@ -207,6 +213,7 @@ private:
     std::vector<GemDiscardReward> gem_discard_rewards_;
     GemInventoryConfig gem_inventory_config_;
     std::vector<GemSlotUnlockCost> gem_slot_unlock_costs_;
+    std::vector<PickaxeSlotUnlockCost> pickaxe_slot_unlock_costs_;
 
     std::unordered_map<uint32_t, GemTypeMeta> gem_types_by_id_;
     std::unordered_map<uint32_t, GemGradeMeta> gem_grades_by_id_;

@@ -539,6 +539,23 @@ function buildGemSlotUnlockCosts() {
   };
 }
 
+function buildPickaxeSlotUnlockCosts() {
+  const costs = readCsv('pickaxe_slot_unlock_costs.csv').map((row, idx) => {
+    const context = `pickaxe_slot_unlock_costs.csv row ${idx + 2}`;
+
+    return {
+      slot_index: toNumber(row.slot_index, `${context} slot_index`),
+      unlock_cost_crystal: toNumber(row.unlock_cost_crystal, `${context} unlock_cost_crystal`),
+    };
+  });
+
+  return {
+    key: 'pickaxe_slot_unlock_costs',
+    file: 'pickaxe_slot_unlock_costs.json',
+    data: costs,
+  };
+}
+
 const builders = [
   buildAds,
   buildDailyMissions,
@@ -547,6 +564,7 @@ const builders = [
   buildOfflineDefaults,
   buildNewUserDefaults,
   buildPickaxeLevels,
+  buildPickaxeSlotUnlockCosts,
   buildUpgradeRules,
   buildGemTypes,
   buildGemGrades,

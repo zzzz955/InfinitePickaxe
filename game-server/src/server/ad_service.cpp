@@ -3,8 +3,6 @@
 #include <unordered_set>
 
 namespace {
-constexpr uint32_t kAdDailyLimit = 3;
-
 uint32_t reward_for_ad_view(const std::vector<uint32_t>& rewards_by_view, uint32_t count) {
     if (count == 0) return 0;
     if (count > rewards_by_view.size()) return 0;
@@ -46,7 +44,8 @@ infinitepickaxe::AdCountersState AdService::get_ad_counters_state(const std::str
         auto* ad_counter = state.add_ad_counters();
         ad_counter->set_ad_type(counter.ad_type);
         ad_counter->set_ad_count(counter.ad_count);
-        ad_counter->set_daily_limit(kAdDailyLimit);
+        const auto* meta = meta_.ad_meta(counter.ad_type);
+        ad_counter->set_daily_limit(meta ? meta->daily_limit : 0);
     }
     return state;
 }
@@ -63,7 +62,8 @@ infinitepickaxe::AdWatchResult AdService::handle_ad_watch(const std::string& use
         result.set_error_code("INVALID_AD_TYPE");
     } else {
         auto counter = repo_.get_or_create_ad_counter(user_id, ad_type);
-        if (counter.ad_count >= kAdDailyLimit) {
+        const uint32_t daily_limit = ad_meta->daily_limit;
+        if (daily_limit > 0 && counter.ad_count >= daily_limit) {
             result.set_error_code("DAILY_LIMIT_REACHED");
         } else {
             uint32_t next_count = counter.ad_count + 1;

@@ -1,19 +1,20 @@
 #include "slot_service.h"
 #include <spdlog/spdlog.h>
-#include <array>
 #include <cmath>
 
 namespace {
 constexpr uint32_t kFallbackAttackSpeed = 10000;     // 1.0 APS (basis 10000)
-constexpr std::array<uint32_t, 4> kSlotCrystalCosts = {0, 400, 2000, 4000};
 
-std::optional<uint32_t> crystal_cost_for_slot(uint32_t slot_index)
+std::optional<uint32_t> crystal_cost_for_slot(uint32_t slot_index, const MetadataLoader& meta)
 {
-    if (slot_index >= kSlotCrystalCosts.size())
+    for (const auto& cost : meta.pickaxe_slot_unlock_costs())
     {
-        return std::nullopt;
+        if (cost.slot_index == slot_index)
+        {
+            return cost.unlock_cost_crystal;
+        }
     }
-    return kSlotCrystalCosts[slot_index];
+    return std::nullopt;
 }
 
 uint64_t compute_expected_dps(uint64_t attack_power, uint32_t attack_speed,
@@ -187,7 +188,7 @@ infinitepickaxe::SlotUnlockResult SlotService::handle_unlock(const std::string& 
         return res;
     }
 
-    auto crystal_cost = crystal_cost_for_slot(slot_index);
+    auto crystal_cost = crystal_cost_for_slot(slot_index, meta_);
     if (!crystal_cost.has_value()) {
         res.set_success(false);
         res.set_error_code("INVALID_SLOT_INDEX");

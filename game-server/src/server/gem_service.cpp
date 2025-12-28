@@ -10,8 +10,6 @@ std::random_device rd;
 std::mt19937 gen(rd());
 
 // 크리티컬 스탯 기본 값 (database/game_schema/schema.sql의 DEFAULT 값)
-constexpr uint32_t DEFAULT_CRITICAL_HIT_PERCENT = 500;    // 5% (basis 10000)
-constexpr uint32_t DEFAULT_CRITICAL_DAMAGE = 15000;       // 150% (basis 10000)
 
 // DPS 계산 (slot_service.cpp와 동일)
 uint64_t compute_expected_dps(uint64_t attack_power, uint32_t attack_speed,
@@ -658,8 +656,9 @@ bool GemService::recalculate_slot_stats(const std::string& user_id, uint32_t pic
     // 기본 스탯 + 보석 보너스 적용
     uint32_t final_attack_speed = static_cast<uint32_t>(
         (static_cast<uint64_t>(base_attack_speed) * (10000 + attack_speed_bonus)) / 10000);
-    uint32_t final_critical_hit_percent = DEFAULT_CRITICAL_HIT_PERCENT + crit_rate_bonus;
-    uint32_t final_critical_damage = DEFAULT_CRITICAL_DAMAGE + crit_damage_bonus;
+    const auto& defaults = meta_.new_user_defaults();
+    uint32_t final_critical_hit_percent = defaults.initial_critical_hit_percent + crit_rate_bonus;
+    uint32_t final_critical_damage = defaults.initial_critical_damage + crit_damage_bonus;
 
     // DPS 재계산
     uint64_t final_dps = compute_expected_dps(slot.attack_power, final_attack_speed,

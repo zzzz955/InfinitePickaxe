@@ -23,6 +23,7 @@ bool MetadataLoader::load(const std::string& base_path) {
         gem_conversion_costs_.clear();
         gem_discard_rewards_.clear();
         gem_slot_unlock_costs_.clear();
+        pickaxe_slot_unlock_costs_.clear();
         gem_types_by_id_.clear();
         gem_grades_by_id_.clear();
         gem_definitions_by_id_.clear();
@@ -379,6 +380,25 @@ bool MetadataLoader::load(const std::string& base_path) {
                 gem_inventory_config_.max_capacity = j.value("max_capacity", 128);
                 gem_inventory_config_.expand_step = j.value("expand_step", 8);
                 gem_inventory_config_.expand_cost = j.value("expand_cost", 200);
+            }
+        }
+
+        // 곡괭이 슬롯 해금 비용
+        {
+            if (bundle.contains("pickaxe_slot_unlock_costs")) {
+                nlohmann::json j = bundle["pickaxe_slot_unlock_costs"];
+                for (auto& e : j) {
+                    PickaxeSlotUnlockCost cost;
+                    cost.slot_index = e.value("slot_index", 0);
+                    cost.unlock_cost_crystal = e.value("unlock_cost_crystal", 0);
+                    pickaxe_slot_unlock_costs_.push_back(cost);
+                }
+            }
+            if (pickaxe_slot_unlock_costs_.empty()) {
+                pickaxe_slot_unlock_costs_.push_back({0, 0});
+                pickaxe_slot_unlock_costs_.push_back({1, 400});
+                pickaxe_slot_unlock_costs_.push_back({2, 2000});
+                pickaxe_slot_unlock_costs_.push_back({3, 4000});
             }
         }
 
