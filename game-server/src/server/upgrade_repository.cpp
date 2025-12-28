@@ -30,7 +30,7 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
 
         // 슬롯 잠금 + 현재 상태 조회
         auto slot_row = tx.exec_params(
-            "SELECT level, tier, pity_bonus, attack_power, attack_speed, "
+            "SELECT slot_id, level, tier, pity_bonus, attack_power, attack_speed, "
             "       critical_hit_percent, critical_damage, dps "
             "FROM game_schema.pickaxe_slots "
             "WHERE user_id = $1 AND slot_index = $2 FOR UPDATE",
@@ -41,14 +41,15 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
             return res;
         }
 
-        uint32_t current_level = slot_row[0][0].as<uint32_t>();
-        uint32_t current_tier = slot_row[0][1].as<uint32_t>();
-        uint32_t current_pity_bp = slot_row[0][2].as<uint32_t>();
-        uint64_t current_attack_power = slot_row[0][3].as<int64_t>();
-        uint32_t current_attack_speed = slot_row[0][4].as<uint32_t>();
-        uint32_t critical_hit_percent = slot_row[0][5].as<uint32_t>();
-        uint32_t critical_damage = slot_row[0][6].as<uint32_t>();
-        uint64_t current_dps = slot_row[0][7].as<int64_t>();
+        std::string slot_id = slot_row[0][0].as<std::string>();
+        uint32_t current_level = slot_row[0][1].as<uint32_t>();
+        uint32_t current_tier = slot_row[0][2].as<uint32_t>();
+        uint32_t current_pity_bp = slot_row[0][3].as<uint32_t>();
+        uint64_t current_attack_power = slot_row[0][4].as<int64_t>();
+        uint32_t current_attack_speed = slot_row[0][5].as<uint32_t>();
+        uint32_t critical_hit_percent = slot_row[0][6].as<uint32_t>();
+        uint32_t critical_damage = slot_row[0][7].as<uint32_t>();
+        uint64_t current_dps = slot_row[0][8].as<int64_t>();
 
         res.final_level = current_level;
         res.final_tier = current_tier;
@@ -104,32 +105,78 @@ UpgradeRepository::UpgradeAttemptResult UpgradeRepository::try_upgrade_with_prob
 
         uint32_t new_pity = 0;
         if (success) {
-            // DPS 재계산 (크리티컬 포함)
-            // expected_dps = attack_power * attack_speed * (1 + crit_rate * (crit_damage_multiplier - 1))
-            double attack_speed = static_cast<double>(target_attack_speed) / 10000.0;
-            double crit_rate = static_cast<double>(critical_hit_percent) / 10000.0;
-            double crit_damage_multiplier = static_cast<double>(critical_damage) / 10000.0;
-            double calculated_dps = static_cast<double>(target_attack_power) * attack_speed
+            // 보석 보너스 계산
+            auto gem_slots = gem_repo_.get_gem_slots_for_pickaxe(slot_id);
+            uint32_t attack_speed_bonus = 0;  // basis 10000 퍼센트 보너스
+            uint32_t crit_rate_bonus = 0;     // basis 10000
+            uint32_t crit_damage_bonus = 0;   // basis 10000
+
+            for (const auto& gem_slot : gem_slots) {
+                if (!gem_slot.equipped_gem.has_value()) {
+                    continue;
+                }
+                const auto& gem = gem_slot.equipped_gem.value();
+                const auto* gem_def = meta_.gem_definition(gem.gem_id);
+                if (!gem_def) {
+                    continue;
+                }
+                const auto* type = meta_.gem_type(gem_def->type_id);
+                if (!type) {
+                    continue;
+                }
+                uint32_t multiplier = gem_def->stat_multiplier; // basis 10000
+
+                if (type->type == "ATTACK_SPEED") {
+                    attack_speed_bonus += multiplier;
+                } else if (type->type == "CRIT_RATE") {
+                    crit_rate_bonus += multiplier;
+                } else if (type->type == "CRIT_DMG") {
+                    crit_damage_bonus += multiplier;
+                }
+            }
+
+            // 기본 스탯 + 보석 보너스 적용
+            // attack_speed: 퍼센트 곱셈 (base * (10000 + bonus) / 10000)
+            uint32_t final_attack_speed = static_cast<uint32_t>(
+                (static_cast<uint64_t>(target_attack_speed) * (10000 + attack_speed_bonus)) / 10000);
+            uint32_t final_critical_hit_percent = critical_hit_percent + crit_rate_bonus;
+            uint32_t final_critical_damage = critical_damage + crit_damage_bonus;
+
+            // DPS 재계산 (보석 효과 적용된 스탯 사용)
+            double attack_speed_value = static_cast<double>(final_attack_speed) / 10000.0;
+            double crit_rate = static_cast<double>(final_critical_hit_percent) / 10000.0;
+            double crit_damage_multiplier = static_cast<double>(final_critical_damage) / 10000.0;
+            double calculated_dps = static_cast<double>(target_attack_power) * attack_speed_value
                                   * (1.0 + crit_rate * (crit_damage_multiplier - 1.0));
 
             res.final_level = target_level;
             res.final_tier = target_tier;
             res.final_attack_power = target_attack_power;
-            res.final_attack_speed = target_attack_speed;
-            res.final_critical_hit_percent = critical_hit_percent;
-            res.final_critical_damage = critical_damage;
+            res.final_attack_speed = final_attack_speed;
+            res.final_critical_hit_percent = final_critical_hit_percent;
+            res.final_critical_damage = final_critical_damage;
             res.final_dps = static_cast<uint64_t>(calculated_dps);
             new_pity = 0;
 
-            // 슬롯 업데이트
+            // 슬롯 업데이트 (보석 효과가 적용된 스탯 저장)
             tx.exec_params(
                 "UPDATE game_schema.pickaxe_slots "
                 "SET level = $3, tier = $4, attack_power = $5, attack_speed = $6, "
-                "    dps = $7, pity_bonus = $8, last_upgraded_at = NOW() "
+                "    critical_hit_percent = $7, critical_damage = $8, "
+                "    dps = $9, pity_bonus = $10, last_upgraded_at = NOW() "
                 "WHERE user_id = $1 AND slot_index = $2",
                 user_id, slot_index, target_level, target_tier,
-                static_cast<int64_t>(target_attack_power), target_attack_speed,
+                static_cast<int64_t>(target_attack_power), final_attack_speed,
+                final_critical_hit_percent, final_critical_damage,
                 static_cast<int64_t>(res.final_dps), new_pity);
+
+            spdlog::debug("upgrade success: user={} slot={} lv={} tier={} ap={} as={} (base={} +{}%) crit={}% (base={}% +{}%) critdmg={}% (base={}% +{}%) dps={}",
+                         user_id, slot_index, target_level, target_tier,
+                         target_attack_power, final_attack_speed,
+                         target_attack_speed, attack_speed_bonus,
+                         final_critical_hit_percent / 100.0, critical_hit_percent / 100.0, crit_rate_bonus / 100.0,
+                         final_critical_damage / 100.0, critical_damage / 100.0, crit_damage_bonus / 100.0,
+                         res.final_dps);
 
             // total_dps 재계산 (모든 슬롯의 DPS 합계)
             auto total_dps_row = tx.exec_params(

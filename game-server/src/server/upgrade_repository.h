@@ -1,11 +1,13 @@
 #pragma once
 #include "connection_pool.h"
+#include "gem_repository.h"
 #include "metadata/metadata_loader.h"
 #include <string>
 
 class UpgradeRepository {
 public:
-    explicit UpgradeRepository(ConnectionPool& pool) : pool_(pool) {}
+    UpgradeRepository(ConnectionPool& pool, GemRepository& gem_repo, const MetadataLoader& meta)
+        : pool_(pool), gem_repo_(gem_repo), meta_(meta) {}
 
     struct UpgradeAttemptResult {
         bool success{false};
@@ -38,4 +40,6 @@ public:
                                                       const UpgradeRules& rules);
 private:
     ConnectionPool& pool_;
+    GemRepository& gem_repo_;
+    const MetadataLoader& meta_;
 };

@@ -34,12 +34,12 @@ int main() {
         AuthService auth_service(cfg.auth_host, cfg.auth_port, redis_client);
         GameRepository game_repo(db_pool, metadata);
         MiningRepository mining_repo(db_pool);
-        UpgradeRepository upgrade_repo(db_pool);
         AdRepository ad_repo(db_pool);
         MissionRepository mission_repo(db_pool);
         SlotRepository slot_repo(db_pool);
         OfflineRepository offline_repo(db_pool);
         GemRepository gem_repo(db_pool);
+        UpgradeRepository upgrade_repo(db_pool, gem_repo, metadata);
         MiningService mining_service(mining_repo, slot_repo, game_repo, metadata);
         UpgradeService upgrade_service(upgrade_repo, metadata);
         AdService ad_service(ad_repo, game_repo, metadata);
