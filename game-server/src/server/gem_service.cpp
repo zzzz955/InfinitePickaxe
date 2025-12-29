@@ -130,13 +130,12 @@ infinitepickaxe::GemSynthesisResult GemService::handle_synthesis(const std::stri
     }
 
     uint32_t grade_id = first_def->grade_id;
-    uint32_t type_id = first_def->type_id;
 
     for (size_t i = 1; i < gems.size(); ++i) {
         const auto* def = meta_.gem_definition(gems[i].gem_id);
-        if (!def || def->grade_id != grade_id || def->type_id != type_id) {
+        if (!def || def->grade_id != grade_id) {
             result.set_success(false);
-            result.set_error_code("GRADE_TYPE_MISMATCH");
+            result.set_error_code("GRADE_MISMATCH");
             return result;
         }
     }
@@ -188,18 +187,21 @@ infinitepickaxe::GemSynthesisResult GemService::handle_synthesis(const std::stri
         }
 
         // 다음 등급의 같은 타입 gem_id 찾기
+        std::vector<uint32_t> candidate_gem_ids;
         for (const auto& def : meta_.gem_definitions()) {
-            if (def.grade_id == to_grade_id && def.type_id == type_id) {
-                result_gem_id = def.gem_id;
-                break;
+            if (def.grade_id == to_grade_id) {
+                candidate_gem_ids.push_back(def.gem_id);
             }
         }
 
-        if (result_gem_id == 0) {
+        if (candidate_gem_ids.empty()) {
             result.set_success(false);
             result.set_error_code("RESULT_GEM_NOT_FOUND");
             return result;
         }
+
+        std::uniform_int_distribution<> gem_dist(0, static_cast<int>(candidate_gem_ids.size()) - 1);
+        result_gem_id = candidate_gem_ids[gem_dist(gen)];
     }
 
     // Repository 호출
@@ -228,6 +230,156 @@ infinitepickaxe::GemSynthesisResult GemService::handle_synthesis(const std::stri
 
     spdlog::info("handle_synthesis: user={} gems={} success={}",
                  user_id, gem_instance_ids.size(), synthesis_success);
+    return result;
+}
+
+infinitepickaxe::GemAutoSynthesisResult GemService::handle_auto_synthesis(const std::string& user_id,
+                                                                          infinitepickaxe::GemGrade from_grade,
+                                                                          uint32_t max_attempts) {
+    infinitepickaxe::GemAutoSynthesisResult result;
+
+    std::string from_grade_str;
+    switch (from_grade) {
+        case infinitepickaxe::COMMON: from_grade_str = "COMMON"; break;
+        case infinitepickaxe::RARE: from_grade_str = "RARE"; break;
+        case infinitepickaxe::EPIC: from_grade_str = "EPIC"; break;
+        case infinitepickaxe::HERO: from_grade_str = "HERO"; break;
+        case infinitepickaxe::LEGENDARY: from_grade_str = "LEGENDARY"; break;
+        default:
+            result.set_success(false);
+            result.set_error_code("INVALID_GRADE");
+            return result;
+    }
+
+    uint32_t from_grade_id = 0;
+    for (const auto& g : meta_.gem_grades()) {
+        if (g.grade == from_grade_str) {
+            from_grade_id = g.id;
+            break;
+        }
+    }
+
+    if (from_grade_id == 0) {
+        result.set_success(false);
+        result.set_error_code("INVALID_GRADE_METADATA");
+        return result;
+    }
+
+    const GemSynthesisRule* rule = nullptr;
+    for (const auto& r : meta_.gem_synthesis_rules()) {
+        if (r.from_grade == from_grade_str) {
+            rule = &r;
+            break;
+        }
+    }
+
+    if (!rule) {
+        result.set_success(false);
+        result.set_error_code("NO_SYNTHESIS_RULE");
+        return result;
+    }
+
+    uint32_t to_grade_id = 0;
+    for (const auto& g : meta_.gem_grades()) {
+        if (g.grade == rule->to_grade) {
+            to_grade_id = g.id;
+            break;
+        }
+    }
+
+    if (to_grade_id == 0) {
+        result.set_success(false);
+        result.set_error_code("INVALID_TO_GRADE");
+        return result;
+    }
+
+    std::vector<uint32_t> candidate_result_ids;
+    for (const auto& def : meta_.gem_definitions()) {
+        if (def.grade_id == to_grade_id) {
+            candidate_result_ids.push_back(def.gem_id);
+        }
+    }
+
+    if (candidate_result_ids.empty()) {
+        result.set_success(false);
+        result.set_error_code("RESULT_GEM_NOT_FOUND");
+        return result;
+    }
+
+    auto gems = gem_repo_.get_user_gems_excluding_equipped(user_id);
+    std::vector<std::string> candidate_ids;
+    candidate_ids.reserve(gems.size());
+
+    for (const auto& gem : gems) {
+        const auto* def = meta_.gem_definition(gem.gem_id);
+        if (!def) {
+            result.set_success(false);
+            result.set_error_code("INVALID_GEM_METADATA");
+            return result;
+        }
+        if (def->grade_id == from_grade_id) {
+            candidate_ids.push_back(gem.gem_instance_id);
+        }
+    }
+
+    uint32_t possible_attempts = static_cast<uint32_t>(candidate_ids.size() / 3);
+    if (possible_attempts == 0) {
+        result.set_success(false);
+        result.set_error_code("INSUFFICIENT_GEMS");
+        return result;
+    }
+
+    uint32_t attempts = possible_attempts;
+    if (max_attempts > 0 && max_attempts < attempts) {
+        attempts = max_attempts;
+    }
+
+    std::uniform_int_distribution<> roll_dist(0, 9999);
+    std::uniform_int_distribution<> result_dist(0, static_cast<int>(candidate_result_ids.size()) - 1);
+
+    std::vector<std::string> consumed_ids;
+    consumed_ids.reserve(attempts * 3);
+    for (uint32_t i = 0; i < attempts * 3; ++i) {
+        consumed_ids.push_back(candidate_ids[i]);
+    }
+
+    std::vector<uint32_t> result_gem_ids;
+    result_gem_ids.reserve(attempts);
+    uint32_t success_count = 0;
+
+    for (uint32_t i = 0; i < attempts; ++i) {
+        bool synthesis_success = roll_dist(gen) < rule->success_rate_percent;
+        if (synthesis_success) {
+            result_gem_ids.push_back(candidate_result_ids[result_dist(gen)]);
+            ++success_count;
+        }
+    }
+
+    auto synth_result = gem_repo_.auto_synthesize_gems(user_id, consumed_ids, result_gem_ids);
+    if (!synth_result.success) {
+        result.set_success(false);
+        if (synth_result.invalid_gems) {
+            result.set_error_code("INVALID_GEMS");
+        } else {
+            result.set_error_code("DB_ERROR");
+        }
+        return result;
+    }
+
+    result.set_success(true);
+    result.set_attempted(attempts);
+    result.set_success_count(success_count);
+
+    for (const auto& gem : synth_result.result_gems) {
+        auto* gem_info = result.add_result_gems();
+        populate_gem_info(gem, gem_info);
+    }
+
+    auto all_gems = gem_repo_.get_user_gems(user_id);
+    result.set_total_gems(static_cast<uint32_t>(all_gems.size()));
+
+    spdlog::info("handle_auto_synthesis: user={} attempts={} success={}",
+                 user_id, attempts, success_count);
     return result;
 }
 

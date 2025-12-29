@@ -34,6 +34,13 @@ struct SynthesisResult {
     std::optional<GemInstanceData> result_gem;  // 합성 성공 시
 };
 
+// 자동 합성 결과
+struct AutoSynthesisResult {
+    bool success{false};
+    bool invalid_gems{false};
+    std::vector<GemInstanceData> result_gems;
+};
+
 // 변환 트랜잭션 결과
 struct ConversionResult {
     bool success{false};
@@ -81,6 +88,7 @@ public:
     // 조회
     std::vector<GemSlotData> get_gem_slots_for_pickaxe(const std::string& pickaxe_slot_id);
     std::vector<GemInstanceData> get_user_gems(const std::string& user_id);
+    std::vector<GemInstanceData> get_user_gems_excluding_equipped(const std::string& user_id);
     std::optional<GemInstanceData> get_gem_by_instance_id(const std::string& gem_instance_id);
     uint32_t get_inventory_capacity(const std::string& user_id);
 
@@ -100,6 +108,9 @@ public:
     SynthesisResult synthesize_gems(const std::string& user_id,
                                      const std::vector<std::string>& gem_instance_ids,
                                      uint32_t result_gem_id);
+    AutoSynthesisResult auto_synthesize_gems(const std::string& user_id,
+                                              const std::vector<std::string>& gem_instance_ids,
+                                              const std::vector<uint32_t>& result_gem_ids);
     ConversionResult convert_gem_type(const std::string& gem_instance_id,
                                        uint32_t new_gem_id, uint32_t crystal_cost);
     DiscardResult discard_gems(const std::string& user_id,

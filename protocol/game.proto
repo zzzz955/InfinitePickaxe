@@ -103,6 +103,8 @@ enum MessageType {
   GEM_SLOT_UNLOCK_RESULT = 125;
   GEM_INVENTORY_EXPAND_REQUEST = 126;
   GEM_INVENTORY_EXPAND_RESULT = 127;
+  GEM_AUTO_SYNTHESIS_REQUEST = 128;
+  GEM_AUTO_SYNTHESIS_RESULT = 129;
 }
 
 // 공통 Envelope: Type으로 메시지 구분
@@ -176,6 +178,8 @@ message Envelope {
     GemSlotUnlockResult gem_slot_unlock_result = 135;
     GemInventoryExpandRequest gem_inventory_expand_request = 136;
     GemInventoryExpandResult gem_inventory_expand_result = 137;
+    GemAutoSynthesisRequest gem_auto_synthesis_request = 138;
+    GemAutoSynthesisResult gem_auto_synthesis_result = 139;
   }
 }
 
@@ -542,7 +546,7 @@ message GemGachaResult {
 
 // 합성
 message GemSynthesisRequest {
-  repeated string gem_instance_ids = 1;  // 3개의 UUID (같은 등급, 같은 타입)
+  repeated string gem_instance_ids = 1;  // 3개의 UUID (같은 등급)
 }
 
 message GemSynthesisResult {
@@ -551,6 +555,21 @@ message GemSynthesisResult {
   GemInfo result_gem = 3;         // 합성 결과 보석 (성공 시)
   uint32 total_gems = 4;
   string error_code = 5;          // "INVALID_GEMS", "GRADE_MISMATCH" 등
+}
+
+// 자동 합성
+message GemAutoSynthesisRequest {
+  GemGrade from_grade = 1;        // 합성 기준 등급
+  uint32 max_attempts = 2;        // 0이면 가능한 만큼 시도
+}
+
+message GemAutoSynthesisResult {
+  bool success = 1;
+  uint32 attempted = 2;
+  uint32 success_count = 3;
+  repeated GemInfo result_gems = 4;
+  uint32 total_gems = 5;
+  string error_code = 6;
 }
 
 // 타입 변환

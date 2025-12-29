@@ -25,7 +25,7 @@ namespace Infinitepickaxe {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgpnYW1lLnByb3RvEg9pbmZpbml0ZXBpY2theGUaHmdvb2dsZS9wcm90b2J1",
-            "Zi93cmFwcGVycy5wcm90byKtGwoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
+            "Zi93cmFwcGVycy5wcm90byLNHAoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
             "LmluZmluaXRlcGlja2F4ZS5NZXNzYWdlVHlwZRI2CgloYW5kc2hha2UYCiAB",
             "KAsyIS5pbmZpbml0ZXBpY2theGUuSGFuZHNoYWtlUmVxdWVzdEgAEj4KEGhh",
             "bmRzaGFrZV9yZXN1bHQYCyABKAsyIi5pbmZpbml0ZXBpY2theGUuSGFuZHNo",
@@ -102,201 +102,212 @@ namespace Infinitepickaxe {
             "b2NrUmVzdWx0SAASUwocZ2VtX2ludmVudG9yeV9leHBhbmRfcmVxdWVzdBiI",
             "ASABKAsyKi5pbmZpbml0ZXBpY2theGUuR2VtSW52ZW50b3J5RXhwYW5kUmVx",
             "dWVzdEgAElEKG2dlbV9pbnZlbnRvcnlfZXhwYW5kX3Jlc3VsdBiJASABKAsy",
-            "KS5pbmZpbml0ZXBpY2theGUuR2VtSW52ZW50b3J5RXhwYW5kUmVzdWx0SABC",
-            "CQoHbWVzc2FnZSJKChBIYW5kc2hha2VSZXF1ZXN0EgsKA2p3dBgBIAEoCRIW",
-            "Cg5jbGllbnRfdmVyc2lvbhgCIAEoCRIRCglkZXZpY2VfaWQYAyABKAkijAIK",
-            "D1BpY2theGVTbG90SW5mbxISCgpzbG90X2luZGV4GAEgASgNEg0KBWxldmVs",
-            "GAIgASgNEgwKBHRpZXIYAyABKA0SFAoMYXR0YWNrX3Bvd2VyGAQgASgEEhQK",
-            "DGF0dGFja19zcGVlZBgFIAEoDRIcChRjcml0aWNhbF9oaXRfcGVyY2VudBgG",
-            "IAEoDRIXCg9jcml0aWNhbF9kYW1hZ2UYByABKA0SCwoDZHBzGAggASgEEhIK",
-            "CnBpdHlfYm9udXMYCSABKA0SEwoLaXNfdW5sb2NrZWQYCiABKAgSLwoJZ2Vt",
-            "X3Nsb3RzGAsgAygLMhwuaW5maW5pdGVwaWNrYXhlLkdlbVNsb3RJbmZvIkMK",
-            "CUFkQ291bnRlchIPCgdhZF90eXBlGAEgASgJEhAKCGFkX2NvdW50GAIgASgN",
-            "EhMKC2RhaWx5X2xpbWl0GAMgASgNIqoEChBVc2VyRGF0YVNuYXBzaG90EioK",
-            "BGdvbGQYASABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSLQoH",
-            "Y3J5c3RhbBgCIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJWYWx1ZRIW",
-            "Cg51bmxvY2tlZF9zbG90cxgDIAMoCBI4ChJjdXJyZW50X21pbmVyYWxfaWQY",
-            "BCABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDMyVmFsdWUSMAoKbWluZXJh",
-            "bF9ocBgFIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1ZRI0Cg5t",
-            "aW5lcmFsX21heF9ocBgGIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRW",
-            "YWx1ZRI3Cg1waWNrYXhlX3Nsb3RzGAcgAygLMiAuaW5maW5pdGVwaWNrYXhl",
-            "LlBpY2theGVTbG90SW5mbxIRCgl0b3RhbF9kcHMYCCABKAQSMQoLc2VydmVy",
-            "X3RpbWUYCSABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSLwoL",
-            "YWRfY291bnRlcnMYCiADKAsyGi5pbmZpbml0ZXBpY2theGUuQWRDb3VudGVy",
-            "Eh0KFWN1cnJlbnRfb2ZmbGluZV9ob3VycxgLIAEoDRIeChZnZW1faW52ZW50",
-            "b3J5X2NhcGFjaXR5GAwgASgNEhIKCnRvdGFsX2dlbXMYDSABKA0iagoRSGFu",
-            "ZHNoYWtlUmVzcG9uc2USDwoHc3VjY2VzcxgBIAEoCBIPCgdtZXNzYWdlGAIg",
-            "ASgJEjMKCHNuYXBzaG90GAMgASgLMiEuaW5maW5pdGVwaWNrYXhlLlVzZXJE",
-            "YXRhU25hcHNob3QiIwoJSGVhcnRiZWF0EhYKDmNsaWVudF90aW1lX21zGAEg",
-            "ASgEIiYKDEhlYXJ0YmVhdEFjaxIWCg5zZXJ2ZXJfdGltZV9tcxgBIAEoBCIU",
-            "ChJNaW5lcmFsTGlzdFJlcXVlc3QiZwoLTWluZXJhbEluZm8SEgoKbWluZXJh",
-            "bF9pZBgBIAEoDRIMCgRuYW1lGAIgASgJEg4KBm1heF9ocBgDIAEoBBITCgtn",
-            "b2xkX3Jld2FyZBgEIAEoBBIRCglpY29uX25hbWUYBSABKAkiRQoTTWluZXJh",
-            "bExpc3RSZXNwb25zZRIuCghtaW5lcmFscxgBIAMoCzIcLmluZmluaXRlcGlj",
-            "a2F4ZS5NaW5lcmFsSW5mbyIqChRDaGFuZ2VNaW5lcmFsUmVxdWVzdBISCgpt",
-            "aW5lcmFsX2lkGAEgASgNInwKFUNoYW5nZU1pbmVyYWxSZXNwb25zZRIPCgdz",
-            "dWNjZXNzGAEgASgIEhIKCm1pbmVyYWxfaWQYAiABKA0SEgoKbWluZXJhbF9o",
-            "cBgDIAEoBBIWCg5taW5lcmFsX21heF9ocBgEIAEoBBISCgplcnJvcl9jb2Rl",
-            "GAUgASgJIkgKDVBpY2theGVBdHRhY2sSEgoKc2xvdF9pbmRleBgBIAEoDRIO",
-            "CgZkYW1hZ2UYAiABKAQSEwoLaXNfY3JpdGljYWwYAyABKAgikQEKDE1pbmlu",
-            "Z1VwZGF0ZRISCgptaW5lcmFsX2lkGAEgASgNEhIKCmN1cnJlbnRfaHAYAiAB",
-            "KAQSDgoGbWF4X2hwGAMgASgEEi8KB2F0dGFja3MYBCADKAsyHi5pbmZpbml0",
-            "ZXBpY2theGUuUGlja2F4ZUF0dGFjaxIYChBzZXJ2ZXJfdGltZXN0YW1wGAUg",
-            "ASgEIpMBCg5NaW5pbmdDb21wbGV0ZRISCgptaW5lcmFsX2lkGAEgASgNEhMK",
-            "C2dvbGRfZWFybmVkGAIgASgEEhIKCnRvdGFsX2dvbGQYAyABKAQSFAoMbWlu",
-            "aW5nX2NvdW50GAQgASgEEhQKDHJlc3Bhd25fdGltZRgFIAEoDRIYChBzZXJ2",
-            "ZXJfdGltZXN0YW1wGAYgASgEIhEKD0FsbFNsb3RzUmVxdWVzdCJWChBBbGxT",
-            "bG90c1Jlc3BvbnNlEi8KBXNsb3RzGAEgAygLMiAuaW5maW5pdGVwaWNrYXhl",
-            "LlBpY2theGVTbG90SW5mbxIRCgl0b3RhbF9kcHMYAiABKAQiJAoOVXBncmFk",
-            "ZVJlcXVlc3QSEgoKc2xvdF9pbmRleBgBIAEoDSKMAwoNVXBncmFkZVJlc3Vs",
-            "dBIPCgdzdWNjZXNzGAEgASgIEhIKCnNsb3RfaW5kZXgYAiABKA0SEQoJbmV3",
-            "X2xldmVsGAMgASgNEhAKCG5ld190aWVyGAQgASgNEhgKEG5ld19hdHRhY2tf",
-            "cG93ZXIYBSABKAQSGAoQbmV3X2F0dGFja19zcGVlZBgGIAEoDRIgChhuZXdf",
-            "Y3JpdGljYWxfaGl0X3BlcmNlbnQYByABKA0SGwoTbmV3X2NyaXRpY2FsX2Rh",
-            "bWFnZRgIIAEoDRIPCgduZXdfZHBzGAkgASgEEhUKDW5ld190b3RhbF9kcHMY",
-            "CiABKAQSEgoKZ29sZF9zcGVudBgLIAEoBBIWCg5yZW1haW5pbmdfZ29sZBgM",
-            "IAEoBBISCgplcnJvcl9jb2RlGA0gASgJEhQKDGJhc2VfcmF0ZV9icBgOIAEo",
-            "DRIVCg1ib251c19yYXRlX2JwGA8gASgNEhUKDWZpbmFsX3JhdGVfYnAYECAB",
-            "KA0SEgoKcGl0eV9ib251cxgRIAEoDSIWChREYWlseU1pc3Npb25zUmVxdWVz",
-            "dCKiAgoMTWlzc2lvbkVudHJ5Eg8KB3Nsb3Rfbm8YASABKA0SEgoKbWlzc2lv",
-            "bl9pZBgCIAEoDRIUCgxtaXNzaW9uX3R5cGUYAyABKAkSEwoLZGVzY3JpcHRp",
-            "b24YBCABKAkSFAoMdGFyZ2V0X3ZhbHVlGAUgASgNEhUKDWN1cnJlbnRfdmFs",
-            "dWUYBiABKA0SFgoOcmV3YXJkX2NyeXN0YWwYByABKA0SDgoGc3RhdHVzGAgg",
-            "ASgJEhMKC2Fzc2lnbmVkX2F0GAkgASgEEhIKCmV4cGlyZXNfYXQYCiABKAQS",
-            "EgoKZGlmZmljdWx0eRgLIAEoCRIwCgptaW5lcmFsX2lkGAwgASgLMhwuZ29v",
-            "Z2xlLnByb3RvYnVmLlVJbnQzMlZhbHVlIvcBChVEYWlseU1pc3Npb25zUmVz",
-            "cG9uc2USLwoIbWlzc2lvbnMYASADKAsyHS5pbmZpbml0ZXBpY2theGUuTWlz",
-            "c2lvbkVudHJ5EhcKD2NvbXBsZXRlZF9jb3VudBgCIAEoDRIUCgxyZXJvbGxf",
-            "Y291bnQYAyABKA0SLwoLYWRfY291bnRlcnMYBCADKAsyGi5pbmZpbml0ZXBp",
-            "Y2theGUuQWRDb3VudGVyEhQKDHJlcm9sbHNfZnJlZRgFIAEoDRIbChNyZXJv",
-            "bGxzX3RvdGFsX2xpbWl0GAYgASgNEhoKEnJlc2V0X3RpbWVzdGFtcF9tcxgH",
-            "IAEoBCJ5ChVNaXNzaW9uUHJvZ3Jlc3NVcGRhdGUSDwoHc2xvdF9ubxgBIAEo",
-            "DRISCgptaXNzaW9uX2lkGAIgASgNEhUKDWN1cnJlbnRfdmFsdWUYAyABKA0S",
-            "FAoMdGFyZ2V0X3ZhbHVlGAQgASgNEg4KBnN0YXR1cxgFIAEoCSIiCg9NaXNz",
-            "aW9uQ29tcGxldGUSDwoHc2xvdF9ubxgBIAEoDSKQAQoVTWlzc2lvbkNvbXBs",
-            "ZXRlUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSDwoHc2xvdF9ubxgCIAEoDRIS",
-            "CgptaXNzaW9uX2lkGAMgASgNEhYKDnJld2FyZF9jcnlzdGFsGAQgASgNEhUK",
-            "DXRvdGFsX2NyeXN0YWwYBSABKA0SEgoKZXJyb3JfY29kZRgGIAEoCSIPCg1N",
-            "aXNzaW9uUmVyb2xsIooBChNNaXNzaW9uUmVyb2xsUmVzdWx0Eg8KB3N1Y2Nl",
-            "c3MYASABKAgSOAoRcmVyb2xsZWRfbWlzc2lvbnMYAiADKAsyHS5pbmZpbml0",
-            "ZXBpY2theGUuTWlzc2lvbkVudHJ5EhQKDHJlcm9sbHNfdXNlZBgDIAEoDRIS",
-            "CgplcnJvcl9jb2RlGAQgASgJIikKDk1pbGVzdG9uZUNsYWltEhcKD21pbGVz",
-            "dG9uZV9jb3VudBgBIAEoDSK+AQoUTWlsZXN0b25lQ2xhaW1SZXN1bHQSDwoH",
-            "c3VjY2VzcxgBIAEoCBIXCg9taWxlc3RvbmVfY291bnQYAiABKA0SHAoUb2Zm",
-            "bGluZV9ob3Vyc19nYWluZWQYAyABKA0SGwoTdG90YWxfb2ZmbGluZV9ob3Vy",
-            "cxgEIAEoDRIWCg5yZXdhcmRfY3J5c3RhbBgFIAEoDRIVCg10b3RhbF9jcnlz",
-            "dGFsGAYgASgNEhIKCmVycm9yX2NvZGUYByABKAkiYQoOTWlsZXN0b25lU3Rh",
-            "dGUSFwoPY29tcGxldGVkX2NvdW50GAEgASgNEhoKEmNsYWltZWRfbWlsZXN0",
-            "b25lcxgCIAMoDRIaChJyZXNldF90aW1lc3RhbXBfbXMYAyABKAQiIAoKU2xv",
-            "dFVubG9jaxISCgpzbG90X2luZGV4GAEgASgNIsQBChBTbG90VW5sb2NrUmVz",
-            "dWx0Eg8KB3N1Y2Nlc3MYASABKAgSEgoKc2xvdF9pbmRleBgCIAEoDRIVCg1j",
-            "cnlzdGFsX3NwZW50GAMgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQgASgN",
-            "EhIKCmVycm9yX2NvZGUYBSABKAkSMgoIbmV3X3Nsb3QYBiABKAsyIC5pbmZp",
-            "bml0ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhEKCXRvdGFsX2RwcxgHIAEo",
-            "BCIiCg9BZFdhdGNoQ29tcGxldGUSDwoHYWRfdHlwZRgBIAEoCSKlAQoNQWRX",
-            "YXRjaFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEg8KB2FkX3R5cGUYAiABKAkS",
-            "FgoOY3J5c3RhbF9lYXJuZWQYAyABKA0SFQoNdG90YWxfY3J5c3RhbBgEIAEo",
-            "DRIvCgthZF9jb3VudGVycxgFIAMoCzIaLmluZmluaXRlcGlja2F4ZS5BZENv",
-            "dW50ZXISEgoKZXJyb3JfY29kZRgGIAEoCSJeCg9BZENvdW50ZXJzU3RhdGUS",
-            "LwoLYWRfY291bnRlcnMYASADKAsyGi5pbmZpbml0ZXBpY2theGUuQWRDb3Vu",
-            "dGVyEhoKEnJlc2V0X3RpbWVzdGFtcF9tcxgCIAEoBCJ7Cg5DdXJyZW5jeVVw",
-            "ZGF0ZRIqCgRnb2xkGAEgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZh",
-            "bHVlEi0KB2NyeXN0YWwYAiABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDMy",
-            "VmFsdWUSDgoGcmVhc29uGAMgASgJIhYKFE9mZmxpbmVSZXdhcmRSZXF1ZXN0",
-            "Im0KE09mZmxpbmVSZXdhcmRSZXN1bHQSFwoPZWxhcHNlZF9zZWNvbmRzGAEg",
-            "ASgEEhMKC2dvbGRfZWFybmVkGAIgASgEEhQKDG1pbmluZ19jb3VudBgDIAEo",
-            "DRISCgp0b3RhbF9nb2xkGAQgASgEIjgKEUVycm9yTm90aWZpY2F0aW9uEhIK",
-            "CmVycm9yX2NvZGUYASABKAkSDwoHbWVzc2FnZRgCIAEoCSLOAQoHR2VtSW5m",
-            "bxIXCg9nZW1faW5zdGFuY2VfaWQYASABKAkSDgoGZ2VtX2lkGAIgASgNEigK",
-            "BWdyYWRlGAMgASgOMhkuaW5maW5pdGVwaWNrYXhlLkdlbUdyYWRlEiYKBHR5",
-            "cGUYBCABKA4yGC5pbmZpbml0ZXBpY2theGUuR2VtVHlwZRIMCgRuYW1lGAUg",
-            "ASgJEgwKBGljb24YBiABKAkSFwoPc3RhdF9tdWx0aXBsaWVyGAcgASgNEhMK",
-            "C2FjcXVpcmVkX2F0GAggASgEImoKC0dlbVNsb3RJbmZvEhYKDmdlbV9zbG90",
-            "X2luZGV4GAEgASgNEhMKC2lzX3VubG9ja2VkGAIgASgIEi4KDGVxdWlwcGVk",
-            "X2dlbRgDIAEoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1JbmZvIhAKDkdlbUxp",
-            "c3RSZXF1ZXN0ImkKD0dlbUxpc3RSZXNwb25zZRImCgRnZW1zGAEgAygLMhgu",
-            "aW5maW5pdGVwaWNrYXhlLkdlbUluZm8SEgoKdG90YWxfZ2VtcxgCIAEoDRIa",
-            "ChJpbnZlbnRvcnlfY2FwYWNpdHkYAyABKA0iJQoPR2VtR2FjaGFSZXF1ZXN0",
-            "EhIKCnB1bGxfY291bnQYASABKA0ivwEKDkdlbUdhY2hhUmVzdWx0Eg8KB3N1",
-            "Y2Nlc3MYASABKAgSJgoEZ2VtcxgCIAMoCzIYLmluZmluaXRlcGlja2F4ZS5H",
-            "ZW1JbmZvEhUKDWNyeXN0YWxfc3BlbnQYAyABKA0SGQoRcmVtYWluaW5nX2Ny",
-            "eXN0YWwYBCABKA0SEgoKdG90YWxfZ2VtcxgFIAEoDRIaChJpbnZlbnRvcnlf",
-            "Y2FwYWNpdHkYBiABKA0SEgoKZXJyb3JfY29kZRgHIAEoCSIvChNHZW1TeW50",
-            "aGVzaXNSZXF1ZXN0EhgKEGdlbV9pbnN0YW5jZV9pZHMYASADKAkilgEKEkdl",
-            "bVN5bnRoZXNpc1Jlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhkKEXN5bnRoZXNp",
-            "c19zdWNjZXNzGAIgASgIEiwKCnJlc3VsdF9nZW0YAyABKAsyGC5pbmZpbml0",
-            "ZXBpY2theGUuR2VtSW5mbxISCgp0b3RhbF9nZW1zGAQgASgNEhIKCmVycm9y",
-            "X2NvZGUYBSABKAkidgoUR2VtQ29udmVyc2lvblJlcXVlc3QSFwoPZ2VtX2lu",
-            "c3RhbmNlX2lkGAEgASgJEi0KC3RhcmdldF90eXBlGAIgASgOMhguaW5maW5p",
-            "dGVwaWNrYXhlLkdlbVR5cGUSFgoOdXNlX2ZpeGVkX2Nvc3QYAyABKAginQEK",
-            "E0dlbUNvbnZlcnNpb25SZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIvCg1jb252",
-            "ZXJ0ZWRfZ2VtGAIgASgLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SFQoN",
-            "Y3J5c3RhbF9zcGVudBgDIAEoDRIZChFyZW1haW5pbmdfY3J5c3RhbBgEIAEo",
-            "DRISCgplcnJvcl9jb2RlGAUgASgJIi0KEUdlbURpc2NhcmRSZXF1ZXN0EhgK",
-            "EGdlbV9pbnN0YW5jZV9pZHMYASADKAkiegoQR2VtRGlzY2FyZFJlc3VsdBIP",
-            "CgdzdWNjZXNzGAEgASgIEhYKDmNyeXN0YWxfZWFybmVkGAIgASgNEhUKDXRv",
-            "dGFsX2NyeXN0YWwYAyABKA0SEgoKdG90YWxfZ2VtcxgEIAEoDRISCgplcnJv",
-            "cl9jb2RlGAUgASgJIl4KD0dlbUVxdWlwUmVxdWVzdBIaChJwaWNrYXhlX3Ns",
-            "b3RfaW5kZXgYASABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAiABKA0SFwoPZ2Vt",
-            "X2luc3RhbmNlX2lkGAMgASgJIusBCg5HZW1FcXVpcFJlc3VsdBIPCgdzdWNj",
-            "ZXNzGAEgASgIEhoKEnBpY2theGVfc2xvdF9pbmRleBgCIAEoDRIWCg5nZW1f",
-            "c2xvdF9pbmRleBgDIAEoDRIuCgxlcXVpcHBlZF9nZW0YBCABKAsyGC5pbmZp",
-            "bml0ZXBpY2theGUuR2VtSW5mbxI5Cg91cGRhdGVkX3BpY2theGUYBSABKAsy",
-            "IC5pbmZpbml0ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhUKDW5ld190b3Rh",
-            "bF9kcHMYBiABKAQSEgoKZXJyb3JfY29kZRgHIAEoCSJHChFHZW1VbmVxdWlw",
-            "UmVxdWVzdBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgYASABKA0SFgoOZ2VtX3Ns",
-            "b3RfaW5kZXgYAiABKA0i7wEKEEdlbVVuZXF1aXBSZXN1bHQSDwoHc3VjY2Vz",
-            "cxgBIAEoCBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgYAiABKA0SFgoOZ2VtX3Ns",
-            "b3RfaW5kZXgYAyABKA0SMAoOdW5lcXVpcHBlZF9nZW0YBCABKAsyGC5pbmZp",
-            "bml0ZXBpY2theGUuR2VtSW5mbxI5Cg91cGRhdGVkX3BpY2theGUYBSABKAsy",
-            "IC5pbmZpbml0ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhUKDW5ld190b3Rh",
-            "bF9kcHMYBiABKAQSEgoKZXJyb3JfY29kZRgHIAEoCSJKChRHZW1TbG90VW5s",
-            "b2NrUmVxdWVzdBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgYASABKA0SFgoOZ2Vt",
-            "X3Nsb3RfaW5kZXgYAiABKA0ioAEKE0dlbVNsb3RVbmxvY2tSZXN1bHQSDwoH",
-            "c3VjY2VzcxgBIAEoCBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgYAiABKA0SFgoO",
-            "Z2VtX3Nsb3RfaW5kZXgYAyABKA0SFQoNY3J5c3RhbF9zcGVudBgEIAEoDRIZ",
-            "ChFyZW1haW5pbmdfY3J5c3RhbBgFIAEoDRISCgplcnJvcl9jb2RlGAYgASgJ",
-            "IhsKGUdlbUludmVudG9yeUV4cGFuZFJlcXVlc3QihwEKGEdlbUludmVudG9y",
-            "eUV4cGFuZFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhQKDG5ld19jYXBhY2l0",
-            "eRgCIAEoDRIVCg1jcnlzdGFsX3NwZW50GAMgASgNEhkKEXJlbWFpbmluZ19j",
-            "cnlzdGFsGAQgASgNEhIKCmVycm9yX2NvZGUYBSABKAkqTgoHR2VtVHlwZRIU",
-            "ChBHRU1fVFlQRV9VTktOT1dOEAASEAoMQVRUQUNLX1NQRUVEEAESDQoJQ1JJ",
-            "VF9SQVRFEAISDAoIQ1JJVF9ETUcQAypaCghHZW1HcmFkZRIVChFHRU1fR1JB",
-            "REVfVU5LTk9XThAAEgoKBkNPTU1PThABEggKBFJBUkUQAhIICgRFUElDEAMS",
-            "CAoESEVSTxAEEg0KCUxFR0VOREFSWRAFKoYKCgtNZXNzYWdlVHlwZRILCgdV",
-            "TktOT1dOEAASDQoJSEFORFNIQUtFEAESFAoQSEFORFNIQUtFX1JFU1VMVBAC",
-            "Eg0KCUhFQVJUQkVBVBADEhEKDUhFQVJUQkVBVF9BQ0sQBBIWChJVU0VSX0RB",
-            "VEFfU05BUFNIT1QQChIYChRNSU5FUkFMX0xJU1RfUkVRVUVTVBAUEhkKFU1J",
-            "TkVSQUxfTElTVF9SRVNQT05TRRAVEhoKFkNIQU5HRV9NSU5FUkFMX1JFUVVF",
-            "U1QQFhIbChdDSEFOR0VfTUlORVJBTF9SRVNQT05TRRAXEhEKDU1JTklOR19V",
-            "UERBVEUQIBITCg9NSU5JTkdfQ09NUExFVEUQIRIVChFBTExfU0xPVFNfUkVR",
-            "VUVTVBAoEhYKEkFMTF9TTE9UU19SRVNQT05TRRApEg8KC1NMT1RfVU5MT0NL",
-            "ECoSFgoSU0xPVF9VTkxPQ0tfUkVTVUxUECsSEwoPVVBHUkFERV9SRVFVRVNU",
-            "EDISEgoOVVBHUkFERV9SRVNVTFQQMxIaChZEQUlMWV9NSVNTSU9OU19SRVFV",
-            "RVNUEDwSGwoXREFJTFlfTUlTU0lPTlNfUkVTUE9OU0UQPRIbChdNSVNTSU9O",
-            "X1BST0dSRVNTX1VQREFURRA+EhQKEE1JU1NJT05fQ09NUExFVEUQPxIbChdN",
-            "SVNTSU9OX0NPTVBMRVRFX1JFU1VMVBBAEhIKDk1JU1NJT05fUkVST0xMEEES",
-            "GQoVTUlTU0lPTl9SRVJPTExfUkVTVUxUEEISEwoPTUlMRVNUT05FX0NMQUlN",
-            "EEMSGgoWTUlMRVNUT05FX0NMQUlNX1JFU1VMVBBEEhMKD01JTEVTVE9ORV9T",
-            "VEFURRBFEhUKEUFEX1dBVENIX0NPTVBMRVRFEEYSEwoPQURfV0FUQ0hfUkVT",
-            "VUxUEEcSFQoRQURfQ09VTlRFUlNfU1RBVEUQSBITCg9DVVJSRU5DWV9VUERB",
-            "VEUQUBIaChZPRkZMSU5FX1JFV0FSRF9SRVFVRVNUEFoSGQoVT0ZGTElORV9S",
-            "RVdBUkRfUkVTVUxUEFsSFgoSRVJST1JfTk9USUZJQ0FUSU9OEGQSFAoQR0VN",
-            "X0xJU1RfUkVRVUVTVBBuEhUKEUdFTV9MSVNUX1JFU1BPTlNFEG8SFQoRR0VN",
-            "X0dBQ0hBX1JFUVVFU1QQcBIUChBHRU1fR0FDSEFfUkVTVUxUEHESGQoVR0VN",
-            "X1NZTlRIRVNJU19SRVFVRVNUEHISGAoUR0VNX1NZTlRIRVNJU19SRVNVTFQQ",
-            "cxIaChZHRU1fQ09OVkVSU0lPTl9SRVFVRVNUEHQSGQoVR0VNX0NPTlZFUlNJ",
-            "T05fUkVTVUxUEHUSFwoTR0VNX0RJU0NBUkRfUkVRVUVTVBB2EhYKEkdFTV9E",
-            "SVNDQVJEX1JFU1VMVBB3EhUKEUdFTV9FUVVJUF9SRVFVRVNUEHgSFAoQR0VN",
-            "X0VRVUlQX1JFU1VMVBB5EhcKE0dFTV9VTkVRVUlQX1JFUVVFU1QQehIWChJH",
-            "RU1fVU5FUVVJUF9SRVNVTFQQexIbChdHRU1fU0xPVF9VTkxPQ0tfUkVRVUVT",
-            "VBB8EhoKFkdFTV9TTE9UX1VOTE9DS19SRVNVTFQQfRIgChxHRU1fSU5WRU5U",
-            "T1JZX0VYUEFORF9SRVFVRVNUEH4SHwobR0VNX0lOVkVOVE9SWV9FWFBBTkRf",
-            "UkVTVUxUEH9iBnByb3RvMw=="));
+            "KS5pbmZpbml0ZXBpY2theGUuR2VtSW52ZW50b3J5RXhwYW5kUmVzdWx0SAAS",
+            "TwoaZ2VtX2F1dG9fc3ludGhlc2lzX3JlcXVlc3QYigEgASgLMiguaW5maW5p",
+            "dGVwaWNrYXhlLkdlbUF1dG9TeW50aGVzaXNSZXF1ZXN0SAASTQoZZ2VtX2F1",
+            "dG9fc3ludGhlc2lzX3Jlc3VsdBiLASABKAsyJy5pbmZpbml0ZXBpY2theGUu",
+            "R2VtQXV0b1N5bnRoZXNpc1Jlc3VsdEgAQgkKB21lc3NhZ2UiSgoQSGFuZHNo",
+            "YWtlUmVxdWVzdBILCgNqd3QYASABKAkSFgoOY2xpZW50X3ZlcnNpb24YAiAB",
+            "KAkSEQoJZGV2aWNlX2lkGAMgASgJIowCCg9QaWNrYXhlU2xvdEluZm8SEgoK",
+            "c2xvdF9pbmRleBgBIAEoDRINCgVsZXZlbBgCIAEoDRIMCgR0aWVyGAMgASgN",
+            "EhQKDGF0dGFja19wb3dlchgEIAEoBBIUCgxhdHRhY2tfc3BlZWQYBSABKA0S",
+            "HAoUY3JpdGljYWxfaGl0X3BlcmNlbnQYBiABKA0SFwoPY3JpdGljYWxfZGFt",
+            "YWdlGAcgASgNEgsKA2RwcxgIIAEoBBISCgpwaXR5X2JvbnVzGAkgASgNEhMK",
+            "C2lzX3VubG9ja2VkGAogASgIEi8KCWdlbV9zbG90cxgLIAMoCzIcLmluZmlu",
+            "aXRlcGlja2F4ZS5HZW1TbG90SW5mbyJDCglBZENvdW50ZXISDwoHYWRfdHlw",
+            "ZRgBIAEoCRIQCghhZF9jb3VudBgCIAEoDRITCgtkYWlseV9saW1pdBgDIAEo",
+            "DSKqBAoQVXNlckRhdGFTbmFwc2hvdBIqCgRnb2xkGAEgASgLMhwuZ29vZ2xl",
+            "LnByb3RvYnVmLlVJbnQ2NFZhbHVlEi0KB2NyeXN0YWwYAiABKAsyHC5nb29n",
+            "bGUucHJvdG9idWYuVUludDMyVmFsdWUSFgoOdW5sb2NrZWRfc2xvdHMYAyAD",
+            "KAgSOAoSY3VycmVudF9taW5lcmFsX2lkGAQgASgLMhwuZ29vZ2xlLnByb3Rv",
+            "YnVmLlVJbnQzMlZhbHVlEjAKCm1pbmVyYWxfaHAYBSABKAsyHC5nb29nbGUu",
+            "cHJvdG9idWYuVUludDY0VmFsdWUSNAoObWluZXJhbF9tYXhfaHAYBiABKAsy",
+            "HC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSNwoNcGlja2F4ZV9zbG90",
+            "cxgHIAMoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8SEQoJ",
+            "dG90YWxfZHBzGAggASgEEjEKC3NlcnZlcl90aW1lGAkgASgLMhwuZ29vZ2xl",
+            "LnByb3RvYnVmLlVJbnQ2NFZhbHVlEi8KC2FkX2NvdW50ZXJzGAogAygLMhou",
+            "aW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIdChVjdXJyZW50X29mZmxpbmVf",
+            "aG91cnMYCyABKA0SHgoWZ2VtX2ludmVudG9yeV9jYXBhY2l0eRgMIAEoDRIS",
+            "Cgp0b3RhbF9nZW1zGA0gASgNImoKEUhhbmRzaGFrZVJlc3BvbnNlEg8KB3N1",
+            "Y2Nlc3MYASABKAgSDwoHbWVzc2FnZRgCIAEoCRIzCghzbmFwc2hvdBgDIAEo",
+            "CzIhLmluZmluaXRlcGlja2F4ZS5Vc2VyRGF0YVNuYXBzaG90IiMKCUhlYXJ0",
+            "YmVhdBIWCg5jbGllbnRfdGltZV9tcxgBIAEoBCImCgxIZWFydGJlYXRBY2sS",
+            "FgoOc2VydmVyX3RpbWVfbXMYASABKAQiFAoSTWluZXJhbExpc3RSZXF1ZXN0",
+            "ImcKC01pbmVyYWxJbmZvEhIKCm1pbmVyYWxfaWQYASABKA0SDAoEbmFtZRgC",
+            "IAEoCRIOCgZtYXhfaHAYAyABKAQSEwoLZ29sZF9yZXdhcmQYBCABKAQSEQoJ",
+            "aWNvbl9uYW1lGAUgASgJIkUKE01pbmVyYWxMaXN0UmVzcG9uc2USLgoIbWlu",
+            "ZXJhbHMYASADKAsyHC5pbmZpbml0ZXBpY2theGUuTWluZXJhbEluZm8iKgoU",
+            "Q2hhbmdlTWluZXJhbFJlcXVlc3QSEgoKbWluZXJhbF9pZBgBIAEoDSJ8ChVD",
+            "aGFuZ2VNaW5lcmFsUmVzcG9uc2USDwoHc3VjY2VzcxgBIAEoCBISCgptaW5l",
+            "cmFsX2lkGAIgASgNEhIKCm1pbmVyYWxfaHAYAyABKAQSFgoObWluZXJhbF9t",
+            "YXhfaHAYBCABKAQSEgoKZXJyb3JfY29kZRgFIAEoCSJICg1QaWNrYXhlQXR0",
+            "YWNrEhIKCnNsb3RfaW5kZXgYASABKA0SDgoGZGFtYWdlGAIgASgEEhMKC2lz",
+            "X2NyaXRpY2FsGAMgASgIIpEBCgxNaW5pbmdVcGRhdGUSEgoKbWluZXJhbF9p",
+            "ZBgBIAEoDRISCgpjdXJyZW50X2hwGAIgASgEEg4KBm1heF9ocBgDIAEoBBIv",
+            "CgdhdHRhY2tzGAQgAygLMh4uaW5maW5pdGVwaWNrYXhlLlBpY2theGVBdHRh",
+            "Y2sSGAoQc2VydmVyX3RpbWVzdGFtcBgFIAEoBCKTAQoOTWluaW5nQ29tcGxl",
+            "dGUSEgoKbWluZXJhbF9pZBgBIAEoDRITCgtnb2xkX2Vhcm5lZBgCIAEoBBIS",
+            "Cgp0b3RhbF9nb2xkGAMgASgEEhQKDG1pbmluZ19jb3VudBgEIAEoBBIUCgxy",
+            "ZXNwYXduX3RpbWUYBSABKA0SGAoQc2VydmVyX3RpbWVzdGFtcBgGIAEoBCIR",
+            "Cg9BbGxTbG90c1JlcXVlc3QiVgoQQWxsU2xvdHNSZXNwb25zZRIvCgVzbG90",
+            "cxgBIAMoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8SEQoJ",
+            "dG90YWxfZHBzGAIgASgEIiQKDlVwZ3JhZGVSZXF1ZXN0EhIKCnNsb3RfaW5k",
+            "ZXgYASABKA0ijAMKDVVwZ3JhZGVSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIS",
+            "CgpzbG90X2luZGV4GAIgASgNEhEKCW5ld19sZXZlbBgDIAEoDRIQCghuZXdf",
+            "dGllchgEIAEoDRIYChBuZXdfYXR0YWNrX3Bvd2VyGAUgASgEEhgKEG5ld19h",
+            "dHRhY2tfc3BlZWQYBiABKA0SIAoYbmV3X2NyaXRpY2FsX2hpdF9wZXJjZW50",
+            "GAcgASgNEhsKE25ld19jcml0aWNhbF9kYW1hZ2UYCCABKA0SDwoHbmV3X2Rw",
+            "cxgJIAEoBBIVCg1uZXdfdG90YWxfZHBzGAogASgEEhIKCmdvbGRfc3BlbnQY",
+            "CyABKAQSFgoOcmVtYWluaW5nX2dvbGQYDCABKAQSEgoKZXJyb3JfY29kZRgN",
+            "IAEoCRIUCgxiYXNlX3JhdGVfYnAYDiABKA0SFQoNYm9udXNfcmF0ZV9icBgP",
+            "IAEoDRIVCg1maW5hbF9yYXRlX2JwGBAgASgNEhIKCnBpdHlfYm9udXMYESAB",
+            "KA0iFgoURGFpbHlNaXNzaW9uc1JlcXVlc3QiogIKDE1pc3Npb25FbnRyeRIP",
+            "CgdzbG90X25vGAEgASgNEhIKCm1pc3Npb25faWQYAiABKA0SFAoMbWlzc2lv",
+            "bl90eXBlGAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEhQKDHRhcmdldF92",
+            "YWx1ZRgFIAEoDRIVCg1jdXJyZW50X3ZhbHVlGAYgASgNEhYKDnJld2FyZF9j",
+            "cnlzdGFsGAcgASgNEg4KBnN0YXR1cxgIIAEoCRITCgthc3NpZ25lZF9hdBgJ",
+            "IAEoBBISCgpleHBpcmVzX2F0GAogASgEEhIKCmRpZmZpY3VsdHkYCyABKAkS",
+            "MAoKbWluZXJhbF9pZBgMIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJW",
+            "YWx1ZSL3AQoVRGFpbHlNaXNzaW9uc1Jlc3BvbnNlEi8KCG1pc3Npb25zGAEg",
+            "AygLMh0uaW5maW5pdGVwaWNrYXhlLk1pc3Npb25FbnRyeRIXCg9jb21wbGV0",
+            "ZWRfY291bnQYAiABKA0SFAoMcmVyb2xsX2NvdW50GAMgASgNEi8KC2FkX2Nv",
+            "dW50ZXJzGAQgAygLMhouaW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIUCgxy",
+            "ZXJvbGxzX2ZyZWUYBSABKA0SGwoTcmVyb2xsc190b3RhbF9saW1pdBgGIAEo",
+            "DRIaChJyZXNldF90aW1lc3RhbXBfbXMYByABKAQieQoVTWlzc2lvblByb2dy",
+            "ZXNzVXBkYXRlEg8KB3Nsb3Rfbm8YASABKA0SEgoKbWlzc2lvbl9pZBgCIAEo",
+            "DRIVCg1jdXJyZW50X3ZhbHVlGAMgASgNEhQKDHRhcmdldF92YWx1ZRgEIAEo",
+            "DRIOCgZzdGF0dXMYBSABKAkiIgoPTWlzc2lvbkNvbXBsZXRlEg8KB3Nsb3Rf",
+            "bm8YASABKA0ikAEKFU1pc3Npb25Db21wbGV0ZVJlc3VsdBIPCgdzdWNjZXNz",
+            "GAEgASgIEg8KB3Nsb3Rfbm8YAiABKA0SEgoKbWlzc2lvbl9pZBgDIAEoDRIW",
+            "Cg5yZXdhcmRfY3J5c3RhbBgEIAEoDRIVCg10b3RhbF9jcnlzdGFsGAUgASgN",
+            "EhIKCmVycm9yX2NvZGUYBiABKAkiDwoNTWlzc2lvblJlcm9sbCKKAQoTTWlz",
+            "c2lvblJlcm9sbFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEjgKEXJlcm9sbGVk",
+            "X21pc3Npb25zGAIgAygLMh0uaW5maW5pdGVwaWNrYXhlLk1pc3Npb25FbnRy",
+            "eRIUCgxyZXJvbGxzX3VzZWQYAyABKA0SEgoKZXJyb3JfY29kZRgEIAEoCSIp",
+            "Cg5NaWxlc3RvbmVDbGFpbRIXCg9taWxlc3RvbmVfY291bnQYASABKA0ivgEK",
+            "FE1pbGVzdG9uZUNsYWltUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSFwoPbWls",
+            "ZXN0b25lX2NvdW50GAIgASgNEhwKFG9mZmxpbmVfaG91cnNfZ2FpbmVkGAMg",
+            "ASgNEhsKE3RvdGFsX29mZmxpbmVfaG91cnMYBCABKA0SFgoOcmV3YXJkX2Ny",
+            "eXN0YWwYBSABKA0SFQoNdG90YWxfY3J5c3RhbBgGIAEoDRISCgplcnJvcl9j",
+            "b2RlGAcgASgJImEKDk1pbGVzdG9uZVN0YXRlEhcKD2NvbXBsZXRlZF9jb3Vu",
+            "dBgBIAEoDRIaChJjbGFpbWVkX21pbGVzdG9uZXMYAiADKA0SGgoScmVzZXRf",
+            "dGltZXN0YW1wX21zGAMgASgEIiAKClNsb3RVbmxvY2sSEgoKc2xvdF9pbmRl",
+            "eBgBIAEoDSLEAQoQU2xvdFVubG9ja1Jlc3VsdBIPCgdzdWNjZXNzGAEgASgI",
+            "EhIKCnNsb3RfaW5kZXgYAiABKA0SFQoNY3J5c3RhbF9zcGVudBgDIAEoDRIZ",
+            "ChFyZW1haW5pbmdfY3J5c3RhbBgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJ",
+            "EjIKCG5ld19zbG90GAYgASgLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2theGVT",
+            "bG90SW5mbxIRCgl0b3RhbF9kcHMYByABKAQiIgoPQWRXYXRjaENvbXBsZXRl",
+            "Eg8KB2FkX3R5cGUYASABKAkipQEKDUFkV2F0Y2hSZXN1bHQSDwoHc3VjY2Vz",
+            "cxgBIAEoCBIPCgdhZF90eXBlGAIgASgJEhYKDmNyeXN0YWxfZWFybmVkGAMg",
+            "ASgNEhUKDXRvdGFsX2NyeXN0YWwYBCABKA0SLwoLYWRfY291bnRlcnMYBSAD",
+            "KAsyGi5pbmZpbml0ZXBpY2theGUuQWRDb3VudGVyEhIKCmVycm9yX2NvZGUY",
+            "BiABKAkiXgoPQWRDb3VudGVyc1N0YXRlEi8KC2FkX2NvdW50ZXJzGAEgAygL",
+            "MhouaW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIaChJyZXNldF90aW1lc3Rh",
+            "bXBfbXMYAiABKAQiewoOQ3VycmVuY3lVcGRhdGUSKgoEZ29sZBgBIAEoCzIc",
+            "Lmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1ZRItCgdjcnlzdGFsGAIgASgL",
+            "MhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQzMlZhbHVlEg4KBnJlYXNvbhgDIAEo",
+            "CSIWChRPZmZsaW5lUmV3YXJkUmVxdWVzdCJtChNPZmZsaW5lUmV3YXJkUmVz",
+            "dWx0EhcKD2VsYXBzZWRfc2Vjb25kcxgBIAEoBBITCgtnb2xkX2Vhcm5lZBgC",
+            "IAEoBBIUCgxtaW5pbmdfY291bnQYAyABKA0SEgoKdG90YWxfZ29sZBgEIAEo",
+            "BCI4ChFFcnJvck5vdGlmaWNhdGlvbhISCgplcnJvcl9jb2RlGAEgASgJEg8K",
+            "B21lc3NhZ2UYAiABKAkizgEKB0dlbUluZm8SFwoPZ2VtX2luc3RhbmNlX2lk",
+            "GAEgASgJEg4KBmdlbV9pZBgCIAEoDRIoCgVncmFkZRgDIAEoDjIZLmluZmlu",
+            "aXRlcGlja2F4ZS5HZW1HcmFkZRImCgR0eXBlGAQgASgOMhguaW5maW5pdGVw",
+            "aWNrYXhlLkdlbVR5cGUSDAoEbmFtZRgFIAEoCRIMCgRpY29uGAYgASgJEhcK",
+            "D3N0YXRfbXVsdGlwbGllchgHIAEoDRITCgthY3F1aXJlZF9hdBgIIAEoBCJq",
+            "CgtHZW1TbG90SW5mbxIWCg5nZW1fc2xvdF9pbmRleBgBIAEoDRITCgtpc191",
+            "bmxvY2tlZBgCIAEoCBIuCgxlcXVpcHBlZF9nZW0YAyABKAsyGC5pbmZpbml0",
+            "ZXBpY2theGUuR2VtSW5mbyIQCg5HZW1MaXN0UmVxdWVzdCJpCg9HZW1MaXN0",
+            "UmVzcG9uc2USJgoEZ2VtcxgBIAMoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1J",
+            "bmZvEhIKCnRvdGFsX2dlbXMYAiABKA0SGgoSaW52ZW50b3J5X2NhcGFjaXR5",
+            "GAMgASgNIiUKD0dlbUdhY2hhUmVxdWVzdBISCgpwdWxsX2NvdW50GAEgASgN",
+            "Ir8BCg5HZW1HYWNoYVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEiYKBGdlbXMY",
+            "AiADKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbxIVCg1jcnlzdGFsX3Nw",
+            "ZW50GAMgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQgASgNEhIKCnRvdGFs",
+            "X2dlbXMYBSABKA0SGgoSaW52ZW50b3J5X2NhcGFjaXR5GAYgASgNEhIKCmVy",
+            "cm9yX2NvZGUYByABKAkiLwoTR2VtU3ludGhlc2lzUmVxdWVzdBIYChBnZW1f",
+            "aW5zdGFuY2VfaWRzGAEgAygJIpYBChJHZW1TeW50aGVzaXNSZXN1bHQSDwoH",
+            "c3VjY2VzcxgBIAEoCBIZChFzeW50aGVzaXNfc3VjY2VzcxgCIAEoCBIsCgpy",
+            "ZXN1bHRfZ2VtGAMgASgLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SEgoK",
+            "dG90YWxfZ2VtcxgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJIl4KF0dlbUF1",
+            "dG9TeW50aGVzaXNSZXF1ZXN0Ei0KCmZyb21fZ3JhZGUYASABKA4yGS5pbmZp",
+            "bml0ZXBpY2theGUuR2VtR3JhZGUSFAoMbWF4X2F0dGVtcHRzGAIgASgNIqoB",
+            "ChZHZW1BdXRvU3ludGhlc2lzUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSEQoJ",
+            "YXR0ZW1wdGVkGAIgASgNEhUKDXN1Y2Nlc3NfY291bnQYAyABKA0SLQoLcmVz",
+            "dWx0X2dlbXMYBCADKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbxISCgp0",
+            "b3RhbF9nZW1zGAUgASgNEhIKCmVycm9yX2NvZGUYBiABKAkidgoUR2VtQ29u",
+            "dmVyc2lvblJlcXVlc3QSFwoPZ2VtX2luc3RhbmNlX2lkGAEgASgJEi0KC3Rh",
+            "cmdldF90eXBlGAIgASgOMhguaW5maW5pdGVwaWNrYXhlLkdlbVR5cGUSFgoO",
+            "dXNlX2ZpeGVkX2Nvc3QYAyABKAginQEKE0dlbUNvbnZlcnNpb25SZXN1bHQS",
+            "DwoHc3VjY2VzcxgBIAEoCBIvCg1jb252ZXJ0ZWRfZ2VtGAIgASgLMhguaW5m",
+            "aW5pdGVwaWNrYXhlLkdlbUluZm8SFQoNY3J5c3RhbF9zcGVudBgDIAEoDRIZ",
+            "ChFyZW1haW5pbmdfY3J5c3RhbBgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJ",
+            "Ii0KEUdlbURpc2NhcmRSZXF1ZXN0EhgKEGdlbV9pbnN0YW5jZV9pZHMYASAD",
+            "KAkiegoQR2VtRGlzY2FyZFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhYKDmNy",
+            "eXN0YWxfZWFybmVkGAIgASgNEhUKDXRvdGFsX2NyeXN0YWwYAyABKA0SEgoK",
+            "dG90YWxfZ2VtcxgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJIl4KD0dlbUVx",
+            "dWlwUmVxdWVzdBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgYASABKA0SFgoOZ2Vt",
+            "X3Nsb3RfaW5kZXgYAiABKA0SFwoPZ2VtX2luc3RhbmNlX2lkGAMgASgJIusB",
+            "Cg5HZW1FcXVpcFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhoKEnBpY2theGVf",
+            "c2xvdF9pbmRleBgCIAEoDRIWCg5nZW1fc2xvdF9pbmRleBgDIAEoDRIuCgxl",
+            "cXVpcHBlZF9nZW0YBCABKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbxI5",
+            "Cg91cGRhdGVkX3BpY2theGUYBSABKAsyIC5pbmZpbml0ZXBpY2theGUuUGlj",
+            "a2F4ZVNsb3RJbmZvEhUKDW5ld190b3RhbF9kcHMYBiABKAQSEgoKZXJyb3Jf",
+            "Y29kZRgHIAEoCSJHChFHZW1VbmVxdWlwUmVxdWVzdBIaChJwaWNrYXhlX3Ns",
+            "b3RfaW5kZXgYASABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAiABKA0i7wEKEEdl",
+            "bVVuZXF1aXBSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIaChJwaWNrYXhlX3Ns",
+            "b3RfaW5kZXgYAiABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAyABKA0SMAoOdW5l",
+            "cXVpcHBlZF9nZW0YBCABKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbxI5",
+            "Cg91cGRhdGVkX3BpY2theGUYBSABKAsyIC5pbmZpbml0ZXBpY2theGUuUGlj",
+            "a2F4ZVNsb3RJbmZvEhUKDW5ld190b3RhbF9kcHMYBiABKAQSEgoKZXJyb3Jf",
+            "Y29kZRgHIAEoCSJKChRHZW1TbG90VW5sb2NrUmVxdWVzdBIaChJwaWNrYXhl",
+            "X3Nsb3RfaW5kZXgYASABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAiABKA0ioAEK",
+            "E0dlbVNsb3RVbmxvY2tSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIaChJwaWNr",
+            "YXhlX3Nsb3RfaW5kZXgYAiABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAyABKA0S",
+            "FQoNY3J5c3RhbF9zcGVudBgEIAEoDRIZChFyZW1haW5pbmdfY3J5c3RhbBgF",
+            "IAEoDRISCgplcnJvcl9jb2RlGAYgASgJIhsKGUdlbUludmVudG9yeUV4cGFu",
+            "ZFJlcXVlc3QihwEKGEdlbUludmVudG9yeUV4cGFuZFJlc3VsdBIPCgdzdWNj",
+            "ZXNzGAEgASgIEhQKDG5ld19jYXBhY2l0eRgCIAEoDRIVCg1jcnlzdGFsX3Nw",
+            "ZW50GAMgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQgASgNEhIKCmVycm9y",
+            "X2NvZGUYBSABKAkqTgoHR2VtVHlwZRIUChBHRU1fVFlQRV9VTktOT1dOEAAS",
+            "EAoMQVRUQUNLX1NQRUVEEAESDQoJQ1JJVF9SQVRFEAISDAoIQ1JJVF9ETUcQ",
+            "AypaCghHZW1HcmFkZRIVChFHRU1fR1JBREVfVU5LTk9XThAAEgoKBkNPTU1P",
+            "ThABEggKBFJBUkUQAhIICgRFUElDEAMSCAoESEVSTxAEEg0KCUxFR0VOREFS",
+            "WRAFKscKCgtNZXNzYWdlVHlwZRILCgdVTktOT1dOEAASDQoJSEFORFNIQUtF",
+            "EAESFAoQSEFORFNIQUtFX1JFU1VMVBACEg0KCUhFQVJUQkVBVBADEhEKDUhF",
+            "QVJUQkVBVF9BQ0sQBBIWChJVU0VSX0RBVEFfU05BUFNIT1QQChIYChRNSU5F",
+            "UkFMX0xJU1RfUkVRVUVTVBAUEhkKFU1JTkVSQUxfTElTVF9SRVNQT05TRRAV",
+            "EhoKFkNIQU5HRV9NSU5FUkFMX1JFUVVFU1QQFhIbChdDSEFOR0VfTUlORVJB",
+            "TF9SRVNQT05TRRAXEhEKDU1JTklOR19VUERBVEUQIBITCg9NSU5JTkdfQ09N",
+            "UExFVEUQIRIVChFBTExfU0xPVFNfUkVRVUVTVBAoEhYKEkFMTF9TTE9UU19S",
+            "RVNQT05TRRApEg8KC1NMT1RfVU5MT0NLECoSFgoSU0xPVF9VTkxPQ0tfUkVT",
+            "VUxUECsSEwoPVVBHUkFERV9SRVFVRVNUEDISEgoOVVBHUkFERV9SRVNVTFQQ",
+            "MxIaChZEQUlMWV9NSVNTSU9OU19SRVFVRVNUEDwSGwoXREFJTFlfTUlTU0lP",
+            "TlNfUkVTUE9OU0UQPRIbChdNSVNTSU9OX1BST0dSRVNTX1VQREFURRA+EhQK",
+            "EE1JU1NJT05fQ09NUExFVEUQPxIbChdNSVNTSU9OX0NPTVBMRVRFX1JFU1VM",
+            "VBBAEhIKDk1JU1NJT05fUkVST0xMEEESGQoVTUlTU0lPTl9SRVJPTExfUkVT",
+            "VUxUEEISEwoPTUlMRVNUT05FX0NMQUlNEEMSGgoWTUlMRVNUT05FX0NMQUlN",
+            "X1JFU1VMVBBEEhMKD01JTEVTVE9ORV9TVEFURRBFEhUKEUFEX1dBVENIX0NP",
+            "TVBMRVRFEEYSEwoPQURfV0FUQ0hfUkVTVUxUEEcSFQoRQURfQ09VTlRFUlNf",
+            "U1RBVEUQSBITCg9DVVJSRU5DWV9VUERBVEUQUBIaChZPRkZMSU5FX1JFV0FS",
+            "RF9SRVFVRVNUEFoSGQoVT0ZGTElORV9SRVdBUkRfUkVTVUxUEFsSFgoSRVJS",
+            "T1JfTk9USUZJQ0FUSU9OEGQSFAoQR0VNX0xJU1RfUkVRVUVTVBBuEhUKEUdF",
+            "TV9MSVNUX1JFU1BPTlNFEG8SFQoRR0VNX0dBQ0hBX1JFUVVFU1QQcBIUChBH",
+            "RU1fR0FDSEFfUkVTVUxUEHESGQoVR0VNX1NZTlRIRVNJU19SRVFVRVNUEHIS",
+            "GAoUR0VNX1NZTlRIRVNJU19SRVNVTFQQcxIaChZHRU1fQ09OVkVSU0lPTl9S",
+            "RVFVRVNUEHQSGQoVR0VNX0NPTlZFUlNJT05fUkVTVUxUEHUSFwoTR0VNX0RJ",
+            "U0NBUkRfUkVRVUVTVBB2EhYKEkdFTV9ESVNDQVJEX1JFU1VMVBB3EhUKEUdF",
+            "TV9FUVVJUF9SRVFVRVNUEHgSFAoQR0VNX0VRVUlQX1JFU1VMVBB5EhcKE0dF",
+            "TV9VTkVRVUlQX1JFUVVFU1QQehIWChJHRU1fVU5FUVVJUF9SRVNVTFQQexIb",
+            "ChdHRU1fU0xPVF9VTkxPQ0tfUkVRVUVTVBB8EhoKFkdFTV9TTE9UX1VOTE9D",
+            "S19SRVNVTFQQfRIgChxHRU1fSU5WRU5UT1JZX0VYUEFORF9SRVFVRVNUEH4S",
+            "HwobR0VNX0lOVkVOVE9SWV9FWFBBTkRfUkVTVUxUEH8SHwoaR0VNX0FVVE9f",
+            "U1lOVEhFU0lTX1JFUVVFU1QQgAESHgoZR0VNX0FVVE9fU1lOVEhFU0lTX1JF",
+            "U1VMVBCBAWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.GemType), typeof(global::Infinitepickaxe.GemGrade), typeof(global::Infinitepickaxe.MessageType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "MilestoneState", "AdWatchComplete", "AdWatchResult", "AdCountersState", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification", "GemListRequest", "GemListResponse", "GemGachaRequest", "GemGachaResult", "GemSynthesisRequest", "GemSynthesisResult", "GemConversionRequest", "GemConversionResult", "GemDiscardRequest", "GemDiscardResult", "GemEquipRequest", "GemEquipResult", "GemUnequipRequest", "GemUnequipResult", "GemSlotUnlockRequest", "GemSlotUnlockResult", "GemInventoryExpandRequest", "GemInventoryExpandResult" }, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "MilestoneState", "AdWatchComplete", "AdWatchResult", "AdCountersState", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification", "GemListRequest", "GemListResponse", "GemGachaRequest", "GemGachaResult", "GemSynthesisRequest", "GemSynthesisResult", "GemConversionRequest", "GemConversionResult", "GemDiscardRequest", "GemDiscardResult", "GemEquipRequest", "GemEquipResult", "GemUnequipRequest", "GemUnequipResult", "GemSlotUnlockRequest", "GemSlotUnlockResult", "GemInventoryExpandRequest", "GemInventoryExpandResult", "GemAutoSynthesisRequest", "GemAutoSynthesisResult" }, new[]{ "Message" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HandshakeRequest), global::Infinitepickaxe.HandshakeRequest.Parser, new[]{ "Jwt", "ClientVersion", "DeviceId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeSlotInfo), global::Infinitepickaxe.PickaxeSlotInfo.Parser, new[]{ "SlotIndex", "Level", "Tier", "AttackPower", "AttackSpeed", "CriticalHitPercent", "CriticalDamage", "Dps", "PityBonus", "IsUnlocked", "GemSlots" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdCounter), global::Infinitepickaxe.AdCounter.Parser, new[]{ "AdType", "AdCount", "DailyLimit" }, null, null, null, null),
@@ -344,6 +355,8 @@ namespace Infinitepickaxe {
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemGachaResult), global::Infinitepickaxe.GemGachaResult.Parser, new[]{ "Success", "Gems", "CrystalSpent", "RemainingCrystal", "TotalGems", "InventoryCapacity", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemSynthesisRequest), global::Infinitepickaxe.GemSynthesisRequest.Parser, new[]{ "GemInstanceIds" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemSynthesisResult), global::Infinitepickaxe.GemSynthesisResult.Parser, new[]{ "Success", "SynthesisSuccess", "ResultGem", "TotalGems", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemAutoSynthesisRequest), global::Infinitepickaxe.GemAutoSynthesisRequest.Parser, new[]{ "FromGrade", "MaxAttempts" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemAutoSynthesisResult), global::Infinitepickaxe.GemAutoSynthesisResult.Parser, new[]{ "Success", "Attempted", "SuccessCount", "ResultGems", "TotalGems", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemConversionRequest), global::Infinitepickaxe.GemConversionRequest.Parser, new[]{ "GemInstanceId", "TargetType", "UseFixedCost" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemConversionResult), global::Infinitepickaxe.GemConversionResult.Parser, new[]{ "Success", "ConvertedGem", "CrystalSpent", "RemainingCrystal", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemDiscardRequest), global::Infinitepickaxe.GemDiscardRequest.Parser, new[]{ "GemInstanceIds" }, null, null, null, null),
@@ -482,6 +495,8 @@ namespace Infinitepickaxe {
     [pbr::OriginalName("GEM_SLOT_UNLOCK_RESULT")] GemSlotUnlockResult = 125,
     [pbr::OriginalName("GEM_INVENTORY_EXPAND_REQUEST")] GemInventoryExpandRequest = 126,
     [pbr::OriginalName("GEM_INVENTORY_EXPAND_RESULT")] GemInventoryExpandResult = 127,
+    [pbr::OriginalName("GEM_AUTO_SYNTHESIS_REQUEST")] GemAutoSynthesisRequest = 128,
+    [pbr::OriginalName("GEM_AUTO_SYNTHESIS_RESULT")] GemAutoSynthesisResult = 129,
   }
 
   #endregion
@@ -682,6 +697,12 @@ namespace Infinitepickaxe {
           break;
         case MessageOneofCase.GemInventoryExpandResult:
           GemInventoryExpandResult = other.GemInventoryExpandResult.Clone();
+          break;
+        case MessageOneofCase.GemAutoSynthesisRequest:
+          GemAutoSynthesisRequest = other.GemAutoSynthesisRequest.Clone();
+          break;
+        case MessageOneofCase.GemAutoSynthesisResult:
+          GemAutoSynthesisResult = other.GemAutoSynthesisResult.Clone();
           break;
       }
 
@@ -1334,6 +1355,30 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "gem_auto_synthesis_request" field.</summary>
+    public const int GemAutoSynthesisRequestFieldNumber = 138;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemAutoSynthesisRequest GemAutoSynthesisRequest {
+      get { return messageCase_ == MessageOneofCase.GemAutoSynthesisRequest ? (global::Infinitepickaxe.GemAutoSynthesisRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemAutoSynthesisRequest;
+      }
+    }
+
+    /// <summary>Field number for the "gem_auto_synthesis_result" field.</summary>
+    public const int GemAutoSynthesisResultFieldNumber = 139;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemAutoSynthesisResult GemAutoSynthesisResult {
+      get { return messageCase_ == MessageOneofCase.GemAutoSynthesisResult ? (global::Infinitepickaxe.GemAutoSynthesisResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.GemAutoSynthesisResult;
+      }
+    }
+
     private object message_;
     /// <summary>Enum of possible cases for the "message" oneof.</summary>
     public enum MessageOneofCase {
@@ -1390,6 +1435,8 @@ namespace Infinitepickaxe {
       GemSlotUnlockResult = 135,
       GemInventoryExpandRequest = 136,
       GemInventoryExpandResult = 137,
+      GemAutoSynthesisRequest = 138,
+      GemAutoSynthesisResult = 139,
     }
     private MessageOneofCase messageCase_ = MessageOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1473,6 +1520,8 @@ namespace Infinitepickaxe {
       if (!object.Equals(GemSlotUnlockResult, other.GemSlotUnlockResult)) return false;
       if (!object.Equals(GemInventoryExpandRequest, other.GemInventoryExpandRequest)) return false;
       if (!object.Equals(GemInventoryExpandResult, other.GemInventoryExpandResult)) return false;
+      if (!object.Equals(GemAutoSynthesisRequest, other.GemAutoSynthesisRequest)) return false;
+      if (!object.Equals(GemAutoSynthesisResult, other.GemAutoSynthesisResult)) return false;
       if (MessageCase != other.MessageCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1534,6 +1583,8 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.GemSlotUnlockResult) hash ^= GemSlotUnlockResult.GetHashCode();
       if (messageCase_ == MessageOneofCase.GemInventoryExpandRequest) hash ^= GemInventoryExpandRequest.GetHashCode();
       if (messageCase_ == MessageOneofCase.GemInventoryExpandResult) hash ^= GemInventoryExpandResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemAutoSynthesisRequest) hash ^= GemAutoSynthesisRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.GemAutoSynthesisResult) hash ^= GemAutoSynthesisResult.GetHashCode();
       hash ^= (int) messageCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1765,6 +1816,14 @@ namespace Infinitepickaxe {
         output.WriteRawTag(202, 8);
         output.WriteMessage(GemInventoryExpandResult);
       }
+      if (messageCase_ == MessageOneofCase.GemAutoSynthesisRequest) {
+        output.WriteRawTag(210, 8);
+        output.WriteMessage(GemAutoSynthesisRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemAutoSynthesisResult) {
+        output.WriteRawTag(218, 8);
+        output.WriteMessage(GemAutoSynthesisResult);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1987,6 +2046,14 @@ namespace Infinitepickaxe {
         output.WriteRawTag(202, 8);
         output.WriteMessage(GemInventoryExpandResult);
       }
+      if (messageCase_ == MessageOneofCase.GemAutoSynthesisRequest) {
+        output.WriteRawTag(210, 8);
+        output.WriteMessage(GemAutoSynthesisRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemAutoSynthesisResult) {
+        output.WriteRawTag(218, 8);
+        output.WriteMessage(GemAutoSynthesisResult);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2155,6 +2222,12 @@ namespace Infinitepickaxe {
       }
       if (messageCase_ == MessageOneofCase.GemInventoryExpandResult) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemInventoryExpandResult);
+      }
+      if (messageCase_ == MessageOneofCase.GemAutoSynthesisRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemAutoSynthesisRequest);
+      }
+      if (messageCase_ == MessageOneofCase.GemAutoSynthesisResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemAutoSynthesisResult);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2483,6 +2556,18 @@ namespace Infinitepickaxe {
             GemInventoryExpandResult = new global::Infinitepickaxe.GemInventoryExpandResult();
           }
           GemInventoryExpandResult.MergeFrom(other.GemInventoryExpandResult);
+          break;
+        case MessageOneofCase.GemAutoSynthesisRequest:
+          if (GemAutoSynthesisRequest == null) {
+            GemAutoSynthesisRequest = new global::Infinitepickaxe.GemAutoSynthesisRequest();
+          }
+          GemAutoSynthesisRequest.MergeFrom(other.GemAutoSynthesisRequest);
+          break;
+        case MessageOneofCase.GemAutoSynthesisResult:
+          if (GemAutoSynthesisResult == null) {
+            GemAutoSynthesisResult = new global::Infinitepickaxe.GemAutoSynthesisResult();
+          }
+          GemAutoSynthesisResult.MergeFrom(other.GemAutoSynthesisResult);
           break;
       }
 
@@ -2977,6 +3062,24 @@ namespace Infinitepickaxe {
             GemInventoryExpandResult = subBuilder;
             break;
           }
+          case 1106: {
+            global::Infinitepickaxe.GemAutoSynthesisRequest subBuilder = new global::Infinitepickaxe.GemAutoSynthesisRequest();
+            if (messageCase_ == MessageOneofCase.GemAutoSynthesisRequest) {
+              subBuilder.MergeFrom(GemAutoSynthesisRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemAutoSynthesisRequest = subBuilder;
+            break;
+          }
+          case 1114: {
+            global::Infinitepickaxe.GemAutoSynthesisResult subBuilder = new global::Infinitepickaxe.GemAutoSynthesisResult();
+            if (messageCase_ == MessageOneofCase.GemAutoSynthesisResult) {
+              subBuilder.MergeFrom(GemAutoSynthesisResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemAutoSynthesisResult = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -3466,6 +3569,24 @@ namespace Infinitepickaxe {
             }
             input.ReadMessage(subBuilder);
             GemInventoryExpandResult = subBuilder;
+            break;
+          }
+          case 1106: {
+            global::Infinitepickaxe.GemAutoSynthesisRequest subBuilder = new global::Infinitepickaxe.GemAutoSynthesisRequest();
+            if (messageCase_ == MessageOneofCase.GemAutoSynthesisRequest) {
+              subBuilder.MergeFrom(GemAutoSynthesisRequest);
+            }
+            input.ReadMessage(subBuilder);
+            GemAutoSynthesisRequest = subBuilder;
+            break;
+          }
+          case 1114: {
+            global::Infinitepickaxe.GemAutoSynthesisResult subBuilder = new global::Infinitepickaxe.GemAutoSynthesisResult();
+            if (messageCase_ == MessageOneofCase.GemAutoSynthesisResult) {
+              subBuilder.MergeFrom(GemAutoSynthesisResult);
+            }
+            input.ReadMessage(subBuilder);
+            GemAutoSynthesisResult = subBuilder;
             break;
           }
         }
@@ -17502,7 +17623,7 @@ namespace Infinitepickaxe {
         = pb::FieldCodec.ForString(10);
     private readonly pbc::RepeatedField<string> gemInstanceIds_ = new pbc::RepeatedField<string>();
     /// <summary>
-    /// 3개의 UUID (같은 등급, 같은 타입)
+    /// 3개의 UUID (같은 등급)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -18006,6 +18127,622 @@ namespace Infinitepickaxe {
   }
 
   /// <summary>
+  /// 자동 합성
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemAutoSynthesisRequest : pb::IMessage<GemAutoSynthesisRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemAutoSynthesisRequest> _parser = new pb::MessageParser<GemAutoSynthesisRequest>(() => new GemAutoSynthesisRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemAutoSynthesisRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[48]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemAutoSynthesisRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemAutoSynthesisRequest(GemAutoSynthesisRequest other) : this() {
+      fromGrade_ = other.fromGrade_;
+      maxAttempts_ = other.maxAttempts_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemAutoSynthesisRequest Clone() {
+      return new GemAutoSynthesisRequest(this);
+    }
+
+    /// <summary>Field number for the "from_grade" field.</summary>
+    public const int FromGradeFieldNumber = 1;
+    private global::Infinitepickaxe.GemGrade fromGrade_ = global::Infinitepickaxe.GemGrade.Unknown;
+    /// <summary>
+    /// 합성 기준 등급
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.GemGrade FromGrade {
+      get { return fromGrade_; }
+      set {
+        fromGrade_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "max_attempts" field.</summary>
+    public const int MaxAttemptsFieldNumber = 2;
+    private uint maxAttempts_;
+    /// <summary>
+    /// 0이면 가능한 만큼 시도
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint MaxAttempts {
+      get { return maxAttempts_; }
+      set {
+        maxAttempts_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemAutoSynthesisRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemAutoSynthesisRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (FromGrade != other.FromGrade) return false;
+      if (MaxAttempts != other.MaxAttempts) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (FromGrade != global::Infinitepickaxe.GemGrade.Unknown) hash ^= FromGrade.GetHashCode();
+      if (MaxAttempts != 0) hash ^= MaxAttempts.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (FromGrade != global::Infinitepickaxe.GemGrade.Unknown) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) FromGrade);
+      }
+      if (MaxAttempts != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(MaxAttempts);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (FromGrade != global::Infinitepickaxe.GemGrade.Unknown) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) FromGrade);
+      }
+      if (MaxAttempts != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(MaxAttempts);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (FromGrade != global::Infinitepickaxe.GemGrade.Unknown) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) FromGrade);
+      }
+      if (MaxAttempts != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MaxAttempts);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemAutoSynthesisRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.FromGrade != global::Infinitepickaxe.GemGrade.Unknown) {
+        FromGrade = other.FromGrade;
+      }
+      if (other.MaxAttempts != 0) {
+        MaxAttempts = other.MaxAttempts;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            FromGrade = (global::Infinitepickaxe.GemGrade) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            MaxAttempts = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            FromGrade = (global::Infinitepickaxe.GemGrade) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            MaxAttempts = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class GemAutoSynthesisResult : pb::IMessage<GemAutoSynthesisResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<GemAutoSynthesisResult> _parser = new pb::MessageParser<GemAutoSynthesisResult>(() => new GemAutoSynthesisResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<GemAutoSynthesisResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[49]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemAutoSynthesisResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemAutoSynthesisResult(GemAutoSynthesisResult other) : this() {
+      success_ = other.success_;
+      attempted_ = other.attempted_;
+      successCount_ = other.successCount_;
+      resultGems_ = other.resultGems_.Clone();
+      totalGems_ = other.totalGems_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public GemAutoSynthesisResult Clone() {
+      return new GemAutoSynthesisResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "attempted" field.</summary>
+    public const int AttemptedFieldNumber = 2;
+    private uint attempted_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint Attempted {
+      get { return attempted_; }
+      set {
+        attempted_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "success_count" field.</summary>
+    public const int SuccessCountFieldNumber = 3;
+    private uint successCount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint SuccessCount {
+      get { return successCount_; }
+      set {
+        successCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "result_gems" field.</summary>
+    public const int ResultGemsFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.GemInfo> _repeated_resultGems_codec
+        = pb::FieldCodec.ForMessage(34, global::Infinitepickaxe.GemInfo.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.GemInfo> resultGems_ = new pbc::RepeatedField<global::Infinitepickaxe.GemInfo>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.GemInfo> ResultGems {
+      get { return resultGems_; }
+    }
+
+    /// <summary>Field number for the "total_gems" field.</summary>
+    public const int TotalGemsFieldNumber = 5;
+    private uint totalGems_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalGems {
+      get { return totalGems_; }
+      set {
+        totalGems_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 6;
+    private string errorCode_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as GemAutoSynthesisResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(GemAutoSynthesisResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (Attempted != other.Attempted) return false;
+      if (SuccessCount != other.SuccessCount) return false;
+      if(!resultGems_.Equals(other.resultGems_)) return false;
+      if (TotalGems != other.TotalGems) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (Attempted != 0) hash ^= Attempted.GetHashCode();
+      if (SuccessCount != 0) hash ^= SuccessCount.GetHashCode();
+      hash ^= resultGems_.GetHashCode();
+      if (TotalGems != 0) hash ^= TotalGems.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (Attempted != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(Attempted);
+      }
+      if (SuccessCount != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(SuccessCount);
+      }
+      resultGems_.WriteTo(output, _repeated_resultGems_codec);
+      if (TotalGems != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalGems);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (Attempted != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(Attempted);
+      }
+      if (SuccessCount != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(SuccessCount);
+      }
+      resultGems_.WriteTo(ref output, _repeated_resultGems_codec);
+      if (TotalGems != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalGems);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (Attempted != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Attempted);
+      }
+      if (SuccessCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SuccessCount);
+      }
+      size += resultGems_.CalculateSize(_repeated_resultGems_codec);
+      if (TotalGems != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalGems);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(GemAutoSynthesisResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.Attempted != 0) {
+        Attempted = other.Attempted;
+      }
+      if (other.SuccessCount != 0) {
+        SuccessCount = other.SuccessCount;
+      }
+      resultGems_.Add(other.resultGems_);
+      if (other.TotalGems != 0) {
+        TotalGems = other.TotalGems;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            Attempted = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            SuccessCount = input.ReadUInt32();
+            break;
+          }
+          case 34: {
+            resultGems_.AddEntriesFrom(input, _repeated_resultGems_codec);
+            break;
+          }
+          case 40: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 50: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            Attempted = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            SuccessCount = input.ReadUInt32();
+            break;
+          }
+          case 34: {
+            resultGems_.AddEntriesFrom(ref input, _repeated_resultGems_codec);
+            break;
+          }
+          case 40: {
+            TotalGems = input.ReadUInt32();
+            break;
+          }
+          case 50: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// 타입 변환
   /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
@@ -18023,7 +18760,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[48]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[50]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18298,7 +19035,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[49]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[51]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18662,7 +19399,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[50]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[52]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18849,7 +19586,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[51]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[53]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19198,7 +19935,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[52]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[54]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19476,7 +20213,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[53]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[55]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19923,7 +20660,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[54]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[56]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20158,7 +20895,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[55]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[57]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20599,7 +21336,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[56]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[58]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20834,7 +21571,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[57]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[59]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21223,7 +21960,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[58]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[60]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21384,7 +22121,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[59]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[61]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

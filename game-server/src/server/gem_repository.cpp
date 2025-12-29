@@ -78,6 +78,37 @@ std::vector<GemInstanceData> GemRepository::get_user_gems(const std::string& use
     return gems;
 }
 
+std::vector<GemInstanceData> GemRepository::get_user_gems_excluding_equipped(const std::string& user_id) {
+    std::vector<GemInstanceData> gems;
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        auto result = tx.exec_params(
+            "SELECT ug.gem_instance_id, ug.gem_id, "
+            "  FLOOR(EXTRACT(EPOCH FROM ug.acquired_at) * 1000)::BIGINT AS acquired_at_ms "
+            "FROM game_schema.user_gems ug "
+            "LEFT JOIN game_schema.pickaxe_equipped_gems peg "
+            "  ON ug.gem_instance_id = peg.gem_instance_id "
+            "WHERE ug.user_id = $1::uuid AND peg.gem_instance_id IS NULL "
+            "ORDER BY ug.acquired_at DESC",
+            user_id);
+
+        for (const auto& row : result) {
+            GemInstanceData gem;
+            gem.gem_instance_id = row[0].as<std::string>();
+            gem.gem_id = row[1].as<uint32_t>();
+            gem.acquired_at = row[2].as<uint64_t>();
+            gems.push_back(gem);
+        }
+
+        tx.commit();
+    } catch (const std::exception& ex) {
+        spdlog::error("get_user_gems_excluding_equipped failed: {}", ex.what());
+    }
+    return gems;
+}
+
 std::optional<GemInstanceData> GemRepository::get_gem_by_instance_id(const std::string& gem_instance_id) {
     try {
         auto conn = pool_.acquire();
@@ -317,8 +348,12 @@ SynthesisResult GemRepository::synthesize_gems(const std::string& user_id,
 
         // 3개 보석 소유 확인
         auto check_result = tx.exec_params(
-            "SELECT COUNT(*) FROM game_schema.user_gems "
-            "WHERE user_id = $1::uuid AND gem_instance_id = ANY($2::uuid[])",
+            "SELECT COUNT(*) FROM game_schema.user_gems ug "
+            "LEFT JOIN game_schema.pickaxe_equipped_gems peg "
+            "  ON ug.gem_instance_id = peg.gem_instance_id "
+            "WHERE ug.user_id = $1::uuid "
+            "  AND ug.gem_instance_id = ANY($2::uuid[]) "
+            "  AND peg.gem_instance_id IS NULL",
             user_id, gem_instance_ids);
 
         if (check_result[0][0].as<uint32_t>() != 3) {
@@ -353,6 +388,58 @@ SynthesisResult GemRepository::synthesize_gems(const std::string& user_id,
         result.success = true;
     } catch (const std::exception& ex) {
         spdlog::error("synthesize_gems failed: {}", ex.what());
+        result.success = false;
+    }
+    return result;
+}
+
+AutoSynthesisResult GemRepository::auto_synthesize_gems(const std::string& user_id,
+                                                        const std::vector<std::string>& gem_instance_ids,
+                                                        const std::vector<uint32_t>& result_gem_ids) {
+    AutoSynthesisResult result;
+    if (gem_instance_ids.empty()) {
+        result.invalid_gems = true;
+        return result;
+    }
+
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        auto check_result = tx.exec_params(
+            "SELECT COUNT(*) FROM game_schema.user_gems "
+            "WHERE user_id = $1::uuid AND gem_instance_id = ANY($2::uuid[])",
+            user_id, gem_instance_ids);
+
+        if (check_result[0][0].as<uint32_t>() != gem_instance_ids.size()) {
+            result.invalid_gems = true;
+            return result;
+        }
+
+        tx.exec_params(
+            "DELETE FROM game_schema.user_gems "
+            "WHERE user_id = $1::uuid AND gem_instance_id = ANY($2::uuid[])",
+            user_id, gem_instance_ids);
+
+        for (uint32_t gem_id : result_gem_ids) {
+            auto gem_row = tx.exec_params(
+                "INSERT INTO game_schema.user_gems (user_id, gem_id) "
+                "VALUES ($1::uuid, $2) "
+                "RETURNING gem_instance_id, gem_id, "
+                "  FLOOR(EXTRACT(EPOCH FROM acquired_at) * 1000)::BIGINT AS acquired_at_ms",
+                user_id, static_cast<int32_t>(gem_id));
+
+            GemInstanceData gem;
+            gem.gem_instance_id = gem_row[0][0].as<std::string>();
+            gem.gem_id = gem_row[0][1].as<uint32_t>();
+            gem.acquired_at = gem_row[0][2].as<uint64_t>();
+            result.result_gems.push_back(gem);
+        }
+
+        tx.commit();
+        result.success = true;
+    } catch (const std::exception& ex) {
+        spdlog::error("auto_synthesize_gems failed: {}", ex.what());
         result.success = false;
     }
     return result;

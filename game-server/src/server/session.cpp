@@ -738,6 +738,8 @@ void Session::init_router()
                              { handle_gem_gacha(e); });
     router_.register_handler(infinitepickaxe::GEM_SYNTHESIS_REQUEST, [this](const infinitepickaxe::Envelope &e)
                              { handle_gem_synthesis(e); });
+    router_.register_handler(infinitepickaxe::GEM_AUTO_SYNTHESIS_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_gem_auto_synthesis(e); });
     router_.register_handler(infinitepickaxe::GEM_CONVERSION_REQUEST, [this](const infinitepickaxe::Envelope &e)
                              { handle_gem_conversion(e); });
     router_.register_handler(infinitepickaxe::GEM_DISCARD_REQUEST, [this](const infinitepickaxe::Envelope &e)
@@ -1316,6 +1318,27 @@ void Session::handle_gem_synthesis(const infinitepickaxe::Envelope &env)
     infinitepickaxe::Envelope res_env;
     res_env.set_type(infinitepickaxe::GEM_SYNTHESIS_RESULT);
     *res_env.mutable_gem_synthesis_result() = result;
+    send_envelope(res_env);
+}
+
+void Session::handle_gem_auto_synthesis(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_gem_auto_synthesis_request()) {
+        send_error("INVALID_REQUEST", "missing gem_auto_synthesis_request");
+        return;
+    }
+
+    const auto& req = env.gem_auto_synthesis_request();
+    auto result = gem_service_.handle_auto_synthesis(user_id_, req.from_grade(), req.max_attempts());
+
+    infinitepickaxe::Envelope res_env;
+    res_env.set_type(infinitepickaxe::GEM_AUTO_SYNTHESIS_RESULT);
+    *res_env.mutable_gem_auto_synthesis_result() = result;
     send_envelope(res_env);
 }
 

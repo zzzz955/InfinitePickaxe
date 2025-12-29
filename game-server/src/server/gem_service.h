@@ -20,6 +20,9 @@ public:
     // 합성 (3개 → 1개, 확률)
     infinitepickaxe::GemSynthesisResult handle_synthesis(const std::string& user_id,
                                                           const std::vector<std::string>& gem_instance_ids);
+    infinitepickaxe::GemAutoSynthesisResult handle_auto_synthesis(const std::string& user_id,
+                                                                    infinitepickaxe::GemGrade from_grade,
+                                                                    uint32_t max_attempts);
 
     // 타입 변환 (랜덤/고정)
     infinitepickaxe::GemConversionResult handle_conversion(const std::string& user_id,

@@ -86,6 +86,7 @@ private:
     void handle_gem_list(const infinitepickaxe::Envelope& env);
     void handle_gem_gacha(const infinitepickaxe::Envelope& env);
     void handle_gem_synthesis(const infinitepickaxe::Envelope& env);
+    void handle_gem_auto_synthesis(const infinitepickaxe::Envelope& env);
     void handle_gem_conversion(const infinitepickaxe::Envelope& env);
     void handle_gem_discard(const infinitepickaxe::Envelope& env);
     void handle_gem_equip(const infinitepickaxe::Envelope& env);
