@@ -81,6 +81,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private List<GemInfo> gemInventory = new List<GemInfo>();
         private uint gemInventoryCapacity = 48;
         private uint maxGemCapacity = 128;
+        private bool gemEquipModalRequested;
 
         // 선택된 보석 정보
         private GemInfo selectedGem = null;
@@ -647,6 +648,7 @@ namespace InfinitePickaxe.Client.UI.Game
             selectedGemSlotIndex = gemSlotIndex;
 
             // 보석 목록 요청
+            gemEquipModalRequested = true;
             RequestGemList();
         }
 
@@ -662,6 +664,7 @@ namespace InfinitePickaxe.Client.UI.Game
             selectedGemSlotIndex = gemSlotIndex;
 
             // GemEquipModal을 열고 CurrentGemPanel 활성화
+            gemEquipModalRequested = true;
             RequestGemList();
         }
 
@@ -729,7 +732,14 @@ namespace InfinitePickaxe.Client.UI.Game
             Debug.Log($"[MiningTabController] 보석 목록 수신: {response.TotalGems}개, 용량: {response.InventoryCapacity}");
 
             // 모달 열기
+            if (!isActive || !gemEquipModalRequested)
+            {
+                gemEquipModalRequested = false;
+                return;
+            }
+
             OpenGemEquipModal();
+            gemEquipModalRequested = false;
         }
 
         /// <summary>

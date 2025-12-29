@@ -2,6 +2,7 @@
 #include <pqxx/pqxx>
 #include <spdlog/spdlog.h>
 #include <chrono>
+#include <unordered_set>
 
 std::vector<GemSlotData> GemRepository::get_gem_slots_for_pickaxe(const std::string& pickaxe_slot_id) {
     std::vector<GemSlotData> slots;
@@ -340,13 +341,27 @@ GachaResult GemRepository::gacha_pull(const std::string& user_id, uint32_t cryst
 
 SynthesisResult GemRepository::synthesize_gems(const std::string& user_id,
                                                 const std::vector<std::string>& gem_instance_ids,
-                                                uint32_t result_gem_id) {
+                                                uint32_t result_gem_id,
+                                                const std::optional<std::string>& retained_gem_instance_id) {
     SynthesisResult result;
     try {
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
 
-        // 3개 보석 소유 확인
+        if (retained_gem_instance_id.has_value()) {
+            bool found = false;
+            for (const auto& id : gem_instance_ids) {
+                if (id == retained_gem_instance_id.value()) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                result.invalid_gems = true;
+                return result;
+            }
+        }
+
         auto check_result = tx.exec_params(
             "SELECT COUNT(*) FROM game_schema.user_gems ug "
             "LEFT JOIN game_schema.pickaxe_equipped_gems peg "
@@ -356,19 +371,27 @@ SynthesisResult GemRepository::synthesize_gems(const std::string& user_id,
             "  AND peg.gem_instance_id IS NULL",
             user_id, gem_instance_ids);
 
-        if (check_result[0][0].as<uint32_t>() != 3) {
+        if (check_result[0][0].as<uint32_t>() != gem_instance_ids.size()) {
             result.invalid_gems = true;
             return result;
         }
 
-        // 3개 보석 삭제
+        std::vector<std::string> delete_ids;
+        delete_ids.reserve(gem_instance_ids.size());
         for (const auto& id : gem_instance_ids) {
-            tx.exec_params(
-                "DELETE FROM game_schema.user_gems WHERE gem_instance_id = $1::uuid",
-                id);
+            if (retained_gem_instance_id.has_value() && id == retained_gem_instance_id.value()) {
+                continue;
+            }
+            delete_ids.push_back(id);
         }
 
-        // 합성 성공 시 새 보석 생성
+        if (!delete_ids.empty()) {
+            tx.exec_params(
+                "DELETE FROM game_schema.user_gems "
+                "WHERE user_id = $1::uuid AND gem_instance_id = ANY($2::uuid[])",
+                user_id, delete_ids);
+        }
+
         if (result_gem_id > 0) {
             auto gem_row = tx.exec_params(
                 "INSERT INTO game_schema.user_gems (user_id, gem_id) "
@@ -395,6 +418,7 @@ SynthesisResult GemRepository::synthesize_gems(const std::string& user_id,
 
 AutoSynthesisResult GemRepository::auto_synthesize_gems(const std::string& user_id,
                                                         const std::vector<std::string>& gem_instance_ids,
+                                                        const std::vector<std::string>& retained_gem_instance_ids,
                                                         const std::vector<uint32_t>& result_gem_ids) {
     AutoSynthesisResult result;
     if (gem_instance_ids.empty()) {
@@ -406,9 +430,21 @@ AutoSynthesisResult GemRepository::auto_synthesize_gems(const std::string& user_
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
 
+        std::unordered_set<std::string> gem_set(gem_instance_ids.begin(), gem_instance_ids.end());
+        for (const auto& id : retained_gem_instance_ids) {
+            if (gem_set.find(id) == gem_set.end()) {
+                result.invalid_gems = true;
+                return result;
+            }
+        }
+
         auto check_result = tx.exec_params(
-            "SELECT COUNT(*) FROM game_schema.user_gems "
-            "WHERE user_id = $1::uuid AND gem_instance_id = ANY($2::uuid[])",
+            "SELECT COUNT(*) FROM game_schema.user_gems ug "
+            "LEFT JOIN game_schema.pickaxe_equipped_gems peg "
+            "  ON ug.gem_instance_id = peg.gem_instance_id "
+            "WHERE ug.user_id = $1::uuid "
+            "  AND ug.gem_instance_id = ANY($2::uuid[]) "
+            "  AND peg.gem_instance_id IS NULL",
             user_id, gem_instance_ids);
 
         if (check_result[0][0].as<uint32_t>() != gem_instance_ids.size()) {
@@ -416,10 +452,22 @@ AutoSynthesisResult GemRepository::auto_synthesize_gems(const std::string& user_
             return result;
         }
 
-        tx.exec_params(
-            "DELETE FROM game_schema.user_gems "
-            "WHERE user_id = $1::uuid AND gem_instance_id = ANY($2::uuid[])",
-            user_id, gem_instance_ids);
+        std::unordered_set<std::string> retained_set(retained_gem_instance_ids.begin(), retained_gem_instance_ids.end());
+        std::vector<std::string> delete_ids;
+        delete_ids.reserve(gem_instance_ids.size());
+        for (const auto& id : gem_instance_ids) {
+            if (retained_set.find(id) != retained_set.end()) {
+                continue;
+            }
+            delete_ids.push_back(id);
+        }
+
+        if (!delete_ids.empty()) {
+            tx.exec_params(
+                "DELETE FROM game_schema.user_gems "
+                "WHERE user_id = $1::uuid AND gem_instance_id = ANY($2::uuid[])",
+                user_id, delete_ids);
+        }
 
         for (uint32_t gem_id : result_gem_ids) {
             auto gem_row = tx.exec_params(

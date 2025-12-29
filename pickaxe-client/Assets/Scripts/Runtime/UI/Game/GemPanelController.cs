@@ -4,6 +4,10 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using InfinitePickaxe.Client.Core;
+using InfinitePickaxe.Client.Metadata;
+using InfinitePickaxe.Client.Net;
+using Infinitepickaxe;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -87,10 +91,13 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private GameObject fusionRoot;
         [SerializeField] private GemSlotView fusionBaseSlot;
         [SerializeField] private GemSlotView fusionMaterialSlot;
+        [SerializeField] private GemSlotView fusionMaterialSlot2;
         [SerializeField] private GemSlotView fusionResultSlot;
         [SerializeField] private TextMeshProUGUI fusionChanceText;
         [SerializeField] private TextMeshProUGUI fusionWarningText;
         [SerializeField] private Button fusionButton;
+        [SerializeField] private Button autoSynthesisButton;
+        [SerializeField] private TextMeshProUGUI autoSynthesisButtonText;
 
         [Header("전환 패널")]
         [SerializeField] private GameObject convertRoot;
@@ -101,6 +108,8 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button convertFixedAttackSpeedButton;
         [SerializeField] private Button convertFixedCritRateButton;
         [SerializeField] private Button convertFixedCritDmgButton;
+        [Header("모달")]
+        [SerializeField] private GemSynthesisResultModalController synthesisResultModal;
 
         [Header("스텁 데이터")]
         [SerializeField] private bool useStubData = true;
@@ -111,29 +120,54 @@ namespace InfinitePickaxe.Client.UI.Game
         private readonly List<GemGridItemView> gridItems = new List<GemGridItemView>();
         private readonly List<string> slotGemInstanceIds = new List<string>();
         private int currentCapacity;
+        private MessageHandler messageHandler;
+        private GemStateCache gemCache;
+        private readonly GemMetaResolver metaResolver = new GemMetaResolver();
+        private bool subscribed;
+        private bool cacheSubscribed;
+        private uint currentCrystal;
+        private bool hasCrystalInfo;
         private GemFilter currentFilter = GemFilter.All;
         private GemMode currentMode = GemMode.Fusion;
         private string selectedBaseGemId;
         private string selectedMaterialGemId;
+        private string selectedMaterialGemId2;
         private string selectedConvertGemId;
         private Infinitepickaxe.GemType? selectedConvertTarget;
 
         private void Awake()
         {
+            ApplyMetaInventoryConfig();
             currentCapacity = Mathf.Clamp(initialCapacity, capacityStep, maxCapacity);
             BindFilterButtons();
             BindModeButtons();
             BindActionButtons();
             BindSlotButtons();
+            gemCache = GemStateCache.Instance;
+            AutoBindSynthesisResultModal();
 
             if (useStubData)
             {
                 BuildStubGems();
             }
+            else
+            {
+                LoadGemsFromCache();
+            }
 
             EnsureGridItems(currentCapacity);
             RebuildGrid();
             SetMode(currentMode);
+        }
+
+        private void Start()
+        {
+            SubscribeMessageHandler();
+            SubscribeCache();
+            if (!useStubData)
+            {
+                RequestGemListIfNeeded();
+            }
         }
 
         private void BindFilterButtons()
@@ -192,6 +226,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 fusionButton.onClick.AddListener(OnFusionClicked);
             }
 
+            if (autoSynthesisButton != null)
+            {
+                autoSynthesisButton.onClick.RemoveAllListeners();
+                autoSynthesisButton.onClick.AddListener(OnAutoSynthesisClicked);
+            }
+
             if (convertRandomButton != null)
             {
                 convertRandomButton.onClick.RemoveAllListeners();
@@ -221,6 +261,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             BindSlotButton(fusionBaseSlot, ClearFusionBase);
             BindSlotButton(fusionMaterialSlot, ClearFusionMaterial);
+            BindSlotButton(fusionMaterialSlot2, ClearFusionMaterial2);
             BindSlotButton(convertBaseSlot, ClearConvertBase);
         }
 
@@ -269,7 +310,26 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void EnsureGridItems(int requiredCount)
         {
-            if (gridContent == null || gemItemTemplate == null) return;
+            if (gridContent == null)
+            {
+                Debug.LogWarning("GemPanelController: GemGridContent가 없습니다.");
+                return;
+            }
+
+            if (gemItemTemplate == null)
+            {
+                var templateTf = gridContent.Find("GemItemTemplate");
+                if (templateTf != null)
+                {
+                    gemItemTemplate = templateTf.GetComponent<GemGridItemView>();
+                }
+            }
+
+            if (gemItemTemplate == null)
+            {
+                Debug.LogWarning("GemPanelController: GemItemTemplate가 없습니다.");
+                return;
+            }
 
             while (gridItems.Count < requiredCount)
             {
@@ -307,6 +367,11 @@ namespace InfinitePickaxe.Client.UI.Game
         private void RebuildGrid()
         {
             EnsureGridItems(currentCapacity);
+            if (gridItems.Count < currentCapacity)
+            {
+                Debug.LogWarning("GemPanelController: GemItemTemplate 연결을 확인하세요.");
+                return;
+            }
             slotGemInstanceIds.Clear();
 
             var filtered = GetFilteredGems();
@@ -317,7 +382,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 {
                     var gem = filtered[i];
                     slotGemInstanceIds.Add(gem.GemInstanceId);
-                    view.SetData(GetGemDisplayName(gem), GetGradeLabel(gem.Grade), null);
+                    view.SetData(GetGemDisplayName(gem), GetGradeLabel(gem.Grade), GetGemIcon(gem));
                 }
                 else
                 {
@@ -371,7 +436,13 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void SelectFusionGem(string gemInstanceId)
         {
-            if (selectedBaseGemId == gemInstanceId || selectedMaterialGemId == gemInstanceId) return;
+            if (string.IsNullOrEmpty(gemInstanceId)) return;
+            if (selectedBaseGemId == gemInstanceId ||
+                selectedMaterialGemId == gemInstanceId ||
+                selectedMaterialGemId2 == gemInstanceId)
+            {
+                return;
+            }
 
             var gem = GetGem(gemInstanceId);
             if (gem == null) return;
@@ -386,15 +457,29 @@ namespace InfinitePickaxe.Client.UI.Game
             if (baseGem == null)
             {
                 selectedBaseGemId = gemInstanceId;
+                selectedMaterialGemId = null;
+                selectedMaterialGemId2 = null;
                 return;
             }
 
             if (gem.Grade != baseGem.Grade)
             {
+                selectedBaseGemId = gemInstanceId;
+                selectedMaterialGemId = null;
+                selectedMaterialGemId2 = null;
                 return;
             }
 
-            selectedMaterialGemId = gemInstanceId;
+            if (string.IsNullOrEmpty(selectedMaterialGemId))
+            {
+                selectedMaterialGemId = gemInstanceId;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(selectedMaterialGemId2))
+            {
+                selectedMaterialGemId2 = gemInstanceId;
+            }
         }
 
         private void SelectConvertGem(string gemInstanceId)
@@ -407,12 +492,27 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             selectedBaseGemId = null;
             selectedMaterialGemId = null;
+            selectedMaterialGemId2 = null;
             UpdateSelectionUI();
         }
 
         private void ClearFusionMaterial()
         {
-            selectedMaterialGemId = null;
+            if (!string.IsNullOrEmpty(selectedMaterialGemId2))
+            {
+                selectedMaterialGemId = selectedMaterialGemId2;
+                selectedMaterialGemId2 = null;
+            }
+            else
+            {
+                selectedMaterialGemId = null;
+            }
+            UpdateSelectionUI();
+        }
+
+        private void ClearFusionMaterial2()
+        {
+            selectedMaterialGemId2 = null;
             UpdateSelectionUI();
         }
 
@@ -434,6 +534,7 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 selectedBaseGemId = null;
                 selectedMaterialGemId = null;
+                selectedMaterialGemId2 = null;
             }
         }
 
@@ -449,47 +550,59 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             var baseGem = !string.IsNullOrEmpty(selectedBaseGemId) ? GetGem(selectedBaseGemId) : null;
             var materialGem = !string.IsNullOrEmpty(selectedMaterialGemId) ? GetGem(selectedMaterialGemId) : null;
+            var materialGem2 = !string.IsNullOrEmpty(selectedMaterialGemId2) ? GetGem(selectedMaterialGemId2) : null;
+            var normalizedGrade = baseGem != null ? NormalizeSynthesisGrade(baseGem.Grade) : Infinitepickaxe.GemGrade.Unknown;
 
             UpdateFusionSlotView(fusionBaseSlot, "기준", baseGem);
-            UpdateFusionSlotView(fusionMaterialSlot, "재료", materialGem);
+            UpdateFusionSlotView(fusionMaterialSlot, "재료1", materialGem);
+            UpdateFusionSlotView(fusionMaterialSlot2, "재료2", materialGem2);
 
-            if (baseGem != null && baseGem.Grade != Infinitepickaxe.GemGrade.Legendary)
+            if (baseGem != null && normalizedGrade != Infinitepickaxe.GemGrade.Legendary)
             {
-                var nextGrade = GetNextGrade(baseGem.Grade);
-                var previewName = GetGemDisplayName(baseGem.Type, nextGrade);
-                var previewTier = GetGradeLabel(nextGrade);
-                fusionResultSlot?.SetGem("성공 결과", previewName, previewTier, null);
+                var nextGrade = GetNextGrade(normalizedGrade);
+                fusionResultSlot?.SetGem("합성 결과", "랜덤 보석", GetGradeLabel(nextGrade), null);
             }
             else if (baseGem != null)
             {
-                fusionResultSlot?.SetEmpty("성공 결과", "최고 등급");
+                fusionResultSlot?.SetEmpty("합성 결과", "결과 없음");
             }
             else
             {
-                fusionResultSlot?.SetEmpty("성공 결과", "보석 선택");
+                fusionResultSlot?.SetEmpty("합성 결과", "결과 없음");
             }
 
             if (fusionChanceText != null)
             {
                 fusionChanceText.text = baseGem == null
                     ? "성공 확률: -"
-                    : baseGem.Grade == Infinitepickaxe.GemGrade.Legendary
+                    : normalizedGrade == Infinitepickaxe.GemGrade.Legendary
                         ? "성공 확률: -"
-                        : $"성공 확률: {GetFusionChance(baseGem.Grade)}%";
+                        : $"성공 확률: {GetFusionChance(normalizedGrade)}%";
             }
 
             if (fusionWarningText != null)
             {
-                fusionWarningText.text = "실패 시 재료 소멸\n동일 등급만 합성 가능";
+                fusionWarningText.text = "실패 시 2개 소멸, 1개 유지\n동일 등급 3개 필요";
             }
 
             if (fusionButton != null)
             {
                 bool canFuse = baseGem != null
                     && materialGem != null
+                    && materialGem2 != null
                     && baseGem.Grade != Infinitepickaxe.GemGrade.Legendary
-                    && materialGem.Grade == baseGem.Grade;
+                    && materialGem.Grade == baseGem.Grade
+                    && materialGem2.Grade == baseGem.Grade;
                 fusionButton.interactable = canFuse;
+            }
+
+            if (autoSynthesisButton != null)
+            {
+                bool canAutoSynthesis = baseGem != null
+                    && normalizedGrade != Infinitepickaxe.GemGrade.Legendary
+                    && HasSynthesisMetadata(normalizedGrade)
+                    && GetAvailableAutoSynthesisCount(normalizedGrade) >= 3;
+                autoSynthesisButton.interactable = canAutoSynthesis;
             }
         }
 
@@ -503,9 +616,9 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            slot.SetGem(roleLabel, GetGemDisplayName(gem), GetGradeLabel(gem.Grade), null);
+            var icon = GetGemIcon(gem);
+            slot.SetGem(roleLabel, GetGemDisplayName(gem), GetGradeLabel(gem.Grade), icon);
         }
-
         private void UpdateConvertSlots()
         {
             var baseGem = !string.IsNullOrEmpty(selectedConvertGemId) ? GetGem(selectedConvertGemId) : null;
@@ -517,7 +630,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            convertBaseSlot?.SetGem("현재 보석", GetGemDisplayName(baseGem), GetGradeLabel(baseGem.Grade), null);
+            convertBaseSlot?.SetGem("현재 보석", GetGemDisplayName(baseGem), GetGradeLabel(baseGem.Grade), GetGemIcon(baseGem));
 
             if (selectedConvertTarget.HasValue)
             {
@@ -548,6 +661,10 @@ namespace InfinitePickaxe.Client.UI.Game
                     else if (!string.IsNullOrEmpty(selectedMaterialGemId) && gemInstanceId == selectedMaterialGemId)
                     {
                         role = GemSelectionRole.Material;
+                    }
+                    else if (!string.IsNullOrEmpty(selectedMaterialGemId2) && gemInstanceId == selectedMaterialGemId2)
+                    {
+                        role = GemSelectionRole.Material2;
                     }
                     else if (!string.IsNullOrEmpty(selectedConvertGemId) && gemInstanceId == selectedConvertGemId)
                     {
@@ -600,8 +717,74 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void OnFusionClicked()
         {
-            // TODO: 서버에 합성 요청 (GemSynthesisRequest)
-            Debug.Log($"합성 요청: base={selectedBaseGemId}, material={selectedMaterialGemId}");
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("GemPanelController: MessageHandler가 없습니다.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(selectedBaseGemId) ||
+                string.IsNullOrEmpty(selectedMaterialGemId) ||
+                string.IsNullOrEmpty(selectedMaterialGemId2))
+            {
+                Debug.LogWarning("GemPanelController: 합성 재료가 부족합니다.");
+                return;
+            }
+
+            var baseGem = GetGem(selectedBaseGemId);
+            if (baseGem == null || baseGem.Grade == Infinitepickaxe.GemGrade.Legendary)
+            {
+                Debug.LogWarning("GemPanelController: 최고 등급은 합성이 불가합니다.");
+                return;
+            }
+
+            if (gemCache != null &&
+                (gemCache.IsEquipped(selectedBaseGemId) ||
+                 gemCache.IsEquipped(selectedMaterialGemId) ||
+                 gemCache.IsEquipped(selectedMaterialGemId2)))
+            {
+                Debug.LogWarning("GemPanelController: 장착된 보석은 합성할 수 없습니다.");
+                return;
+            }
+
+            messageHandler.RequestGemSynthesis(selectedBaseGemId, selectedMaterialGemId, selectedMaterialGemId2);
+        }
+
+        private void OnAutoSynthesisClicked()
+        {
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("GemPanelController: MessageHandler가 없습니다.");
+                return;
+            }
+
+            var baseGem = !string.IsNullOrEmpty(selectedBaseGemId) ? GetGem(selectedBaseGemId) : null;
+            if (baseGem == null)
+            {
+                Debug.LogWarning("GemPanelController: 자동 합성 기준 보석이 없습니다.");
+                return;
+            }
+
+            var normalizedGrade = NormalizeSynthesisGrade(baseGem.Grade);
+            if (normalizedGrade == Infinitepickaxe.GemGrade.Legendary)
+            {
+                Debug.LogWarning("GemPanelController: 최고 등급은 자동 합성이 불가합니다.");
+                return;
+            }
+
+            if (!HasSynthesisMetadata(normalizedGrade))
+            {
+                Debug.LogWarning("GemPanelController: 합성 메타데이터가 없습니다.");
+                return;
+            }
+
+            if (GetAvailableAutoSynthesisCount(normalizedGrade) < 3)
+            {
+                Debug.LogWarning("GemPanelController: 자동 합성 재료가 부족합니다.");
+                return;
+            }
+
+            messageHandler.RequestGemAutoSynthesis(normalizedGrade, 0);
         }
 
         private void OnConvertRandomClicked()
@@ -609,8 +792,22 @@ namespace InfinitePickaxe.Client.UI.Game
             selectedConvertTarget = null;
             UpdateConvertSlots();
             UpdateConvertButtons();
-            // TODO: 서버에 랜덤 전환 요청 (GemConversionRequest with random=true)
-            Debug.Log($"랜덤 전환 요청: gem={selectedConvertGemId}");
+
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("GemPanelController: MessageHandler가 없습니다.");
+                return;
+            }
+
+            var baseGem = !string.IsNullOrEmpty(selectedConvertGemId) ? GetGem(selectedConvertGemId) : null;
+            if (baseGem == null)
+            {
+                Debug.LogWarning("GemPanelController: 전환 대상 보석이 없습니다.");
+                return;
+            }
+
+            var targetType = GetRandomConvertTarget(baseGem.Type);
+            messageHandler.RequestGemConversion(selectedConvertGemId, targetType, false);
         }
 
         private void OnConvertFixedClicked(Infinitepickaxe.GemType targetType)
@@ -622,29 +819,47 @@ namespace InfinitePickaxe.Client.UI.Game
             selectedConvertTarget = targetType;
             UpdateConvertSlots();
             UpdateConvertButtons();
-            // TODO: 서버에 확정 전환 요청 (GemConversionRequest with target_type)
-            Debug.Log($"확정 전환 요청: gem={selectedConvertGemId}, target={targetType}");
+
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("GemPanelController: MessageHandler가 없습니다.");
+                return;
+            }
+
+            messageHandler.RequestGemConversion(selectedConvertGemId, targetType, true);
         }
 
         private void OnExpandRowClicked()
         {
-            if (currentCapacity >= maxCapacity) return;
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("GemPanelController: MessageHandler가 없습니다.");
+                return;
+            }
 
-            currentCapacity = Mathf.Min(currentCapacity + capacityStep, maxCapacity);
-            RebuildGrid();
-            // TODO: 서버에 인벤토리 확장 요청
+            if (maxCapacity > 0 && currentCapacity >= maxCapacity) return;
+
+            messageHandler.RequestGemInventoryExpand();
         }
 
         private void UpdateExpandButtonState()
         {
             if (expandRowButton != null)
             {
-                expandRowButton.interactable = currentCapacity < maxCapacity;
+                bool canExpand = maxCapacity == 0 || currentCapacity < maxCapacity;
+                expandRowButton.interactable = canExpand;
             }
 
             if (expandCostText != null)
             {
-                expandCostText.text = "확장 비용: TBD";
+                bool canExpand = maxCapacity == 0 || currentCapacity < maxCapacity;
+                expandCostText.gameObject.SetActive(canExpand);
+                if (canExpand)
+                {
+                    expandCostText.text = metaResolver.ExpandCost > 0
+                        ? $"필요 크리스탈: {metaResolver.ExpandCost}"
+                        : "필요 크리스탈: -";
+                }
             }
         }
 
@@ -652,9 +867,311 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (capacityText != null)
             {
-                capacityText.text = $"{currentCapacity}/{maxCapacity}";
+                int usedCount = allGems.Count;
+                capacityText.text = currentCapacity > 0
+                    ? $"{usedCount}/{currentCapacity}"
+                    : $"{usedCount}";
             }
         }
+
+        private void ApplyMetaInventoryConfig()
+        {
+            if (metaResolver.BaseCapacity > 0) initialCapacity = (int)metaResolver.BaseCapacity;
+            if (metaResolver.MaxCapacity > 0) maxCapacity = (int)metaResolver.MaxCapacity;
+            if (metaResolver.ExpandStep > 0) capacityStep = (int)metaResolver.ExpandStep;
+        }
+
+        private void LoadGemsFromCache()
+        {
+            if (gemCache == null) return;
+
+            allGems.Clear();
+            gemByInstanceId.Clear();
+
+            foreach (var gem in gemCache.GetInventoryGems())
+            {
+                var uiData = GemUIData.FromProtocol(gem);
+                if (uiData == null || string.IsNullOrEmpty(uiData.GemInstanceId)) continue;
+                allGems.Add(uiData);
+                gemByInstanceId[uiData.GemInstanceId] = uiData;
+            }
+
+            if (gemCache.InventoryCapacity > 0)
+            {
+                currentCapacity = (int)gemCache.InventoryCapacity;
+            }
+
+            int maxCap = maxCapacity > 0 ? maxCapacity : currentCapacity;
+            if (maxCap > 0)
+            {
+                currentCapacity = Mathf.Clamp(currentCapacity, capacityStep, maxCap);
+            }
+
+            ValidateSelections();
+        }
+
+        private void ValidateSelections()
+        {
+            if (!string.IsNullOrEmpty(selectedBaseGemId) && !gemByInstanceId.ContainsKey(selectedBaseGemId))
+            {
+                selectedBaseGemId = null;
+            }
+
+            if (!string.IsNullOrEmpty(selectedMaterialGemId) && !gemByInstanceId.ContainsKey(selectedMaterialGemId))
+            {
+                selectedMaterialGemId = null;
+            }
+
+            if (!string.IsNullOrEmpty(selectedMaterialGemId2) && !gemByInstanceId.ContainsKey(selectedMaterialGemId2))
+            {
+                selectedMaterialGemId2 = null;
+            }
+
+            if (!string.IsNullOrEmpty(selectedConvertGemId) && !gemByInstanceId.ContainsKey(selectedConvertGemId))
+            {
+                selectedConvertGemId = null;
+                selectedConvertTarget = null;
+            }
+        }
+
+        private void AutoBindSynthesisResultModal()
+        {
+            if (synthesisResultModal != null)
+            {
+                if (!synthesisResultModal.gameObject.scene.IsValid())
+                {
+                    var existing = GameObject.Find("GemSynthesisResultModal");
+                    if (existing != null)
+                    {
+                        synthesisResultModal = existing.GetComponent<GemSynthesisResultModalController>();
+                    }
+                    else
+                    {
+                        var instance = Instantiate(synthesisResultModal.gameObject, transform.root);
+                        instance.name = "GemSynthesisResultModal";
+                        instance.SetActive(false);
+                        synthesisResultModal = instance.GetComponent<GemSynthesisResultModalController>();
+                    }
+                }
+                return;
+            }
+
+            var modalObj = GameObject.Find("GemSynthesisResultModal");
+            if (modalObj == null)
+            {
+                var prefab = Resources.Load<GameObject>("UI/GemSynthesisResultModal");
+                if (prefab != null)
+                {
+                    var instance = Instantiate(prefab, transform.root);
+                    instance.name = "GemSynthesisResultModal";
+                    instance.SetActive(false);
+                    modalObj = instance;
+                }
+            }
+
+            if (modalObj != null)
+            {
+                synthesisResultModal = modalObj.GetComponent<GemSynthesisResultModalController>();
+            }
+        }
+
+        private void SubscribeMessageHandler()
+        {
+            if (subscribed) return;
+
+            messageHandler = MessageHandler.Instance;
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("GemPanelController: MessageHandler가 없습니다.");
+                return;
+            }
+
+            messageHandler.OnGemListResponse += HandleGemListResponse;
+            messageHandler.OnGemSynthesisResult += HandleGemSynthesisResult;
+            messageHandler.OnGemAutoSynthesisResult += HandleGemAutoSynthesisResult;
+            messageHandler.OnGemConversionResult += HandleGemConversionResult;
+            messageHandler.OnGemInventoryExpandResult += HandleGemInventoryExpandResult;
+            messageHandler.OnCurrencyUpdate += HandleCurrencyUpdate;
+            subscribed = true;
+        }
+
+        private void SubscribeCache()
+        {
+            if (cacheSubscribed) return;
+
+            gemCache = GemStateCache.Instance;
+            if (gemCache != null)
+            {
+                gemCache.OnInventoryChanged += HandleInventoryChanged;
+                cacheSubscribed = true;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (cacheSubscribed && gemCache != null)
+            {
+                gemCache.OnInventoryChanged -= HandleInventoryChanged;
+                cacheSubscribed = false;
+            }
+
+            if (!subscribed || messageHandler == null) return;
+
+            messageHandler.OnGemListResponse -= HandleGemListResponse;
+            messageHandler.OnGemSynthesisResult -= HandleGemSynthesisResult;
+            messageHandler.OnGemAutoSynthesisResult -= HandleGemAutoSynthesisResult;
+            messageHandler.OnGemConversionResult -= HandleGemConversionResult;
+            messageHandler.OnGemInventoryExpandResult -= HandleGemInventoryExpandResult;
+            messageHandler.OnCurrencyUpdate -= HandleCurrencyUpdate;
+            subscribed = false;
+        }
+
+        private void RequestGemListIfNeeded()
+        {
+            if (messageHandler == null) return;
+            if (gemCache == null || !gemCache.HasData)
+            {
+                messageHandler.RequestGemList();
+            }
+        }
+
+        private void HandleInventoryChanged()
+        {
+            if (useStubData) return;
+            LoadGemsFromCache();
+            EnsureGridItems(currentCapacity);
+            RebuildGrid();
+            UpdateSelectionUI();
+        }
+
+        private void HandleGemListResponse(GemListResponse response)
+        {
+            if (useStubData) return;
+            LoadGemsFromCache();
+            EnsureGridItems(currentCapacity);
+            RebuildGrid();
+            UpdateSelectionUI();
+        }
+
+        private void HandleGemSynthesisResult(GemSynthesisResult result)
+        {
+            if (result == null || !result.Success)
+            {
+                if (result != null)
+                {
+                    Debug.LogWarning($"GemPanelController: 합성 실패 ({result.ErrorCode})");
+                }
+                return;
+            }
+
+            synthesisResultModal?.ShowSynthesisResult(result);
+            ClearFusionBase();
+        }
+
+        private void HandleGemAutoSynthesisResult(GemAutoSynthesisResult result)
+        {
+            if (result == null || !result.Success)
+            {
+                if (result != null)
+                {
+                    Debug.LogWarning($"GemPanelController: 자동 합성 실패 ({result.ErrorCode})");
+                }
+                return;
+            }
+
+            synthesisResultModal?.ShowAutoSynthesisResult(result);
+            ClearFusionBase();
+        }
+
+        private void HandleGemConversionResult(GemConversionResult result)
+        {
+            if (result == null || !result.Success)
+            {
+                if (result != null)
+                {
+                    Debug.LogWarning($"GemPanelController: 전환 실패 ({result.ErrorCode})");
+                }
+                return;
+            }
+
+            ClearConvertBase();
+        }
+
+        private void HandleGemInventoryExpandResult(GemInventoryExpandResult result)
+        {
+            if (result == null || !result.Success) return;
+            LoadGemsFromCache();
+            EnsureGridItems(currentCapacity);
+            RebuildGrid();
+            UpdateSelectionUI();
+        }
+
+        private void HandleCurrencyUpdate(CurrencyUpdate update)
+        {
+            if (update?.Crystal.HasValue == true)
+            {
+                currentCrystal = update.Crystal.Value;
+                hasCrystalInfo = true;
+            }
+        }
+
+        private Sprite GetGemIcon(GemUIData gem)
+        {
+            if (gem == null) return null;
+            if (!string.IsNullOrEmpty(gem.IconName))
+            {
+                return GemSpriteLoader.GetGemSpriteByName(gem.IconName);
+            }
+            return GemSpriteLoader.GetGemSprite(gem.GemId);
+        }
+
+        private Infinitepickaxe.GemType GetRandomConvertTarget(Infinitepickaxe.GemType currentType)
+        {
+            var candidates = new List<Infinitepickaxe.GemType>
+            {
+                Infinitepickaxe.GemType.AttackSpeed,
+                Infinitepickaxe.GemType.CritRate,
+                Infinitepickaxe.GemType.CritDmg
+            };
+            candidates.Remove(currentType);
+            if (candidates.Count == 0) return currentType;
+            int index = UnityEngine.Random.Range(0, candidates.Count);
+            return candidates[index];
+        }
+
+        private string GetGradeKey(Infinitepickaxe.GemGrade grade)
+        {
+            grade = NormalizeSynthesisGrade(grade);
+            return grade switch
+            {
+                Infinitepickaxe.GemGrade.Common => "COMMON",
+                Infinitepickaxe.GemGrade.Rare => "RARE",
+                Infinitepickaxe.GemGrade.Epic => "EPIC",
+                Infinitepickaxe.GemGrade.Hero => "HERO",
+                Infinitepickaxe.GemGrade.Legendary => "LEGENDARY",
+                _ => string.Empty
+            };
+        }
+
+        private int GetFusionChance(Infinitepickaxe.GemGrade grade)
+        {
+            grade = NormalizeSynthesisGrade(grade);
+            var gradeKey = GetGradeKey(grade);
+            if (!string.IsNullOrEmpty(gradeKey) && metaResolver.TryGetSynthesisRule(gradeKey, out var rule))
+            {
+                return Mathf.RoundToInt(rule.SuccessRatePercent / 100f);
+            }
+
+            return grade switch
+            {
+                Infinitepickaxe.GemGrade.Common => 100,
+                Infinitepickaxe.GemGrade.Rare => 70,
+                Infinitepickaxe.GemGrade.Epic => 50,
+                Infinitepickaxe.GemGrade.Hero => 30,
+                _ => 0
+            };
+        }
+
 
         private GemUIData GetGem(string gemInstanceId)
         {
@@ -663,6 +1180,8 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private string GetGemDisplayName(GemUIData gem)
         {
+            if (gem == null) return string.Empty;
+            if (!string.IsNullOrEmpty(gem.Name)) return gem.Name;
             return GetGemDisplayName(gem.Type, gem.Grade);
         }
 
@@ -697,6 +1216,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private Infinitepickaxe.GemGrade GetNextGrade(Infinitepickaxe.GemGrade grade)
         {
+            grade = NormalizeSynthesisGrade(grade);
             return grade switch
             {
                 Infinitepickaxe.GemGrade.Common => Infinitepickaxe.GemGrade.Rare,
@@ -707,17 +1227,23 @@ namespace InfinitePickaxe.Client.UI.Game
             };
         }
 
-        private int GetFusionChance(Infinitepickaxe.GemGrade grade)
+        private Infinitepickaxe.GemGrade NormalizeSynthesisGrade(Infinitepickaxe.GemGrade grade)
         {
-            // TODO: 서버 메타데이터 또는 설정에서 가져오기
-            return grade switch
-            {
-                Infinitepickaxe.GemGrade.Common => 100,
-                Infinitepickaxe.GemGrade.Rare => 70,
-                Infinitepickaxe.GemGrade.Epic => 50,
-                Infinitepickaxe.GemGrade.Hero => 30,
-                _ => 0
-            };
+            return grade == Infinitepickaxe.GemGrade.Unknown
+                ? Infinitepickaxe.GemGrade.Common
+                : grade;
         }
+
+        private int GetAvailableAutoSynthesisCount(Infinitepickaxe.GemGrade grade)
+        {
+            return allGems.Count(g => NormalizeSynthesisGrade(g.Grade) == grade);
+        }
+
+        private bool HasSynthesisMetadata(Infinitepickaxe.GemGrade grade)
+        {
+            var gradeKey = GetGradeKey(grade);
+            return !string.IsNullOrEmpty(gradeKey) && metaResolver.TryGetSynthesisRule(gradeKey, out _);
+        }
+
     }
 }

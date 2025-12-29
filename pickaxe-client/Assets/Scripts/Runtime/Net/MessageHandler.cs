@@ -105,6 +105,7 @@ namespace InfinitePickaxe.Client.Net
         public event Action<GemListResponse> OnGemListResponse;
         public event Action<GemGachaResult> OnGemGachaResult;
         public event Action<GemSynthesisResult> OnGemSynthesisResult;
+        public event Action<GemAutoSynthesisResult> OnGemAutoSynthesisResult;
         public event Action<GemConversionResult> OnGemConversionResult;
         public event Action<GemDiscardResult> OnGemDiscardResult;
         public event Action<GemEquipResult> OnGemEquipResult;
@@ -260,6 +261,9 @@ namespace InfinitePickaxe.Client.Net
 
                     case MessageType.GemSynthesisResult:
                         HandleGemSynthesisResult(envelope.GemSynthesisResult);
+                        break;
+                    case MessageType.GemAutoSynthesisResult:
+                        HandleGemAutoSynthesisResult(envelope.GemAutoSynthesisResult);
                         break;
 
                     case MessageType.GemConversionResult:
@@ -650,6 +654,20 @@ namespace InfinitePickaxe.Client.Net
             OnGemSynthesisResult?.Invoke(result);
         }
 
+        private void HandleGemAutoSynthesisResult(GemAutoSynthesisResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"???ë? ???©ì„± ?±ê³µ: {result.SuccessCount}/{result.Attempted}");
+                RequestGemList();
+            }
+            else
+            {
+                Debug.LogWarning($"???ë? ???©ì„± ?¤íŒ¨: {result.ErrorCode}");
+            }
+            OnGemAutoSynthesisResult?.Invoke(result);
+        }
+
         private void HandleGemConversionResult(GemConversionResult result)
         {
             if (result.Success)
@@ -1003,6 +1021,21 @@ namespace InfinitePickaxe.Client.Net
         /// <summary>
         /// 젬 타입 전환 요청
         /// </summary>
+        public void RequestGemAutoSynthesis(Infinitepickaxe.GemGrade fromGrade, uint maxAttempts)
+        {
+            var request = new GemAutoSynthesisRequest
+            {
+                FromGrade = fromGrade,
+                MaxAttempts = maxAttempts
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.GemAutoSynthesisRequest,
+                GemAutoSynthesisRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
         public void RequestGemConversion(string gemInstanceId, Infinitepickaxe.GemType targetType, bool useFixedCost)
         {
             // pending 추적 (response에 원본 gem ID 없음)

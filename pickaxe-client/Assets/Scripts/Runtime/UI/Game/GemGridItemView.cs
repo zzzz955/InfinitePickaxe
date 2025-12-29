@@ -19,6 +19,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Color emptyColor = new Color(0.08f, 0.08f, 0.08f, 0.5f);
         [SerializeField] private Color baseColor = new Color(0.3f, 0.45f, 0.75f, 0.9f);
         [SerializeField] private Color materialColor = new Color(0.3f, 0.7f, 0.45f, 0.9f);
+        [SerializeField] private Color material2Color = new Color(0.3f, 0.6f, 0.85f, 0.9f);
         [SerializeField] private Color convertColor = new Color(0.7f, 0.5f, 0.25f, 0.9f);
 
         private int boundIndex;
@@ -50,6 +51,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (emptyState != null) emptyState.SetActive(true);
             if (filledState != null) filledState.SetActive(false);
+            if (iconImage != null) iconImage.gameObject.SetActive(false);
 
             if (button != null) button.interactable = false;
             if (nameText != null) nameText.text = string.Empty;
@@ -73,6 +75,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (tierText != null) tierText.text = tierLabel;
             if (iconImage != null)
             {
+                iconImage.gameObject.SetActive(true);
                 iconImage.sprite = icon;
                 iconImage.color = icon != null ? Color.white : new Color(1f, 1f, 1f, 0.6f);
             }
@@ -109,15 +112,19 @@ namespace InfinitePickaxe.Client.UI.Game
             switch (role)
             {
                 case GemSelectionRole.Base:
-                    if (badgeText != null) badgeText.text = "기준";
+                    if (badgeText != null) badgeText.text = "??";
                     ApplyBackgroundColor(baseColor);
                     break;
                 case GemSelectionRole.Material:
-                    if (badgeText != null) badgeText.text = "재료";
+                    if (badgeText != null) badgeText.text = "??";
                     ApplyBackgroundColor(materialColor);
                     break;
+                case GemSelectionRole.Material2:
+                    if (badgeText != null) badgeText.text = "??2";
+                    ApplyBackgroundColor(material2Color);
+                    break;
                 case GemSelectionRole.Convert:
-                    if (badgeText != null) badgeText.text = "전환";
+                    if (badgeText != null) badgeText.text = "??";
                     ApplyBackgroundColor(convertColor);
                     break;
                 default:

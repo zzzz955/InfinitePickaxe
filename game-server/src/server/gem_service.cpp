@@ -3,6 +3,7 @@
 #include <random>
 #include <cmath>
 #include <set>
+#include <unordered_map>
 
 namespace {
 // 랜덤 넘버 생성기
@@ -118,10 +119,15 @@ infinitepickaxe::GemSynthesisResult GemService::handle_synthesis(const std::stri
             result.set_error_code("GEM_NOT_FOUND");
             return result;
         }
+        if (gem_repo_.find_equipped_location(gem_id).has_value()) {
+            result.set_success(false);
+            result.set_error_code("GEM_EQUIPPED");
+            return result;
+        }
         gems.push_back(gem_opt.value());
     }
 
-    // 모두 같은 grade, type인지 검증
+    // 모두 같은 grade인지 검증
     const auto* first_def = meta_.gem_definition(gems[0].gem_id);
     if (!first_def) {
         result.set_success(false);
@@ -168,6 +174,16 @@ infinitepickaxe::GemSynthesisResult GemService::handle_synthesis(const std::stri
     uint32_t roll = dist(gen);
     bool synthesis_success = roll < rule->success_rate_percent;
 
+    std::optional<GemInstanceData> retained_gem;
+    std::optional<std::string> retained_gem_instance_id;
+    if (!synthesis_success) {
+        std::uniform_int_distribution<> keep_dist(0, static_cast<int>(gems.size()) - 1);
+        int keep_index = keep_dist(gen);
+        retained_gem = gems[keep_index];
+        retained_gem_instance_id = retained_gem->gem_instance_id;
+    }
+
+
     // 결과 gem_id 계산
     uint32_t result_gem_id = 0;
     if (synthesis_success) {
@@ -205,7 +221,7 @@ infinitepickaxe::GemSynthesisResult GemService::handle_synthesis(const std::stri
     }
 
     // Repository 호출
-    auto synth_result = gem_repo_.synthesize_gems(user_id, gem_instance_ids, result_gem_id);
+    auto synth_result = gem_repo_.synthesize_gems(user_id, gem_instance_ids, result_gem_id, retained_gem_instance_id);
 
     if (!synth_result.success) {
         result.set_success(false);
@@ -223,6 +239,11 @@ infinitepickaxe::GemSynthesisResult GemService::handle_synthesis(const std::stri
     if (synthesis_success && synth_result.result_gem.has_value()) {
         auto* gem_info = result.mutable_result_gem();
         populate_gem_info(synth_result.result_gem.value(), gem_info);
+    } else if (!synthesis_success && retained_gem.has_value()) {
+        auto* gem_info = result.mutable_result_gem();
+        populate_gem_info(retained_gem.value(), gem_info);
+        auto* retained_info = result.mutable_retained_gem();
+        populate_gem_info(retained_gem.value(), retained_info);
     }
 
     auto all_gems = gem_repo_.get_user_gems(user_id);
@@ -252,14 +273,16 @@ infinitepickaxe::GemAutoSynthesisResult GemService::handle_auto_synthesis(const 
     }
 
     uint32_t from_grade_id = 0;
+    bool from_grade_found = false;
     for (const auto& g : meta_.gem_grades()) {
         if (g.grade == from_grade_str) {
             from_grade_id = g.id;
+            from_grade_found = true;
             break;
         }
     }
 
-    if (from_grade_id == 0) {
+    if (!from_grade_found) {
         result.set_success(false);
         result.set_error_code("INVALID_GRADE_METADATA");
         return result;
@@ -280,14 +303,16 @@ infinitepickaxe::GemAutoSynthesisResult GemService::handle_auto_synthesis(const 
     }
 
     uint32_t to_grade_id = 0;
+    bool to_grade_found = false;
     for (const auto& g : meta_.gem_grades()) {
         if (g.grade == rule->to_grade) {
             to_grade_id = g.id;
+            to_grade_found = true;
             break;
         }
     }
 
-    if (to_grade_id == 0) {
+    if (!to_grade_found) {
         result.set_success(false);
         result.set_error_code("INVALID_TO_GRADE");
         return result;
@@ -307,6 +332,12 @@ infinitepickaxe::GemAutoSynthesisResult GemService::handle_auto_synthesis(const 
     }
 
     auto gems = gem_repo_.get_user_gems_excluding_equipped(user_id);
+    std::unordered_map<std::string, GemInstanceData> gem_by_instance;
+    gem_by_instance.reserve(gems.size());
+    for (const auto& gem : gems) {
+        gem_by_instance.emplace(gem.gem_instance_id, gem);
+    }
+
     std::vector<std::string> candidate_ids;
     candidate_ids.reserve(gems.size());
 
@@ -343,19 +374,37 @@ infinitepickaxe::GemAutoSynthesisResult GemService::handle_auto_synthesis(const 
         consumed_ids.push_back(candidate_ids[i]);
     }
 
+    struct AutoSynthesisOutcome {
+        bool success;
+        std::string retained_id;
+    };
+
+    std::vector<AutoSynthesisOutcome> outcomes;
+    outcomes.reserve(attempts);
+
+    std::vector<std::string> retained_ids;
+    retained_ids.reserve(attempts);
+
     std::vector<uint32_t> result_gem_ids;
     result_gem_ids.reserve(attempts);
     uint32_t success_count = 0;
 
+    std::uniform_int_distribution<> keep_dist(0, 2);
     for (uint32_t i = 0; i < attempts; ++i) {
         bool synthesis_success = roll_dist(gen) < rule->success_rate_percent;
         if (synthesis_success) {
             result_gem_ids.push_back(candidate_result_ids[result_dist(gen)]);
             ++success_count;
+            outcomes.push_back({true, ""});
+        } else {
+            uint32_t keep_index = static_cast<uint32_t>(keep_dist(gen));
+            std::string retained_id = consumed_ids[i * 3 + keep_index];
+            retained_ids.push_back(retained_id);
+            outcomes.push_back({false, retained_id});
         }
     }
 
-    auto synth_result = gem_repo_.auto_synthesize_gems(user_id, consumed_ids, result_gem_ids);
+    auto synth_result = gem_repo_.auto_synthesize_gems(user_id, consumed_ids, retained_ids, result_gem_ids);
     if (!synth_result.success) {
         result.set_success(false);
         if (synth_result.invalid_gems) {
@@ -370,9 +419,23 @@ infinitepickaxe::GemAutoSynthesisResult GemService::handle_auto_synthesis(const 
     result.set_attempted(attempts);
     result.set_success_count(success_count);
 
-    for (const auto& gem : synth_result.result_gems) {
-        auto* gem_info = result.add_result_gems();
-        populate_gem_info(gem, gem_info);
+    size_t created_index = 0;
+    for (const auto& outcome : outcomes) {
+        if (outcome.success) {
+            if (created_index >= synth_result.result_gems.size()) {
+                continue;
+            }
+            auto* gem_info = result.add_result_gems();
+            populate_gem_info(synth_result.result_gems[created_index], gem_info);
+            ++created_index;
+        } else {
+            auto it = gem_by_instance.find(outcome.retained_id);
+            if (it == gem_by_instance.end()) {
+                continue;
+            }
+            auto* gem_info = result.add_result_gems();
+            populate_gem_info(it->second, gem_info);
+        }
     }
 
     auto all_gems = gem_repo_.get_user_gems(user_id);

@@ -552,9 +552,10 @@ message GemSynthesisRequest {
 message GemSynthesisResult {
   bool success = 1;
   bool synthesis_success = 2;     // 합성 성공 여부 (확률)
-  GemInfo result_gem = 3;         // 합성 결과 보석 (성공 시)
+  GemInfo result_gem = 3;         // 합성 결과 보석 (성공/실패 공통)
   uint32 total_gems = 4;
-  string error_code = 5;          // "INVALID_GEMS", "GRADE_MISMATCH" 등
+  string error_code = 5;          // "INVALID_GEMS", "GRADE_MISMATCH", "GEM_EQUIPPED" 등
+  GemInfo retained_gem = 6;       // 합성 실패 시 유지 보석(옵션)
 }
 
 // 자동 합성
@@ -567,7 +568,7 @@ message GemAutoSynthesisResult {
   bool success = 1;
   uint32 attempted = 2;
   uint32 success_count = 3;
-  repeated GemInfo result_gems = 4;
+  repeated GemInfo result_gems = 4;  // 시도 순서대로 결과 보석(성공/실패 포함)
   uint32 total_gems = 5;
   string error_code = 6;
 }

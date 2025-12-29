@@ -207,9 +207,10 @@ namespace InfinitePickaxe.Client.Core
             // Request에 포함된 instance_ids로 제거해야 함 (MessageHandler에서 처리 필요)
 
             // 새로운 젬 추가
-            if (result.ResultGem != null && !string.IsNullOrWhiteSpace(result.ResultGem.GemInstanceId))
+            var resultGem = result.ResultGem ?? result.RetainedGem;
+            if (resultGem != null && !string.IsNullOrWhiteSpace(resultGem.GemInstanceId))
             {
-                gemsByInstanceId[result.ResultGem.GemInstanceId] = result.ResultGem;
+                gemsByInstanceId[resultGem.GemInstanceId] = resultGem;
             }
 
             RaiseChanged();

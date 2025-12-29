@@ -107,9 +107,11 @@ public:
                            const std::vector<uint32_t>& gem_ids);
     SynthesisResult synthesize_gems(const std::string& user_id,
                                      const std::vector<std::string>& gem_instance_ids,
-                                     uint32_t result_gem_id);
+                                     uint32_t result_gem_id,
+                                     const std::optional<std::string>& retained_gem_instance_id);
     AutoSynthesisResult auto_synthesize_gems(const std::string& user_id,
                                               const std::vector<std::string>& gem_instance_ids,
+                                              const std::vector<std::string>& retained_gem_instance_ids,
                                               const std::vector<uint32_t>& result_gem_ids);
     ConversionResult convert_gem_type(const std::string& gem_instance_id,
                                        uint32_t new_gem_id, uint32_t crystal_cost);
