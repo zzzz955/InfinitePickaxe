@@ -111,6 +111,25 @@ namespace InfinitePickaxe.Client.UI.Game
         [Header("모달")]
         [SerializeField] private GemSynthesisResultModalController synthesisResultModal;
 
+        [Header("자동 합성 확인 모달")]
+        [SerializeField] private GameObject autoSynthesisConfirmModal;
+        [SerializeField] private TextMeshProUGUI autoSynthesisConfirmCountText;
+        [SerializeField] private TextMeshProUGUI autoSynthesisConfirmChanceText;
+        [SerializeField] private TextMeshProUGUI autoSynthesisConfirmFailText;
+        [SerializeField] private TextMeshProUGUI autoSynthesisConfirmSuccessText;
+        [SerializeField] private Button autoSynthesisConfirmButton;
+        [SerializeField] private TextMeshProUGUI autoSynthesisConfirmButtonText;
+        [SerializeField] private Button autoSynthesisCancelButton;
+
+        [Header("보석 전환 확인 모달")]
+        [SerializeField] private GameObject conversionConfirmModal;
+        [SerializeField] private TextMeshProUGUI conversionConfirmCostText;
+        [SerializeField] private TextMeshProUGUI conversionConfirmCurrentCrystalText;
+        [SerializeField] private TextMeshProUGUI conversionConfirmTypeText;
+        [SerializeField] private Button conversionConfirmButton;
+        [SerializeField] private TextMeshProUGUI conversionConfirmButtonText;
+        [SerializeField] private Button conversionCancelButton;
+
         [Header("스텁 데이터")]
         [SerializeField] private bool useStubData = true;
         [SerializeField] private int stubGemCount = 24;
@@ -134,6 +153,10 @@ namespace InfinitePickaxe.Client.UI.Game
         private string selectedMaterialGemId2;
         private string selectedConvertGemId;
         private Infinitepickaxe.GemType? selectedConvertTarget;
+        private Infinitepickaxe.GemGrade? pendingAutoSynthesisGrade;
+        private string pendingConvertGemId;
+        private Infinitepickaxe.GemType? pendingConvertTarget;
+        private bool pendingConvertFixed;
 
         private void Awake()
         {
@@ -145,6 +168,8 @@ namespace InfinitePickaxe.Client.UI.Game
             BindSlotButtons();
             gemCache = GemStateCache.Instance;
             AutoBindSynthesisResultModal();
+            SetupAutoSynthesisConfirmModalButtons();
+            SetupConversionConfirmModalButtons();
 
             if (useStubData)
             {
@@ -254,6 +279,78 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 convertFixedCritDmgButton.onClick.RemoveAllListeners();
                 convertFixedCritDmgButton.onClick.AddListener(() => OnConvertFixedClicked(Infinitepickaxe.GemType.CritDmg));
+            }
+        }
+
+        private void SetupAutoSynthesisConfirmModalButtons()
+        {
+            if (autoSynthesisConfirmModal == null) return;
+
+            var backgroundButton = autoSynthesisConfirmModal.GetComponent<Button>();
+            if (backgroundButton != null)
+            {
+                backgroundButton.onClick.RemoveAllListeners();
+                backgroundButton.onClick.AddListener(CloseAutoSynthesisConfirmModal);
+            }
+
+            var modalPanel = autoSynthesisConfirmModal.transform.Find("ModalPanel");
+            if (modalPanel != null)
+            {
+                var panelButton = modalPanel.GetComponent<Button>();
+                if (panelButton == null)
+                {
+                    panelButton = modalPanel.gameObject.AddComponent<Button>();
+                    panelButton.transition = Selectable.Transition.None;
+                }
+                panelButton.onClick.RemoveAllListeners();
+            }
+
+            if (autoSynthesisCancelButton != null)
+            {
+                autoSynthesisCancelButton.onClick.RemoveAllListeners();
+                autoSynthesisCancelButton.onClick.AddListener(CloseAutoSynthesisConfirmModal);
+            }
+
+            if (autoSynthesisConfirmButton != null)
+            {
+                autoSynthesisConfirmButton.onClick.RemoveAllListeners();
+                autoSynthesisConfirmButton.onClick.AddListener(OnConfirmAutoSynthesis);
+            }
+        }
+
+        private void SetupConversionConfirmModalButtons()
+        {
+            if (conversionConfirmModal == null) return;
+
+            var backgroundButton = conversionConfirmModal.GetComponent<Button>();
+            if (backgroundButton != null)
+            {
+                backgroundButton.onClick.RemoveAllListeners();
+                backgroundButton.onClick.AddListener(CloseConversionConfirmModal);
+            }
+
+            var modalPanel = conversionConfirmModal.transform.Find("ModalPanel");
+            if (modalPanel != null)
+            {
+                var panelButton = modalPanel.GetComponent<Button>();
+                if (panelButton == null)
+                {
+                    panelButton = modalPanel.gameObject.AddComponent<Button>();
+                    panelButton.transition = Selectable.Transition.None;
+                }
+                panelButton.onClick.RemoveAllListeners();
+            }
+
+            if (conversionCancelButton != null)
+            {
+                conversionCancelButton.onClick.RemoveAllListeners();
+                conversionCancelButton.onClick.AddListener(CloseConversionConfirmModal);
+            }
+
+            if (conversionConfirmButton != null)
+            {
+                conversionConfirmButton.onClick.RemoveAllListeners();
+                conversionConfirmButton.onClick.AddListener(OnConfirmConversion);
             }
         }
 
@@ -784,7 +881,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            messageHandler.RequestGemAutoSynthesis(normalizedGrade, 0);
+            OpenAutoSynthesisConfirmModal(normalizedGrade);
         }
 
         private void OnConvertRandomClicked()
@@ -806,8 +903,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            var targetType = GetRandomConvertTarget(baseGem.Type);
-            messageHandler.RequestGemConversion(selectedConvertGemId, targetType, false);
+            OpenConversionConfirmModal(baseGem, null, false);
         }
 
         private void OnConvertFixedClicked(Infinitepickaxe.GemType targetType)
@@ -826,8 +922,193 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            messageHandler.RequestGemConversion(selectedConvertGemId, targetType, true);
+            OpenConversionConfirmModal(baseGem, targetType, true);
         }
+
+        private void OpenAutoSynthesisConfirmModal(Infinitepickaxe.GemGrade grade)
+        {
+            if (autoSynthesisConfirmModal == null) return;
+
+            pendingAutoSynthesisGrade = grade;
+            int availableCount = GetAvailableAutoSynthesisCount(grade);
+            int attemptCount = availableCount / 3;
+            int consumeCount = attemptCount * 3;
+            int successRate = GetFusionChance(grade);
+
+            if (autoSynthesisConfirmCountText != null)
+            {
+                autoSynthesisConfirmCountText.text = $"총 {consumeCount}개의 보석이 자동으로 합성됩니다.";
+            }
+
+            if (autoSynthesisConfirmChanceText != null)
+            {
+                autoSynthesisConfirmChanceText.text = $"성공 확률: {successRate}%";
+            }
+
+            if (autoSynthesisConfirmFailText != null)
+            {
+                autoSynthesisConfirmFailText.text = "실패 시 합성에 사용된 보석 중 1개만 남습니다.";
+            }
+
+            if (autoSynthesisConfirmSuccessText != null)
+            {
+                autoSynthesisConfirmSuccessText.text = "성공 시 랜덤한 타입의 상위 등급 보석을 획득합니다.";
+            }
+
+            if (autoSynthesisConfirmButton != null)
+            {
+                autoSynthesisConfirmButton.interactable = true;
+            }
+
+            if (autoSynthesisConfirmButtonText != null)
+            {
+                autoSynthesisConfirmButtonText.text = "확인";
+            }
+
+            autoSynthesisConfirmModal.SetActive(true);
+            autoSynthesisConfirmModal.transform.SetAsLastSibling();
+        }
+
+        private void CloseAutoSynthesisConfirmModal()
+        {
+            pendingAutoSynthesisGrade = null;
+            if (autoSynthesisConfirmModal != null)
+            {
+                autoSynthesisConfirmModal.SetActive(false);
+            }
+        }
+
+        private void OnConfirmAutoSynthesis()
+        {
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("GemPanelController: MessageHandler가 없습니다.");
+                return;
+            }
+
+            if (!pendingAutoSynthesisGrade.HasValue)
+            {
+                CloseAutoSynthesisConfirmModal();
+                return;
+            }
+
+            var grade = pendingAutoSynthesisGrade.Value;
+            if (!HasSynthesisMetadata(grade) || GetAvailableAutoSynthesisCount(grade) < 3)
+            {
+                Debug.LogWarning("GemPanelController: 자동 합성 조건이 충족되지 않습니다.");
+                CloseAutoSynthesisConfirmModal();
+                return;
+            }
+
+            messageHandler.RequestGemAutoSynthesis(grade, 0);
+            CloseAutoSynthesisConfirmModal();
+        }
+
+        private void OpenConversionConfirmModal(GemUIData baseGem, Infinitepickaxe.GemType? targetType, bool useFixedCost)
+        {
+            if (conversionConfirmModal == null || baseGem == null) return;
+
+            if (!TryGetConversionCost(baseGem, useFixedCost, out var cost))
+            {
+                Debug.LogWarning("GemPanelController: 전환 비용 메타데이터를 찾지 못했습니다.");
+                return;
+            }
+
+            pendingConvertGemId = baseGem.GemInstanceId;
+            pendingConvertTarget = targetType;
+            pendingConvertFixed = useFixedCost;
+
+            UpdateConversionConfirmModalTexts(baseGem, targetType, useFixedCost, cost);
+
+            conversionConfirmModal.SetActive(true);
+            conversionConfirmModal.transform.SetAsLastSibling();
+        }
+
+        private void CloseConversionConfirmModal()
+        {
+            pendingConvertGemId = null;
+            pendingConvertTarget = null;
+            pendingConvertFixed = false;
+            if (conversionConfirmModal != null)
+            {
+                conversionConfirmModal.SetActive(false);
+            }
+        }
+
+        private void OnConfirmConversion()
+        {
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("GemPanelController: MessageHandler가 없습니다.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(pendingConvertGemId))
+            {
+                CloseConversionConfirmModal();
+                return;
+            }
+
+            var baseGem = GetGem(pendingConvertGemId);
+            if (baseGem == null)
+            {
+                Debug.LogWarning("GemPanelController: 전환 대상 보석이 없습니다.");
+                CloseConversionConfirmModal();
+                return;
+            }
+
+            if (!TryGetConversionCost(baseGem, pendingConvertFixed, out var cost))
+            {
+                Debug.LogWarning("GemPanelController: 전환 비용 메타데이터를 찾지 못했습니다.");
+                CloseConversionConfirmModal();
+                return;
+            }
+
+            bool canAfford = cost == 0 || (hasCrystalInfo && currentCrystal >= cost);
+            if (!canAfford)
+            {
+                UpdateConversionConfirmModalTexts(baseGem, pendingConvertTarget, pendingConvertFixed, cost);
+                return;
+            }
+
+            var targetType = pendingConvertTarget ?? GetRandomConvertTarget(baseGem.Type);
+            messageHandler.RequestGemConversion(pendingConvertGemId, targetType, pendingConvertFixed);
+            CloseConversionConfirmModal();
+        }
+
+        private void UpdateConversionConfirmModalTexts(GemUIData baseGem, Infinitepickaxe.GemType? targetType, bool useFixedCost, uint cost)
+        {
+            if (conversionConfirmCostText != null)
+            {
+                conversionConfirmCostText.text = $"필요 크리스탈: {cost}";
+            }
+
+            if (conversionConfirmCurrentCrystalText != null)
+            {
+                conversionConfirmCurrentCrystalText.text = hasCrystalInfo
+                    ? $"보유: {currentCrystal}"
+                    : "보유: -";
+            }
+
+            if (conversionConfirmTypeText != null)
+            {
+                conversionConfirmTypeText.text = useFixedCost && targetType.HasValue
+                    ? $"선택한 타입({GetTypeLabel(targetType.Value)})으로 전환됩니다."
+                    : "랜덤 타입으로 전환됩니다.";
+            }
+
+            bool canAfford = cost == 0 || (hasCrystalInfo && currentCrystal >= cost);
+            if (conversionConfirmButton != null)
+            {
+                conversionConfirmButton.interactable = canAfford;
+            }
+
+            if (conversionConfirmButtonText != null)
+            {
+                conversionConfirmButtonText.text = canAfford ? "확인" : "크리스탈 부족";
+            }
+        }
+
 
         private void OnExpandRowClicked()
         {
@@ -1113,6 +1394,10 @@ namespace InfinitePickaxe.Client.UI.Game
                 currentCrystal = update.Crystal.Value;
                 hasCrystalInfo = true;
             }
+            if (conversionConfirmModal != null && conversionConfirmModal.activeSelf)
+            {
+                RefreshConversionConfirmModal();
+            }
         }
 
         private Sprite GetGemIcon(GemUIData gem)
@@ -1232,6 +1517,30 @@ namespace InfinitePickaxe.Client.UI.Game
             return grade == Infinitepickaxe.GemGrade.Unknown
                 ? Infinitepickaxe.GemGrade.Common
                 : grade;
+        }
+
+        private void RefreshConversionConfirmModal()
+        {
+            if (conversionConfirmModal == null || !conversionConfirmModal.activeSelf) return;
+            if (string.IsNullOrEmpty(pendingConvertGemId)) return;
+
+            var baseGem = GetGem(pendingConvertGemId);
+            if (baseGem == null) return;
+
+            if (TryGetConversionCost(baseGem, pendingConvertFixed, out var cost))
+            {
+                UpdateConversionConfirmModalTexts(baseGem, pendingConvertTarget, pendingConvertFixed, cost);
+            }
+        }
+
+        private bool TryGetConversionCost(GemUIData gem, bool useFixedCost, out uint cost)
+        {
+            cost = 0;
+            if (gem == null) return false;
+            if (!metaResolver.TryGetDefinition(gem.GemId, out var def)) return false;
+            if (!metaResolver.TryGetConversionCost(def.GradeId, out var meta)) return false;
+            cost = useFixedCost ? meta.FixedCost : meta.RandomCost;
+            return true;
         }
 
         private int GetAvailableAutoSynthesisCount(Infinitepickaxe.GemGrade grade)

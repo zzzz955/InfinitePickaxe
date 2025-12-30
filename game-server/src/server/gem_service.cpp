@@ -514,28 +514,32 @@ infinitepickaxe::GemConversionResult GemService::handle_conversion(const std::st
 
     // 새로운 gem_id 계산 (같은 grade, 다른 type)
     uint32_t target_type_id = 0;
+    bool target_type_found = false;
     for (const auto& t : meta_.gem_types()) {
         if (t.type == target_type_str) {
             target_type_id = t.id;
+            target_type_found = true;
             break;
         }
     }
 
-    if (target_type_id == 0) {
+    if (!target_type_found) {
         result.set_success(false);
         result.set_error_code("TARGET_TYPE_NOT_FOUND");
         return result;
     }
 
     uint32_t new_gem_id = 0;
+    bool new_gem_found = false;
     for (const auto& def : meta_.gem_definitions()) {
         if (def.grade_id == gem_def->grade_id && def.type_id == target_type_id) {
             new_gem_id = def.gem_id;
+            new_gem_found = true;
             break;
         }
     }
 
-    if (new_gem_id == 0) {
+    if (!new_gem_found) {
         result.set_success(false);
         result.set_error_code("NEW_GEM_NOT_FOUND");
         return result;
