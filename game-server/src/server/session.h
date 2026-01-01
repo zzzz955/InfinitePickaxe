@@ -99,6 +99,7 @@ private:
     bool is_expired() const;
     void start_auth_timer();
     void close(bool allow_grace = true);
+    void update_mining_tick_internal(float delta_ms);
 
     // 채굴 시뮬레이션 헬퍼 메서드
     void start_new_mineral();
@@ -116,6 +117,7 @@ private:
     bool load_cached_mining_state(uint32_t& mineral_id, uint64_t& hp, uint64_t& respawn_until_ms);
 
     boost::asio::ip::tcp::socket socket_;
+    boost::asio::strand<boost::asio::io_context::executor_type> strand_;
     boost::asio::steady_timer auth_timer_;
     AuthService& auth_service_;
     GameRepository& game_repo_;

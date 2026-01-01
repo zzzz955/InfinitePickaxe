@@ -86,6 +86,8 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  std::shared_ptr<SessionRegistry> registry,
                  const MetadataLoader &metadata)
     : socket_(std::move(socket)),
+      strand_(boost::asio::make_strand(static_cast<boost::asio::io_context&>(socket_.get_executor().context()))),
+      auth_timer_(strand_),
       auth_service_(auth_service),
       game_repo_(game_repo),
       mining_service_(mining_service),
@@ -96,7 +98,6 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       ad_service_(ad_service),
       gem_service_(gem_service),
       redis_(redis_client),
-      auth_timer_(socket_.get_executor()),
       registry_(std::move(registry)),
       metadata_(metadata)
 {
@@ -105,87 +106,100 @@ Session::Session(boost::asio::ip::tcp::socket socket,
 
 void Session::start()
 {
-    try
-    {
-        client_ip_ = socket_.remote_endpoint().address().to_string();
-    }
-    catch (...)
-    {
-        client_ip_.clear();
-    }
-    start_auth_timer();
-    read_length();
+    auto self = shared_from_this();
+    boost::asio::dispatch(strand_, [self]()
+                           {
+                               try
+                               {
+                                   self->client_ip_ = self->socket_.remote_endpoint().address().to_string();
+                               }
+                               catch (...)
+                               {
+                                   self->client_ip_.clear();
+                               }
+                               self->start_auth_timer();
+                               self->read_length();
+                           });
 }
 
 void Session::notify_duplicate_and_close()
 {
-    infinitepickaxe::ErrorNotification err;
-    err.set_error_code("1006");
-    err.set_message("DUPLICATE_SESSION");
-
-    infinitepickaxe::Envelope env;
-    env.set_type(infinitepickaxe::ERROR_NOTIFICATION);
-    *env.mutable_error_notification() = err;
-
-    std::string body;
-    env.SerializeToString(&body);
-    auto len = static_cast<uint32_t>(body.size());
-    auto len_enc = encode_le(len);
-
     auto self = shared_from_this();
-    std::array<boost::asio::const_buffer, 2> bufs = {
-        boost::asio::buffer(len_enc),
-        boost::asio::buffer(body)};
-    boost::asio::async_write(socket_, bufs,
-                             [this, self](boost::system::error_code /*ec*/, std::size_t /*written*/)
-                             {
-                                 close(false);
-                             });
+    boost::asio::dispatch(strand_, [self]()
+                           {
+                               infinitepickaxe::ErrorNotification err;
+                               err.set_error_code("1006");
+                               err.set_message("DUPLICATE_SESSION");
+
+                               infinitepickaxe::Envelope env;
+                               env.set_type(infinitepickaxe::ERROR_NOTIFICATION);
+                               *env.mutable_error_notification() = err;
+
+                               std::string body;
+                               env.SerializeToString(&body);
+                               auto len = static_cast<uint32_t>(body.size());
+                               auto len_enc = encode_le(len);
+
+                               std::array<boost::asio::const_buffer, 2> bufs = {
+                                   boost::asio::buffer(len_enc),
+                                   boost::asio::buffer(body)};
+                               boost::asio::async_write(self->socket_, bufs,
+                                                        boost::asio::bind_executor(
+                                                            self->strand_,
+                                                            [self](boost::system::error_code /*ec*/, std::size_t /*written*/)
+                                                            {
+                                                                self->close(false);
+                                                            }));
+                           });
 }
 
 void Session::read_length()
 {
     auto self = shared_from_this();
     boost::asio::async_read(socket_, boost::asio::buffer(len_buf_),
-                            [this, self](boost::system::error_code ec, std::size_t /*len*/)
-                            {
-                                if (ec)
+                            boost::asio::bind_executor(
+                                strand_,
+                                [self](boost::system::error_code ec, std::size_t /*len*/)
                                 {
-                                    close();
-                                    return;
-                                }
-                                uint32_t len = decode_le(len_buf_);
-                                if (len == 0 || len > 64 * 1024)
-                                { // 간단한 길이 제한
-                                    send_error("INVALID_LENGTH", "invalid length");
-                                    close(false);
-                                    return;
-                                }
-                                payload_buf_.resize(len);
-                                read_payload(len);
-                            });
+                                    if (ec)
+                                    {
+                                        self->close();
+                                        return;
+                                    }
+                                    uint32_t len = decode_le(self->len_buf_);
+                                    if (len == 0 || len > 64 * 1024)
+                                    { // 간단한 길이 제한
+                                        self->send_error("INVALID_LENGTH", "invalid length");
+                                        self->close(false);
+                                        return;
+                                    }
+                                    self->payload_buf_.resize(len);
+                                    self->read_payload(len);
+                                }));
 }
 
 void Session::read_payload(std::size_t length)
 {
     auto self = shared_from_this();
-    boost::asio::async_read(socket_, boost::asio::buffer(payload_buf_.data(), length),
-                            [this, self](boost::system::error_code ec, std::size_t /*len*/)
-                            {
-                                if (ec)
+    boost::asio::async_read(socket_, boost::asio::buffer(self->payload_buf_.data(), length),
+                            boost::asio::bind_executor(
+                                strand_,
+                                [self](boost::system::error_code ec, std::size_t /*len*/)
                                 {
-                                    close();
-                                    return;
-                                }
-                                infinitepickaxe::Envelope env;
-                                if (!env.ParseFromArray(payload_buf_.data(), static_cast<int>(payload_buf_.size())))
-                                {
-                                    send_error("INVALID_ENVELOPE", "parse failed");
-                                    close(false);
-                                    return;
-                                }
-                                dispatch_envelope(env);
-                            });
+                                    if (ec)
+                                    {
+                                        self->close();
+                                        return;
+                                    }
+                                    infinitepickaxe::Envelope env;
+                                    if (!env.ParseFromArray(self->payload_buf_.data(), static_cast<int>(self->payload_buf_.size())))
+                                    {
+                                        self->send_error("INVALID_ENVELOPE", "parse failed");
+                                        self->close(false);
+                                        return;
+                                    }
+                                    self->dispatch_envelope(env);
+                                }));
 }
 
 bool Session::is_expired() const
@@ -780,14 +794,16 @@ void Session::send_envelope(const infinitepickaxe::Envelope &env)
         boost::asio::buffer(len_enc),
         boost::asio::buffer(body)};
     boost::asio::async_write(socket_, bufs,
-                             [this, self](boost::system::error_code ec, std::size_t /*written*/)
-                             {
-                                 if (ec)
+                             boost::asio::bind_executor(
+                                 strand_,
+                                 [self](boost::system::error_code ec, std::size_t /*written*/)
                                  {
-                                     close();
-                                     return;
-                                 }
-                             });
+                                     if (ec)
+                                     {
+                                         self->close();
+                                         return;
+                                     }
+                                 }));
 }
 
 void Session::send_error(const std::string &code, const std::string &message)
@@ -967,18 +983,27 @@ void Session::start_auth_timer()
 {
     auto self = shared_from_this();
     auth_timer_.expires_after(std::chrono::seconds(5));
-    auth_timer_.async_wait([this, self](const boost::system::error_code &ec)
+    auth_timer_.async_wait([self](const boost::system::error_code &ec)
                            {
                                if (ec)
                                    return; // cancelled
-                               if (!authenticated_)
+                               if (!self->authenticated_)
                                {
-                                   send_error("1007", "AUTH_TIMEOUT");
-                                   close();
+                                   self->send_error("1007", "AUTH_TIMEOUT");
+                                   self->close();
                                } });
 }
 
 void Session::update_mining_tick(float delta_ms)
+{
+    auto self = shared_from_this();
+    boost::asio::post(strand_, [self, delta_ms]()
+                      {
+                          self->update_mining_tick_internal(delta_ms);
+                      });
+}
+
+void Session::update_mining_tick_internal(float delta_ms)
 {
     // 인증되지 않았거나 세션이 닫혔으면 무시
     if (!authenticated_ || closed_)
@@ -1091,6 +1116,7 @@ void Session::update_mining_tick(float delta_ms)
         send_mining_update(attacks);
         mining_state_.last_sent_hp = mining_state_.current_hp;
     }
+
 }
 
 void Session::start_new_mineral()
