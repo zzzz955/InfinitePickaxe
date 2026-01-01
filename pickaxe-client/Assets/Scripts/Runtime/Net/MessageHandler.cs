@@ -142,9 +142,9 @@ namespace InfinitePickaxe.Client.Net
         private void OnDisable()
         {
             // NetworkManager 메시지 수신 이벤트 구독 해제
-            if (NetworkManager.Instance != null)
+            if (NetworkManager.TryGetInstance(out var manager))
             {
-                NetworkManager.Instance.OnMessageReceived -= HandleMessage;
+                manager.OnMessageReceived -= HandleMessage;
             }
         }
 

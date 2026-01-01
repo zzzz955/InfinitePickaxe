@@ -98,7 +98,7 @@ private:
     void send_error(const std::string& code, const std::string& message);
     bool is_expired() const;
     void start_auth_timer();
-    void close();
+    void close(bool allow_grace = true);
 
     // 채굴 시뮬레이션 헬퍼 메서드
     void start_new_mineral();

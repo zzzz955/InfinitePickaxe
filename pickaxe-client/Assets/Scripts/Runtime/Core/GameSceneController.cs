@@ -155,6 +155,7 @@ namespace InfinitePickaxe.Client.Core
             if (networkManager != null)
             {
                 networkManager.OnDisconnected += HandleDisconnected;
+                networkManager.OnReconnecting += HandleReconnecting;
             }
         }
 
@@ -170,6 +171,7 @@ namespace InfinitePickaxe.Client.Core
             if (networkManager != null)
             {
                 networkManager.OnDisconnected -= HandleDisconnected;
+                networkManager.OnReconnecting -= HandleReconnecting;
             }
         }
 
@@ -241,16 +243,30 @@ namespace InfinitePickaxe.Client.Core
             {
                 Debug.Log($"핸드셰이크 성공: {result.Message}");
                 isHandshakeCompleted = true;
+                isHandshakeFailed = false;
                 if (result.Snapshot != null)
                 {
                     isSnapshotReceived = true;
                 }
-                ShowLoadingOverlay("게임 데이터를 불러오는 중...");
                 // 최초 게임 진입 시 슬롯/강화 상태를 조회해 UI가 바로 그릴 수 있도록 요청
                 if (messageHandler != null)
                 {
                     messageHandler.RequestAllSlots();
                 }
+
+                if (isGameReady)
+                {
+                    HideLoadingOverlay();
+                    LoadingOverlayManager.Instance.Clear();
+                    overlayOwned = false;
+                    if (gameUIRoot != null)
+                    {
+                        gameUIRoot.SetActive(true);
+                    }
+                    return;
+                }
+
+                ShowLoadingOverlay("게임 데이터를 불러오는 중...");
                 TryFinalizeGameReady();
             }
             else
@@ -339,6 +355,14 @@ namespace InfinitePickaxe.Client.Core
                 // 핸드셰이크 전에 끊긴 경우
                 FailAndReturnToTitle("서버 연결이 끊어졌습니다. 다시 시도해주세요.");
             }
+        }
+
+        /// <summary>
+        /// 재연결 시작 처리
+        /// </summary>
+        private void HandleReconnecting(string reason)
+        {
+            ShowLoadingOverlay("재연결 중...");
         }
 
         /// <summary>

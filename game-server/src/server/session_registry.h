@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <vector>
+#include <chrono>
 
 class Session;
 
@@ -20,7 +21,21 @@ public:
     // 모든 활성 세션 가져오기 (채굴 틱 업데이트용)
     std::vector<std::shared_ptr<Session>> get_all_sessions();
 
+    void mark_disconnected(const std::string& user_id, const std::string& device_id);
+    bool consume_grace_if_valid(const std::string& user_id,
+                                const std::string& device_id,
+                                std::chrono::system_clock::time_point* disconnected_at_out = nullptr);
+    void clear_grace(const std::string& user_id);
+
 private:
+    struct GraceEntry {
+        std::string device_id;
+        std::chrono::system_clock::time_point disconnected_at{};
+        std::chrono::steady_clock::time_point expires_at{};
+    };
+
     std::unordered_map<std::string, std::weak_ptr<Session>> sessions_;
+    std::unordered_map<std::string, GraceEntry> grace_sessions_;
     std::mutex mutex_;
+    static constexpr std::chrono::seconds kGraceTtl{30};
 };

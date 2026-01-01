@@ -36,6 +36,12 @@ namespace InfinitePickaxe.Client.Net
             }
         }
 
+
+        public static bool TryGetInstance(out NetworkManager manager)
+        {
+            manager = instance;
+            return manager != null;
+        }
         #endregion
 
         #region Events
@@ -45,6 +51,9 @@ namespace InfinitePickaxe.Client.Net
 
         /// <summary>서버 연결 끊김 이벤트</summary>
         public event Action<string> OnDisconnected;
+
+        /// <summary>자동 재연결 시작 이벤트</summary>
+        public event Action<string> OnReconnecting;
 
         /// <summary>메시지 수신 이벤트 (메인 스레드에서 호출)</summary>
         public event Action<Envelope> OnMessageReceived;
@@ -62,6 +71,9 @@ namespace InfinitePickaxe.Client.Net
         [SerializeField] private int heartbeatIntervalMs = 30000;
         [SerializeField] private bool autoReconnect = true;
         [SerializeField] private int reconnectDelayMs = 3000;
+        [SerializeField] private int maxReconnectAttempts = 3;
+        [SerializeField] private int maxReconnectDelayMs = 15000;
+        [SerializeField] private bool disconnectOnBackground = true;
 
         #endregion
 
@@ -81,6 +93,13 @@ namespace InfinitePickaxe.Client.Net
 
         // 하트비트
         private float lastHeartbeatTime;
+        private int reconnectAttempts;
+        private bool isReconnecting;
+        private bool autoReconnectSuppressed;
+        private bool isApplicationPaused;
+        private bool shouldReconnectOnResume;
+        private string lastJwtToken;
+        private readonly System.Random reconnectJitter = new System.Random();
 
         #endregion
 
@@ -143,6 +162,33 @@ namespace InfinitePickaxe.Client.Net
             Disconnect();
         }
 
+        private void OnApplicationPause(bool pause)
+        {
+            if (!disconnectOnBackground)
+            {
+                return;
+            }
+
+            if (pause)
+            {
+                bool wasActive = IsConnected || isConnecting;
+                isApplicationPaused = true;
+                if (wasActive && !autoReconnectSuppressed)
+                {
+                    shouldReconnectOnResume = true;
+                    CleanupConnection(false, "앱 일시정지");
+                }
+                return;
+            }
+
+            isApplicationPaused = false;
+            if (shouldReconnectOnResume)
+            {
+                shouldReconnectOnResume = false;
+                _ = ReconnectAsync("앱 복귀");
+            }
+        }
+
         #endregion
 
         #region Public Methods
@@ -163,6 +209,12 @@ namespace InfinitePickaxe.Client.Net
                 Debug.LogWarning("이미 서버에 연결되어 있습니다.");
                 return true;
             }
+
+            if (!string.IsNullOrWhiteSpace(jwtToken))
+            {
+                lastJwtToken = jwtToken;
+            }
+            autoReconnectSuppressed = false;
 
             isConnecting = true;
 
@@ -202,21 +254,18 @@ namespace InfinitePickaxe.Client.Net
                 // 연결 성공 이벤트 호출 (메인 스레드)
                 UnityMainThreadDispatcher.Enqueue(() => OnConnected?.Invoke());
 
+                reconnectAttempts = 0;
+                isReconnecting = false;
+                shouldReconnectOnResume = false;
+
                 isConnecting = false;
                 return true;
             }
             catch (Exception ex)
             {
                 Debug.LogError($"서버 연결 실패: {ex.Message}");
-                CleanupConnection();
+                CleanupConnection(false, "연결 실패");
                 isConnecting = false;
-
-                // 자동 재연결
-                if (autoReconnect)
-                {
-                    _ = ReconnectAsync(jwtToken);
-                }
-
                 return false;
             }
         }
@@ -232,8 +281,12 @@ namespace InfinitePickaxe.Client.Net
             }
 
             Debug.Log("서버 연결 종료");
-            autoReconnect = false; // 재연결 방지
-            CleanupConnection();
+            autoReconnectSuppressed = true;
+            shouldReconnectOnResume = false;
+            isReconnecting = false;
+            reconnectAttempts = 0;
+            lastJwtToken = null;
+            CleanupConnection(true, "연결 종료");
         }
 
         /// <summary>
@@ -254,16 +307,88 @@ namespace InfinitePickaxe.Client.Net
 
         #region Private Methods - Connection
 
-        private async Task ReconnectAsync(string jwtToken)
+        private async Task ReconnectAsync(string reason)
         {
-            await Task.Delay(reconnectDelayMs);
-            Debug.Log("서버 재연결 시도...");
-            await ConnectAsync(jwtToken);
+            if (isConnecting)
+            {
+                return;
+            }
+
+            if (isReconnecting || !ShouldAutoReconnect())
+            {
+                return;
+            }
+
+            isReconnecting = true;
+            reconnectAttempts = 0;
+
+            UnityMainThreadDispatcher.Enqueue(() => OnReconnecting?.Invoke(reason));
+
+            while (reconnectAttempts < maxReconnectAttempts)
+            {
+                reconnectAttempts++;
+                int delayMs = GetReconnectDelayMs(reconnectAttempts);
+                await Task.Delay(delayMs);
+
+                if (!ShouldAutoReconnect())
+                {
+                    isReconnecting = false;
+                    return;
+                }
+
+                bool connected = await ConnectAsync(lastJwtToken);
+                if (connected)
+                {
+                    isReconnecting = false;
+                    return;
+                }
+            }
+
+            isReconnecting = false;
+            UnityMainThreadDispatcher.Enqueue(() => OnDisconnected?.Invoke($"재연결 실패: {reason}"));
         }
 
-        private void CleanupConnection()
+        private bool ShouldAutoReconnect()
+        {
+            return autoReconnect && !autoReconnectSuppressed && !isApplicationPaused && maxReconnectAttempts > 0 && !string.IsNullOrEmpty(lastJwtToken);
+        }
+
+        private int GetReconnectDelayMs(int attempt)
+        {
+            long delayMs = (long)reconnectDelayMs * (1L << Math.Max(0, attempt - 1));
+            if (maxReconnectDelayMs > 0)
+            {
+                delayMs = Math.Min(delayMs, maxReconnectDelayMs);
+            }
+
+            int jitterRange = (int)(delayMs * 0.2f);
+            if (jitterRange > 0)
+            {
+                delayMs += reconnectJitter.Next(0, jitterRange + 1);
+            }
+
+            return (int)delayMs;
+        }
+
+        private void HandleConnectionLost(string reason)
+        {
+            if (!IsConnected && !isConnecting)
+            {
+                return;
+            }
+
+            bool allowReconnect = ShouldAutoReconnect();
+            CleanupConnection(!allowReconnect, reason);
+            if (allowReconnect)
+            {
+                _ = ReconnectAsync(reason);
+            }
+        }
+
+        private void CleanupConnection(bool notifyDisconnect, string reason)
         {
             isConnected = false;
+            isConnecting = false;
 
             // 취소 토큰 발행
             cancellationTokenSource?.Cancel();
@@ -284,7 +409,10 @@ namespace InfinitePickaxe.Client.Net
             while (receiveQueue.TryDequeue(out _)) { }
 
             // 연결 종료 이벤트 호출 (메인 스레드)
-            UnityMainThreadDispatcher.Enqueue(() => OnDisconnected?.Invoke("연결 종료"));
+            if (notifyDisconnect)
+            {
+                UnityMainThreadDispatcher.Enqueue(() => OnDisconnected?.Invoke(reason));
+            }
         }
 
         #endregion
@@ -316,8 +444,13 @@ namespace InfinitePickaxe.Client.Net
             }
             catch (Exception ex)
             {
+                if (cancellationToken.IsCancellationRequested || !IsConnected || isApplicationPaused)
+                {
+                    return;
+                }
+
                 Debug.LogError($"송신 루프 오류: {ex.Message}");
-                CleanupConnection();
+                HandleConnectionLost($"송신 오류: {ex.Message}");
             }
         }
 
@@ -343,8 +476,13 @@ namespace InfinitePickaxe.Client.Net
             }
             catch (Exception ex)
             {
+                if (cancellationToken.IsCancellationRequested || !IsConnected || isApplicationPaused)
+                {
+                    return;
+                }
+
                 Debug.LogError($"수신 루프 오류: {ex.Message}");
-                CleanupConnection();
+                HandleConnectionLost($"수신 오류: {ex.Message}");
             }
         }
 
@@ -379,6 +517,11 @@ namespace InfinitePickaxe.Client.Net
             }
             catch (Exception ex)
             {
+                if (cancellationToken.IsCancellationRequested || !IsConnected || isApplicationPaused)
+                {
+                    return;
+                }
+
                 Debug.LogError($"메시지 전송 실패: {ex.Message}");
                 throw;
             }
@@ -444,7 +587,11 @@ namespace InfinitePickaxe.Client.Net
             }
             catch (Exception ex)
             {
-                Debug.LogError($"메시지 수신 실패: {ex.Message}");
+                if (cancellationToken.IsCancellationRequested || !IsConnected || isApplicationPaused)
+                {
+                    return null;
+                }
+
                 throw;
             }
         }

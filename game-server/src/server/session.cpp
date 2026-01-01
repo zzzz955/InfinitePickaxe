@@ -139,7 +139,7 @@ void Session::notify_duplicate_and_close()
     boost::asio::async_write(socket_, bufs,
                              [this, self](boost::system::error_code /*ec*/, std::size_t /*written*/)
                              {
-                                 close();
+                                 close(false);
                              });
 }
 
@@ -158,7 +158,7 @@ void Session::read_length()
                                 if (len == 0 || len > 64 * 1024)
                                 { // 간단한 길이 제한
                                     send_error("INVALID_LENGTH", "invalid length");
-                                    close();
+                                    close(false);
                                     return;
                                 }
                                 payload_buf_.resize(len);
@@ -181,7 +181,7 @@ void Session::read_payload(std::size_t length)
                                 if (!env.ParseFromArray(payload_buf_.data(), static_cast<int>(payload_buf_.size())))
                                 {
                                     send_error("INVALID_ENVELOPE", "parse failed");
-                                    close();
+                                    close(false);
                                     return;
                                 }
                                 dispatch_envelope(env);
@@ -200,7 +200,7 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope &env)
     if (is_expired())
     {
         send_error("1003", "session expired");
-        close();
+        close(false);
         return;
     }
 
@@ -213,7 +213,7 @@ void Session::dispatch_envelope(const infinitepickaxe::Envelope &env)
     if (!authenticated_)
     {
         send_error("1001", "handshake required");
-        close();
+        close(false);
         return;
     }
 
@@ -249,7 +249,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
         response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);
         *response_env.mutable_handshake_result() = res;
         send_envelope(response_env);
-        close();
+        close(false);
         return;
     }
     auto now = std::chrono::system_clock::now();
@@ -262,7 +262,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
         response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);
         *response_env.mutable_handshake_result() = res;
         send_envelope(response_env);
-        close();
+        close(false);
         return;
     }
     if (!game_repo_.ensure_user_initialized(vr.user_id))
@@ -274,7 +274,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
         response_env.set_type(infinitepickaxe::HANDSHAKE_RESULT);
         *response_env.mutable_handshake_result() = res;
         send_envelope(response_env);
-        close();
+        close(false);
         return;
     }
     user_id_ = vr.user_id;
@@ -286,12 +286,26 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     auth_timer_.cancel(timer_ec);
     next_daily_reset_ms_ = kst_next_midnight_ms();
 
+    bool resumed = false;
+    std::chrono::system_clock::time_point disconnected_at{};
     if (registry_)
     {
         if (auto previous = registry_->replace_session(user_id_, shared_from_this()))
         {
+            registry_->clear_grace(user_id_);
             previous->notify_duplicate_and_close();
         }
+        else
+        {
+            resumed = registry_->consume_grace_if_valid(user_id_, device_id_, &disconnected_at);
+        }
+    }
+    if (resumed)
+    {
+        auto disconnected_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            disconnected_at.time_since_epoch()).count();
+        spdlog::info("Session resumed within grace: user={}, device={}, disconnected_at_ms={}",
+                     user_id_, device_id_, disconnected_ms);
     }
 
     res.set_success(true);
@@ -924,17 +938,25 @@ void Session::flush_play_time_progress(bool force)
     send_mission_progress_updates(updates);
 }
 
-void Session::close()
+void Session::close(bool allow_grace)
 {
     if (closed_)
         return;
     flush_play_time_progress(true);
+    if (allow_grace && authenticated_)
+    {
+        cache_mining_state();
+    }
     closed_ = true;
     boost::system::error_code timer_ec;
     auth_timer_.cancel(timer_ec);
     if (registry_ && !user_id_.empty())
     {
         registry_->remove_if_match(user_id_, this);
+        if (allow_grace && authenticated_)
+        {
+            registry_->mark_disconnected(user_id_, device_id_);
+        }
     }
     boost::system::error_code ignored;
     socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored);
