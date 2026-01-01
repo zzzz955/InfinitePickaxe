@@ -24,7 +24,8 @@ namespace InfinitePickaxe.Client.UI.Game
         private enum GemMode
         {
             Fusion = 0,
-            Convert = 1
+            Convert = 1,
+            Discard = 2
         }
 
         [Serializable]
@@ -108,6 +109,12 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button convertFixedAttackSpeedButton;
         [SerializeField] private Button convertFixedCritRateButton;
         [SerializeField] private Button convertFixedCritDmgButton;
+        [Header("분해 패널")]
+        [SerializeField] private Button discardModeButton;
+        [SerializeField] private GameObject discardRoot;
+        [SerializeField] private TextMeshProUGUI discardSelectedCountText;
+        [SerializeField] private TextMeshProUGUI discardRewardPreviewText;
+        [SerializeField] private Button discardButton;
         [Header("모달")]
         [SerializeField] private GemSynthesisResultModalController synthesisResultModal;
 
@@ -129,6 +136,14 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button conversionConfirmButton;
         [SerializeField] private TextMeshProUGUI conversionConfirmButtonText;
         [SerializeField] private Button conversionCancelButton;
+        [Header("보석 분해 확인 모달")]
+        [SerializeField] private GameObject discardConfirmModal;
+        [SerializeField] private Transform discardConfirmGridContent;
+        [SerializeField] private Image discardConfirmItemTemplate;
+        [SerializeField] private TextMeshProUGUI discardConfirmRewardText;
+        [SerializeField] private Button discardConfirmButton;
+        [SerializeField] private TextMeshProUGUI discardConfirmButtonText;
+        [SerializeField] private Button discardConfirmCancelButton;
 
         [Header("스텁 데이터")]
         [SerializeField] private bool useStubData = true;
@@ -153,10 +168,13 @@ namespace InfinitePickaxe.Client.UI.Game
         private string selectedMaterialGemId2;
         private string selectedConvertGemId;
         private Infinitepickaxe.GemType? selectedConvertTarget;
+        private readonly HashSet<string> selectedDiscardGemIds = new HashSet<string>();
         private Infinitepickaxe.GemGrade? pendingAutoSynthesisGrade;
         private string pendingConvertGemId;
         private Infinitepickaxe.GemType? pendingConvertTarget;
         private bool pendingConvertFixed;
+        private List<string> pendingDiscardRequestIds;
+        private readonly List<Image> discardConfirmItems = new List<Image>();
 
         private void Awake()
         {
@@ -170,6 +188,7 @@ namespace InfinitePickaxe.Client.UI.Game
             AutoBindSynthesisResultModal();
             SetupAutoSynthesisConfirmModalButtons();
             SetupConversionConfirmModalButtons();
+            SetupDiscardConfirmModalButtons();
 
             if (useStubData)
             {
@@ -235,6 +254,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 convertModeButton.onClick.RemoveAllListeners();
                 convertModeButton.onClick.AddListener(() => SetMode(GemMode.Convert));
             }
+
+            if (discardModeButton != null)
+            {
+                discardModeButton.onClick.RemoveAllListeners();
+                discardModeButton.onClick.AddListener(() => SetMode(GemMode.Discard));
+            }
         }
 
         private void BindActionButtons()
@@ -279,6 +304,12 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 convertFixedCritDmgButton.onClick.RemoveAllListeners();
                 convertFixedCritDmgButton.onClick.AddListener(() => OnConvertFixedClicked(Infinitepickaxe.GemType.CritDmg));
+            }
+
+            if (discardButton != null)
+            {
+                discardButton.onClick.RemoveAllListeners();
+                discardButton.onClick.AddListener(OnDiscardClicked);
             }
         }
 
@@ -351,6 +382,42 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 conversionConfirmButton.onClick.RemoveAllListeners();
                 conversionConfirmButton.onClick.AddListener(OnConfirmConversion);
+            }
+        }
+
+        private void SetupDiscardConfirmModalButtons()
+        {
+            if (discardConfirmModal == null) return;
+
+            var backgroundButton = discardConfirmModal.GetComponent<Button>();
+            if (backgroundButton != null)
+            {
+                backgroundButton.onClick.RemoveAllListeners();
+                backgroundButton.onClick.AddListener(CloseDiscardConfirmModal);
+            }
+
+            var modalPanel = discardConfirmModal.transform.Find("ModalPanel");
+            if (modalPanel != null)
+            {
+                var panelButton = modalPanel.GetComponent<Button>();
+                if (panelButton == null)
+                {
+                    panelButton = modalPanel.gameObject.AddComponent<Button>();
+                    panelButton.transition = Selectable.Transition.None;
+                }
+                panelButton.onClick.RemoveAllListeners();
+            }
+
+            if (discardConfirmCancelButton != null)
+            {
+                discardConfirmCancelButton.onClick.RemoveAllListeners();
+                discardConfirmCancelButton.onClick.AddListener(CloseDiscardConfirmModal);
+            }
+
+            if (discardConfirmButton != null)
+            {
+                discardConfirmButton.onClick.RemoveAllListeners();
+                discardConfirmButton.onClick.AddListener(OnConfirmDiscard);
             }
         }
 
@@ -455,6 +522,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (fusionRoot != null) fusionRoot.SetActive(mode == GemMode.Fusion);
             if (convertRoot != null) convertRoot.SetActive(mode == GemMode.Convert);
+            if (discardRoot != null) discardRoot.SetActive(mode == GemMode.Discard);
 
             UpdateModeButtons();
             ClearSelectionOnModeChange();
@@ -523,9 +591,13 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 SelectFusionGem(gemInstanceId);
             }
-            else
+            else if (currentMode == GemMode.Convert)
             {
                 SelectConvertGem(gemInstanceId);
+            }
+            else
+            {
+                ToggleDiscardGem(gemInstanceId);
             }
 
             UpdateSelectionUI();
@@ -585,6 +657,21 @@ namespace InfinitePickaxe.Client.UI.Game
             selectedConvertTarget = null;
         }
 
+        private void ToggleDiscardGem(string gemInstanceId)
+        {
+            if (string.IsNullOrEmpty(gemInstanceId)) return;
+            if (gemCache != null && gemCache.IsEquipped(gemInstanceId))
+            {
+                Debug.LogWarning("GemPanelController: 장착된 보석은 분해할 수 없습니다.");
+                return;
+            }
+
+            if (!selectedDiscardGemIds.Add(gemInstanceId))
+            {
+                selectedDiscardGemIds.Remove(gemInstanceId);
+            }
+        }
+
         private void ClearFusionBase()
         {
             selectedBaseGemId = null;
@@ -620,18 +707,37 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateSelectionUI();
         }
 
+        private void ClearDiscardSelection()
+        {
+            selectedDiscardGemIds.Clear();
+            pendingDiscardRequestIds = null;
+            UpdateSelectionUI();
+        }
+
         private void ClearSelectionOnModeChange()
         {
-            if (currentMode == GemMode.Fusion)
+            switch (currentMode)
             {
-                selectedConvertGemId = null;
-                selectedConvertTarget = null;
-            }
-            else
-            {
-                selectedBaseGemId = null;
-                selectedMaterialGemId = null;
-                selectedMaterialGemId2 = null;
+                case GemMode.Fusion:
+                    selectedConvertGemId = null;
+                    selectedConvertTarget = null;
+                    selectedDiscardGemIds.Clear();
+                    pendingDiscardRequestIds = null;
+                    break;
+                case GemMode.Convert:
+                    selectedBaseGemId = null;
+                    selectedMaterialGemId = null;
+                    selectedMaterialGemId2 = null;
+                    selectedDiscardGemIds.Clear();
+                    pendingDiscardRequestIds = null;
+                    break;
+                case GemMode.Discard:
+                    selectedBaseGemId = null;
+                    selectedMaterialGemId = null;
+                    selectedMaterialGemId2 = null;
+                    selectedConvertGemId = null;
+                    selectedConvertTarget = null;
+                    break;
             }
         }
 
@@ -641,6 +747,7 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateConvertSlots();
             UpdateGridSelectionStates();
             UpdateConvertButtons();
+            UpdateDiscardPanel();
         }
 
         private void UpdateFusionSlots()
@@ -751,7 +858,14 @@ namespace InfinitePickaxe.Client.UI.Game
                 var role = GemSelectionRole.None;
                 if (!string.IsNullOrEmpty(gemInstanceId))
                 {
-                    if (!string.IsNullOrEmpty(selectedBaseGemId) && gemInstanceId == selectedBaseGemId)
+                    if (currentMode == GemMode.Discard)
+                    {
+                        if (selectedDiscardGemIds.Contains(gemInstanceId))
+                        {
+                            role = GemSelectionRole.Discard;
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(selectedBaseGemId) && gemInstanceId == selectedBaseGemId)
                     {
                         role = GemSelectionRole.Base;
                     }
@@ -785,6 +899,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             UpdateButtonState(fusionModeButton, currentMode == GemMode.Fusion, modeSelectedColor, modeUnselectedColor);
             UpdateButtonState(convertModeButton, currentMode == GemMode.Convert, modeSelectedColor, modeUnselectedColor);
+            UpdateButtonState(discardModeButton, currentMode == GemMode.Discard, modeSelectedColor, modeUnselectedColor);
         }
 
         private void UpdateConvertButtons()
@@ -799,6 +914,31 @@ namespace InfinitePickaxe.Client.UI.Game
                 convertFixedCritRateButton.interactable = hasBase && baseGem.Type != Infinitepickaxe.GemType.CritRate;
             if (convertFixedCritDmgButton != null)
                 convertFixedCritDmgButton.interactable = hasBase && baseGem.Type != Infinitepickaxe.GemType.CritDmg;
+        }
+
+        private void UpdateDiscardPanel()
+        {
+            if (discardRoot != null)
+            {
+                discardRoot.SetActive(currentMode == GemMode.Discard);
+            }
+
+            int selectedCount = selectedDiscardGemIds.Count;
+            if (discardSelectedCountText != null)
+            {
+                discardSelectedCountText.text = $"선택: {selectedCount}";
+            }
+
+            if (discardRewardPreviewText != null)
+            {
+                uint totalReward = GetTotalDiscardReward(selectedDiscardGemIds);
+                discardRewardPreviewText.text = $"예상 보상: {totalReward} 크리스탈";
+            }
+
+            if (discardButton != null)
+            {
+                discardButton.interactable = selectedCount > 0;
+            }
         }
 
         private void UpdateButtonState(Button button, bool selected, Color selectedColor, Color unselectedColor)
@@ -923,6 +1063,18 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             OpenConversionConfirmModal(baseGem, targetType, true);
+        }
+
+        private void OnDiscardClicked()
+        {
+            ValidateSelections();
+            if (selectedDiscardGemIds.Count == 0)
+            {
+                Debug.LogWarning("GemPanelController: 분해할 보석이 없습니다.");
+                return;
+            }
+
+            OpenDiscardConfirmModal();
         }
 
         private void OpenAutoSynthesisConfirmModal(Infinitepickaxe.GemGrade grade)
@@ -1109,6 +1261,160 @@ namespace InfinitePickaxe.Client.UI.Game
             }
         }
 
+        private void OpenDiscardConfirmModal()
+        {
+            if (discardConfirmModal == null) return;
+
+            ValidateSelections();
+            if (selectedDiscardGemIds.Count == 0)
+            {
+                Debug.LogWarning("GemPanelController: 분해할 보석이 없습니다.");
+                return;
+            }
+
+            UpdateDiscardConfirmModal();
+
+            if (discardConfirmButton != null)
+            {
+                discardConfirmButton.interactable = true;
+            }
+
+            if (discardConfirmButtonText != null)
+            {
+                discardConfirmButtonText.text = "확인";
+            }
+
+            discardConfirmModal.SetActive(true);
+            discardConfirmModal.transform.SetAsLastSibling();
+        }
+
+        private void CloseDiscardConfirmModal()
+        {
+            if (discardConfirmModal != null)
+            {
+                discardConfirmModal.SetActive(false);
+            }
+        }
+
+        private void OnConfirmDiscard()
+        {
+            if (messageHandler == null)
+            {
+                Debug.LogWarning("GemPanelController: MessageHandler가 없습니다.");
+                return;
+            }
+
+            ValidateSelections();
+            var requestIds = selectedDiscardGemIds.Where(id => !string.IsNullOrEmpty(id)).ToList();
+            if (requestIds.Count == 0)
+            {
+                CloseDiscardConfirmModal();
+                return;
+            }
+
+            if (gemCache != null)
+            {
+                var equippedIds = requestIds.Where(id => gemCache.IsEquipped(id)).ToList();
+                if (equippedIds.Count > 0)
+                {
+                    foreach (var id in equippedIds)
+                    {
+                        selectedDiscardGemIds.Remove(id);
+                    }
+                }
+                requestIds.RemoveAll(id => gemCache.IsEquipped(id));
+                if (requestIds.Count == 0)
+                {
+                    Debug.LogWarning("GemPanelController: 장착된 보석은 분해할 수 없습니다.");
+                    CloseDiscardConfirmModal();
+                    UpdateSelectionUI();
+                    return;
+                }
+            }
+
+            pendingDiscardRequestIds = requestIds;
+            messageHandler.RequestGemDiscard(requestIds);
+            CloseDiscardConfirmModal();
+        }
+
+        private void UpdateDiscardConfirmModal()
+        {
+            if (discardConfirmModal == null) return;
+
+            var gems = selectedDiscardGemIds
+                .Select(GetGem)
+                .Where(gem => gem != null)
+                .ToList();
+
+            uint totalReward = GetTotalDiscardReward(selectedDiscardGemIds);
+            if (discardConfirmRewardText != null)
+            {
+                discardConfirmRewardText.text = $"획득 크리스탈: {totalReward}";
+            }
+
+            EnsureDiscardConfirmItems(gems);
+        }
+
+        private void EnsureDiscardConfirmItems(IReadOnlyList<GemUIData> gems)
+        {
+            if (discardConfirmGridContent == null || discardConfirmItemTemplate == null) return;
+            if (!discardConfirmGridContent.gameObject.scene.IsValid())
+            {
+                Debug.LogWarning("GemPanelController: 분해 확인 모달이 씬에 없습니다.");
+                return;
+            }
+
+            ConfigureDiscardGridLayout();
+
+            if (discardConfirmItemTemplate.gameObject.activeSelf)
+            {
+                discardConfirmItemTemplate.gameObject.SetActive(false);
+            }
+
+            int required = gems.Count;
+            while (discardConfirmItems.Count < required)
+            {
+                var instance = Instantiate(discardConfirmItemTemplate, discardConfirmGridContent);
+                instance.gameObject.SetActive(true);
+                instance.preserveAspect = true;
+                instance.rectTransform.sizeDelta = new Vector2(96f, 96f);
+                discardConfirmItems.Add(instance);
+            }
+
+            for (int i = 0; i < discardConfirmItems.Count; i++)
+            {
+                var item = discardConfirmItems[i];
+                if (i < required)
+                {
+                    var icon = GetGemIcon(gems[i]);
+                    item.sprite = icon;
+                    item.color = icon != null ? Color.white : new Color(1f, 1f, 1f, 0.6f);
+                    item.gameObject.SetActive(true);
+                }
+                else
+                {
+                    item.gameObject.SetActive(false);
+                }
+            }
+        }
+
+        private void ConfigureDiscardGridLayout()
+        {
+            if (discardConfirmGridContent == null) return;
+
+            var grid = discardConfirmGridContent.GetComponent<GridLayoutGroup>();
+            if (grid == null)
+            {
+                grid = discardConfirmGridContent.gameObject.AddComponent<GridLayoutGroup>();
+            }
+
+            grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            grid.constraintCount = 6;
+            grid.cellSize = new Vector2(96f, 96f);
+            grid.spacing = new Vector2(8f, 8f);
+            grid.childAlignment = TextAnchor.UpperLeft;
+        }
+
 
         private void OnExpandRowClicked()
         {
@@ -1213,6 +1519,11 @@ namespace InfinitePickaxe.Client.UI.Game
                 selectedConvertGemId = null;
                 selectedConvertTarget = null;
             }
+
+            if (selectedDiscardGemIds.Count > 0)
+            {
+                selectedDiscardGemIds.RemoveWhere(id => string.IsNullOrEmpty(id) || !gemByInstanceId.ContainsKey(id));
+            }
         }
 
         private void AutoBindSynthesisResultModal()
@@ -1271,6 +1582,7 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnGemSynthesisResult += HandleGemSynthesisResult;
             messageHandler.OnGemAutoSynthesisResult += HandleGemAutoSynthesisResult;
             messageHandler.OnGemConversionResult += HandleGemConversionResult;
+            messageHandler.OnGemDiscardResult += HandleGemDiscardResult;
             messageHandler.OnGemInventoryExpandResult += HandleGemInventoryExpandResult;
             messageHandler.OnCurrencyUpdate += HandleCurrencyUpdate;
             subscribed = true;
@@ -1302,6 +1614,7 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnGemSynthesisResult -= HandleGemSynthesisResult;
             messageHandler.OnGemAutoSynthesisResult -= HandleGemAutoSynthesisResult;
             messageHandler.OnGemConversionResult -= HandleGemConversionResult;
+            messageHandler.OnGemDiscardResult -= HandleGemDiscardResult;
             messageHandler.OnGemInventoryExpandResult -= HandleGemInventoryExpandResult;
             messageHandler.OnCurrencyUpdate -= HandleCurrencyUpdate;
             subscribed = false;
@@ -1376,6 +1689,31 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             ClearConvertBase();
+        }
+
+        private void HandleGemDiscardResult(GemDiscardResult result)
+        {
+            if (result == null || !result.Success)
+            {
+                if (result != null)
+                {
+                    Debug.LogWarning($"GemPanelController: 분해 실패 ({result.ErrorCode})");
+                }
+                pendingDiscardRequestIds = null;
+                return;
+            }
+
+            if (pendingDiscardRequestIds != null)
+            {
+                foreach (var id in pendingDiscardRequestIds)
+                {
+                    selectedDiscardGemIds.Remove(id);
+                }
+            }
+
+            pendingDiscardRequestIds = null;
+            CloseDiscardConfirmModal();
+            UpdateSelectionUI();
         }
 
         private void HandleGemInventoryExpandResult(GemInventoryExpandResult result)
@@ -1455,6 +1793,33 @@ namespace InfinitePickaxe.Client.UI.Game
                 Infinitepickaxe.GemGrade.Hero => 30,
                 _ => 0
             };
+        }
+
+        private uint GetTotalDiscardReward(IEnumerable<string> gemInstanceIds)
+        {
+            if (gemInstanceIds == null) return 0;
+            uint total = 0;
+            foreach (var gemInstanceId in gemInstanceIds)
+            {
+                if (string.IsNullOrEmpty(gemInstanceId)) continue;
+                var gem = GetGem(gemInstanceId);
+                if (gem == null) continue;
+                if (TryGetDiscardReward(gem, out var reward))
+                {
+                    total += reward;
+                }
+            }
+            return total;
+        }
+
+        private bool TryGetDiscardReward(GemUIData gem, out uint reward)
+        {
+            reward = 0;
+            if (gem == null) return false;
+            if (!metaResolver.TryGetDefinition(gem.GemId, out var def)) return false;
+            if (!metaResolver.TryGetDiscardReward(def.GradeId, out var meta)) return false;
+            reward = meta.CrystalReward;
+            return true;
         }
 
 

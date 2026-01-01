@@ -82,6 +82,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private uint gemInventoryCapacity = 48;
         private uint maxGemCapacity = 128;
         private bool gemEquipModalRequested;
+        private bool isGemDiscardRequested;
 
         // 선택된 보석 정보
         private GemInfo selectedGem = null;
@@ -1346,6 +1347,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 GemDiscardRequest = request
             };
 
+            isGemDiscardRequested = true;
             NetworkManager.Instance.SendMessage(envelope);
 
             CloseGemDiscardModal();
@@ -1383,6 +1385,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (!result.Success)
             {
                 Debug.LogError($"분해 실패: {result.ErrorCode}");
+                isGemDiscardRequested = false;
                 return;
             }
 
@@ -1390,8 +1393,20 @@ namespace InfinitePickaxe.Client.UI.Game
 
             UpdateCrystalUI(result.TotalCrystal);
 
+            if (!isGemDiscardRequested)
+            {
+                return;
+            }
+
+            isGemDiscardRequested = false;
+
             // 인벤토리에서 제거
-            gemInventory.RemoveAll(g => g.GemInstanceId == selectedGem.GemInstanceId);
+            if (selectedGem == null || gemInventory == null)
+            {
+                return;
+            }
+
+            gemInventory.RemoveAll(g => g != null && g.GemInstanceId == selectedGem.GemInstanceId);
             selectedGem = null;
         }
 

@@ -9,7 +9,8 @@ namespace InfinitePickaxe.Client.UI.Game
         Base = 1,      // 기준 보석
         Material = 2,  // 재료 보석 (합성)
         Material2 = 3, // 재료 보석 2
-        Convert = 4    // 전환 대상 보석
+        Convert = 4,    // 전환 대상 보석
+        Discard = 5    // ?? ?? ??
     }
 
     /// <summary>

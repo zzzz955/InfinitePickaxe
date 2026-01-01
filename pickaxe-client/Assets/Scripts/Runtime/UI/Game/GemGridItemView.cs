@@ -21,6 +21,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Color materialColor = new Color(0.3f, 0.7f, 0.45f, 0.9f);
         [SerializeField] private Color material2Color = new Color(0.3f, 0.6f, 0.85f, 0.9f);
         [SerializeField] private Color convertColor = new Color(0.7f, 0.5f, 0.25f, 0.9f);
+        [SerializeField] private Color discardColor = new Color(0.75f, 0.3f, 0.3f, 0.9f);
 
         private int boundIndex;
         private Action<int> clickHandler;
@@ -126,6 +127,10 @@ namespace InfinitePickaxe.Client.UI.Game
                 case GemSelectionRole.Convert:
                     if (badgeText != null) badgeText.text = "??";
                     ApplyBackgroundColor(convertColor);
+                    break;
+                case GemSelectionRole.Discard:
+                    if (badgeText != null) badgeText.text = "분해";
+                    ApplyBackgroundColor(discardColor);
                     break;
                 default:
                     if (badgeText != null) badgeText.text = string.Empty;
