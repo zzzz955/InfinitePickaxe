@@ -216,6 +216,7 @@ MonoBehaviour:
   loginSceneName: Title
   handshakeTimeoutSeconds: 10
   snapshotTimeoutSeconds: 10
+  reconnectOverlayDelaySeconds: 0.5
   loadingPanel: {fileID: 0}
   gameUIRoot: {fileID: 0}
 --- !u!1 &100010
@@ -5607,6 +5608,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 100002, guid: 46b8d33a7e59c4a439d8b47ed6052173, type: 3}
   m_PrefabInstance: {fileID: 382637945}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &382637947 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 46b8d33a7e59c4a439d8b47ed6052173, type: 3}
+  m_PrefabInstance: {fileID: 382637945}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &386886283
 GameObject:
   m_ObjectHideFlags: 0
@@ -6795,6 +6801,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &479594240 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: cf4a077145434f14c8bdc55507402ff9, type: 3}
+  m_PrefabInstance: {fileID: 479594236}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &485523314
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17501,8 +17512,8 @@ MonoBehaviour:
   initializeOnAwake: 1
   gemsTabButton: {fileID: 2140561983}
   iapTabButton: {fileID: 1407777881}
-  gemShopSubTab: {fileID: 100000, guid: cf4a077145434f14c8bdc55507402ff9, type: 3}
-  iapShopSubTab: {fileID: 100000, guid: 46b8d33a7e59c4a439d8b47ed6052173, type: 3}
+  gemShopSubTab: {fileID: 479594240}
+  iapShopSubTab: {fileID: 382637947}
   gemSinglePullButton: {fileID: 479594239}
   gemMultiPullButton: {fileID: 479594238}
   toastModal: {fileID: 485523318}
