@@ -74,6 +74,7 @@ namespace InfinitePickaxe.Client.Net
         [SerializeField] private int maxReconnectAttempts = 3;
         [SerializeField] private int maxReconnectDelayMs = 15000;
         [SerializeField] private bool disconnectOnBackground = true;
+        [SerializeField] private int backgroundDisconnectDelayMs = 10000;
 
         #endregion
 
@@ -98,8 +99,11 @@ namespace InfinitePickaxe.Client.Net
         private bool autoReconnectSuppressed;
         private bool isApplicationPaused;
         private bool shouldReconnectOnResume;
+        private bool hadActiveConnectionOnPause;
         private string lastJwtToken;
         private readonly System.Random reconnectJitter = new System.Random();
+        private CancellationTokenSource backgroundDisconnectCts;
+        private DateTimeOffset backgroundPausedAt;
 
         #endregion
 
@@ -171,21 +175,35 @@ namespace InfinitePickaxe.Client.Net
 
             if (pause)
             {
-                bool wasActive = IsConnected || isConnecting;
+                hadActiveConnectionOnPause = IsConnected || isConnecting;
                 isApplicationPaused = true;
-                if (wasActive && !autoReconnectSuppressed)
+                backgroundPausedAt = DateTimeOffset.UtcNow;
+                shouldReconnectOnResume = false;
+                CancelBackgroundDisconnect();
+
+                if (hadActiveConnectionOnPause && !autoReconnectSuppressed)
                 {
-                    shouldReconnectOnResume = true;
-                    CleanupConnection(false, "앱 일시정지");
+                    ScheduleBackgroundDisconnect();
                 }
                 return;
             }
 
             isApplicationPaused = false;
-            if (shouldReconnectOnResume)
+            var pausedMs = backgroundPausedAt == default ? 0 : (DateTimeOffset.UtcNow - backgroundPausedAt).TotalMilliseconds;
+            bool graceExpired = backgroundDisconnectDelayMs > 0 && pausedMs >= backgroundDisconnectDelayMs;
+
+            CancelBackgroundDisconnect();
+
+            if (graceExpired && (IsConnected || isConnecting) && !autoReconnectSuppressed)
+            {
+                shouldReconnectOnResume = true;
+                CleanupConnection(false, "\uBC31\uADF8\uB77C\uC6B4\uB4DC \uC720\uC608 \uB9CC\uB8CC");
+            }
+
+            if (shouldReconnectOnResume || (hadActiveConnectionOnPause && !IsConnected && !isConnecting && !autoReconnectSuppressed))
             {
                 shouldReconnectOnResume = false;
-                _ = ReconnectAsync("앱 복귀");
+                _ = ReconnectAsync("\uC571 \uBCF5\uADC0");
             }
         }
 
@@ -283,6 +301,7 @@ namespace InfinitePickaxe.Client.Net
             Debug.Log("서버 연결 종료");
             autoReconnectSuppressed = true;
             shouldReconnectOnResume = false;
+            CancelBackgroundDisconnect();
             isReconnecting = false;
             reconnectAttempts = 0;
             lastJwtToken = null;
@@ -306,6 +325,59 @@ namespace InfinitePickaxe.Client.Net
         #endregion
 
         #region Private Methods - Connection
+
+        private void ScheduleBackgroundDisconnect()
+        {
+            CancelBackgroundDisconnect();
+
+            if (backgroundDisconnectDelayMs <= 0)
+            {
+                shouldReconnectOnResume = true;
+                CleanupConnection(false, "\uBC31\uADF8\uB77C\uC6B4\uB4DC \uC9C4\uC785");
+                return;
+            }
+
+            backgroundDisconnectCts = new CancellationTokenSource();
+            _ = RunBackgroundDisconnectTimerAsync(backgroundDisconnectCts.Token);
+        }
+
+        private bool CancelBackgroundDisconnect()
+        {
+            if (backgroundDisconnectCts == null)
+            {
+                return false;
+            }
+
+            backgroundDisconnectCts.Cancel();
+            backgroundDisconnectCts.Dispose();
+            backgroundDisconnectCts = null;
+            return true;
+        }
+
+        private async Task RunBackgroundDisconnectTimerAsync(CancellationToken token)
+        {
+            try
+            {
+                await Task.Delay(backgroundDisconnectDelayMs, token);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+
+            if (token.IsCancellationRequested || !isApplicationPaused)
+            {
+                return;
+            }
+
+            if (!IsConnected && !isConnecting)
+            {
+                return;
+            }
+
+            shouldReconnectOnResume = true;
+            CleanupConnection(false, "\uBC31\uADF8\uB77C\uC6B4\uB4DC \uC720\uC608 \uB9CC\uB8CC");
+        }
 
         private async Task ReconnectAsync(string reason)
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using InfinitePickaxe.Client.Auth;
 using InfinitePickaxe.Client.Net;
@@ -21,6 +22,7 @@ namespace InfinitePickaxe.Client.Core
         [SerializeField] private string loginSceneName = "Title";
         [SerializeField] private float handshakeTimeoutSeconds = 10f;
         [SerializeField] private float snapshotTimeoutSeconds = 10f;
+        [SerializeField] private float reconnectOverlayDelaySeconds = 0.5f;
 
         [Header("UI References")]
         [SerializeField] private GameObject loadingPanel;
@@ -35,6 +37,8 @@ namespace InfinitePickaxe.Client.Core
         private bool isSnapshotReceived = false;
         private bool isGameReady = false;
         private bool overlayOwned = false;
+        private Coroutine reconnectOverlayCoroutine;
+        private bool reconnectOverlayPending = false;
         private string jwtToken;
 
         public GameObject LoadingPanel => loadingPanel;
@@ -88,6 +92,46 @@ namespace InfinitePickaxe.Client.Core
             }
 
             SetLocalLoadingVisible(false);
+        }
+
+        private void StartReconnectOverlayDelay()
+        {
+            reconnectOverlayPending = true;
+            if (reconnectOverlayCoroutine != null)
+            {
+                StopCoroutine(reconnectOverlayCoroutine);
+            }
+            reconnectOverlayCoroutine = StartCoroutine(ShowReconnectOverlayDelayed());
+        }
+
+        private void CancelReconnectOverlay()
+        {
+            reconnectOverlayPending = false;
+            if (reconnectOverlayCoroutine != null)
+            {
+                StopCoroutine(reconnectOverlayCoroutine);
+                reconnectOverlayCoroutine = null;
+            }
+        }
+
+        private IEnumerator ShowReconnectOverlayDelayed()
+        {
+            if (reconnectOverlayDelaySeconds > 0f)
+            {
+                yield return new WaitForSecondsRealtime(reconnectOverlayDelaySeconds);
+            }
+
+            if (!reconnectOverlayPending)
+            {
+                yield break;
+            }
+
+            if (networkManager != null && networkManager.IsConnected)
+            {
+                yield break;
+            }
+
+            ShowLoadingOverlay("\uC7AC\uC5F0\uACB0 \uC911...");
         }
 
         private void SetLocalLoadingVisible(bool visible)
@@ -161,6 +205,7 @@ namespace InfinitePickaxe.Client.Core
 
         private void OnDisable()
         {
+            CancelReconnectOverlay();
             if (messageHandler != null)
             {
                 messageHandler.OnHandshakeResult -= HandleHandshakeResult;
@@ -239,6 +284,7 @@ namespace InfinitePickaxe.Client.Core
         /// </summary>
         private void HandleHandshakeResult(HandshakeResponse result)
         {
+            CancelReconnectOverlay();
             if (result.Success)
             {
                 Debug.Log($"핸드셰이크 성공: {result.Message}");
@@ -343,6 +389,7 @@ namespace InfinitePickaxe.Client.Core
         /// </summary>
         private void HandleDisconnected(string reason)
         {
+            CancelReconnectOverlay();
             Debug.LogWarning($"서버 연결 끊김: {reason}");
 
             // 게임 진행 중에 연결이 끊긴 경우
@@ -362,7 +409,7 @@ namespace InfinitePickaxe.Client.Core
         /// </summary>
         private void HandleReconnecting(string reason)
         {
-            ShowLoadingOverlay("재연결 중...");
+            StartReconnectOverlayDelay();
         }
 
         /// <summary>
@@ -385,6 +432,7 @@ namespace InfinitePickaxe.Client.Core
         /// </summary>
         private void FailAndReturnToTitle(string message, bool clearSession = false, bool disconnect = true, bool immediate = true)
         {
+            CancelReconnectOverlay();
             Debug.LogError($"연결 오류: {message}");
 
             TitleController.SetReconnectNotice(message);
