@@ -8,6 +8,7 @@ using InfinitePickaxe.Client.UI.Title;
 using InfinitePickaxe.Client.UI.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace InfinitePickaxe.Client.Core
 {
@@ -19,6 +20,11 @@ namespace InfinitePickaxe.Client.Core
 
         [Header("Scenes")]
         [SerializeField] private string gameSceneName = "Game";
+
+        [Header("Exit Modal")]
+        [SerializeField] private GameObject titleExitModal;
+        [SerializeField] private Button titleExitConfirmButton;
+        [SerializeField] private Button titleExitCancelButton;
 
         [Header("Auth")]
         [SerializeField] private bool attemptSilentSignIn = true;
@@ -68,6 +74,7 @@ namespace InfinitePickaxe.Client.Core
             view.SetState(TitleState.Idle, IdleStatus);
             LoadingOverlayManager.Instance.Clear();
             overlayVisible = false;
+            SetupTitleExitModalButtons();
 
             if (!string.IsNullOrEmpty(pendingReconnectMessage))
             {
@@ -83,6 +90,81 @@ namespace InfinitePickaxe.Client.Core
                 autoAuthAttempted = true;
                 _ = AutoAuthenticateAsync();
             }
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                OpenTitleExitModal();
+            }
+        }
+
+        private void SetupTitleExitModalButtons()
+        {
+            if (titleExitModal == null) return;
+
+            var backgroundButton = titleExitModal.GetComponent<Button>();
+            if (backgroundButton != null)
+            {
+                backgroundButton.onClick.RemoveAllListeners();
+                backgroundButton.onClick.AddListener(CloseTitleExitModal);
+            }
+
+            var modalPanel = titleExitModal.transform.Find("ModalPanel");
+            if (modalPanel != null)
+            {
+                var panelButton = modalPanel.GetComponent<Button>();
+                if (panelButton == null)
+                {
+                    panelButton = modalPanel.gameObject.AddComponent<Button>();
+                    panelButton.transition = Selectable.Transition.None;
+                }
+                panelButton.onClick.RemoveAllListeners();
+            }
+
+            if (titleExitConfirmButton != null)
+            {
+                titleExitConfirmButton.onClick.RemoveAllListeners();
+                titleExitConfirmButton.onClick.AddListener(ConfirmExitFromTitle);
+            }
+
+            if (titleExitCancelButton != null)
+            {
+                titleExitCancelButton.onClick.RemoveAllListeners();
+                titleExitCancelButton.onClick.AddListener(CloseTitleExitModal);
+            }
+        }
+
+        private void OpenTitleExitModal()
+        {
+            if (titleExitModal == null)
+            {
+                ConfirmExitFromTitle();
+                return;
+            }
+
+            if (titleExitModal.activeSelf)
+            {
+                return;
+            }
+
+            titleExitModal.SetActive(true);
+            titleExitModal.transform.SetAsLastSibling();
+        }
+
+        private void CloseTitleExitModal()
+        {
+            if (titleExitModal != null)
+            {
+                titleExitModal.SetActive(false);
+            }
+        }
+
+        private void ConfirmExitFromTitle()
+        {
+            CloseTitleExitModal();
+            Application.Quit();
         }
 
         public static void SetReconnectNotice(string message)

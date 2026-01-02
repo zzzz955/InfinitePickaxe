@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using InfinitePickaxe.Client.Auth;
 using InfinitePickaxe.Client.Net;
 using InfinitePickaxe.Client.UI.Common;
+using InfinitePickaxe.Client.Metadata;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -30,11 +31,20 @@ namespace InfinitePickaxe.Client.Core
         [SerializeField] private GameObject loadingPanel;
         [SerializeField] private GameObject gameUIRoot;
 
-        [Header("Offline Mode Modal")]
-        [SerializeField] private GameObject offlineModeConfirmModal;
-        [SerializeField] private TextMeshProUGUI offlineModeConfirmMessageText;
-        [SerializeField] private Button offlineModeConfirmButton;
-        [SerializeField] private Button offlineModeCancelButton;
+        [Header("Game Exit Modal")]
+        [SerializeField] private GameObject gameExitModal;
+        [SerializeField] private Button gameExitConfirmButton;
+        [SerializeField] private Button gameExitOfflineModeButton;
+        [SerializeField] private Button gameExitCancelButton;
+
+        [Header("Offline Mode Detail Modal")]
+        [SerializeField] private GameObject offlineModeDetailModal;
+        [SerializeField] private TextMeshProUGUI offlineModeRemainingText;
+        [SerializeField] private TextMeshProUGUI offlineModeRewardText;
+        [SerializeField] private TextMeshProUGUI offlineModeMiningCountText;
+        [SerializeField] private TextMeshProUGUI offlineModeNoticeText;
+        [SerializeField] private Button offlineModeDetailConfirmButton;
+        [SerializeField] private Button offlineModeDetailCancelButton;
 
         [Header("Offline Reward Modal")]
         [SerializeField] private GameObject offlineRewardModal;
@@ -55,6 +65,7 @@ namespace InfinitePickaxe.Client.Core
         private string jwtToken;
         private bool offlineModeRequestPending = false;
         private bool suppressDisconnectNotice = false;
+        private MineralMetaResolver mineralMetaResolver;
 
         public GameObject LoadingPanel => loadingPanel;
 
@@ -157,18 +168,18 @@ namespace InfinitePickaxe.Client.Core
             }
         }
 
-        private void SetupOfflineModeModalButtons()
+        private void SetupGameExitModalButtons()
         {
-            if (offlineModeConfirmModal == null) return;
+            if (gameExitModal == null) return;
 
-            var backgroundButton = offlineModeConfirmModal.GetComponent<Button>();
+            var backgroundButton = gameExitModal.GetComponent<Button>();
             if (backgroundButton != null)
             {
                 backgroundButton.onClick.RemoveAllListeners();
-                backgroundButton.onClick.AddListener(CloseOfflineModeConfirmModal);
+                backgroundButton.onClick.AddListener(CloseGameExitModal);
             }
 
-            var modalPanel = offlineModeConfirmModal.transform.Find("ModalPanel");
+            var modalPanel = gameExitModal.transform.Find("ModalPanel");
             if (modalPanel != null)
             {
                 var panelButton = modalPanel.GetComponent<Button>();
@@ -180,16 +191,58 @@ namespace InfinitePickaxe.Client.Core
                 panelButton.onClick.RemoveAllListeners();
             }
 
-            if (offlineModeCancelButton != null)
+            if (gameExitCancelButton != null)
             {
-                offlineModeCancelButton.onClick.RemoveAllListeners();
-                offlineModeCancelButton.onClick.AddListener(CloseOfflineModeConfirmModal);
+                gameExitCancelButton.onClick.RemoveAllListeners();
+                gameExitCancelButton.onClick.AddListener(CloseGameExitModal);
             }
 
-            if (offlineModeConfirmButton != null)
+            if (gameExitConfirmButton != null)
             {
-                offlineModeConfirmButton.onClick.RemoveAllListeners();
-                offlineModeConfirmButton.onClick.AddListener(ConfirmOfflineModeStart);
+                gameExitConfirmButton.onClick.RemoveAllListeners();
+                gameExitConfirmButton.onClick.AddListener(ConfirmExitGame);
+            }
+
+            if (gameExitOfflineModeButton != null)
+            {
+                gameExitOfflineModeButton.onClick.RemoveAllListeners();
+                gameExitOfflineModeButton.onClick.AddListener(OpenOfflineModeDetailModal);
+            }
+        }
+
+        private void SetupOfflineModeDetailModalButtons()
+        {
+            if (offlineModeDetailModal == null) return;
+
+            var backgroundButton = offlineModeDetailModal.GetComponent<Button>();
+            if (backgroundButton != null)
+            {
+                backgroundButton.onClick.RemoveAllListeners();
+                backgroundButton.onClick.AddListener(CloseOfflineModeDetailModal);
+            }
+
+            var modalPanel = offlineModeDetailModal.transform.Find("ModalPanel");
+            if (modalPanel != null)
+            {
+                var panelButton = modalPanel.GetComponent<Button>();
+                if (panelButton == null)
+                {
+                    panelButton = modalPanel.gameObject.AddComponent<Button>();
+                    panelButton.transition = Selectable.Transition.None;
+                }
+                panelButton.onClick.RemoveAllListeners();
+            }
+
+            if (offlineModeDetailCancelButton != null)
+            {
+                offlineModeDetailCancelButton.onClick.RemoveAllListeners();
+                offlineModeDetailCancelButton.onClick.AddListener(CloseOfflineModeDetailModal);
+            }
+
+            if (offlineModeDetailConfirmButton != null)
+            {
+                offlineModeDetailConfirmButton.onClick.RemoveAllListeners();
+                offlineModeDetailConfirmButton.onClick.AddListener(ConfirmOfflineModeStart);
             }
         }
 
@@ -225,52 +278,66 @@ namespace InfinitePickaxe.Client.Core
 
         public void RequestExitWithOfflineMode()
         {
-            if (offlineModeConfirmModal == null)
+            RequestExitFromGame();
+        }
+
+        public void RequestExitFromGame()
+        {
+            OpenGameExitModal();
+        }
+
+        private void OpenGameExitModal()
+        {
+            if (gameExitModal == null)
+            {
+                ConfirmExitGame();
+                return;
+            }
+
+            if (gameExitModal.activeSelf)
+            {
+                return;
+            }
+
+            gameExitModal.SetActive(true);
+            gameExitModal.transform.SetAsLastSibling();
+        }
+
+        private void CloseGameExitModal()
+        {
+            if (gameExitModal != null)
+            {
+                gameExitModal.SetActive(false);
+            }
+        }
+
+        private void OpenOfflineModeDetailModal()
+        {
+            if (offlineModeDetailModal == null)
             {
                 ConfirmOfflineModeStart();
                 return;
             }
 
-            if (offlineModeConfirmModal.activeSelf)
-            {
-                return;
-            }
-
-            OpenOfflineModeConfirmModal();
+            CloseGameExitModal();
+            UpdateOfflineModeDetailUI();
+            offlineModeDetailModal.SetActive(true);
+            offlineModeDetailModal.transform.SetAsLastSibling();
         }
 
-        private void OpenOfflineModeConfirmModal()
+        private void CloseOfflineModeDetailModal()
         {
-            if (offlineModeConfirmModal == null) return;
-
-            uint offlineHours = 0;
-            if (messageHandler != null && messageHandler.TryGetLastSnapshot(out var snapshot) && snapshot != null)
+            if (offlineModeDetailModal != null)
             {
-                offlineHours = snapshot.CurrentOfflineHours;
+                offlineModeDetailModal.SetActive(false);
             }
-
-            if (offlineModeConfirmMessageText != null)
-            {
-                offlineModeConfirmMessageText.text = string.Format(
-                    "\uBE44\uC811\uC18D \uBAA8\uB4DC\uB97C \uC2DC\uC791\uD558\uBA74 \uCD5C\uB300 {0}\uC2DC\uAC04 \uB3D9\uC548 \uCC44\uAD74\uC774 \uC9C4\uD589\uB429\uB2C8\uB2E4.\n\uC2DC\uC791\uD560\uAE4C\uC694?",
-                    offlineHours);
-            }
-
-            if (offlineModeConfirmButton != null)
-            {
-                offlineModeConfirmButton.interactable = offlineHours > 0;
-            }
-
-            offlineModeConfirmModal.SetActive(true);
-            offlineModeConfirmModal.transform.SetAsLastSibling();
         }
 
-        private void CloseOfflineModeConfirmModal()
+        private void ConfirmExitGame()
         {
-            if (offlineModeConfirmModal != null)
-            {
-                offlineModeConfirmModal.SetActive(false);
-            }
+            CloseGameExitModal();
+            CloseOfflineModeDetailModal();
+            ExitGameImmediate();
         }
 
         private void CloseOfflineRewardModal()
@@ -288,79 +355,271 @@ namespace InfinitePickaxe.Client.Core
                 return;
             }
 
-            if (!CanStartOfflineMode(out var reason))
+            if (!TryBuildOfflineEstimate(out var estimate, out var errorCode))
             {
-                CloseOfflineModeConfirmModal();
-                ShowOfflineNotice(reason);
+                UpdateOfflineModeDetailUI(estimate);
+                SetOfflineModeNotice(errorCode);
+                if (offlineModeDetailConfirmButton != null)
+                {
+                    offlineModeDetailConfirmButton.interactable = false;
+                }
+                if (offlineModeDetailModal != null && !offlineModeDetailModal.activeSelf)
+                {
+                    offlineModeDetailModal.SetActive(true);
+                    offlineModeDetailModal.transform.SetAsLastSibling();
+                }
                 return;
             }
 
             if (messageHandler == null || networkManager == null || !networkManager.IsConnected)
             {
-                CloseOfflineModeConfirmModal();
-                ShowOfflineNotice("\uC11C\uBC84\uC640 \uC5F0\uACB0\uB418\uC5B4 \uC788\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.");
+                SetOfflineModeNotice("NETWORK_NOT_CONNECTED");
                 return;
             }
 
+            ClearOfflineModeNotice();
             offlineModeRequestPending = true;
-            CloseOfflineModeConfirmModal();
-            ShowLoadingOverlay("\uBE44\uC811\uC18D \uBAA8\uB4DC \uC2DC\uC791 \uC911...");
+            if (offlineModeDetailConfirmButton != null)
+            {
+                offlineModeDetailConfirmButton.interactable = false;
+            }
+            CloseGameExitModal();
+            CloseOfflineModeDetailModal();
+            ShowLoadingOverlay(string.Empty);
             messageHandler.RequestOfflineModeStart();
         }
 
-        private bool CanStartOfflineMode(out string reason)
+        private struct OfflineEstimate
         {
-            reason = string.Empty;
+            public uint RemainingSeconds;
+            public ulong EstimatedGold;
+            public uint MiningCount;
+        }
+
+        private bool TryBuildOfflineEstimate(out OfflineEstimate estimate, out string errorCode)
+        {
+            estimate = default;
+            errorCode = string.Empty;
 
             if (messageHandler == null || !messageHandler.TryGetLastSnapshot(out var snapshot) || snapshot == null)
             {
-                reason = "\uD604\uC7AC \uC720\uC800 \uC815\uBCF4\uB97C \uAC00\uC838\uC624\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.";
-                return false;
-            }
-
-            if (!snapshot.CurrentMineralId.HasValue || snapshot.CurrentMineralId.Value == 0)
-            {
-                reason = "\uC120\uD0DD\uB41C \uAD11\uBB3C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.";
-                return false;
-            }
-
-            if (PickaxeStateCache.Instance.TotalDps == 0)
-            {
-                reason = "\uD604\uC7AC DPS\uAC00 0\uC785\uB2C8\uB2E4.";
+                errorCode = "SNAPSHOT_MISSING";
                 return false;
             }
 
             if (snapshot.CurrentOfflineHours == 0)
             {
-                reason = "\uBE44\uC811\uC18D \uC2DC\uAC04\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.";
+                errorCode = "NO_OFFLINE_TIME";
                 return false;
             }
 
+            if (!snapshot.CurrentMineralId.HasValue || snapshot.CurrentMineralId.Value == 0)
+            {
+                errorCode = "MINERAL_NOT_SELECTED";
+                return false;
+            }
+
+            if (PickaxeStateCache.Instance.TotalDps == 0)
+            {
+                errorCode = "DPS_ZERO";
+                return false;
+            }
+
+            if (mineralMetaResolver == null)
+            {
+                mineralMetaResolver = new MineralMetaResolver();
+            }
+
+            if (!mineralMetaResolver.TryGetMineral(snapshot.CurrentMineralId.Value, out var mineral))
+            {
+                errorCode = "MINERAL_META_MISSING";
+                return false;
+            }
+
+            uint availableSeconds = snapshot.CurrentOfflineHours * 3600;
+            ulong currentHp = snapshot.MineralHp ?? 0;
+            estimate = EstimateOfflineReward(availableSeconds, mineral, PickaxeStateCache.Instance.TotalDps, currentHp);
             return true;
         }
 
-        private void ShowOfflineNotice(string message)
+        private OfflineEstimate EstimateOfflineReward(uint availableSeconds, MineralMeta mineral, ulong totalDps, ulong currentHp)
         {
-            if (string.IsNullOrEmpty(message))
+            var estimate = new OfflineEstimate
+            {
+                RemainingSeconds = availableSeconds,
+                EstimatedGold = 0,
+                MiningCount = 0
+            };
+
+            if (availableSeconds == 0 || mineral == null || mineral.Hp <= 0f || totalDps == 0)
+            {
+                return estimate;
+            }
+
+            double dps = totalDps;
+            double maxHp = mineral.Hp;
+            double reward = mineral.Gold;
+            double respawn = mineral.RespawnSeconds;
+
+            double hp = currentHp > 0 ? Math.Min(currentHp, (ulong)maxHp) : maxHp;
+            double remaining = availableSeconds;
+            double timeToKill = hp / dps;
+
+            if (remaining < timeToKill)
+            {
+                return estimate;
+            }
+
+            remaining -= timeToKill;
+            estimate.MiningCount = 1;
+            ulong rewardPer = (ulong)Math.Max(0.0, Math.Round(reward));
+            estimate.EstimatedGold += rewardPer;
+
+            double fullKillTime = maxHp / dps;
+            double cycleTime = fullKillTime + respawn;
+            if (cycleTime > 0 && remaining >= cycleTime)
+            {
+                ulong cycles = (ulong)Math.Floor(remaining / cycleTime);
+                ulong newCount = estimate.MiningCount + cycles;
+                estimate.MiningCount = (uint)Math.Min((ulong)uint.MaxValue, newCount);
+                estimate.EstimatedGold += cycles * rewardPer;
+                remaining -= cycles * cycleTime;
+            }
+
+            if (respawn > 0)
+            {
+                if (remaining < respawn)
+                {
+                    return estimate;
+                }
+                remaining -= respawn;
+            }
+
+            if (remaining >= fullKillTime)
+            {
+                estimate.MiningCount = (uint)Math.Min((ulong)uint.MaxValue, (ulong)estimate.MiningCount + 1);
+                estimate.EstimatedGold += rewardPer;
+            }
+
+            return estimate;
+        }
+
+        private void UpdateOfflineModeDetailUI()
+        {
+            if (TryBuildOfflineEstimate(out var estimate, out var errorCode))
+            {
+                UpdateOfflineModeDetailUI(estimate);
+                ClearOfflineModeNotice();
+                if (offlineModeDetailConfirmButton != null)
+                {
+                    offlineModeDetailConfirmButton.interactable = true;
+                }
+            }
+            else
+            {
+                UpdateOfflineModeDetailUI(estimate);
+                SetOfflineModeNotice(errorCode);
+                if (offlineModeDetailConfirmButton != null)
+                {
+                    offlineModeDetailConfirmButton.interactable = false;
+                }
+            }
+        }
+
+        private void UpdateOfflineModeDetailUI(OfflineEstimate estimate)
+        {
+            if (offlineModeRemainingText != null)
+            {
+                offlineModeRemainingText.text = FormatSeconds(estimate.RemainingSeconds);
+            }
+
+            if (offlineModeRewardText != null)
+            {
+                offlineModeRewardText.text = estimate.EstimatedGold.ToString("N0");
+            }
+
+            if (offlineModeMiningCountText != null)
+            {
+                offlineModeMiningCountText.text = estimate.MiningCount.ToString();
+            }
+        }
+
+        private static string GetOfflineModeNoticeMessage(string code)
+        {
+            if (string.IsNullOrEmpty(code))
+            {
+                return string.Empty;
+            }
+
+            return code switch
+            {
+                "NO_OFFLINE_TIME" => "\uBE44\uC811\uC18D \uC2DC\uAC04\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.",
+                "MINERAL_NOT_SELECTED" => "\uC120\uD0DD\uB41C \uAD11\uBB3C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.",
+                "INVALID_MINERAL" => "\uAD11\uBB3C \uC815\uBCF4\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.",
+                "MINERAL_META_MISSING" => "\uAD11\uBB3C \uBA54\uD0C0\uB370\uC774\uD130\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.",
+                "DPS_ZERO" => "\uD604\uC7AC DPS\uAC00 0\uC785\uB2C8\uB2E4.",
+                "SNAPSHOT_MISSING" => "\uC720\uC800 \uB370\uC774\uD130\uAC00 \uC544\uC9C1 \uB85C\uB4DC\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.",
+                "NETWORK_NOT_CONNECTED" => "\uB124\uD2B8\uC6CC\uD06C \uC5F0\uACB0\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.",
+                "REDIS_ERROR" => "\uBE44\uC811\uC18D \uBAA8\uB4DC \uC2DC\uC791\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.",
+                _ => "\uBE44\uC811\uC18D \uBAA8\uB4DC \uC2DC\uC791\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4."
+            };
+        }
+
+        private void SetOfflineModeNotice(string code)
+        {
+            if (offlineModeNoticeText == null)
             {
                 return;
             }
 
-            if (offlineRewardModal == null || offlineRewardMessageText == null)
+            if (string.IsNullOrEmpty(code))
             {
-                Debug.LogWarning(message);
+                offlineModeNoticeText.text = string.Empty;
+                offlineModeNoticeText.gameObject.SetActive(false);
                 return;
             }
 
-            offlineRewardMessageText.text = message;
-            offlineRewardModal.SetActive(true);
-            offlineRewardModal.transform.SetAsLastSibling();
+            var message = GetOfflineModeNoticeMessage(code);
+            offlineModeNoticeText.text = string.IsNullOrEmpty(message) ? code : message;
+            offlineModeNoticeText.gameObject.SetActive(true);
+        }
+
+        private void ClearOfflineModeNotice()
+        {
+            if (offlineModeNoticeText == null)
+            {
+                return;
+            }
+
+            offlineModeNoticeText.text = string.Empty;
+            offlineModeNoticeText.gameObject.SetActive(false);
+        }
+
+        private static string FormatSeconds(uint seconds)
+        {
+            var span = TimeSpan.FromSeconds(seconds);
+            return string.Format("{0:00}:{1:00}:{2:00}", (int)span.TotalHours, span.Minutes, span.Seconds);
+        }
+
+        private void ExitGameImmediate()
+        {
+            suppressDisconnectNotice = true;
+            if (networkManager != null && networkManager.IsConnected)
+            {
+                networkManager.Disconnect();
+            }
+            Application.Quit();
         }
 
         private void HandleOfflineModeStartResult(OfflineModeStartResult result)
         {
             offlineModeRequestPending = false;
             HideLoadingOverlay();
+
+            if (offlineModeDetailConfirmButton != null)
+            {
+                offlineModeDetailConfirmButton.interactable = true;
+            }
 
             if (result == null)
             {
@@ -369,20 +628,17 @@ namespace InfinitePickaxe.Client.Core
 
             if (!result.Success)
             {
-                string message = result.ErrorCode switch
+                UpdateOfflineModeDetailUI();
+                SetOfflineModeNotice(result.ErrorCode);
+                if (offlineModeDetailModal != null && !offlineModeDetailModal.activeSelf)
                 {
-                    "NO_OFFLINE_TIME" => "\uBE44\uC811\uC18D \uC2DC\uAC04\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.",
-                    "MINERAL_NOT_SELECTED" => "\uC120\uD0DD\uB41C \uAD11\uBB3C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.",
-                    "INVALID_MINERAL" => "\uAD11\uBB3C \uC815\uBCF4\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.",
-                    "DPS_ZERO" => "\uD604\uC7AC DPS\uAC00 0\uC785\uB2C8\uB2E4.",
-                    _ => "\uBE44\uC811\uC18D \uBAA8\uB4DC \uC2DC\uC791\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4."
-                };
-                ShowOfflineNotice(message);
+                    offlineModeDetailModal.SetActive(true);
+                    offlineModeDetailModal.transform.SetAsLastSibling();
+                }
                 return;
             }
 
-            suppressDisconnectNotice = true;
-            ReturnToLogin();
+            ExitGameImmediate();
         }
 
         private void HandleOfflineRewardResult(OfflineRewardResult result)
@@ -437,7 +693,8 @@ namespace InfinitePickaxe.Client.Core
                 overlayOwned = false;
             }
 
-            SetupOfflineModeModalButtons();
+            SetupGameExitModalButtons();
+            SetupOfflineModeDetailModalButtons();
             SetupOfflineRewardModalButtons();
 
             if (!TryResolveSession())

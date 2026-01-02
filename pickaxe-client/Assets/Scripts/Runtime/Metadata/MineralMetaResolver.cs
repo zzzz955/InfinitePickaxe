@@ -75,6 +75,7 @@ namespace InfinitePickaxe.Client.Metadata
                     Name = TryGetString(dict, out var name, "name", "label") ? name : $"광물 #{id}",
                     Hp = TryGetFloat(dict, out var hp, "hp", "hp_min", "min_hp", "minHp", "minHP", "mineral_hp") ? hp : 0f,
                     Gold = TryGetFloat(dict, out var gold, "gold", "reward", "gold_reward", "goldReward", "reward_gold") ? gold : 0f,
+                    RespawnSeconds = TryGetFloat(dict, out var respawn, "respawn", "respawn_time", "respawnTime", "respawn_seconds", "respawnSeconds") ? respawn : 0f,
                     RecommendedMinDps = TryGetFloat(dict, out var min, "recommended_min_DPS", "recommended_min_dps", "recommendedMinDps", "min_dps", "minDps") ? min : 0f,
                     RecommendedMaxDps = TryGetFloat(dict, out var max, "recommended_max_DPS", "recommended_max_dps", "recommendedMaxDps", "max_dps", "maxDps") ? max : 0f,
                     Biome = TryGetString(dict, out var biome, "biome", "region") ? biome : string.Empty
@@ -175,6 +176,7 @@ namespace InfinitePickaxe.Client.Metadata
         public string Name { get; set; }
         public float Hp { get; set; }
         public float Gold { get; set; }
+        public float RespawnSeconds { get; set; }
         public float RecommendedMinDps { get; set; }
         public float RecommendedMaxDps { get; set; }
         public string Biome { get; set; }
