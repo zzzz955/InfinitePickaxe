@@ -1432,6 +1432,12 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         public void OnGemUnequipResult(GemUnequipResult result)
         {
+            if (result == null)
+            {
+                Debug.LogError("[MiningTabController] GemUnequipResult is null.");
+                return;
+            }
+
             if (!result.Success)
             {
                 string errorMessage = result.ErrorCode switch
@@ -1444,15 +1450,15 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            Debug.Log($"[MiningTabController] 보석 해제 완료: {result.UnequippedGem.Name}");
+            Debug.Log($"[MiningTabController] 보석 해제 완료: {(result.UnequippedGem ?? selectedGem)?.Name}");
 
             // GemEquipModal 닫기
             CloseGemEquipModal();
 
             // GemGridContent에서 해당 보석의 EquippedLabel 비활성화
-            if (result.UnequippedGem != null && !string.IsNullOrWhiteSpace(result.UnequippedGem.GemInstanceId))
+            if ((result.UnequippedGem ?? selectedGem) != null && !string.IsNullOrWhiteSpace((result.UnequippedGem ?? selectedGem).GemInstanceId))
             {
-                UpdateGemInventoryItemEquippedLabel(result.UnequippedGem.GemInstanceId, false);
+                UpdateGemInventoryItemEquippedLabel((result.UnequippedGem ?? selectedGem).GemInstanceId, false);
             }
 
             // 곡괭이 정보 갱신 (PickaxeInfoModal이 열려있다면)

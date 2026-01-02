@@ -11,8 +11,8 @@ using Infinitepickaxe;
 namespace InfinitePickaxe.Client.UI.Game
 {
     /// <summary>
-    /// ?�점 ??컨트롤러
-    /// 보석 뽑기, IAP ?�품 관�?
+    /// 상점 컨트롤러
+    /// 보석 뽑기, IAP 상품 관리
     /// </summary>
     public class ShopTabController : BaseTabController
     {
@@ -34,7 +34,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button toastConfirmButton;
         [SerializeField] private GemGachaResultModalController gemGachaResultModal;
 
-        [Header("Ad UI References (?�시, Step 3?�서 HUD�??�동)")]
+        [Header("Ad UI References")]
         [SerializeField] private Button watchAdButton1;
         [SerializeField] private Button watchAdButton2;
         [SerializeField] private Button watchAdButton3;
@@ -65,7 +65,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             messageHandler = MessageHandler.Instance;
 
-            // ???�환 버튼 ?�벤???�록
+            // 하위탭 변경 버튼
             if (gemsTabButton != null)
             {
                 gemsTabButton.onClick.AddListener(() => SwitchToGemTab());
@@ -75,7 +75,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 iapTabButton.onClick.AddListener(() => SwitchToIAPTab());
             }
 
-            // 보석 뽑기 버튼 ?�벤???�록
+            // 보석 뽑기 버튼 이벤트 리스너 등록
             if (gemSinglePullButton != null)
             {
                 gemSinglePullButton.onClick.AddListener(() => OnGemPullClicked(false));
@@ -85,7 +85,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 gemMultiPullButton.onClick.AddListener(() => OnGemPullClicked(true));
             }
 
-            // 광고 버튼 ?�벤???�록 (?�시)
+            // 광고 버튼 이벤트 리스너 등록
             if (watchAdButton1 != null)
             {
                 watchAdButton1.onClick.AddListener(() => OnWatchAdClicked(1));
@@ -99,13 +99,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 watchAdButton3.onClick.AddListener(() => OnWatchAdClicked(3));
             }
 
-            // ?�브??AutoBind
+            // 서브탭 AutoBind
             AutoBindSubTabs();
 
-            // ?�스??모달 AutoBind
+            // 토스트모달 AutoBind
             AutoBindToastModal();
 
-            // 기본 ???�성??
             SwitchToGemTab();
             RefreshData();
         }
@@ -151,7 +150,7 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
-        /// ?�점 UI ?�이??갱신
+        /// 상점 데이터 갱신
         /// </summary>
         public override void RefreshData()
         {
@@ -173,7 +172,7 @@ namespace InfinitePickaxe.Client.UI.Game
                         gemShopSubTab = Instantiate(prefab, transform);
                         gemShopSubTab.name = "GemShopSubTab";
 
-                        // UI 컴포?�트 바인??
+                        // UI 컴포넌트 바인딩
                         var singleBtnTf = FindChildRecursive(gemShopSubTab.transform, "SinglePullButton");
                         if (singleBtnTf != null)
                         {
@@ -256,7 +255,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 iapShopSubTab.SetActive(false);
             }
 
-            // ??버튼 ?�상 ?�데?�트
+            // 버튼 상태 업데이트
             UpdateTabButtonColors();
         }
 
@@ -273,7 +272,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 iapShopSubTab.SetActive(true);
             }
 
-            // ??버튼 ?�상 ?�데?�트
+            // 버튼 상태 업데이트
             UpdateTabButtonColors();
         }
 
@@ -316,7 +315,7 @@ namespace InfinitePickaxe.Client.UI.Game
                         toastModal.name = "ToastModal";
                         toastModal.SetActive(false);
 
-                        // UI 컴포?�트 바인??
+                        // UI 컴포넌트 바인딩
                         var modalPanel = toastModal.transform.Find("ModalPanel");
                         if (modalPanel != null)
                         {
@@ -340,7 +339,6 @@ namespace InfinitePickaxe.Client.UI.Game
                 }
             }
 
-            // ?�인 버튼 ?�벤???�정
             if (toastConfirmButton != null)
             {
                 toastConfirmButton.onClick.RemoveAllListeners();
@@ -382,14 +380,14 @@ namespace InfinitePickaxe.Client.UI.Game
             int cost = isMulti ? MultiPullCost : SinglePullCost;
             int count = isMulti ? MultiPullCount : 1;
 
-            // ?�리?�탈 부�?체크
+            // ?�리?�탈 부�?체크
             if (currentCrystal < cost)
             {
-                ShowToastMessage($"?�리?�탈??부족합?�다.\n?�요: {cost} / 보유: {currentCrystal}");
+                ShowToastMessage($"크리스탈이 부족합니다.\n필요: {cost} / 보유: {currentCrystal}");
                 return;
             }
 
-            // ?�버�?보석 뽑기 ?�청 ?�송
+            // ?�버�?보석 뽑기 ?�청 ?�송
             var request = new GemGachaRequest
             {
                 PullCount = (uint)count
@@ -402,7 +400,7 @@ namespace InfinitePickaxe.Client.UI.Game
             };
 
             NetworkManager.Instance.SendMessage(envelope);
-            Debug.Log($"ShopTabController: 보석 뽑기 ?�청 ?�송 (개수: {count}, 비용: {cost})");
+            Debug.Log($"ShopTabController: 보석 뽑기 ?�청 ?�송 (개수: {count}, 비용: {cost})");
         }
 
         private void OnGemGachaResult(GemGachaResult result)
@@ -415,31 +413,27 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (!result.Success)
             {
-                Debug.LogWarning($"ShopTabController: 보석 뽑기 ?�패 - {result.ErrorCode}");
+                Debug.LogWarning($"ShopTabController: 보석 뽑기 실패 - {result.ErrorCode}");
 
                 string errorMessage = result.ErrorCode switch
                 {
-                    "INSUFFICIENT_CRYSTAL" => "?�리?�탈??부족합?�다.",
-                    "INVENTORY_FULL" => "보석 ?�벤?�리가 가??찼습?�다.",
-                    _ => $"보석 뽑기 ?�패: {result.ErrorCode}"
+                    "INSUFFICIENT_CRYSTAL" => "크리스탈이 부족합니다.",
+                    "INVENTORY_FULL" => "보석 인벤토리가 가득 찼습니다.",
+                    _ => $"보석 뽑기 실패: {result.ErrorCode}"
                 };
 
                 ShowToastMessage(errorMessage);
                 return;
             }
 
-            // ?�공 처리
-            Debug.Log($"ShopTabController: 보석 뽑기 ?�공 - ?�득 보석 {result.Gems.Count}�? ?�용 ?�리?�탈 {result.CrystalSpent}, ?��? ?�리?�탈 {result.RemainingCrystal}");
-
-            // ?�리?�탈 UI??MessageHandler가 ?�동?�로 ?�기??
             currentCrystal = result.RemainingCrystal;
 
-            // 보석 ?�득 결과 모달 ?�시
+            // 보석 ?�득 결과 모달 ?�시
             ShowGemGachaResultModal(result);
         }
 
         /// <summary>
-        /// 보석 가�?결과 모달 ?�시
+        /// 보석 가�?결과 모달 ?�시
         /// </summary>
         private void ShowGemGachaResultModal(GemGachaResult result)
         {
@@ -449,10 +443,8 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            // 뽑기 ?�수 추정 (1개면 1?? 11개면 11??
             int pullCount = result.Gems.Count >= 10 ? MultiPullCount : 1;
 
-            // 모달 ?�시
             gemGachaResultModal.SetResult(
                 result,
                 pullCount,
@@ -462,7 +454,7 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
-        /// 모달?�서 "?�번 ??뽑기" ?�릭 ??콜백
+        /// 모달에서 "N번 다시 뽑기" 콜백
         /// </summary>
         private void OnPullAgainFromModal(int pullCount)
         {
@@ -472,7 +464,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         #endregion
 
-        #region Ad UI (?�시)
+        #region Ad UI (필요시)
 
         private void UpdateAdCount()
         {
@@ -494,7 +486,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (adCountText != null)
             {
                 string timer = FormatResetTimer(questState != null ? questState.AdCountersResetTimestampMs : 0);
-                var textValue = $"광고 보상 (?�늘 {watchedAdCount}/{maxAdCount})";
+                var textValue = $"광고 보상 (?�늘 {watchedAdCount}/{maxAdCount})";
                 if (!string.IsNullOrEmpty(timer))
                 {
                     textValue += $" | 리셋 {timer}";
@@ -517,13 +509,13 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
-        /// 광고 ?�청 버튼 ?�릭 ?�벤??
+        /// 광고 시청 버튼 클릭 이벤트
         /// </summary>
         private void OnWatchAdClicked(int tier)
         {
             messageHandler ??= MessageHandler.Instance;
             messageHandler?.NotifyAdWatchComplete(CrystalRewardAdType);
-            Debug.Log($"ShopTabController: 광고 ?�청 ?�료 (Tier {tier})");
+            Debug.Log($"ShopTabController: 광고 ?�청 ?�료 (Tier {tier})");
         }
 
         private string FormatResetTimer(ulong resetTimestampMs)

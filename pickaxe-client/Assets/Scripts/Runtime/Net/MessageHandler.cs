@@ -706,13 +706,13 @@ namespace InfinitePickaxe.Client.Net
         {
             if (result.Success)
             {
-                Debug.Log($"???ë? ???©ì„± ?±ê³µ: {result.SuccessCount}/{result.Attempted}");
+                Debug.Log($"보석 합성 성공 : {result.SuccessCount}/{result.Attempted}");
                 RequestGemList();
                 UpdateSnapshotGemInventory(result.TotalGems, null);
             }
             else
             {
-                Debug.LogWarning($"???ë? ???©ì„± ?¤íŒ¨: {result.ErrorCode}");
+                Debug.LogWarning($"보석 합성 실패 : {result.ErrorCode}");
             }
             OnGemAutoSynthesisResult?.Invoke(result);
         }
