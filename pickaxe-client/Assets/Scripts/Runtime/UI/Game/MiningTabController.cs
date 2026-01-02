@@ -846,8 +846,9 @@ namespace InfinitePickaxe.Client.UI.Game
                     SetMineralIcon(btn, tag.MineralId);
                     if (mineralMetaResolver.TryGetMineral(tag.MineralId, out var meta))
                     {
-                        UpdateMineralButtonLabel(btn.transform, meta, currentDPS);
-                        UpdateRecommendedBadge(btn.transform, meta, currentDPS);
+                        var itemRoot = tag.ItemRoot != null ? tag.ItemRoot : btn.transform;
+                        UpdateMineralButtonLabel(itemRoot, meta, currentDPS);
+                        UpdateRecommendedBadge(itemRoot, meta, currentDPS);
                     }
                 }
             }
@@ -1489,6 +1490,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 Debug.Log("MiningTabController: 광물 선택 모달 열림");
             }
 
+            var cache = pickaxeCache ?? PickaxeStateCache.Instance;
+            if (cache != null)
+            {
+                currentDPS = cache.TotalDps;
+            }
+
             BuildMineralSelectList();
             mineralRecommendDirty = true; // 모달을 열 때 최신 DPS로 라벨 갱신 플래그
             UpdateMineralSelectIcons();
@@ -1972,6 +1979,7 @@ namespace InfinitePickaxe.Client.UI.Game
                         tag = btn.gameObject.AddComponent<MineralButtonTag>();
                     }
                     tag.MineralId = meta.Id;
+                    tag.ItemRoot = go.transform;
                 }
 
                 UpdateMineralButtonLabel(go.transform, meta, currentDPS);
@@ -2255,5 +2263,6 @@ namespace InfinitePickaxe.Client.UI.Game
     public sealed class MineralButtonTag : MonoBehaviour
     {
         public uint MineralId;
+        public Transform ItemRoot;
     }
 }
