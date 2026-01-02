@@ -13946,6 +13946,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5687234567890123456, guid: 853769eeb112ff247b63b9357aaec6a4, type: 3}
   m_PrefabInstance: {fileID: 1384459191}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &1395960545 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2000000001, guid: 5bd33ae8dd18449d86958b311ba62953, type: 3}
+  m_PrefabInstance: {fileID: 1611581598}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1407777879
 GameObject:
   m_ObjectHideFlags: 0
@@ -15497,7 +15502,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4000000001, guid: 5bd33ae8dd18449d86958b311ba62953, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 240
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 5000000001, guid: 5bd33ae8dd18449d86958b311ba62953, type: 3}
       propertyPath: m_AnchorMax.y
@@ -15513,7 +15518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5000000001, guid: 5bd33ae8dd18449d86958b311ba62953, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -40
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 6000000001, guid: 5bd33ae8dd18449d86958b311ba62953, type: 3}
       propertyPath: m_AnchorMax.y
@@ -15529,7 +15534,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6000000001, guid: 5bd33ae8dd18449d86958b311ba62953, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -120
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 7000000001, guid: 5bd33ae8dd18449d86958b311ba62953, type: 3}
       propertyPath: m_AnchorMax.y
@@ -15545,7 +15550,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7000000001, guid: 5bd33ae8dd18449d86958b311ba62953, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -200
+      value: -250
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -22339,6 +22344,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7421977159248449764, guid: fd6782add5eea4a44bd2df71dec7392c, type: 3}
+      propertyPath: menuPanel
+      value: 
+      objectReference: {fileID: 1395960545}
+    - target: {fileID: 7421977159248449764, guid: fd6782add5eea4a44bd2df71dec7392c, type: 3}
       propertyPath: menuButton
       value: 
       objectReference: {fileID: 5783616384419675028}
@@ -22354,6 +22363,10 @@ PrefabInstance:
       propertyPath: menuExitButton
       value: 
       objectReference: {fileID: 1611581600}
+    - target: {fileID: 7421977159248449764, guid: fd6782add5eea4a44bd2df71dec7392c, type: 3}
+      propertyPath: menuDropdownRoot
+      value: 
+      objectReference: {fileID: 214605566}
     - target: {fileID: 7421977159248449764, guid: fd6782add5eea4a44bd2df71dec7392c, type: 3}
       propertyPath: menuLogoutButton
       value: 

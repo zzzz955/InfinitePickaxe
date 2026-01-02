@@ -32,6 +32,10 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button menuSettingsButton;
         [SerializeField] private Button menuLogoutButton;
         [SerializeField] private Button menuExitButton;
+        [SerializeField] private RectTransform menuPanel;
+        [SerializeField] private Vector2 menuAnchorOffset = new Vector2(0f, -12f);
+        [SerializeField] private Vector2 menuClampPadding = new Vector2(8f, 8f);
+        [SerializeField] private RectTransform menuDropdownRoot;
         [SerializeField] private GameObject settingsModal;
         [SerializeField] private Button settingsCloseButton;
         [SerializeField] private Button settingsBackgroundButton;
@@ -239,6 +243,8 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void SetupMenuButtons()
         {
+            CacheMenuPanel();
+
             if (menuButton != null)
             {
                 menuButton.onClick.RemoveAllListeners();
@@ -284,6 +290,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (nextActive)
             {
                 menuDropdown.transform.SetAsLastSibling();
+                PositionMenuDropdown();
             }
         }
 
@@ -293,6 +300,153 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 menuDropdown.SetActive(false);
             }
+        }
+
+        private void CacheMenuPanel()
+        {
+            if (menuPanel != null || menuDropdown == null)
+            {
+                return;
+            }
+
+            var panelTransform = menuDropdown.transform.Find("MenuPanel");
+            if (panelTransform == null)
+            {
+                panelTransform = menuDropdown.transform.Find("ModalPanel");
+            }
+
+            menuPanel = panelTransform as RectTransform;
+        }
+
+        private RectTransform ResolveMenuRoot()
+        {
+            if (menuDropdownRoot != null)
+            {
+                return menuDropdownRoot;
+            }
+
+            if (menuDropdown != null && menuDropdown.transform.parent is RectTransform parentRect)
+            {
+                return parentRect;
+            }
+
+            var canvas = menuButton != null ? menuButton.GetComponentInParent<Canvas>() : null;
+            if (canvas == null && menuDropdown != null)
+            {
+                canvas = menuDropdown.GetComponentInParent<Canvas>();
+            }
+
+            return canvas != null ? canvas.transform as RectTransform : null;
+        }
+
+        private void PositionMenuDropdown()
+        {
+            CacheMenuPanel();
+            if (menuPanel == null || menuButton == null)
+            {
+                return;
+            }
+
+            var rootRect = ResolveMenuRoot();
+            if (rootRect == null)
+            {
+                return;
+            }
+
+            if (menuDropdownRoot != null && menuDropdown != null && menuDropdown.transform.parent != menuDropdownRoot)
+            {
+                menuDropdown.transform.SetParent(menuDropdownRoot, false);
+            }
+
+            var menuButtonRect = menuButton.GetComponent<RectTransform>();
+            if (menuButtonRect == null)
+            {
+                return;
+            }
+
+            var canvas = rootRect.GetComponent<Canvas>();
+            var camera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(menuPanel);
+
+            var corners = new Vector3[4];
+            menuButtonRect.GetWorldCorners(corners);
+            var bottomLeft = corners[0];
+            var bottomRight = corners[3];
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    rootRect,
+                    RectTransformUtility.WorldToScreenPoint(camera, bottomLeft),
+                    camera,
+                    out var localBottomLeft))
+            {
+                return;
+            }
+
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    rootRect,
+                    RectTransformUtility.WorldToScreenPoint(camera, bottomRight),
+                    camera,
+                    out var localBottomRight))
+            {
+                return;
+            }
+
+            var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(menuPanel);
+            var panelSize = bounds.size;
+            var canvasBounds = rootRect.rect;
+
+            float minX = canvasBounds.xMin + menuClampPadding.x;
+            float maxX = canvasBounds.xMax - menuClampPadding.x;
+            float minY = canvasBounds.yMin + menuClampPadding.y;
+            float maxY = canvasBounds.yMax - menuClampPadding.y;
+
+            var centerPoint = (localBottomLeft + localBottomRight) * 0.5f;
+            float halfWidth = panelSize.x * 0.5f;
+            bool overflowLeft = centerPoint.x - halfWidth < minX;
+            bool overflowRight = centerPoint.x + halfWidth > maxX;
+
+            Vector2 basePoint = centerPoint;
+            Vector2 pivot = new Vector2(0.5f, 1f);
+
+            if (overflowRight && !overflowLeft)
+            {
+                basePoint = localBottomRight;
+                pivot = new Vector2(1f, 1f);
+            }
+            else if (overflowLeft && !overflowRight)
+            {
+                basePoint = localBottomLeft;
+                pivot = new Vector2(0f, 1f);
+            }
+
+            menuPanel.anchorMin = new Vector2(0.5f, 0.5f);
+            menuPanel.anchorMax = new Vector2(0.5f, 0.5f);
+            menuPanel.pivot = pivot;
+
+            Vector2 anchored = basePoint + menuAnchorOffset;
+
+            float left = anchored.x - (panelSize.x * menuPanel.pivot.x);
+            float right = left + panelSize.x;
+            float top = anchored.y + (panelSize.y * (1f - menuPanel.pivot.y));
+            float bottom = top - panelSize.y;
+
+            if (left < minX)
+            {
+                anchored.x += minX - left;
+            }
+            if (right > maxX)
+            {
+                anchored.x -= right - maxX;
+            }
+            if (bottom < minY)
+            {
+                anchored.y += minY - bottom;
+            }
+            if (top > maxY)
+            {
+                anchored.y -= top - maxY;
+            }
+
+            menuPanel.anchoredPosition = anchored;
         }
 
         private void OpenSettingsModal()
