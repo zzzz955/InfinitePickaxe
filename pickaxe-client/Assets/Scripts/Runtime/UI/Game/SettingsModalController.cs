@@ -8,7 +8,7 @@ namespace InfinitePickaxe.Client.UI.Game
     /// 설정 탭 컨트롤러
     /// 사운드, 알림, 계정 설정 등
     /// </summary>
-    public class SettingsTabController : BaseTabController
+    public class SettingsModalController : BaseTabController
     {
         [Header("Sound UI")]
         [SerializeField] private Slider bgmSlider;
@@ -127,7 +127,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // TODO: 실제 오디오 소스 볼륨 변경
 #if UNITY_EDITOR || DEBUG_SETTINGS
-            Debug.Log($"SettingsTabController: BGM 볼륨 변경 - {value * 100:F0}%");
+            Debug.Log($"SettingsModalController: BGM 볼륨 변경 - {value * 100:F0}%");
 #endif
         }
 
@@ -141,7 +141,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             // TODO: 실제 오디오 소스 볼륨 변경
 #if UNITY_EDITOR || DEBUG_SETTINGS
-            Debug.Log($"SettingsTabController: 효과음 볼륨 변경 - {value * 100:F0}%");
+            Debug.Log($"SettingsModalController: 효과음 볼륨 변경 - {value * 100:F0}%");
 #endif
         }
 
@@ -162,7 +162,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OnTermsClicked()
         {
             // TODO: 이용약관 URL 열기
-            Debug.Log("SettingsTabController: 이용약관 버튼 클릭됨");
+            Debug.Log("SettingsModalController: 이용약관 버튼 클릭됨");
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OnPrivacyClicked()
         {
             // TODO: 개인정보처리방침 URL 열기
-            Debug.Log("SettingsTabController: 개인정보처리방침 버튼 클릭됨");
+            Debug.Log("SettingsModalController: 개인정보처리방침 버튼 클릭됨");
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OnSupportClicked()
         {
             // TODO: 고객지원 URL 열기
-            Debug.Log("SettingsTabController: 고객지원 버튼 클릭됨");
+            Debug.Log("SettingsModalController: 고객지원 버튼 클릭됨");
         }
 
     }

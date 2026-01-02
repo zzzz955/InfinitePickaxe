@@ -14,14 +14,12 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private GameObject upgradeTab;
         [SerializeField] private GameObject questTab;
         [SerializeField] private GameObject shopTab;
-        [SerializeField] private GameObject settingsTab;
 
         [Header("Footer Buttons")]
         [SerializeField] private Button mineButton;
         [SerializeField] private Button upgradeButton;
         [SerializeField] private Button questButton;
         [SerializeField] private Button shopButton;
-        [SerializeField] private Button settingsButton;
 
         [Header("Settings")]
         [SerializeField] private GameTab defaultTab = GameTab.Mining;
@@ -86,11 +84,6 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             // 설정 버튼
-            if (settingsButton != null)
-            {
-                settingsButton.onClick.AddListener(() => ShowTab(GameTab.Settings));
-            }
-
             isInitialized = true;
 
 #if UNITY_EDITOR || DEBUG_TAB_MANAGER
@@ -117,7 +110,6 @@ namespace InfinitePickaxe.Client.UI.Game
             SetTabActive(upgradeTab, false);
             SetTabActive(questTab, false);
             SetTabActive(shopTab, false);
-            SetTabActive(settingsTab, false);
 
             // 선택된 탭만 활성화
             switch (tab)
@@ -142,10 +134,6 @@ namespace InfinitePickaxe.Client.UI.Game
                     UpdateButtonStates(shopButton);
                     break;
 
-                case GameTab.Settings:
-                    SetTabActive(settingsTab, true);
-                    UpdateButtonStates(settingsButton);
-                    break;
             }
 
 #if UNITY_EDITOR || DEBUG_TAB_MANAGER
@@ -182,22 +170,20 @@ namespace InfinitePickaxe.Client.UI.Game
             return currentTab;
         }
 
-        #region Unity Editor Helper
+#region Unity Editor Helper
 #if UNITY_EDITOR
-        [ContextMenu("채굴 탭 표시")]
+        [ContextMenu("Show Mining Tab")]
         private void ShowMiningTab() => ShowTab(GameTab.Mining);
 
-        [ContextMenu("강화 탭 표시")]
+        [ContextMenu("Show Upgrade Tab")]
         private void ShowUpgradeTab() => ShowTab(GameTab.Upgrade);
 
-        [ContextMenu("미션 탭 표시")]
+        [ContextMenu("Show Quest Tab")]
         private void ShowQuestTab() => ShowTab(GameTab.Quest);
 
-        [ContextMenu("상점 탭 표시")]
+        [ContextMenu("Show Shop Tab")]
         private void ShowShopTab() => ShowTab(GameTab.Shop);
 
-        [ContextMenu("설정 탭 표시")]
-        private void ShowSettingsTab() => ShowTab(GameTab.Settings);
 #endif
         #endregion
     }
@@ -219,7 +205,5 @@ namespace InfinitePickaxe.Client.UI.Game
         /// <summary>상점 탭</summary>
         Shop = 3,
 
-        /// <summary>설정 탭</summary>
-        Settings = 4
     }
 }

@@ -461,7 +461,7 @@ namespace InfinitePickaxe.Client.UI.Game
             settingsModal.SetActive(true);
             settingsModal.transform.SetAsLastSibling();
 
-            var controller = settingsModal.GetComponentInChildren<SettingsTabController>();
+            var controller = settingsModal.GetComponentInChildren<SettingsModalController>();
             controller?.RefreshData();
         }
 
