@@ -530,17 +530,17 @@ namespace InfinitePickaxe.Client.Core
         {
             if (offlineModeRemainingText != null)
             {
-                offlineModeRemainingText.text = FormatSeconds(estimate.RemainingSeconds);
+                offlineModeRemainingText.text = string.Format("\uC794\uC5EC \uBE44\uC811\uC18D \uC2DC\uAC04: {0}", FormatSeconds(estimate.RemainingSeconds));
             }
 
             if (offlineModeRewardText != null)
             {
-                offlineModeRewardText.text = estimate.EstimatedGold.ToString("N0");
+                offlineModeRewardText.text = string.Format("\uC608\uC0C1 \uD68D\uB4DD \uACE8\uB4DC: {0}", estimate.EstimatedGold.ToString("N0"));
             }
 
             if (offlineModeMiningCountText != null)
             {
-                offlineModeMiningCountText.text = estimate.MiningCount.ToString();
+                offlineModeMiningCountText.text = string.Format("\uC608\uC0C1 \uCC44\uAD74 \uD69F\uC218: {0}", estimate.MiningCount.ToString("N0"));
             }
         }
 
@@ -598,7 +598,7 @@ namespace InfinitePickaxe.Client.Core
         private static string FormatSeconds(uint seconds)
         {
             var span = TimeSpan.FromSeconds(seconds);
-            return string.Format("{0:00}:{1:00}:{2:00}", (int)span.TotalHours, span.Minutes, span.Seconds);
+            return string.Format("\u007b0:00\u007d\uC2DC\uAC04 \u007b1:00\u007d\uBD84 \u007b2:00\u007d\uCD08", (int)span.TotalHours, span.Minutes, span.Seconds);
         }
 
         private void ExitGameImmediate()
@@ -608,7 +608,11 @@ namespace InfinitePickaxe.Client.Core
             {
                 networkManager.Disconnect();
             }
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
             Application.Quit();
+#endif
         }
 
         private void HandleOfflineModeStartResult(OfflineModeStartResult result)

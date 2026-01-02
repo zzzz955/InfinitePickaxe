@@ -11786,6 +11786,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 869502423}
   m_CullTransparentMesh: 1
+--- !u!114 &881199675 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4151254190896684910, guid: 40e37a9ddbdfd584d9cfa08c0754aaae, type: 3}
+  m_PrefabInstance: {fileID: 475649740}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &887443332
 GameObject:
   m_ObjectHideFlags: 0
@@ -12337,7 +12348,7 @@ MonoBehaviour:
   gameExitOfflineModeButton: {fileID: 1366857854}
   gameExitCancelButton: {fileID: 1366857853}
   offlineModeDetailModal: {fileID: 475649747}
-  offlineModeRemainingText: {fileID: 475649746}
+  offlineModeRemainingText: {fileID: 881199675}
   offlineModeRewardText: {fileID: 475649745}
   offlineModeMiningCountText: {fileID: 475649744}
   offlineModeNoticeText: {fileID: 475649746}

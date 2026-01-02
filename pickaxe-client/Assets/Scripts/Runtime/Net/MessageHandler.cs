@@ -357,6 +357,7 @@ namespace InfinitePickaxe.Client.Net
             }
             Debug.Log($"채굴 업데이트: 광물 #{update.MineralId}, HP {update.CurrentHp}/{update.MaxHp}, 공격 {attackCount}회, 총 데미지 {totalDamage}");
 #endif
+            UpdateSnapshotMineralState(update.MineralId, update.CurrentHp, update.MaxHp);
             OnMiningUpdate?.Invoke(update);
         }
 
@@ -381,6 +382,10 @@ namespace InfinitePickaxe.Client.Net
             else
             {
                 Debug.LogWarning($"광물 변경 실패: {response.ErrorCode}");
+            }
+            if (response.Success)
+            {
+                UpdateSnapshotMineralState(response.MineralId, response.MineralHp, response.MineralMaxHp);
             }
             OnChangeMineralResponse?.Invoke(response);
         }
@@ -1211,6 +1216,18 @@ namespace InfinitePickaxe.Client.Net
             {
                 lastSnapshot = snapshot;
             }
+        }
+
+        private void UpdateSnapshotMineralState(uint mineralId, ulong currentHp, ulong maxHp)
+        {
+            if (lastSnapshot == null)
+            {
+                return;
+            }
+
+            lastSnapshot.CurrentMineralId = mineralId;
+            lastSnapshot.MineralHp = currentHp;
+            lastSnapshot.MineralMaxHp = maxHp;
         }
 
         #endregion
