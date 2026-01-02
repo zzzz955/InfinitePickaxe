@@ -233,7 +233,7 @@ message UserDataSnapshot {
   repeated AdCounter ad_counters = 10;
 
   // 미션 관련
-  uint32 current_offline_hours = 11;             // 현재 보유 오프라인 시간(시간 단위)
+  uint32 current_offline_seconds = 11;           // 현재 보유 오프라인 시간(초 단위)
 
   // 보석 시스템
   uint32 gem_inventory_capacity = 12;            // 보석 인벤토리 용량
@@ -499,7 +499,7 @@ message OfflineModeStartRequest {
 
 message OfflineModeStartResult {
   bool success = 1;
-  uint32 current_offline_hours = 2;
+  uint32 current_offline_seconds = 2;
   string error_code = 3;
 }
 

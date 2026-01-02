@@ -583,7 +583,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
                 .count()));
 
     auto offline_state = offline_service_.get_state(user_id_);
-    snapshot->set_current_offline_hours(offline_state.current_offline_seconds / 3600);
+    snapshot->set_current_offline_seconds(offline_state.current_offline_seconds);
 
     // 보석 인벤토리 정보
     auto gem_inv = game_repo_.get_gem_inventory_info(user_id_);
@@ -952,7 +952,7 @@ void Session::handle_offline_mode_start(const infinitepickaxe::Envelope &env)
     res.set_error_code("");
 
     auto offline_state = offline_service_.get_state(user_id_);
-    res.set_current_offline_hours(offline_state.current_offline_seconds / 3600);
+    res.set_current_offline_seconds(offline_state.current_offline_seconds);
 
     if (offline_state.current_offline_seconds == 0)
     {

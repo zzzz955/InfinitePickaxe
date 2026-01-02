@@ -407,7 +407,7 @@ namespace InfinitePickaxe.Client.Core
                 return false;
             }
 
-            if (snapshot.CurrentOfflineHours == 0)
+            if (snapshot.CurrentOfflineSeconds == 0)
             {
                 errorCode = "NO_OFFLINE_TIME";
                 return false;
@@ -436,7 +436,7 @@ namespace InfinitePickaxe.Client.Core
                 return false;
             }
 
-            uint availableSeconds = snapshot.CurrentOfflineHours * 3600;
+            uint availableSeconds = snapshot.CurrentOfflineSeconds;
             ulong currentHp = snapshot.MineralHp ?? 0;
             estimate = EstimateOfflineReward(availableSeconds, mineral, PickaxeStateCache.Instance.TotalDps, currentHp);
             return true;
