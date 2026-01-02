@@ -76,6 +76,10 @@ infinitepickaxe::MiningComplete MiningService::handle_complete(const std::string
     return comp;
 }
 
+MiningRepository::CompletionResult MiningService::apply_offline_reward(const std::string& user_id, uint64_t gold_earned, uint32_t mining_count) const {
+    return repo_.apply_offline_reward(user_id, gold_earned, mining_count);
+}
+
 uint64_t MiningService::calculate_user_dps(const std::string& user_id) const {
     // total_dps 캐시를 활용하여 성능 최적화
     auto game_data = game_repo_.get_user_game_data(user_id);

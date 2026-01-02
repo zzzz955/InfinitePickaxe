@@ -24,12 +24,13 @@ OfflineState OfflineRepository::get_or_create_state(const std::string& user_id, 
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
         auto row = tx.exec_params1(
+            "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
             "INSERT INTO game_schema.user_offline_state (user_id, offline_date, current_offline_hours) "
-            "VALUES ($1, CURRENT_DATE, $2) "
+            "VALUES ($1, (SELECT d FROM kst_today), $2) "
             "ON CONFLICT (user_id) DO UPDATE "
-            "SET current_offline_hours = CASE WHEN user_offline_state.offline_date < CURRENT_DATE THEN $2 "
+            "SET current_offline_hours = CASE WHEN user_offline_state.offline_date < (SELECT d FROM kst_today) THEN $2 "
             "                                    ELSE user_offline_state.current_offline_hours END, "
-            "    offline_date = CASE WHEN user_offline_state.offline_date < CURRENT_DATE THEN CURRENT_DATE "
+            "    offline_date = CASE WHEN user_offline_state.offline_date < (SELECT d FROM kst_today) THEN (SELECT d FROM kst_today) "
             "                         ELSE user_offline_state.offline_date END "
             "RETURNING offline_date, current_offline_hours",
             user_id, static_cast<int64_t>(initial_seconds));
@@ -49,12 +50,13 @@ std::optional<uint32_t> OfflineRepository::add_offline_seconds(const std::string
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
         auto row = tx.exec_params1(
+            "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
             "INSERT INTO game_schema.user_offline_state (user_id, offline_date, current_offline_hours) "
-            "VALUES ($1, CURRENT_DATE, $3::integer + $2::integer) "
+            "VALUES ($1, (SELECT d FROM kst_today), $3::integer + $2::integer) "
             "ON CONFLICT (user_id) DO UPDATE "
-            "SET current_offline_hours = (CASE WHEN user_offline_state.offline_date < CURRENT_DATE THEN $3::integer "
+            "SET current_offline_hours = (CASE WHEN user_offline_state.offline_date < (SELECT d FROM kst_today) THEN $3::integer "
             "                                   ELSE user_offline_state.current_offline_hours END) + $2::integer, "
-            "    offline_date = CASE WHEN user_offline_state.offline_date < CURRENT_DATE THEN CURRENT_DATE "
+            "    offline_date = CASE WHEN user_offline_state.offline_date < (SELECT d FROM kst_today) THEN (SELECT d FROM kst_today) "
             "                         ELSE user_offline_state.offline_date END "
             "RETURNING current_offline_hours",
             user_id,
@@ -66,6 +68,30 @@ std::optional<uint32_t> OfflineRepository::add_offline_seconds(const std::string
         return total;
     } catch (const std::exception& ex) {
         spdlog::error("add_offline_seconds failed: user={} error={}", user_id, ex.what());
+        return std::nullopt;
+    }
+}
+
+std::optional<uint32_t> OfflineRepository::set_offline_seconds_today(const std::string& user_id, uint32_t seconds) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto row = tx.exec_params1(
+            "WITH kst_today AS (SELECT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Seoul')::date AS d) "
+            "INSERT INTO game_schema.user_offline_state (user_id, offline_date, current_offline_hours) "
+            "VALUES ($1, (SELECT d FROM kst_today), $2::integer) "
+            "ON CONFLICT (user_id) DO UPDATE "
+            "SET current_offline_hours = $2::integer, "
+            "    offline_date = (SELECT d FROM kst_today) "
+            "RETURNING current_offline_hours",
+            user_id,
+            static_cast<int64_t>(seconds));
+
+        uint32_t total = row["current_offline_hours"].as<uint32_t>();
+        tx.commit();
+        return total;
+    } catch (const std::exception& ex) {
+        spdlog::error("set_offline_seconds_today failed: user={} error={}", user_id, ex.what());
         return std::nullopt;
     }
 }

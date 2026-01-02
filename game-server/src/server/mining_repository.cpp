@@ -23,3 +23,26 @@ MiningRepository::CompletionResult MiningRepository::record_completion(const std
     }
     return result;
 }
+
+MiningRepository::CompletionResult MiningRepository::apply_offline_reward(const std::string& user_id, uint64_t gold_earned, uint32_t mining_count) {
+    CompletionResult result;
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto r = tx.exec_params1(
+            "UPDATE game_schema.user_game_data "
+            "SET gold = gold + $2, total_mining_count = total_mining_count + $3, updated_at = NOW() "
+            "WHERE user_id = $1 "
+            "RETURNING gold, total_mining_count",
+            user_id,
+            static_cast<int64_t>(gold_earned),
+            static_cast<int64_t>(mining_count));
+        result.total_gold = r[0].as<int64_t>();
+        result.mining_count = r[1].as<int64_t>();
+
+        tx.commit();
+    } catch (const std::exception& ex) {
+        spdlog::error("apply_offline_reward failed for user {}: {}", user_id, ex.what());
+    }
+    return result;
+}

@@ -16,6 +16,7 @@ public:
     // infinitepickaxe::MiningUpdate handle_sync(const std::string& user_id, uint32_t mineral_id, uint64_t client_hp) const;
 
     infinitepickaxe::MiningComplete handle_complete(const std::string& user_id, uint32_t mineral_id) const;
+    MiningRepository::CompletionResult apply_offline_reward(const std::string& user_id, uint64_t gold_earned, uint32_t mining_count) const;
 
 private:
     // 유저의 총 DPS 계산 (total_dps 캐시 활용)

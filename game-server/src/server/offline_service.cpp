@@ -15,3 +15,7 @@ infinitepickaxe::OfflineRewardResult OfflineService::handle_request(const std::s
     res.set_total_gold(0);
     return res;
 }
+
+std::optional<uint32_t> OfflineService::set_offline_seconds_today(const std::string& user_id, uint32_t seconds) {
+    return repo_.set_offline_seconds_today(user_id, seconds);
+}

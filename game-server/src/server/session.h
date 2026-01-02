@@ -83,6 +83,7 @@ private:
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
     void handle_all_slots(const infinitepickaxe::Envelope& env);
     void handle_offline_reward(const infinitepickaxe::Envelope& env);
+    void handle_offline_mode_start(const infinitepickaxe::Envelope& env);
     void handle_gem_list(const infinitepickaxe::Envelope& env);
     void handle_gem_gacha(const infinitepickaxe::Envelope& env);
     void handle_gem_synthesis(const infinitepickaxe::Envelope& env);
@@ -115,6 +116,7 @@ private:
     void flush_play_time_progress(bool force);
     void cache_mining_state();
     bool load_cached_mining_state(uint32_t& mineral_id, uint64_t& hp, uint64_t& respawn_until_ms);
+    bool try_consume_offline_session(infinitepickaxe::OfflineRewardResult& out_result);
 
     boost::asio::ip::tcp::socket socket_;
     boost::asio::strand<boost::asio::io_context::executor_type> strand_;

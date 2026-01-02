@@ -25,7 +25,7 @@ namespace Infinitepickaxe {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgpnYW1lLnByb3RvEg9pbmZpbml0ZXBpY2theGUaHmdvb2dsZS9wcm90b2J1",
-            "Zi93cmFwcGVycy5wcm90byLNHAoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
+            "Zi93cmFwcGVycy5wcm90byLrHQoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
             "LmluZmluaXRlcGlja2F4ZS5NZXNzYWdlVHlwZRI2CgloYW5kc2hha2UYCiAB",
             "KAsyIS5pbmZpbml0ZXBpY2theGUuSGFuZHNoYWtlUmVxdWVzdEgAEj4KEGhh",
             "bmRzaGFrZV9yZXN1bHQYCyABKAsyIi5pbmZpbml0ZXBpY2theGUuSGFuZHNo",
@@ -73,242 +73,249 @@ namespace Infinitepickaxe {
             "aW5maW5pdGVwaWNrYXhlLkN1cnJlbmN5VXBkYXRlSAASRwoWb2ZmbGluZV9y",
             "ZXdhcmRfcmVxdWVzdBhkIAEoCzIlLmluZmluaXRlcGlja2F4ZS5PZmZsaW5l",
             "UmV3YXJkUmVxdWVzdEgAEkUKFW9mZmxpbmVfcmV3YXJkX3Jlc3VsdBhlIAEo",
-            "CzIkLmluZmluaXRlcGlja2F4ZS5PZmZsaW5lUmV3YXJkUmVzdWx0SAASQAoS",
-            "ZXJyb3Jfbm90aWZpY2F0aW9uGG4gASgLMiIuaW5maW5pdGVwaWNrYXhlLkVy",
-            "cm9yTm90aWZpY2F0aW9uSAASOwoQZ2VtX2xpc3RfcmVxdWVzdBh4IAEoCzIf",
-            "LmluZmluaXRlcGlja2F4ZS5HZW1MaXN0UmVxdWVzdEgAEj0KEWdlbV9saXN0",
-            "X3Jlc3BvbnNlGHkgASgLMiAuaW5maW5pdGVwaWNrYXhlLkdlbUxpc3RSZXNw",
-            "b25zZUgAEj0KEWdlbV9nYWNoYV9yZXF1ZXN0GHogASgLMiAuaW5maW5pdGVw",
-            "aWNrYXhlLkdlbUdhY2hhUmVxdWVzdEgAEjsKEGdlbV9nYWNoYV9yZXN1bHQY",
-            "eyABKAsyHy5pbmZpbml0ZXBpY2theGUuR2VtR2FjaGFSZXN1bHRIABJFChVn",
-            "ZW1fc3ludGhlc2lzX3JlcXVlc3QYfCABKAsyJC5pbmZpbml0ZXBpY2theGUu",
-            "R2VtU3ludGhlc2lzUmVxdWVzdEgAEkMKFGdlbV9zeW50aGVzaXNfcmVzdWx0",
-            "GH0gASgLMiMuaW5maW5pdGVwaWNrYXhlLkdlbVN5bnRoZXNpc1Jlc3VsdEgA",
-            "EkcKFmdlbV9jb252ZXJzaW9uX3JlcXVlc3QYfiABKAsyJS5pbmZpbml0ZXBp",
-            "Y2theGUuR2VtQ29udmVyc2lvblJlcXVlc3RIABJFChVnZW1fY29udmVyc2lv",
-            "bl9yZXN1bHQYfyABKAsyJC5pbmZpbml0ZXBpY2theGUuR2VtQ29udmVyc2lv",
-            "blJlc3VsdEgAEkIKE2dlbV9kaXNjYXJkX3JlcXVlc3QYgAEgASgLMiIuaW5m",
-            "aW5pdGVwaWNrYXhlLkdlbURpc2NhcmRSZXF1ZXN0SAASQAoSZ2VtX2Rpc2Nh",
-            "cmRfcmVzdWx0GIEBIAEoCzIhLmluZmluaXRlcGlja2F4ZS5HZW1EaXNjYXJk",
-            "UmVzdWx0SAASPgoRZ2VtX2VxdWlwX3JlcXVlc3QYggEgASgLMiAuaW5maW5p",
-            "dGVwaWNrYXhlLkdlbUVxdWlwUmVxdWVzdEgAEjwKEGdlbV9lcXVpcF9yZXN1",
-            "bHQYgwEgASgLMh8uaW5maW5pdGVwaWNrYXhlLkdlbUVxdWlwUmVzdWx0SAAS",
-            "QgoTZ2VtX3VuZXF1aXBfcmVxdWVzdBiEASABKAsyIi5pbmZpbml0ZXBpY2th",
-            "eGUuR2VtVW5lcXVpcFJlcXVlc3RIABJAChJnZW1fdW5lcXVpcF9yZXN1bHQY",
-            "hQEgASgLMiEuaW5maW5pdGVwaWNrYXhlLkdlbVVuZXF1aXBSZXN1bHRIABJJ",
-            "ChdnZW1fc2xvdF91bmxvY2tfcmVxdWVzdBiGASABKAsyJS5pbmZpbml0ZXBp",
-            "Y2theGUuR2VtU2xvdFVubG9ja1JlcXVlc3RIABJHChZnZW1fc2xvdF91bmxv",
-            "Y2tfcmVzdWx0GIcBIAEoCzIkLmluZmluaXRlcGlja2F4ZS5HZW1TbG90VW5s",
-            "b2NrUmVzdWx0SAASUwocZ2VtX2ludmVudG9yeV9leHBhbmRfcmVxdWVzdBiI",
-            "ASABKAsyKi5pbmZpbml0ZXBpY2theGUuR2VtSW52ZW50b3J5RXhwYW5kUmVx",
-            "dWVzdEgAElEKG2dlbV9pbnZlbnRvcnlfZXhwYW5kX3Jlc3VsdBiJASABKAsy",
-            "KS5pbmZpbml0ZXBpY2theGUuR2VtSW52ZW50b3J5RXhwYW5kUmVzdWx0SAAS",
-            "TwoaZ2VtX2F1dG9fc3ludGhlc2lzX3JlcXVlc3QYigEgASgLMiguaW5maW5p",
-            "dGVwaWNrYXhlLkdlbUF1dG9TeW50aGVzaXNSZXF1ZXN0SAASTQoZZ2VtX2F1",
-            "dG9fc3ludGhlc2lzX3Jlc3VsdBiLASABKAsyJy5pbmZpbml0ZXBpY2theGUu",
-            "R2VtQXV0b1N5bnRoZXNpc1Jlc3VsdEgAQgkKB21lc3NhZ2UiSgoQSGFuZHNo",
-            "YWtlUmVxdWVzdBILCgNqd3QYASABKAkSFgoOY2xpZW50X3ZlcnNpb24YAiAB",
-            "KAkSEQoJZGV2aWNlX2lkGAMgASgJIowCCg9QaWNrYXhlU2xvdEluZm8SEgoK",
-            "c2xvdF9pbmRleBgBIAEoDRINCgVsZXZlbBgCIAEoDRIMCgR0aWVyGAMgASgN",
-            "EhQKDGF0dGFja19wb3dlchgEIAEoBBIUCgxhdHRhY2tfc3BlZWQYBSABKA0S",
-            "HAoUY3JpdGljYWxfaGl0X3BlcmNlbnQYBiABKA0SFwoPY3JpdGljYWxfZGFt",
-            "YWdlGAcgASgNEgsKA2RwcxgIIAEoBBISCgpwaXR5X2JvbnVzGAkgASgNEhMK",
-            "C2lzX3VubG9ja2VkGAogASgIEi8KCWdlbV9zbG90cxgLIAMoCzIcLmluZmlu",
-            "aXRlcGlja2F4ZS5HZW1TbG90SW5mbyJDCglBZENvdW50ZXISDwoHYWRfdHlw",
-            "ZRgBIAEoCRIQCghhZF9jb3VudBgCIAEoDRITCgtkYWlseV9saW1pdBgDIAEo",
-            "DSKqBAoQVXNlckRhdGFTbmFwc2hvdBIqCgRnb2xkGAEgASgLMhwuZ29vZ2xl",
-            "LnByb3RvYnVmLlVJbnQ2NFZhbHVlEi0KB2NyeXN0YWwYAiABKAsyHC5nb29n",
-            "bGUucHJvdG9idWYuVUludDMyVmFsdWUSFgoOdW5sb2NrZWRfc2xvdHMYAyAD",
-            "KAgSOAoSY3VycmVudF9taW5lcmFsX2lkGAQgASgLMhwuZ29vZ2xlLnByb3Rv",
-            "YnVmLlVJbnQzMlZhbHVlEjAKCm1pbmVyYWxfaHAYBSABKAsyHC5nb29nbGUu",
-            "cHJvdG9idWYuVUludDY0VmFsdWUSNAoObWluZXJhbF9tYXhfaHAYBiABKAsy",
-            "HC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSNwoNcGlja2F4ZV9zbG90",
-            "cxgHIAMoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8SEQoJ",
-            "dG90YWxfZHBzGAggASgEEjEKC3NlcnZlcl90aW1lGAkgASgLMhwuZ29vZ2xl",
-            "LnByb3RvYnVmLlVJbnQ2NFZhbHVlEi8KC2FkX2NvdW50ZXJzGAogAygLMhou",
-            "aW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIdChVjdXJyZW50X29mZmxpbmVf",
-            "aG91cnMYCyABKA0SHgoWZ2VtX2ludmVudG9yeV9jYXBhY2l0eRgMIAEoDRIS",
-            "Cgp0b3RhbF9nZW1zGA0gASgNImoKEUhhbmRzaGFrZVJlc3BvbnNlEg8KB3N1",
-            "Y2Nlc3MYASABKAgSDwoHbWVzc2FnZRgCIAEoCRIzCghzbmFwc2hvdBgDIAEo",
-            "CzIhLmluZmluaXRlcGlja2F4ZS5Vc2VyRGF0YVNuYXBzaG90IiMKCUhlYXJ0",
-            "YmVhdBIWCg5jbGllbnRfdGltZV9tcxgBIAEoBCImCgxIZWFydGJlYXRBY2sS",
-            "FgoOc2VydmVyX3RpbWVfbXMYASABKAQiFAoSTWluZXJhbExpc3RSZXF1ZXN0",
-            "ImcKC01pbmVyYWxJbmZvEhIKCm1pbmVyYWxfaWQYASABKA0SDAoEbmFtZRgC",
-            "IAEoCRIOCgZtYXhfaHAYAyABKAQSEwoLZ29sZF9yZXdhcmQYBCABKAQSEQoJ",
-            "aWNvbl9uYW1lGAUgASgJIkUKE01pbmVyYWxMaXN0UmVzcG9uc2USLgoIbWlu",
-            "ZXJhbHMYASADKAsyHC5pbmZpbml0ZXBpY2theGUuTWluZXJhbEluZm8iKgoU",
-            "Q2hhbmdlTWluZXJhbFJlcXVlc3QSEgoKbWluZXJhbF9pZBgBIAEoDSJ8ChVD",
-            "aGFuZ2VNaW5lcmFsUmVzcG9uc2USDwoHc3VjY2VzcxgBIAEoCBISCgptaW5l",
-            "cmFsX2lkGAIgASgNEhIKCm1pbmVyYWxfaHAYAyABKAQSFgoObWluZXJhbF9t",
-            "YXhfaHAYBCABKAQSEgoKZXJyb3JfY29kZRgFIAEoCSJICg1QaWNrYXhlQXR0",
-            "YWNrEhIKCnNsb3RfaW5kZXgYASABKA0SDgoGZGFtYWdlGAIgASgEEhMKC2lz",
-            "X2NyaXRpY2FsGAMgASgIIpEBCgxNaW5pbmdVcGRhdGUSEgoKbWluZXJhbF9p",
-            "ZBgBIAEoDRISCgpjdXJyZW50X2hwGAIgASgEEg4KBm1heF9ocBgDIAEoBBIv",
-            "CgdhdHRhY2tzGAQgAygLMh4uaW5maW5pdGVwaWNrYXhlLlBpY2theGVBdHRh",
-            "Y2sSGAoQc2VydmVyX3RpbWVzdGFtcBgFIAEoBCKTAQoOTWluaW5nQ29tcGxl",
-            "dGUSEgoKbWluZXJhbF9pZBgBIAEoDRITCgtnb2xkX2Vhcm5lZBgCIAEoBBIS",
-            "Cgp0b3RhbF9nb2xkGAMgASgEEhQKDG1pbmluZ19jb3VudBgEIAEoBBIUCgxy",
-            "ZXNwYXduX3RpbWUYBSABKA0SGAoQc2VydmVyX3RpbWVzdGFtcBgGIAEoBCIR",
-            "Cg9BbGxTbG90c1JlcXVlc3QiVgoQQWxsU2xvdHNSZXNwb25zZRIvCgVzbG90",
-            "cxgBIAMoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8SEQoJ",
-            "dG90YWxfZHBzGAIgASgEIiQKDlVwZ3JhZGVSZXF1ZXN0EhIKCnNsb3RfaW5k",
-            "ZXgYASABKA0ijAMKDVVwZ3JhZGVSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIS",
-            "CgpzbG90X2luZGV4GAIgASgNEhEKCW5ld19sZXZlbBgDIAEoDRIQCghuZXdf",
-            "dGllchgEIAEoDRIYChBuZXdfYXR0YWNrX3Bvd2VyGAUgASgEEhgKEG5ld19h",
-            "dHRhY2tfc3BlZWQYBiABKA0SIAoYbmV3X2NyaXRpY2FsX2hpdF9wZXJjZW50",
-            "GAcgASgNEhsKE25ld19jcml0aWNhbF9kYW1hZ2UYCCABKA0SDwoHbmV3X2Rw",
-            "cxgJIAEoBBIVCg1uZXdfdG90YWxfZHBzGAogASgEEhIKCmdvbGRfc3BlbnQY",
-            "CyABKAQSFgoOcmVtYWluaW5nX2dvbGQYDCABKAQSEgoKZXJyb3JfY29kZRgN",
-            "IAEoCRIUCgxiYXNlX3JhdGVfYnAYDiABKA0SFQoNYm9udXNfcmF0ZV9icBgP",
-            "IAEoDRIVCg1maW5hbF9yYXRlX2JwGBAgASgNEhIKCnBpdHlfYm9udXMYESAB",
-            "KA0iFgoURGFpbHlNaXNzaW9uc1JlcXVlc3QiogIKDE1pc3Npb25FbnRyeRIP",
-            "CgdzbG90X25vGAEgASgNEhIKCm1pc3Npb25faWQYAiABKA0SFAoMbWlzc2lv",
-            "bl90eXBlGAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEhQKDHRhcmdldF92",
-            "YWx1ZRgFIAEoDRIVCg1jdXJyZW50X3ZhbHVlGAYgASgNEhYKDnJld2FyZF9j",
-            "cnlzdGFsGAcgASgNEg4KBnN0YXR1cxgIIAEoCRITCgthc3NpZ25lZF9hdBgJ",
-            "IAEoBBISCgpleHBpcmVzX2F0GAogASgEEhIKCmRpZmZpY3VsdHkYCyABKAkS",
-            "MAoKbWluZXJhbF9pZBgMIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJW",
-            "YWx1ZSL3AQoVRGFpbHlNaXNzaW9uc1Jlc3BvbnNlEi8KCG1pc3Npb25zGAEg",
-            "AygLMh0uaW5maW5pdGVwaWNrYXhlLk1pc3Npb25FbnRyeRIXCg9jb21wbGV0",
-            "ZWRfY291bnQYAiABKA0SFAoMcmVyb2xsX2NvdW50GAMgASgNEi8KC2FkX2Nv",
-            "dW50ZXJzGAQgAygLMhouaW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIUCgxy",
-            "ZXJvbGxzX2ZyZWUYBSABKA0SGwoTcmVyb2xsc190b3RhbF9saW1pdBgGIAEo",
-            "DRIaChJyZXNldF90aW1lc3RhbXBfbXMYByABKAQieQoVTWlzc2lvblByb2dy",
-            "ZXNzVXBkYXRlEg8KB3Nsb3Rfbm8YASABKA0SEgoKbWlzc2lvbl9pZBgCIAEo",
-            "DRIVCg1jdXJyZW50X3ZhbHVlGAMgASgNEhQKDHRhcmdldF92YWx1ZRgEIAEo",
-            "DRIOCgZzdGF0dXMYBSABKAkiIgoPTWlzc2lvbkNvbXBsZXRlEg8KB3Nsb3Rf",
-            "bm8YASABKA0ikAEKFU1pc3Npb25Db21wbGV0ZVJlc3VsdBIPCgdzdWNjZXNz",
-            "GAEgASgIEg8KB3Nsb3Rfbm8YAiABKA0SEgoKbWlzc2lvbl9pZBgDIAEoDRIW",
-            "Cg5yZXdhcmRfY3J5c3RhbBgEIAEoDRIVCg10b3RhbF9jcnlzdGFsGAUgASgN",
-            "EhIKCmVycm9yX2NvZGUYBiABKAkiDwoNTWlzc2lvblJlcm9sbCKKAQoTTWlz",
-            "c2lvblJlcm9sbFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEjgKEXJlcm9sbGVk",
-            "X21pc3Npb25zGAIgAygLMh0uaW5maW5pdGVwaWNrYXhlLk1pc3Npb25FbnRy",
-            "eRIUCgxyZXJvbGxzX3VzZWQYAyABKA0SEgoKZXJyb3JfY29kZRgEIAEoCSIp",
-            "Cg5NaWxlc3RvbmVDbGFpbRIXCg9taWxlc3RvbmVfY291bnQYASABKA0ivgEK",
-            "FE1pbGVzdG9uZUNsYWltUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSFwoPbWls",
-            "ZXN0b25lX2NvdW50GAIgASgNEhwKFG9mZmxpbmVfaG91cnNfZ2FpbmVkGAMg",
-            "ASgNEhsKE3RvdGFsX29mZmxpbmVfaG91cnMYBCABKA0SFgoOcmV3YXJkX2Ny",
-            "eXN0YWwYBSABKA0SFQoNdG90YWxfY3J5c3RhbBgGIAEoDRISCgplcnJvcl9j",
-            "b2RlGAcgASgJImEKDk1pbGVzdG9uZVN0YXRlEhcKD2NvbXBsZXRlZF9jb3Vu",
-            "dBgBIAEoDRIaChJjbGFpbWVkX21pbGVzdG9uZXMYAiADKA0SGgoScmVzZXRf",
-            "dGltZXN0YW1wX21zGAMgASgEIiAKClNsb3RVbmxvY2sSEgoKc2xvdF9pbmRl",
-            "eBgBIAEoDSLEAQoQU2xvdFVubG9ja1Jlc3VsdBIPCgdzdWNjZXNzGAEgASgI",
-            "EhIKCnNsb3RfaW5kZXgYAiABKA0SFQoNY3J5c3RhbF9zcGVudBgDIAEoDRIZ",
-            "ChFyZW1haW5pbmdfY3J5c3RhbBgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJ",
-            "EjIKCG5ld19zbG90GAYgASgLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2theGVT",
-            "bG90SW5mbxIRCgl0b3RhbF9kcHMYByABKAQiIgoPQWRXYXRjaENvbXBsZXRl",
-            "Eg8KB2FkX3R5cGUYASABKAkipQEKDUFkV2F0Y2hSZXN1bHQSDwoHc3VjY2Vz",
-            "cxgBIAEoCBIPCgdhZF90eXBlGAIgASgJEhYKDmNyeXN0YWxfZWFybmVkGAMg",
-            "ASgNEhUKDXRvdGFsX2NyeXN0YWwYBCABKA0SLwoLYWRfY291bnRlcnMYBSAD",
-            "KAsyGi5pbmZpbml0ZXBpY2theGUuQWRDb3VudGVyEhIKCmVycm9yX2NvZGUY",
-            "BiABKAkiXgoPQWRDb3VudGVyc1N0YXRlEi8KC2FkX2NvdW50ZXJzGAEgAygL",
-            "MhouaW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIaChJyZXNldF90aW1lc3Rh",
-            "bXBfbXMYAiABKAQiewoOQ3VycmVuY3lVcGRhdGUSKgoEZ29sZBgBIAEoCzIc",
-            "Lmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1ZRItCgdjcnlzdGFsGAIgASgL",
-            "MhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQzMlZhbHVlEg4KBnJlYXNvbhgDIAEo",
-            "CSIWChRPZmZsaW5lUmV3YXJkUmVxdWVzdCJtChNPZmZsaW5lUmV3YXJkUmVz",
-            "dWx0EhcKD2VsYXBzZWRfc2Vjb25kcxgBIAEoBBITCgtnb2xkX2Vhcm5lZBgC",
-            "IAEoBBIUCgxtaW5pbmdfY291bnQYAyABKA0SEgoKdG90YWxfZ29sZBgEIAEo",
-            "BCI4ChFFcnJvck5vdGlmaWNhdGlvbhISCgplcnJvcl9jb2RlGAEgASgJEg8K",
-            "B21lc3NhZ2UYAiABKAkizgEKB0dlbUluZm8SFwoPZ2VtX2luc3RhbmNlX2lk",
-            "GAEgASgJEg4KBmdlbV9pZBgCIAEoDRIoCgVncmFkZRgDIAEoDjIZLmluZmlu",
-            "aXRlcGlja2F4ZS5HZW1HcmFkZRImCgR0eXBlGAQgASgOMhguaW5maW5pdGVw",
-            "aWNrYXhlLkdlbVR5cGUSDAoEbmFtZRgFIAEoCRIMCgRpY29uGAYgASgJEhcK",
-            "D3N0YXRfbXVsdGlwbGllchgHIAEoDRITCgthY3F1aXJlZF9hdBgIIAEoBCJq",
-            "CgtHZW1TbG90SW5mbxIWCg5nZW1fc2xvdF9pbmRleBgBIAEoDRITCgtpc191",
-            "bmxvY2tlZBgCIAEoCBIuCgxlcXVpcHBlZF9nZW0YAyABKAsyGC5pbmZpbml0",
-            "ZXBpY2theGUuR2VtSW5mbyIQCg5HZW1MaXN0UmVxdWVzdCJpCg9HZW1MaXN0",
-            "UmVzcG9uc2USJgoEZ2VtcxgBIAMoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1J",
-            "bmZvEhIKCnRvdGFsX2dlbXMYAiABKA0SGgoSaW52ZW50b3J5X2NhcGFjaXR5",
-            "GAMgASgNIiUKD0dlbUdhY2hhUmVxdWVzdBISCgpwdWxsX2NvdW50GAEgASgN",
-            "Ir8BCg5HZW1HYWNoYVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEiYKBGdlbXMY",
-            "AiADKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbxIVCg1jcnlzdGFsX3Nw",
-            "ZW50GAMgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQgASgNEhIKCnRvdGFs",
-            "X2dlbXMYBSABKA0SGgoSaW52ZW50b3J5X2NhcGFjaXR5GAYgASgNEhIKCmVy",
-            "cm9yX2NvZGUYByABKAkiLwoTR2VtU3ludGhlc2lzUmVxdWVzdBIYChBnZW1f",
-            "aW5zdGFuY2VfaWRzGAEgAygJIsYBChJHZW1TeW50aGVzaXNSZXN1bHQSDwoH",
-            "c3VjY2VzcxgBIAEoCBIZChFzeW50aGVzaXNfc3VjY2VzcxgCIAEoCBIsCgpy",
-            "ZXN1bHRfZ2VtGAMgASgLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SEgoK",
-            "dG90YWxfZ2VtcxgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJEi4KDHJldGFp",
-            "bmVkX2dlbRgGIAEoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1JbmZvIl4KF0dl",
-            "bUF1dG9TeW50aGVzaXNSZXF1ZXN0Ei0KCmZyb21fZ3JhZGUYASABKA4yGS5p",
-            "bmZpbml0ZXBpY2theGUuR2VtR3JhZGUSFAoMbWF4X2F0dGVtcHRzGAIgASgN",
-            "IqoBChZHZW1BdXRvU3ludGhlc2lzUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgS",
-            "EQoJYXR0ZW1wdGVkGAIgASgNEhUKDXN1Y2Nlc3NfY291bnQYAyABKA0SLQoL",
-            "cmVzdWx0X2dlbXMYBCADKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbxIS",
-            "Cgp0b3RhbF9nZW1zGAUgASgNEhIKCmVycm9yX2NvZGUYBiABKAkidgoUR2Vt",
-            "Q29udmVyc2lvblJlcXVlc3QSFwoPZ2VtX2luc3RhbmNlX2lkGAEgASgJEi0K",
-            "C3RhcmdldF90eXBlGAIgASgOMhguaW5maW5pdGVwaWNrYXhlLkdlbVR5cGUS",
-            "FgoOdXNlX2ZpeGVkX2Nvc3QYAyABKAginQEKE0dlbUNvbnZlcnNpb25SZXN1",
-            "bHQSDwoHc3VjY2VzcxgBIAEoCBIvCg1jb252ZXJ0ZWRfZ2VtGAIgASgLMhgu",
-            "aW5maW5pdGVwaWNrYXhlLkdlbUluZm8SFQoNY3J5c3RhbF9zcGVudBgDIAEo",
-            "DRIZChFyZW1haW5pbmdfY3J5c3RhbBgEIAEoDRISCgplcnJvcl9jb2RlGAUg",
-            "ASgJIi0KEUdlbURpc2NhcmRSZXF1ZXN0EhgKEGdlbV9pbnN0YW5jZV9pZHMY",
-            "ASADKAkiegoQR2VtRGlzY2FyZFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhYK",
-            "DmNyeXN0YWxfZWFybmVkGAIgASgNEhUKDXRvdGFsX2NyeXN0YWwYAyABKA0S",
-            "EgoKdG90YWxfZ2VtcxgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJIl4KD0dl",
-            "bUVxdWlwUmVxdWVzdBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgYASABKA0SFgoO",
-            "Z2VtX3Nsb3RfaW5kZXgYAiABKA0SFwoPZ2VtX2luc3RhbmNlX2lkGAMgASgJ",
-            "IusBCg5HZW1FcXVpcFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhoKEnBpY2th",
-            "eGVfc2xvdF9pbmRleBgCIAEoDRIWCg5nZW1fc2xvdF9pbmRleBgDIAEoDRIu",
-            "CgxlcXVpcHBlZF9nZW0YBCABKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5m",
-            "bxI5Cg91cGRhdGVkX3BpY2theGUYBSABKAsyIC5pbmZpbml0ZXBpY2theGUu",
-            "UGlja2F4ZVNsb3RJbmZvEhUKDW5ld190b3RhbF9kcHMYBiABKAQSEgoKZXJy",
-            "b3JfY29kZRgHIAEoCSJHChFHZW1VbmVxdWlwUmVxdWVzdBIaChJwaWNrYXhl",
-            "X3Nsb3RfaW5kZXgYASABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAiABKA0i7wEK",
-            "EEdlbVVuZXF1aXBSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIaChJwaWNrYXhl",
-            "X3Nsb3RfaW5kZXgYAiABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAyABKA0SMAoO",
-            "dW5lcXVpcHBlZF9nZW0YBCABKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5m",
-            "bxI5Cg91cGRhdGVkX3BpY2theGUYBSABKAsyIC5pbmZpbml0ZXBpY2theGUu",
-            "UGlja2F4ZVNsb3RJbmZvEhUKDW5ld190b3RhbF9kcHMYBiABKAQSEgoKZXJy",
-            "b3JfY29kZRgHIAEoCSJKChRHZW1TbG90VW5sb2NrUmVxdWVzdBIaChJwaWNr",
-            "YXhlX3Nsb3RfaW5kZXgYASABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAiABKA0i",
-            "oAEKE0dlbVNsb3RVbmxvY2tSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIaChJw",
-            "aWNrYXhlX3Nsb3RfaW5kZXgYAiABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAyAB",
-            "KA0SFQoNY3J5c3RhbF9zcGVudBgEIAEoDRIZChFyZW1haW5pbmdfY3J5c3Rh",
-            "bBgFIAEoDRISCgplcnJvcl9jb2RlGAYgASgJIhsKGUdlbUludmVudG9yeUV4",
-            "cGFuZFJlcXVlc3QihwEKGEdlbUludmVudG9yeUV4cGFuZFJlc3VsdBIPCgdz",
-            "dWNjZXNzGAEgASgIEhQKDG5ld19jYXBhY2l0eRgCIAEoDRIVCg1jcnlzdGFs",
-            "X3NwZW50GAMgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQgASgNEhIKCmVy",
-            "cm9yX2NvZGUYBSABKAkqTgoHR2VtVHlwZRIUChBHRU1fVFlQRV9VTktOT1dO",
-            "EAASEAoMQVRUQUNLX1NQRUVEEAESDQoJQ1JJVF9SQVRFEAISDAoIQ1JJVF9E",
-            "TUcQAypaCghHZW1HcmFkZRIVChFHRU1fR1JBREVfVU5LTk9XThAAEgoKBkNP",
-            "TU1PThABEggKBFJBUkUQAhIICgRFUElDEAMSCAoESEVSTxAEEg0KCUxFR0VO",
-            "REFSWRAFKscKCgtNZXNzYWdlVHlwZRILCgdVTktOT1dOEAASDQoJSEFORFNI",
-            "QUtFEAESFAoQSEFORFNIQUtFX1JFU1VMVBACEg0KCUhFQVJUQkVBVBADEhEK",
-            "DUhFQVJUQkVBVF9BQ0sQBBIWChJVU0VSX0RBVEFfU05BUFNIT1QQChIYChRN",
-            "SU5FUkFMX0xJU1RfUkVRVUVTVBAUEhkKFU1JTkVSQUxfTElTVF9SRVNQT05T",
-            "RRAVEhoKFkNIQU5HRV9NSU5FUkFMX1JFUVVFU1QQFhIbChdDSEFOR0VfTUlO",
-            "RVJBTF9SRVNQT05TRRAXEhEKDU1JTklOR19VUERBVEUQIBITCg9NSU5JTkdf",
-            "Q09NUExFVEUQIRIVChFBTExfU0xPVFNfUkVRVUVTVBAoEhYKEkFMTF9TTE9U",
-            "U19SRVNQT05TRRApEg8KC1NMT1RfVU5MT0NLECoSFgoSU0xPVF9VTkxPQ0tf",
-            "UkVTVUxUECsSEwoPVVBHUkFERV9SRVFVRVNUEDISEgoOVVBHUkFERV9SRVNV",
-            "TFQQMxIaChZEQUlMWV9NSVNTSU9OU19SRVFVRVNUEDwSGwoXREFJTFlfTUlT",
-            "U0lPTlNfUkVTUE9OU0UQPRIbChdNSVNTSU9OX1BST0dSRVNTX1VQREFURRA+",
-            "EhQKEE1JU1NJT05fQ09NUExFVEUQPxIbChdNSVNTSU9OX0NPTVBMRVRFX1JF",
-            "U1VMVBBAEhIKDk1JU1NJT05fUkVST0xMEEESGQoVTUlTU0lPTl9SRVJPTExf",
-            "UkVTVUxUEEISEwoPTUlMRVNUT05FX0NMQUlNEEMSGgoWTUlMRVNUT05FX0NM",
-            "QUlNX1JFU1VMVBBEEhMKD01JTEVTVE9ORV9TVEFURRBFEhUKEUFEX1dBVENI",
-            "X0NPTVBMRVRFEEYSEwoPQURfV0FUQ0hfUkVTVUxUEEcSFQoRQURfQ09VTlRF",
-            "UlNfU1RBVEUQSBITCg9DVVJSRU5DWV9VUERBVEUQUBIaChZPRkZMSU5FX1JF",
-            "V0FSRF9SRVFVRVNUEFoSGQoVT0ZGTElORV9SRVdBUkRfUkVTVUxUEFsSFgoS",
-            "RVJST1JfTk9USUZJQ0FUSU9OEGQSFAoQR0VNX0xJU1RfUkVRVUVTVBBuEhUK",
-            "EUdFTV9MSVNUX1JFU1BPTlNFEG8SFQoRR0VNX0dBQ0hBX1JFUVVFU1QQcBIU",
-            "ChBHRU1fR0FDSEFfUkVTVUxUEHESGQoVR0VNX1NZTlRIRVNJU19SRVFVRVNU",
-            "EHISGAoUR0VNX1NZTlRIRVNJU19SRVNVTFQQcxIaChZHRU1fQ09OVkVSU0lP",
-            "Tl9SRVFVRVNUEHQSGQoVR0VNX0NPTlZFUlNJT05fUkVTVUxUEHUSFwoTR0VN",
-            "X0RJU0NBUkRfUkVRVUVTVBB2EhYKEkdFTV9ESVNDQVJEX1JFU1VMVBB3EhUK",
-            "EUdFTV9FUVVJUF9SRVFVRVNUEHgSFAoQR0VNX0VRVUlQX1JFU1VMVBB5EhcK",
-            "E0dFTV9VTkVRVUlQX1JFUVVFU1QQehIWChJHRU1fVU5FUVVJUF9SRVNVTFQQ",
-            "exIbChdHRU1fU0xPVF9VTkxPQ0tfUkVRVUVTVBB8EhoKFkdFTV9TTE9UX1VO",
-            "TE9DS19SRVNVTFQQfRIgChxHRU1fSU5WRU5UT1JZX0VYUEFORF9SRVFVRVNU",
-            "EH4SHwobR0VNX0lOVkVOVE9SWV9FWFBBTkRfUkVTVUxUEH8SHwoaR0VNX0FV",
-            "VE9fU1lOVEhFU0lTX1JFUVVFU1QQgAESHgoZR0VNX0FVVE9fU1lOVEhFU0lT",
-            "X1JFU1VMVBCBAWIGcHJvdG8z"));
+            "CzIkLmluZmluaXRlcGlja2F4ZS5PZmZsaW5lUmV3YXJkUmVzdWx0SAASTgoa",
+            "b2ZmbGluZV9tb2RlX3N0YXJ0X3JlcXVlc3QYZiABKAsyKC5pbmZpbml0ZXBp",
+            "Y2theGUuT2ZmbGluZU1vZGVTdGFydFJlcXVlc3RIABJMChlvZmZsaW5lX21v",
+            "ZGVfc3RhcnRfcmVzdWx0GGcgASgLMicuaW5maW5pdGVwaWNrYXhlLk9mZmxp",
+            "bmVNb2RlU3RhcnRSZXN1bHRIABJAChJlcnJvcl9ub3RpZmljYXRpb24YbiAB",
+            "KAsyIi5pbmZpbml0ZXBpY2theGUuRXJyb3JOb3RpZmljYXRpb25IABI7ChBn",
+            "ZW1fbGlzdF9yZXF1ZXN0GHggASgLMh8uaW5maW5pdGVwaWNrYXhlLkdlbUxp",
+            "c3RSZXF1ZXN0SAASPQoRZ2VtX2xpc3RfcmVzcG9uc2UYeSABKAsyIC5pbmZp",
+            "bml0ZXBpY2theGUuR2VtTGlzdFJlc3BvbnNlSAASPQoRZ2VtX2dhY2hhX3Jl",
+            "cXVlc3QYeiABKAsyIC5pbmZpbml0ZXBpY2theGUuR2VtR2FjaGFSZXF1ZXN0",
+            "SAASOwoQZ2VtX2dhY2hhX3Jlc3VsdBh7IAEoCzIfLmluZmluaXRlcGlja2F4",
+            "ZS5HZW1HYWNoYVJlc3VsdEgAEkUKFWdlbV9zeW50aGVzaXNfcmVxdWVzdBh8",
+            "IAEoCzIkLmluZmluaXRlcGlja2F4ZS5HZW1TeW50aGVzaXNSZXF1ZXN0SAAS",
+            "QwoUZ2VtX3N5bnRoZXNpc19yZXN1bHQYfSABKAsyIy5pbmZpbml0ZXBpY2th",
+            "eGUuR2VtU3ludGhlc2lzUmVzdWx0SAASRwoWZ2VtX2NvbnZlcnNpb25fcmVx",
+            "dWVzdBh+IAEoCzIlLmluZmluaXRlcGlja2F4ZS5HZW1Db252ZXJzaW9uUmVx",
+            "dWVzdEgAEkUKFWdlbV9jb252ZXJzaW9uX3Jlc3VsdBh/IAEoCzIkLmluZmlu",
+            "aXRlcGlja2F4ZS5HZW1Db252ZXJzaW9uUmVzdWx0SAASQgoTZ2VtX2Rpc2Nh",
+            "cmRfcmVxdWVzdBiAASABKAsyIi5pbmZpbml0ZXBpY2theGUuR2VtRGlzY2Fy",
+            "ZFJlcXVlc3RIABJAChJnZW1fZGlzY2FyZF9yZXN1bHQYgQEgASgLMiEuaW5m",
+            "aW5pdGVwaWNrYXhlLkdlbURpc2NhcmRSZXN1bHRIABI+ChFnZW1fZXF1aXBf",
+            "cmVxdWVzdBiCASABKAsyIC5pbmZpbml0ZXBpY2theGUuR2VtRXF1aXBSZXF1",
+            "ZXN0SAASPAoQZ2VtX2VxdWlwX3Jlc3VsdBiDASABKAsyHy5pbmZpbml0ZXBp",
+            "Y2theGUuR2VtRXF1aXBSZXN1bHRIABJCChNnZW1fdW5lcXVpcF9yZXF1ZXN0",
+            "GIQBIAEoCzIiLmluZmluaXRlcGlja2F4ZS5HZW1VbmVxdWlwUmVxdWVzdEgA",
+            "EkAKEmdlbV91bmVxdWlwX3Jlc3VsdBiFASABKAsyIS5pbmZpbml0ZXBpY2th",
+            "eGUuR2VtVW5lcXVpcFJlc3VsdEgAEkkKF2dlbV9zbG90X3VubG9ja19yZXF1",
+            "ZXN0GIYBIAEoCzIlLmluZmluaXRlcGlja2F4ZS5HZW1TbG90VW5sb2NrUmVx",
+            "dWVzdEgAEkcKFmdlbV9zbG90X3VubG9ja19yZXN1bHQYhwEgASgLMiQuaW5m",
+            "aW5pdGVwaWNrYXhlLkdlbVNsb3RVbmxvY2tSZXN1bHRIABJTChxnZW1faW52",
+            "ZW50b3J5X2V4cGFuZF9yZXF1ZXN0GIgBIAEoCzIqLmluZmluaXRlcGlja2F4",
+            "ZS5HZW1JbnZlbnRvcnlFeHBhbmRSZXF1ZXN0SAASUQobZ2VtX2ludmVudG9y",
+            "eV9leHBhbmRfcmVzdWx0GIkBIAEoCzIpLmluZmluaXRlcGlja2F4ZS5HZW1J",
+            "bnZlbnRvcnlFeHBhbmRSZXN1bHRIABJPChpnZW1fYXV0b19zeW50aGVzaXNf",
+            "cmVxdWVzdBiKASABKAsyKC5pbmZpbml0ZXBpY2theGUuR2VtQXV0b1N5bnRo",
+            "ZXNpc1JlcXVlc3RIABJNChlnZW1fYXV0b19zeW50aGVzaXNfcmVzdWx0GIsB",
+            "IAEoCzInLmluZmluaXRlcGlja2F4ZS5HZW1BdXRvU3ludGhlc2lzUmVzdWx0",
+            "SABCCQoHbWVzc2FnZSJKChBIYW5kc2hha2VSZXF1ZXN0EgsKA2p3dBgBIAEo",
+            "CRIWCg5jbGllbnRfdmVyc2lvbhgCIAEoCRIRCglkZXZpY2VfaWQYAyABKAki",
+            "jAIKD1BpY2theGVTbG90SW5mbxISCgpzbG90X2luZGV4GAEgASgNEg0KBWxl",
+            "dmVsGAIgASgNEgwKBHRpZXIYAyABKA0SFAoMYXR0YWNrX3Bvd2VyGAQgASgE",
+            "EhQKDGF0dGFja19zcGVlZBgFIAEoDRIcChRjcml0aWNhbF9oaXRfcGVyY2Vu",
+            "dBgGIAEoDRIXCg9jcml0aWNhbF9kYW1hZ2UYByABKA0SCwoDZHBzGAggASgE",
+            "EhIKCnBpdHlfYm9udXMYCSABKA0SEwoLaXNfdW5sb2NrZWQYCiABKAgSLwoJ",
+            "Z2VtX3Nsb3RzGAsgAygLMhwuaW5maW5pdGVwaWNrYXhlLkdlbVNsb3RJbmZv",
+            "IkMKCUFkQ291bnRlchIPCgdhZF90eXBlGAEgASgJEhAKCGFkX2NvdW50GAIg",
+            "ASgNEhMKC2RhaWx5X2xpbWl0GAMgASgNIqoEChBVc2VyRGF0YVNuYXBzaG90",
+            "EioKBGdvbGQYASABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUS",
+            "LQoHY3J5c3RhbBgCIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJWYWx1",
+            "ZRIWCg51bmxvY2tlZF9zbG90cxgDIAMoCBI4ChJjdXJyZW50X21pbmVyYWxf",
+            "aWQYBCABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDMyVmFsdWUSMAoKbWlu",
+            "ZXJhbF9ocBgFIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1ZRI0",
+            "Cg5taW5lcmFsX21heF9ocBgGIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50",
+            "NjRWYWx1ZRI3Cg1waWNrYXhlX3Nsb3RzGAcgAygLMiAuaW5maW5pdGVwaWNr",
+            "YXhlLlBpY2theGVTbG90SW5mbxIRCgl0b3RhbF9kcHMYCCABKAQSMQoLc2Vy",
+            "dmVyX3RpbWUYCSABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUS",
+            "LwoLYWRfY291bnRlcnMYCiADKAsyGi5pbmZpbml0ZXBpY2theGUuQWRDb3Vu",
+            "dGVyEh0KFWN1cnJlbnRfb2ZmbGluZV9ob3VycxgLIAEoDRIeChZnZW1faW52",
+            "ZW50b3J5X2NhcGFjaXR5GAwgASgNEhIKCnRvdGFsX2dlbXMYDSABKA0iagoR",
+            "SGFuZHNoYWtlUmVzcG9uc2USDwoHc3VjY2VzcxgBIAEoCBIPCgdtZXNzYWdl",
+            "GAIgASgJEjMKCHNuYXBzaG90GAMgASgLMiEuaW5maW5pdGVwaWNrYXhlLlVz",
+            "ZXJEYXRhU25hcHNob3QiIwoJSGVhcnRiZWF0EhYKDmNsaWVudF90aW1lX21z",
+            "GAEgASgEIiYKDEhlYXJ0YmVhdEFjaxIWCg5zZXJ2ZXJfdGltZV9tcxgBIAEo",
+            "BCIUChJNaW5lcmFsTGlzdFJlcXVlc3QiZwoLTWluZXJhbEluZm8SEgoKbWlu",
+            "ZXJhbF9pZBgBIAEoDRIMCgRuYW1lGAIgASgJEg4KBm1heF9ocBgDIAEoBBIT",
+            "Cgtnb2xkX3Jld2FyZBgEIAEoBBIRCglpY29uX25hbWUYBSABKAkiRQoTTWlu",
+            "ZXJhbExpc3RSZXNwb25zZRIuCghtaW5lcmFscxgBIAMoCzIcLmluZmluaXRl",
+            "cGlja2F4ZS5NaW5lcmFsSW5mbyIqChRDaGFuZ2VNaW5lcmFsUmVxdWVzdBIS",
+            "CgptaW5lcmFsX2lkGAEgASgNInwKFUNoYW5nZU1pbmVyYWxSZXNwb25zZRIP",
+            "CgdzdWNjZXNzGAEgASgIEhIKCm1pbmVyYWxfaWQYAiABKA0SEgoKbWluZXJh",
+            "bF9ocBgDIAEoBBIWCg5taW5lcmFsX21heF9ocBgEIAEoBBISCgplcnJvcl9j",
+            "b2RlGAUgASgJIkgKDVBpY2theGVBdHRhY2sSEgoKc2xvdF9pbmRleBgBIAEo",
+            "DRIOCgZkYW1hZ2UYAiABKAQSEwoLaXNfY3JpdGljYWwYAyABKAgikQEKDE1p",
+            "bmluZ1VwZGF0ZRISCgptaW5lcmFsX2lkGAEgASgNEhIKCmN1cnJlbnRfaHAY",
+            "AiABKAQSDgoGbWF4X2hwGAMgASgEEi8KB2F0dGFja3MYBCADKAsyHi5pbmZp",
+            "bml0ZXBpY2theGUuUGlja2F4ZUF0dGFjaxIYChBzZXJ2ZXJfdGltZXN0YW1w",
+            "GAUgASgEIpMBCg5NaW5pbmdDb21wbGV0ZRISCgptaW5lcmFsX2lkGAEgASgN",
+            "EhMKC2dvbGRfZWFybmVkGAIgASgEEhIKCnRvdGFsX2dvbGQYAyABKAQSFAoM",
+            "bWluaW5nX2NvdW50GAQgASgEEhQKDHJlc3Bhd25fdGltZRgFIAEoDRIYChBz",
+            "ZXJ2ZXJfdGltZXN0YW1wGAYgASgEIhEKD0FsbFNsb3RzUmVxdWVzdCJWChBB",
+            "bGxTbG90c1Jlc3BvbnNlEi8KBXNsb3RzGAEgAygLMiAuaW5maW5pdGVwaWNr",
+            "YXhlLlBpY2theGVTbG90SW5mbxIRCgl0b3RhbF9kcHMYAiABKAQiJAoOVXBn",
+            "cmFkZVJlcXVlc3QSEgoKc2xvdF9pbmRleBgBIAEoDSKMAwoNVXBncmFkZVJl",
+            "c3VsdBIPCgdzdWNjZXNzGAEgASgIEhIKCnNsb3RfaW5kZXgYAiABKA0SEQoJ",
+            "bmV3X2xldmVsGAMgASgNEhAKCG5ld190aWVyGAQgASgNEhgKEG5ld19hdHRh",
+            "Y2tfcG93ZXIYBSABKAQSGAoQbmV3X2F0dGFja19zcGVlZBgGIAEoDRIgChhu",
+            "ZXdfY3JpdGljYWxfaGl0X3BlcmNlbnQYByABKA0SGwoTbmV3X2NyaXRpY2Fs",
+            "X2RhbWFnZRgIIAEoDRIPCgduZXdfZHBzGAkgASgEEhUKDW5ld190b3RhbF9k",
+            "cHMYCiABKAQSEgoKZ29sZF9zcGVudBgLIAEoBBIWCg5yZW1haW5pbmdfZ29s",
+            "ZBgMIAEoBBISCgplcnJvcl9jb2RlGA0gASgJEhQKDGJhc2VfcmF0ZV9icBgO",
+            "IAEoDRIVCg1ib251c19yYXRlX2JwGA8gASgNEhUKDWZpbmFsX3JhdGVfYnAY",
+            "ECABKA0SEgoKcGl0eV9ib251cxgRIAEoDSIWChREYWlseU1pc3Npb25zUmVx",
+            "dWVzdCKiAgoMTWlzc2lvbkVudHJ5Eg8KB3Nsb3Rfbm8YASABKA0SEgoKbWlz",
+            "c2lvbl9pZBgCIAEoDRIUCgxtaXNzaW9uX3R5cGUYAyABKAkSEwoLZGVzY3Jp",
+            "cHRpb24YBCABKAkSFAoMdGFyZ2V0X3ZhbHVlGAUgASgNEhUKDWN1cnJlbnRf",
+            "dmFsdWUYBiABKA0SFgoOcmV3YXJkX2NyeXN0YWwYByABKA0SDgoGc3RhdHVz",
+            "GAggASgJEhMKC2Fzc2lnbmVkX2F0GAkgASgEEhIKCmV4cGlyZXNfYXQYCiAB",
+            "KAQSEgoKZGlmZmljdWx0eRgLIAEoCRIwCgptaW5lcmFsX2lkGAwgASgLMhwu",
+            "Z29vZ2xlLnByb3RvYnVmLlVJbnQzMlZhbHVlIvcBChVEYWlseU1pc3Npb25z",
+            "UmVzcG9uc2USLwoIbWlzc2lvbnMYASADKAsyHS5pbmZpbml0ZXBpY2theGUu",
+            "TWlzc2lvbkVudHJ5EhcKD2NvbXBsZXRlZF9jb3VudBgCIAEoDRIUCgxyZXJv",
+            "bGxfY291bnQYAyABKA0SLwoLYWRfY291bnRlcnMYBCADKAsyGi5pbmZpbml0",
+            "ZXBpY2theGUuQWRDb3VudGVyEhQKDHJlcm9sbHNfZnJlZRgFIAEoDRIbChNy",
+            "ZXJvbGxzX3RvdGFsX2xpbWl0GAYgASgNEhoKEnJlc2V0X3RpbWVzdGFtcF9t",
+            "cxgHIAEoBCJ5ChVNaXNzaW9uUHJvZ3Jlc3NVcGRhdGUSDwoHc2xvdF9ubxgB",
+            "IAEoDRISCgptaXNzaW9uX2lkGAIgASgNEhUKDWN1cnJlbnRfdmFsdWUYAyAB",
+            "KA0SFAoMdGFyZ2V0X3ZhbHVlGAQgASgNEg4KBnN0YXR1cxgFIAEoCSIiCg9N",
+            "aXNzaW9uQ29tcGxldGUSDwoHc2xvdF9ubxgBIAEoDSKQAQoVTWlzc2lvbkNv",
+            "bXBsZXRlUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSDwoHc2xvdF9ubxgCIAEo",
+            "DRISCgptaXNzaW9uX2lkGAMgASgNEhYKDnJld2FyZF9jcnlzdGFsGAQgASgN",
+            "EhUKDXRvdGFsX2NyeXN0YWwYBSABKA0SEgoKZXJyb3JfY29kZRgGIAEoCSIP",
+            "Cg1NaXNzaW9uUmVyb2xsIooBChNNaXNzaW9uUmVyb2xsUmVzdWx0Eg8KB3N1",
+            "Y2Nlc3MYASABKAgSOAoRcmVyb2xsZWRfbWlzc2lvbnMYAiADKAsyHS5pbmZp",
+            "bml0ZXBpY2theGUuTWlzc2lvbkVudHJ5EhQKDHJlcm9sbHNfdXNlZBgDIAEo",
+            "DRISCgplcnJvcl9jb2RlGAQgASgJIikKDk1pbGVzdG9uZUNsYWltEhcKD21p",
+            "bGVzdG9uZV9jb3VudBgBIAEoDSK+AQoUTWlsZXN0b25lQ2xhaW1SZXN1bHQS",
+            "DwoHc3VjY2VzcxgBIAEoCBIXCg9taWxlc3RvbmVfY291bnQYAiABKA0SHAoU",
+            "b2ZmbGluZV9ob3Vyc19nYWluZWQYAyABKA0SGwoTdG90YWxfb2ZmbGluZV9o",
+            "b3VycxgEIAEoDRIWCg5yZXdhcmRfY3J5c3RhbBgFIAEoDRIVCg10b3RhbF9j",
+            "cnlzdGFsGAYgASgNEhIKCmVycm9yX2NvZGUYByABKAkiYQoOTWlsZXN0b25l",
+            "U3RhdGUSFwoPY29tcGxldGVkX2NvdW50GAEgASgNEhoKEmNsYWltZWRfbWls",
+            "ZXN0b25lcxgCIAMoDRIaChJyZXNldF90aW1lc3RhbXBfbXMYAyABKAQiIAoK",
+            "U2xvdFVubG9jaxISCgpzbG90X2luZGV4GAEgASgNIsQBChBTbG90VW5sb2Nr",
+            "UmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSEgoKc2xvdF9pbmRleBgCIAEoDRIV",
+            "Cg1jcnlzdGFsX3NwZW50GAMgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQg",
+            "ASgNEhIKCmVycm9yX2NvZGUYBSABKAkSMgoIbmV3X3Nsb3QYBiABKAsyIC5p",
+            "bmZpbml0ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhEKCXRvdGFsX2RwcxgH",
+            "IAEoBCIiCg9BZFdhdGNoQ29tcGxldGUSDwoHYWRfdHlwZRgBIAEoCSKlAQoN",
+            "QWRXYXRjaFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEg8KB2FkX3R5cGUYAiAB",
+            "KAkSFgoOY3J5c3RhbF9lYXJuZWQYAyABKA0SFQoNdG90YWxfY3J5c3RhbBgE",
+            "IAEoDRIvCgthZF9jb3VudGVycxgFIAMoCzIaLmluZmluaXRlcGlja2F4ZS5B",
+            "ZENvdW50ZXISEgoKZXJyb3JfY29kZRgGIAEoCSJeCg9BZENvdW50ZXJzU3Rh",
+            "dGUSLwoLYWRfY291bnRlcnMYASADKAsyGi5pbmZpbml0ZXBpY2theGUuQWRD",
+            "b3VudGVyEhoKEnJlc2V0X3RpbWVzdGFtcF9tcxgCIAEoBCJ7Cg5DdXJyZW5j",
+            "eVVwZGF0ZRIqCgRnb2xkGAEgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQ2",
+            "NFZhbHVlEi0KB2NyeXN0YWwYAiABKAsyHC5nb29nbGUucHJvdG9idWYuVUlu",
+            "dDMyVmFsdWUSDgoGcmVhc29uGAMgASgJIhYKFE9mZmxpbmVSZXdhcmRSZXF1",
+            "ZXN0Im0KE09mZmxpbmVSZXdhcmRSZXN1bHQSFwoPZWxhcHNlZF9zZWNvbmRz",
+            "GAEgASgEEhMKC2dvbGRfZWFybmVkGAIgASgEEhQKDG1pbmluZ19jb3VudBgD",
+            "IAEoDRISCgp0b3RhbF9nb2xkGAQgASgEIhkKF09mZmxpbmVNb2RlU3RhcnRS",
+            "ZXF1ZXN0IlwKFk9mZmxpbmVNb2RlU3RhcnRSZXN1bHQSDwoHc3VjY2VzcxgB",
+            "IAEoCBIdChVjdXJyZW50X29mZmxpbmVfaG91cnMYAiABKA0SEgoKZXJyb3Jf",
+            "Y29kZRgDIAEoCSI4ChFFcnJvck5vdGlmaWNhdGlvbhISCgplcnJvcl9jb2Rl",
+            "GAEgASgJEg8KB21lc3NhZ2UYAiABKAkizgEKB0dlbUluZm8SFwoPZ2VtX2lu",
+            "c3RhbmNlX2lkGAEgASgJEg4KBmdlbV9pZBgCIAEoDRIoCgVncmFkZRgDIAEo",
+            "DjIZLmluZmluaXRlcGlja2F4ZS5HZW1HcmFkZRImCgR0eXBlGAQgASgOMhgu",
+            "aW5maW5pdGVwaWNrYXhlLkdlbVR5cGUSDAoEbmFtZRgFIAEoCRIMCgRpY29u",
+            "GAYgASgJEhcKD3N0YXRfbXVsdGlwbGllchgHIAEoDRITCgthY3F1aXJlZF9h",
+            "dBgIIAEoBCJqCgtHZW1TbG90SW5mbxIWCg5nZW1fc2xvdF9pbmRleBgBIAEo",
+            "DRITCgtpc191bmxvY2tlZBgCIAEoCBIuCgxlcXVpcHBlZF9nZW0YAyABKAsy",
+            "GC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbyIQCg5HZW1MaXN0UmVxdWVzdCJp",
+            "Cg9HZW1MaXN0UmVzcG9uc2USJgoEZ2VtcxgBIAMoCzIYLmluZmluaXRlcGlj",
+            "a2F4ZS5HZW1JbmZvEhIKCnRvdGFsX2dlbXMYAiABKA0SGgoSaW52ZW50b3J5",
+            "X2NhcGFjaXR5GAMgASgNIiUKD0dlbUdhY2hhUmVxdWVzdBISCgpwdWxsX2Nv",
+            "dW50GAEgASgNIr8BCg5HZW1HYWNoYVJlc3VsdBIPCgdzdWNjZXNzGAEgASgI",
+            "EiYKBGdlbXMYAiADKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbxIVCg1j",
+            "cnlzdGFsX3NwZW50GAMgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQgASgN",
+            "EhIKCnRvdGFsX2dlbXMYBSABKA0SGgoSaW52ZW50b3J5X2NhcGFjaXR5GAYg",
+            "ASgNEhIKCmVycm9yX2NvZGUYByABKAkiLwoTR2VtU3ludGhlc2lzUmVxdWVz",
+            "dBIYChBnZW1faW5zdGFuY2VfaWRzGAEgAygJIsYBChJHZW1TeW50aGVzaXNS",
+            "ZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIZChFzeW50aGVzaXNfc3VjY2VzcxgC",
+            "IAEoCBIsCgpyZXN1bHRfZ2VtGAMgASgLMhguaW5maW5pdGVwaWNrYXhlLkdl",
+            "bUluZm8SEgoKdG90YWxfZ2VtcxgEIAEoDRISCgplcnJvcl9jb2RlGAUgASgJ",
+            "Ei4KDHJldGFpbmVkX2dlbRgGIAEoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1J",
+            "bmZvIl4KF0dlbUF1dG9TeW50aGVzaXNSZXF1ZXN0Ei0KCmZyb21fZ3JhZGUY",
+            "ASABKA4yGS5pbmZpbml0ZXBpY2theGUuR2VtR3JhZGUSFAoMbWF4X2F0dGVt",
+            "cHRzGAIgASgNIqoBChZHZW1BdXRvU3ludGhlc2lzUmVzdWx0Eg8KB3N1Y2Nl",
+            "c3MYASABKAgSEQoJYXR0ZW1wdGVkGAIgASgNEhUKDXN1Y2Nlc3NfY291bnQY",
+            "AyABKA0SLQoLcmVzdWx0X2dlbXMYBCADKAsyGC5pbmZpbml0ZXBpY2theGUu",
+            "R2VtSW5mbxISCgp0b3RhbF9nZW1zGAUgASgNEhIKCmVycm9yX2NvZGUYBiAB",
+            "KAkidgoUR2VtQ29udmVyc2lvblJlcXVlc3QSFwoPZ2VtX2luc3RhbmNlX2lk",
+            "GAEgASgJEi0KC3RhcmdldF90eXBlGAIgASgOMhguaW5maW5pdGVwaWNrYXhl",
+            "LkdlbVR5cGUSFgoOdXNlX2ZpeGVkX2Nvc3QYAyABKAginQEKE0dlbUNvbnZl",
+            "cnNpb25SZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIvCg1jb252ZXJ0ZWRfZ2Vt",
+            "GAIgASgLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SFQoNY3J5c3RhbF9z",
+            "cGVudBgDIAEoDRIZChFyZW1haW5pbmdfY3J5c3RhbBgEIAEoDRISCgplcnJv",
+            "cl9jb2RlGAUgASgJIi0KEUdlbURpc2NhcmRSZXF1ZXN0EhgKEGdlbV9pbnN0",
+            "YW5jZV9pZHMYASADKAkiegoQR2VtRGlzY2FyZFJlc3VsdBIPCgdzdWNjZXNz",
+            "GAEgASgIEhYKDmNyeXN0YWxfZWFybmVkGAIgASgNEhUKDXRvdGFsX2NyeXN0",
+            "YWwYAyABKA0SEgoKdG90YWxfZ2VtcxgEIAEoDRISCgplcnJvcl9jb2RlGAUg",
+            "ASgJIl4KD0dlbUVxdWlwUmVxdWVzdBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgY",
+            "ASABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAiABKA0SFwoPZ2VtX2luc3RhbmNl",
+            "X2lkGAMgASgJIusBCg5HZW1FcXVpcFJlc3VsdBIPCgdzdWNjZXNzGAEgASgI",
+            "EhoKEnBpY2theGVfc2xvdF9pbmRleBgCIAEoDRIWCg5nZW1fc2xvdF9pbmRl",
+            "eBgDIAEoDRIuCgxlcXVpcHBlZF9nZW0YBCABKAsyGC5pbmZpbml0ZXBpY2th",
+            "eGUuR2VtSW5mbxI5Cg91cGRhdGVkX3BpY2theGUYBSABKAsyIC5pbmZpbml0",
+            "ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhUKDW5ld190b3RhbF9kcHMYBiAB",
+            "KAQSEgoKZXJyb3JfY29kZRgHIAEoCSJHChFHZW1VbmVxdWlwUmVxdWVzdBIa",
+            "ChJwaWNrYXhlX3Nsb3RfaW5kZXgYASABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgY",
+            "AiABKA0i7wEKEEdlbVVuZXF1aXBSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIa",
+            "ChJwaWNrYXhlX3Nsb3RfaW5kZXgYAiABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgY",
+            "AyABKA0SMAoOdW5lcXVpcHBlZF9nZW0YBCABKAsyGC5pbmZpbml0ZXBpY2th",
+            "eGUuR2VtSW5mbxI5Cg91cGRhdGVkX3BpY2theGUYBSABKAsyIC5pbmZpbml0",
+            "ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhUKDW5ld190b3RhbF9kcHMYBiAB",
+            "KAQSEgoKZXJyb3JfY29kZRgHIAEoCSJKChRHZW1TbG90VW5sb2NrUmVxdWVz",
+            "dBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgYASABKA0SFgoOZ2VtX3Nsb3RfaW5k",
+            "ZXgYAiABKA0ioAEKE0dlbVNsb3RVbmxvY2tSZXN1bHQSDwoHc3VjY2VzcxgB",
+            "IAEoCBIaChJwaWNrYXhlX3Nsb3RfaW5kZXgYAiABKA0SFgoOZ2VtX3Nsb3Rf",
+            "aW5kZXgYAyABKA0SFQoNY3J5c3RhbF9zcGVudBgEIAEoDRIZChFyZW1haW5p",
+            "bmdfY3J5c3RhbBgFIAEoDRISCgplcnJvcl9jb2RlGAYgASgJIhsKGUdlbUlu",
+            "dmVudG9yeUV4cGFuZFJlcXVlc3QihwEKGEdlbUludmVudG9yeUV4cGFuZFJl",
+            "c3VsdBIPCgdzdWNjZXNzGAEgASgIEhQKDG5ld19jYXBhY2l0eRgCIAEoDRIV",
+            "Cg1jcnlzdGFsX3NwZW50GAMgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQg",
+            "ASgNEhIKCmVycm9yX2NvZGUYBSABKAkqTgoHR2VtVHlwZRIUChBHRU1fVFlQ",
+            "RV9VTktOT1dOEAASEAoMQVRUQUNLX1NQRUVEEAESDQoJQ1JJVF9SQVRFEAIS",
+            "DAoIQ1JJVF9ETUcQAypaCghHZW1HcmFkZRIVChFHRU1fR1JBREVfVU5LTk9X",
+            "ThAAEgoKBkNPTU1PThABEggKBFJBUkUQAhIICgRFUElDEAMSCAoESEVSTxAE",
+            "Eg0KCUxFR0VOREFSWRAFKoYLCgtNZXNzYWdlVHlwZRILCgdVTktOT1dOEAAS",
+            "DQoJSEFORFNIQUtFEAESFAoQSEFORFNIQUtFX1JFU1VMVBACEg0KCUhFQVJU",
+            "QkVBVBADEhEKDUhFQVJUQkVBVF9BQ0sQBBIWChJVU0VSX0RBVEFfU05BUFNI",
+            "T1QQChIYChRNSU5FUkFMX0xJU1RfUkVRVUVTVBAUEhkKFU1JTkVSQUxfTElT",
+            "VF9SRVNQT05TRRAVEhoKFkNIQU5HRV9NSU5FUkFMX1JFUVVFU1QQFhIbChdD",
+            "SEFOR0VfTUlORVJBTF9SRVNQT05TRRAXEhEKDU1JTklOR19VUERBVEUQIBIT",
+            "Cg9NSU5JTkdfQ09NUExFVEUQIRIVChFBTExfU0xPVFNfUkVRVUVTVBAoEhYK",
+            "EkFMTF9TTE9UU19SRVNQT05TRRApEg8KC1NMT1RfVU5MT0NLECoSFgoSU0xP",
+            "VF9VTkxPQ0tfUkVTVUxUECsSEwoPVVBHUkFERV9SRVFVRVNUEDISEgoOVVBH",
+            "UkFERV9SRVNVTFQQMxIaChZEQUlMWV9NSVNTSU9OU19SRVFVRVNUEDwSGwoX",
+            "REFJTFlfTUlTU0lPTlNfUkVTUE9OU0UQPRIbChdNSVNTSU9OX1BST0dSRVNT",
+            "X1VQREFURRA+EhQKEE1JU1NJT05fQ09NUExFVEUQPxIbChdNSVNTSU9OX0NP",
+            "TVBMRVRFX1JFU1VMVBBAEhIKDk1JU1NJT05fUkVST0xMEEESGQoVTUlTU0lP",
+            "Tl9SRVJPTExfUkVTVUxUEEISEwoPTUlMRVNUT05FX0NMQUlNEEMSGgoWTUlM",
+            "RVNUT05FX0NMQUlNX1JFU1VMVBBEEhMKD01JTEVTVE9ORV9TVEFURRBFEhUK",
+            "EUFEX1dBVENIX0NPTVBMRVRFEEYSEwoPQURfV0FUQ0hfUkVTVUxUEEcSFQoR",
+            "QURfQ09VTlRFUlNfU1RBVEUQSBITCg9DVVJSRU5DWV9VUERBVEUQUBIaChZP",
+            "RkZMSU5FX1JFV0FSRF9SRVFVRVNUEFoSGQoVT0ZGTElORV9SRVdBUkRfUkVT",
+            "VUxUEFsSHgoaT0ZGTElORV9NT0RFX1NUQVJUX1JFUVVFU1QQXBIdChlPRkZM",
+            "SU5FX01PREVfU1RBUlRfUkVTVUxUEF0SFgoSRVJST1JfTk9USUZJQ0FUSU9O",
+            "EGQSFAoQR0VNX0xJU1RfUkVRVUVTVBBuEhUKEUdFTV9MSVNUX1JFU1BPTlNF",
+            "EG8SFQoRR0VNX0dBQ0hBX1JFUVVFU1QQcBIUChBHRU1fR0FDSEFfUkVTVUxU",
+            "EHESGQoVR0VNX1NZTlRIRVNJU19SRVFVRVNUEHISGAoUR0VNX1NZTlRIRVNJ",
+            "U19SRVNVTFQQcxIaChZHRU1fQ09OVkVSU0lPTl9SRVFVRVNUEHQSGQoVR0VN",
+            "X0NPTlZFUlNJT05fUkVTVUxUEHUSFwoTR0VNX0RJU0NBUkRfUkVRVUVTVBB2",
+            "EhYKEkdFTV9ESVNDQVJEX1JFU1VMVBB3EhUKEUdFTV9FUVVJUF9SRVFVRVNU",
+            "EHgSFAoQR0VNX0VRVUlQX1JFU1VMVBB5EhcKE0dFTV9VTkVRVUlQX1JFUVVF",
+            "U1QQehIWChJHRU1fVU5FUVVJUF9SRVNVTFQQexIbChdHRU1fU0xPVF9VTkxP",
+            "Q0tfUkVRVUVTVBB8EhoKFkdFTV9TTE9UX1VOTE9DS19SRVNVTFQQfRIgChxH",
+            "RU1fSU5WRU5UT1JZX0VYUEFORF9SRVFVRVNUEH4SHwobR0VNX0lOVkVOVE9S",
+            "WV9FWFBBTkRfUkVTVUxUEH8SHwoaR0VNX0FVVE9fU1lOVEhFU0lTX1JFUVVF",
+            "U1QQgAESHgoZR0VNX0FVVE9fU1lOVEhFU0lTX1JFU1VMVBCBAWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.GemType), typeof(global::Infinitepickaxe.GemGrade), typeof(global::Infinitepickaxe.MessageType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "MilestoneState", "AdWatchComplete", "AdWatchResult", "AdCountersState", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "ErrorNotification", "GemListRequest", "GemListResponse", "GemGachaRequest", "GemGachaResult", "GemSynthesisRequest", "GemSynthesisResult", "GemConversionRequest", "GemConversionResult", "GemDiscardRequest", "GemDiscardResult", "GemEquipRequest", "GemEquipResult", "GemUnequipRequest", "GemUnequipResult", "GemSlotUnlockRequest", "GemSlotUnlockResult", "GemInventoryExpandRequest", "GemInventoryExpandResult", "GemAutoSynthesisRequest", "GemAutoSynthesisResult" }, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "MilestoneState", "AdWatchComplete", "AdWatchResult", "AdCountersState", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "OfflineModeStartRequest", "OfflineModeStartResult", "ErrorNotification", "GemListRequest", "GemListResponse", "GemGachaRequest", "GemGachaResult", "GemSynthesisRequest", "GemSynthesisResult", "GemConversionRequest", "GemConversionResult", "GemDiscardRequest", "GemDiscardResult", "GemEquipRequest", "GemEquipResult", "GemUnequipRequest", "GemUnequipResult", "GemSlotUnlockRequest", "GemSlotUnlockResult", "GemInventoryExpandRequest", "GemInventoryExpandResult", "GemAutoSynthesisRequest", "GemAutoSynthesisResult" }, new[]{ "Message" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HandshakeRequest), global::Infinitepickaxe.HandshakeRequest.Parser, new[]{ "Jwt", "ClientVersion", "DeviceId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeSlotInfo), global::Infinitepickaxe.PickaxeSlotInfo.Parser, new[]{ "SlotIndex", "Level", "Tier", "AttackPower", "AttackSpeed", "CriticalHitPercent", "CriticalDamage", "Dps", "PityBonus", "IsUnlocked", "GemSlots" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdCounter), global::Infinitepickaxe.AdCounter.Parser, new[]{ "AdType", "AdCount", "DailyLimit" }, null, null, null, null),
@@ -347,6 +354,8 @@ namespace Infinitepickaxe {
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.CurrencyUpdate), global::Infinitepickaxe.CurrencyUpdate.Parser, new[]{ "Gold", "Crystal", "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineRewardRequest), global::Infinitepickaxe.OfflineRewardRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineRewardResult), global::Infinitepickaxe.OfflineRewardResult.Parser, new[]{ "ElapsedSeconds", "GoldEarned", "MiningCount", "TotalGold" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineModeStartRequest), global::Infinitepickaxe.OfflineModeStartRequest.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.OfflineModeStartResult), global::Infinitepickaxe.OfflineModeStartResult.Parser, new[]{ "Success", "CurrentOfflineHours", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.ErrorNotification), global::Infinitepickaxe.ErrorNotification.Parser, new[]{ "ErrorCode", "Message" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemInfo), global::Infinitepickaxe.GemInfo.Parser, new[]{ "GemInstanceId", "GemId", "Grade", "Type", "Name", "Icon", "StatMultiplier", "AcquiredAt" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemSlotInfo), global::Infinitepickaxe.GemSlotInfo.Parser, new[]{ "GemSlotIndex", "IsUnlocked", "EquippedGem" }, null, null, null, null),
@@ -471,6 +480,8 @@ namespace Infinitepickaxe {
     /// </summary>
     [pbr::OriginalName("OFFLINE_REWARD_REQUEST")] OfflineRewardRequest = 90,
     [pbr::OriginalName("OFFLINE_REWARD_RESULT")] OfflineRewardResult = 91,
+    [pbr::OriginalName("OFFLINE_MODE_START_REQUEST")] OfflineModeStartRequest = 92,
+    [pbr::OriginalName("OFFLINE_MODE_START_RESULT")] OfflineModeStartResult = 93,
     /// <summary>
     /// 에러
     /// </summary>
@@ -641,6 +652,12 @@ namespace Infinitepickaxe {
           break;
         case MessageOneofCase.OfflineRewardResult:
           OfflineRewardResult = other.OfflineRewardResult.Clone();
+          break;
+        case MessageOneofCase.OfflineModeStartRequest:
+          OfflineModeStartRequest = other.OfflineModeStartRequest.Clone();
+          break;
+        case MessageOneofCase.OfflineModeStartResult:
+          OfflineModeStartResult = other.OfflineModeStartResult.Clone();
           break;
         case MessageOneofCase.ErrorNotification:
           ErrorNotification = other.ErrorNotification.Clone();
@@ -1128,6 +1145,30 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "offline_mode_start_request" field.</summary>
+    public const int OfflineModeStartRequestFieldNumber = 102;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.OfflineModeStartRequest OfflineModeStartRequest {
+      get { return messageCase_ == MessageOneofCase.OfflineModeStartRequest ? (global::Infinitepickaxe.OfflineModeStartRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.OfflineModeStartRequest;
+      }
+    }
+
+    /// <summary>Field number for the "offline_mode_start_result" field.</summary>
+    public const int OfflineModeStartResultFieldNumber = 103;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.OfflineModeStartResult OfflineModeStartResult {
+      get { return messageCase_ == MessageOneofCase.OfflineModeStartResult ? (global::Infinitepickaxe.OfflineModeStartResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.OfflineModeStartResult;
+      }
+    }
+
     /// <summary>Field number for the "error_notification" field.</summary>
     public const int ErrorNotificationFieldNumber = 110;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1417,6 +1458,8 @@ namespace Infinitepickaxe {
       CurrencyUpdate = 90,
       OfflineRewardRequest = 100,
       OfflineRewardResult = 101,
+      OfflineModeStartRequest = 102,
+      OfflineModeStartResult = 103,
       ErrorNotification = 110,
       GemListRequest = 120,
       GemListResponse = 121,
@@ -1502,6 +1545,8 @@ namespace Infinitepickaxe {
       if (!object.Equals(CurrencyUpdate, other.CurrencyUpdate)) return false;
       if (!object.Equals(OfflineRewardRequest, other.OfflineRewardRequest)) return false;
       if (!object.Equals(OfflineRewardResult, other.OfflineRewardResult)) return false;
+      if (!object.Equals(OfflineModeStartRequest, other.OfflineModeStartRequest)) return false;
+      if (!object.Equals(OfflineModeStartResult, other.OfflineModeStartResult)) return false;
       if (!object.Equals(ErrorNotification, other.ErrorNotification)) return false;
       if (!object.Equals(GemListRequest, other.GemListRequest)) return false;
       if (!object.Equals(GemListResponse, other.GemListResponse)) return false;
@@ -1565,6 +1610,8 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.CurrencyUpdate) hash ^= CurrencyUpdate.GetHashCode();
       if (messageCase_ == MessageOneofCase.OfflineRewardRequest) hash ^= OfflineRewardRequest.GetHashCode();
       if (messageCase_ == MessageOneofCase.OfflineRewardResult) hash ^= OfflineRewardResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.OfflineModeStartRequest) hash ^= OfflineModeStartRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.OfflineModeStartResult) hash ^= OfflineModeStartResult.GetHashCode();
       if (messageCase_ == MessageOneofCase.ErrorNotification) hash ^= ErrorNotification.GetHashCode();
       if (messageCase_ == MessageOneofCase.GemListRequest) hash ^= GemListRequest.GetHashCode();
       if (messageCase_ == MessageOneofCase.GemListResponse) hash ^= GemListResponse.GetHashCode();
@@ -1740,6 +1787,14 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.OfflineRewardResult) {
         output.WriteRawTag(170, 6);
         output.WriteMessage(OfflineRewardResult);
+      }
+      if (messageCase_ == MessageOneofCase.OfflineModeStartRequest) {
+        output.WriteRawTag(178, 6);
+        output.WriteMessage(OfflineModeStartRequest);
+      }
+      if (messageCase_ == MessageOneofCase.OfflineModeStartResult) {
+        output.WriteRawTag(186, 6);
+        output.WriteMessage(OfflineModeStartResult);
       }
       if (messageCase_ == MessageOneofCase.ErrorNotification) {
         output.WriteRawTag(242, 6);
@@ -1971,6 +2026,14 @@ namespace Infinitepickaxe {
         output.WriteRawTag(170, 6);
         output.WriteMessage(OfflineRewardResult);
       }
+      if (messageCase_ == MessageOneofCase.OfflineModeStartRequest) {
+        output.WriteRawTag(178, 6);
+        output.WriteMessage(OfflineModeStartRequest);
+      }
+      if (messageCase_ == MessageOneofCase.OfflineModeStartResult) {
+        output.WriteRawTag(186, 6);
+        output.WriteMessage(OfflineModeStartResult);
+      }
       if (messageCase_ == MessageOneofCase.ErrorNotification) {
         output.WriteRawTag(242, 6);
         output.WriteMessage(ErrorNotification);
@@ -2166,6 +2229,12 @@ namespace Infinitepickaxe {
       }
       if (messageCase_ == MessageOneofCase.OfflineRewardResult) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(OfflineRewardResult);
+      }
+      if (messageCase_ == MessageOneofCase.OfflineModeStartRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(OfflineModeStartRequest);
+      }
+      if (messageCase_ == MessageOneofCase.OfflineModeStartResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(OfflineModeStartResult);
       }
       if (messageCase_ == MessageOneofCase.ErrorNotification) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(ErrorNotification);
@@ -2443,6 +2512,18 @@ namespace Infinitepickaxe {
             OfflineRewardResult = new global::Infinitepickaxe.OfflineRewardResult();
           }
           OfflineRewardResult.MergeFrom(other.OfflineRewardResult);
+          break;
+        case MessageOneofCase.OfflineModeStartRequest:
+          if (OfflineModeStartRequest == null) {
+            OfflineModeStartRequest = new global::Infinitepickaxe.OfflineModeStartRequest();
+          }
+          OfflineModeStartRequest.MergeFrom(other.OfflineModeStartRequest);
+          break;
+        case MessageOneofCase.OfflineModeStartResult:
+          if (OfflineModeStartResult == null) {
+            OfflineModeStartResult = new global::Infinitepickaxe.OfflineModeStartResult();
+          }
+          OfflineModeStartResult.MergeFrom(other.OfflineModeStartResult);
           break;
         case MessageOneofCase.ErrorNotification:
           if (ErrorNotification == null) {
@@ -2890,6 +2971,24 @@ namespace Infinitepickaxe {
             }
             input.ReadMessage(subBuilder);
             OfflineRewardResult = subBuilder;
+            break;
+          }
+          case 818: {
+            global::Infinitepickaxe.OfflineModeStartRequest subBuilder = new global::Infinitepickaxe.OfflineModeStartRequest();
+            if (messageCase_ == MessageOneofCase.OfflineModeStartRequest) {
+              subBuilder.MergeFrom(OfflineModeStartRequest);
+            }
+            input.ReadMessage(subBuilder);
+            OfflineModeStartRequest = subBuilder;
+            break;
+          }
+          case 826: {
+            global::Infinitepickaxe.OfflineModeStartResult subBuilder = new global::Infinitepickaxe.OfflineModeStartResult();
+            if (messageCase_ == MessageOneofCase.OfflineModeStartResult) {
+              subBuilder.MergeFrom(OfflineModeStartResult);
+            }
+            input.ReadMessage(subBuilder);
+            OfflineModeStartResult = subBuilder;
             break;
           }
           case 882: {
@@ -3399,6 +3498,24 @@ namespace Infinitepickaxe {
             }
             input.ReadMessage(subBuilder);
             OfflineRewardResult = subBuilder;
+            break;
+          }
+          case 818: {
+            global::Infinitepickaxe.OfflineModeStartRequest subBuilder = new global::Infinitepickaxe.OfflineModeStartRequest();
+            if (messageCase_ == MessageOneofCase.OfflineModeStartRequest) {
+              subBuilder.MergeFrom(OfflineModeStartRequest);
+            }
+            input.ReadMessage(subBuilder);
+            OfflineModeStartRequest = subBuilder;
+            break;
+          }
+          case 826: {
+            global::Infinitepickaxe.OfflineModeStartResult subBuilder = new global::Infinitepickaxe.OfflineModeStartResult();
+            if (messageCase_ == MessageOneofCase.OfflineModeStartResult) {
+              subBuilder.MergeFrom(OfflineModeStartResult);
+            }
+            input.ReadMessage(subBuilder);
+            OfflineModeStartResult = subBuilder;
             break;
           }
           case 882: {
@@ -15521,6 +15638,439 @@ namespace Infinitepickaxe {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class OfflineModeStartRequest : pb::IMessage<OfflineModeStartRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<OfflineModeStartRequest> _parser = new pb::MessageParser<OfflineModeStartRequest>(() => new OfflineModeStartRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<OfflineModeStartRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[39]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public OfflineModeStartRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public OfflineModeStartRequest(OfflineModeStartRequest other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public OfflineModeStartRequest Clone() {
+      return new OfflineModeStartRequest(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as OfflineModeStartRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(OfflineModeStartRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(OfflineModeStartRequest other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class OfflineModeStartResult : pb::IMessage<OfflineModeStartResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<OfflineModeStartResult> _parser = new pb::MessageParser<OfflineModeStartResult>(() => new OfflineModeStartResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<OfflineModeStartResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[40]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public OfflineModeStartResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public OfflineModeStartResult(OfflineModeStartResult other) : this() {
+      success_ = other.success_;
+      currentOfflineHours_ = other.currentOfflineHours_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public OfflineModeStartResult Clone() {
+      return new OfflineModeStartResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "current_offline_hours" field.</summary>
+    public const int CurrentOfflineHoursFieldNumber = 2;
+    private uint currentOfflineHours_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CurrentOfflineHours {
+      get { return currentOfflineHours_; }
+      set {
+        currentOfflineHours_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 3;
+    private string errorCode_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as OfflineModeStartResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(OfflineModeStartResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (CurrentOfflineHours != other.CurrentOfflineHours) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (CurrentOfflineHours != 0) hash ^= CurrentOfflineHours.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (CurrentOfflineHours != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(CurrentOfflineHours);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (CurrentOfflineHours != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(CurrentOfflineHours);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (CurrentOfflineHours != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CurrentOfflineHours);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(OfflineModeStartResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.CurrentOfflineHours != 0) {
+        CurrentOfflineHours = other.CurrentOfflineHours;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            CurrentOfflineHours = input.ReadUInt32();
+            break;
+          }
+          case 26: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            CurrentOfflineHours = input.ReadUInt32();
+            break;
+          }
+          case 26: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class ErrorNotification : pb::IMessage<ErrorNotification>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -15535,7 +16085,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[39]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[41]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -15779,7 +16329,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[40]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[42]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16251,7 +16801,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[41]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[43]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16541,7 +17091,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[42]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[44]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16702,7 +17252,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[43]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[45]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16966,7 +17516,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[44]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[46]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -17167,7 +17717,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[45]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[47]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -17588,7 +18138,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[46]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[48]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -17778,7 +18328,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[47]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[49]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18194,7 +18744,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[48]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[50]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18435,7 +18985,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[49]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[51]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18813,7 +19363,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[50]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[52]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19088,7 +19638,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[51]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[53]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19452,7 +20002,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[52]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[54]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19639,7 +20189,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[53]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[55]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19988,7 +20538,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[54]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[56]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20266,7 +20816,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[55]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[57]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20713,7 +21263,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[56]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[58]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20948,7 +21498,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[57]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[59]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21389,7 +21939,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[58]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[60]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21624,7 +22174,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[59]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[61]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -22013,7 +22563,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[60]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[62]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -22174,7 +22724,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[61]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[63]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

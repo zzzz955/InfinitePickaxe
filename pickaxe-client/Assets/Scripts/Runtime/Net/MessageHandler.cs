@@ -94,6 +94,7 @@ namespace InfinitePickaxe.Client.Net
 
         // 오프라인 보상
         public event Action<OfflineRewardResult> OnOfflineRewardResult;
+        public event Action<OfflineModeStartResult> OnOfflineModeStartResult;
 
         // 하트비트
         public event Action<HeartbeatAck> OnHeartbeat;
@@ -241,6 +242,9 @@ namespace InfinitePickaxe.Client.Net
 
                     case MessageType.OfflineRewardResult:
                         HandleOfflineRewardResult(envelope.OfflineRewardResult);
+                        break;
+                    case MessageType.OfflineModeStartResult:
+                        HandleOfflineModeStartResult(envelope.OfflineModeStartResult);
                         break;
 
                     case MessageType.HeartbeatAck:
@@ -581,7 +585,36 @@ namespace InfinitePickaxe.Client.Net
         private void HandleOfflineRewardResult(OfflineRewardResult result)
         {
             Debug.Log($"오프라인 보상: 골드 {result.GoldEarned}, 경과 시간 {result.ElapsedSeconds}초");
+            if (result != null && (result.TotalGold > 0 || result.GoldEarned > 0))
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = result.TotalGold,
+                    Crystal = null,
+                    Reason = "offline_reward"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+            }
             OnOfflineRewardResult?.Invoke(result);
+        }
+
+        private void HandleOfflineModeStartResult(OfflineModeStartResult result)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            if (result.Success)
+            {
+                Debug.Log("offline mode start success");
+            }
+            else
+            {
+                Debug.LogWarning($"offline mode start failed: {result.ErrorCode}");
+            }
+            OnOfflineModeStartResult?.Invoke(result);
         }
 
         private void HandleHeartbeat(HeartbeatAck heartbeatAck)
@@ -941,6 +974,17 @@ namespace InfinitePickaxe.Client.Net
             {
                 Type = MessageType.MilestoneClaim,
                 MilestoneClaim = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestOfflineModeStart()
+        {
+            var request = new OfflineModeStartRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.OfflineModeStartRequest,
+                OfflineModeStartRequest = request
             };
             NetworkManager.Instance.SendMessage(envelope);
         }

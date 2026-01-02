@@ -80,6 +80,8 @@ enum MessageType {
   // 오프라인 보상
   OFFLINE_REWARD_REQUEST = 90;
   OFFLINE_REWARD_RESULT = 91;
+  OFFLINE_MODE_START_REQUEST = 92;
+  OFFLINE_MODE_START_RESULT = 93;
 
   // 에러
   ERROR_NOTIFICATION = 100;
@@ -157,6 +159,8 @@ message Envelope {
 
     OfflineRewardRequest offline_reward_request = 100;
     OfflineRewardResult offline_reward_result = 101;
+    OfflineModeStartRequest offline_mode_start_request = 102;
+    OfflineModeStartResult offline_mode_start_result = 103;
 
     ErrorNotification error_notification = 110;
 
@@ -488,6 +492,15 @@ message OfflineRewardResult {
   uint64 gold_earned = 2;
   uint32 mining_count = 3;
   uint64 total_gold = 4;
+}
+
+message OfflineModeStartRequest {
+}
+
+message OfflineModeStartResult {
+  bool success = 1;
+  uint32 current_offline_hours = 2;
+  string error_code = 3;
 }
 
 // -------------- 공통 에러 --------------

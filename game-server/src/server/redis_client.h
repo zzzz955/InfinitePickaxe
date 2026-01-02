@@ -20,6 +20,7 @@ public:
                  std::unordered_map<std::string, std::string>& out_fields);
     bool set_string(const std::string& key, const std::string& value, std::chrono::seconds ttl);
     std::optional<std::string> get_string(const std::string& key);
+    bool delete_key(const std::string& key);
 
 private:
     std::string host_;

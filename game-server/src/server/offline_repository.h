@@ -16,6 +16,7 @@ public:
 
     OfflineState get_or_create_state(const std::string& user_id, uint32_t initial_seconds);
     std::optional<uint32_t> add_offline_seconds(const std::string& user_id, uint32_t delta_seconds, uint32_t initial_seconds);
+    std::optional<uint32_t> set_offline_seconds_today(const std::string& user_id, uint32_t seconds);
 
 private:
     ConnectionPool& pool_;

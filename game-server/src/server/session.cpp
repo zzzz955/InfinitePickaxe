@@ -70,6 +70,199 @@ namespace
         out = static_cast<uint32_t>(v);
         return true;
     }
+
+    constexpr int kOfflineSessionTtlSeconds = 60 * 60 * 24 * 90;
+
+    struct OfflineSessionData
+    {
+        uint64_t start_ms{0};
+        uint32_t available_seconds{0};
+        uint32_t mineral_id{0};
+        uint64_t current_hp{0};
+        uint64_t respawn_remaining_ms{0};
+        uint64_t total_dps{0};
+    };
+
+    struct OfflineMiningResult
+    {
+        uint64_t gold_earned{0};
+        uint32_t mining_count{0};
+        uint64_t remaining_hp{0};
+        uint64_t respawn_remaining_ms{0};
+    };
+
+    uint64_t now_ms_utc()
+    {
+        return static_cast<uint64_t>(
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch())
+                .count());
+    }
+
+    uint32_t kst_date_yyyymmdd(uint64_t epoch_ms)
+    {
+        auto tp = std::chrono::system_clock::time_point(std::chrono::milliseconds(epoch_ms));
+        auto kst_tp = tp + std::chrono::hours(9);
+        std::time_t tt = std::chrono::system_clock::to_time_t(kst_tp);
+        std::tm tm = *std::gmtime(&tt);
+        return static_cast<uint32_t>(
+            (tm.tm_year + 1900) * 10000 +
+            (tm.tm_mon + 1) * 100 +
+            tm.tm_mday);
+    }
+
+    bool parse_offline_session(const std::unordered_map<std::string, std::string>& fields, OfflineSessionData& out)
+    {
+        auto it_start = fields.find("start_ms");
+        auto it_available = fields.find("available_seconds");
+        auto it_mineral = fields.find("mineral_id");
+        auto it_hp = fields.find("current_hp");
+        auto it_respawn = fields.find("respawn_remaining_ms");
+        auto it_dps = fields.find("total_dps");
+
+        if (it_start == fields.end() || it_available == fields.end() ||
+            it_mineral == fields.end() || it_hp == fields.end() ||
+            it_respawn == fields.end() || it_dps == fields.end())
+        {
+            return false;
+        }
+
+        if (!parse_u64(it_start->second, out.start_ms)) return false;
+        if (!parse_u32(it_available->second, out.available_seconds)) return false;
+        if (!parse_u32(it_mineral->second, out.mineral_id)) return false;
+        if (!parse_u64(it_hp->second, out.current_hp)) return false;
+        if (!parse_u64(it_respawn->second, out.respawn_remaining_ms)) return false;
+        if (!parse_u64(it_dps->second, out.total_dps)) return false;
+
+        return true;
+    }
+
+    OfflineMiningResult simulate_offline_mining(const MineralMeta& mineral,
+                                                uint64_t total_dps,
+                                                uint64_t current_hp,
+                                                uint64_t respawn_remaining_ms,
+                                                uint64_t elapsed_seconds)
+    {
+        OfflineMiningResult result;
+        if (total_dps == 0 || elapsed_seconds == 0 || mineral.hp == 0)
+        {
+            result.remaining_hp = current_hp;
+            result.respawn_remaining_ms = respawn_remaining_ms;
+            return result;
+        }
+
+        long double elapsed = static_cast<long double>(elapsed_seconds);
+        long double dps = static_cast<long double>(total_dps);
+        long double max_hp = static_cast<long double>(mineral.hp);
+        long double hp = static_cast<long double>(current_hp);
+        if (hp < 0.0L) hp = 0.0L;
+        if (hp > max_hp) hp = max_hp;
+
+        long double respawn_remaining = static_cast<long double>(respawn_remaining_ms) / 1000.0L;
+        long double respawn_time = static_cast<long double>(mineral.respawn_time);
+
+        if (respawn_remaining > 0.0L)
+        {
+            if (elapsed < respawn_remaining)
+            {
+                respawn_remaining -= elapsed;
+                elapsed = 0.0L;
+            }
+            else
+            {
+                elapsed -= respawn_remaining;
+                respawn_remaining = 0.0L;
+                hp = max_hp;
+            }
+        }
+
+        if (elapsed <= 0.0L)
+        {
+            if (respawn_remaining > 0.0L)
+            {
+                result.remaining_hp = 0;
+                result.respawn_remaining_ms = static_cast<uint64_t>(std::llround(std::max(0.0L, respawn_remaining) * 1000.0L));
+            }
+            else
+            {
+                result.remaining_hp = static_cast<uint64_t>(std::llround(std::max(0.0L, hp)));
+                result.respawn_remaining_ms = 0;
+            }
+            return result;
+        }
+
+        if (hp <= 0.0L)
+        {
+            hp = max_hp;
+        }
+
+        long double time_to_kill = hp / dps;
+        if (elapsed < time_to_kill)
+        {
+            hp -= dps * elapsed;
+            result.remaining_hp = static_cast<uint64_t>(std::llround(std::max(0.0L, hp)));
+            result.respawn_remaining_ms = 0;
+            return result;
+        }
+
+        elapsed -= time_to_kill;
+        result.mining_count += 1;
+        result.gold_earned += mineral.reward;
+
+        long double full_kill_time = max_hp / dps;
+        long double cycle_time = full_kill_time + respawn_time;
+        if (cycle_time > 0.0L && elapsed >= cycle_time)
+        {
+            auto cycles = static_cast<unsigned long long>(std::floor(elapsed / cycle_time));
+            if (cycles > 0)
+            {
+                result.mining_count += static_cast<uint32_t>(std::min<unsigned long long>(cycles, std::numeric_limits<uint32_t>::max() - result.mining_count));
+                result.gold_earned += static_cast<uint64_t>(cycles) * mineral.reward;
+                elapsed -= static_cast<long double>(cycles) * cycle_time;
+            }
+        }
+
+        if (respawn_time > 0.0L)
+        {
+            if (elapsed < respawn_time)
+            {
+                respawn_remaining = respawn_time - elapsed;
+                result.remaining_hp = 0;
+                result.respawn_remaining_ms = static_cast<uint64_t>(std::llround(std::max(0.0L, respawn_remaining) * 1000.0L));
+                return result;
+            }
+            elapsed -= respawn_time;
+        }
+
+        hp = max_hp;
+        time_to_kill = hp / dps;
+        if (elapsed < time_to_kill)
+        {
+            hp -= dps * elapsed;
+            result.remaining_hp = static_cast<uint64_t>(std::llround(std::max(0.0L, hp)));
+            result.respawn_remaining_ms = 0;
+            return result;
+        }
+
+        elapsed -= time_to_kill;
+        result.mining_count += 1;
+        result.gold_earned += mineral.reward;
+
+        respawn_remaining = respawn_time - elapsed;
+        if (respawn_remaining < 0.0L)
+        {
+            respawn_remaining = 0.0L;
+        }
+        result.remaining_hp = 0;
+        result.respawn_remaining_ms = static_cast<uint64_t>(std::llround(std::max(0.0L, respawn_remaining) * 1000.0L));
+
+        if (respawn_time == 0.0L && result.remaining_hp == 0)
+        {
+            result.remaining_hp = mineral.hp;
+        }
+
+        return result;
+    }
 } // namespace
 
 Session::Session(boost::asio::ip::tcp::socket socket,
@@ -325,11 +518,18 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     res.set_success(true);
     res.set_message("OK");
 
+    infinitepickaxe::OfflineRewardResult offline_reward;
+    bool has_offline_reward = try_consume_offline_session(offline_reward);
+
     // UserDataSnapshot 구성
     auto *snapshot = res.mutable_snapshot();
 
     // 유저 게임 데이터 조회
     auto game_data = game_repo_.get_user_game_data(user_id_);
+    if (has_offline_reward)
+    {
+        offline_reward.set_total_gold(game_data.gold);
+    }
     uint32_t cached_mineral_id = 0;
     uint64_t cached_hp = 0;
     uint64_t cached_respawn_until_ms = 0;
@@ -398,6 +598,13 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     send_daily_missions_state();
     send_milestone_state();
     send_ad_counters_state();
+    if (has_offline_reward)
+    {
+        infinitepickaxe::Envelope reward_env;
+        reward_env.set_type(infinitepickaxe::OFFLINE_REWARD_RESULT);
+        *reward_env.mutable_offline_reward_result() = offline_reward;
+        send_envelope(reward_env);
+    }
 
     // 채굴 상태 초기화 (DB/캐시에서 로드한 현재 광물, nullable 처리)
     
@@ -732,6 +939,101 @@ void Session::handle_offline_reward(const infinitepickaxe::Envelope &env)
     send_envelope(response_env);
 }
 
+void Session::handle_offline_mode_start(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_offline_mode_start_request())
+    {
+        send_error("2004", "offline_mode_start_request message missing");
+        return;
+    }
+
+    infinitepickaxe::OfflineModeStartResult res;
+    res.set_success(false);
+    res.set_error_code("");
+
+    auto offline_state = offline_service_.get_state(user_id_);
+    res.set_current_offline_hours(offline_state.current_offline_seconds / 3600);
+
+    if (offline_state.current_offline_seconds == 0)
+    {
+        res.set_error_code("NO_OFFLINE_TIME");
+    }
+
+    uint32_t mineral_id = mining_state_.current_mineral_id;
+    uint64_t current_hp = mining_state_.current_hp;
+    uint64_t respawn_remaining_ms = 0;
+    if (mining_state_.respawn_timer_ms > 0.0f)
+    {
+        respawn_remaining_ms = static_cast<uint64_t>(mining_state_.respawn_timer_ms);
+    }
+
+    if (mineral_id == 0)
+    {
+        auto game_data = game_repo_.get_user_game_data(user_id_);
+        if (game_data.current_mineral_id.has_value())
+        {
+            mineral_id = game_data.current_mineral_id.value();
+            current_hp = game_data.current_mineral_hp.value_or(0);
+        }
+    }
+
+    const auto *mineral = metadata_.mineral(mineral_id);
+    if (res.error_code().empty())
+    {
+        if (mineral_id == 0)
+        {
+            res.set_error_code("MINERAL_NOT_SELECTED");
+        }
+        else if (mineral == nullptr)
+        {
+            res.set_error_code("INVALID_MINERAL");
+        }
+    }
+
+    auto slots_response = slot_service_.handle_all_slots(user_id_);
+    uint64_t total_dps = slots_response.total_dps();
+    if (res.error_code().empty() && total_dps == 0)
+    {
+        res.set_error_code("DPS_ZERO");
+    }
+
+    if (res.error_code().empty() && mineral != nullptr)
+    {
+        if (current_hp > mineral->hp)
+        {
+            current_hp = mineral->hp;
+        }
+    }
+
+    if (res.error_code().empty())
+    {
+        const std::string key = "offline:mode:" + user_id_;
+        std::unordered_map<std::string, std::string> fields{
+            {"start_ms", std::to_string(now_ms_utc())},
+            {"available_seconds", std::to_string(offline_state.current_offline_seconds)},
+            {"mineral_id", std::to_string(mineral_id)},
+            {"current_hp", std::to_string(current_hp)},
+            {"respawn_remaining_ms", std::to_string(respawn_remaining_ms)},
+            {"total_dps", std::to_string(total_dps)}
+        };
+
+        if (!redis_.hset_fields(key, fields, std::chrono::seconds(kOfflineSessionTtlSeconds)))
+        {
+            res.set_error_code("REDIS_ERROR");
+        }
+    }
+
+    if (res.error_code().empty())
+    {
+        res.set_success(true);
+    }
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::OFFLINE_MODE_START_RESULT);
+    *response_env.mutable_offline_mode_start_result() = res;
+    send_envelope(response_env);
+}
+
 void Session::init_router()
 {
     router_.register_handler(infinitepickaxe::HEARTBEAT, [this](const infinitepickaxe::Envelope &e)
@@ -760,6 +1062,8 @@ void Session::init_router()
                              { handle_all_slots(e); });
     router_.register_handler(infinitepickaxe::OFFLINE_REWARD_REQUEST, [this](const infinitepickaxe::Envelope &e)
                              { handle_offline_reward(e); });
+    router_.register_handler(infinitepickaxe::OFFLINE_MODE_START_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_offline_mode_start(e); });
     router_.register_handler(infinitepickaxe::GEM_LIST_REQUEST, [this](const infinitepickaxe::Envelope &e)
                              { handle_gem_list(e); });
     router_.register_handler(infinitepickaxe::GEM_GACHA_REQUEST, [this](const infinitepickaxe::Envelope &e)
@@ -922,6 +1226,136 @@ bool Session::load_cached_mining_state(uint32_t& mineral_id, uint64_t& hp, uint6
             respawn_until_ms = cached_respawn;
         }
     }
+    return true;
+}
+
+bool Session::try_consume_offline_session(infinitepickaxe::OfflineRewardResult& out_result)
+{
+    if (user_id_.empty())
+    {
+        return false;
+    }
+
+    std::unordered_map<std::string, std::string> fields;
+    const std::string key = "offline:mode:" + user_id_;
+    if (!redis_.hgetall(key, fields) || fields.empty())
+    {
+        return false;
+    }
+
+    OfflineSessionData data;
+    if (!parse_offline_session(fields, data))
+    {
+        redis_.delete_key(key);
+        return false;
+    }
+
+    uint64_t now_ms = now_ms_utc();
+    if (now_ms <= data.start_ms)
+    {
+        redis_.delete_key(key);
+        return false;
+    }
+
+    uint64_t elapsed_seconds = (now_ms - data.start_ms) / 1000;
+    if (elapsed_seconds > data.available_seconds)
+    {
+        elapsed_seconds = data.available_seconds;
+    }
+
+    uint32_t start_date = kst_date_yyyymmdd(data.start_ms);
+    uint32_t end_date = kst_date_yyyymmdd(now_ms);
+    uint32_t new_seconds = data.available_seconds;
+    if (start_date != end_date)
+    {
+        new_seconds = offline_service_.initial_offline_seconds();
+    }
+    else
+    {
+        new_seconds = data.available_seconds > elapsed_seconds
+            ? static_cast<uint32_t>(data.available_seconds - elapsed_seconds)
+            : 0;
+    }
+
+    if (!offline_service_.set_offline_seconds_today(user_id_, new_seconds).has_value())
+    {
+        spdlog::warn("offline_seconds update failed: user={}", user_id_);
+    }
+
+    if (elapsed_seconds == 0)
+    {
+        redis_.delete_key(key);
+        return false;
+    }
+
+    const auto *mineral = metadata_.mineral(data.mineral_id);
+    OfflineMiningResult mining_result{};
+    uint64_t clamped_hp = data.current_hp;
+    if (mineral != nullptr && mineral->hp > 0 && clamped_hp > mineral->hp)
+    {
+        clamped_hp = mineral->hp;
+    }
+
+    if (mineral != nullptr && mineral->hp > 0 && data.total_dps > 0)
+    {
+        mining_result = simulate_offline_mining(*mineral,
+                                                data.total_dps,
+                                                clamped_hp,
+                                                data.respawn_remaining_ms,
+                                                elapsed_seconds);
+    }
+    else
+    {
+        mining_result.remaining_hp = clamped_hp;
+        mining_result.respawn_remaining_ms = data.respawn_remaining_ms;
+    }
+
+    if (mineral != nullptr)
+    {
+        uint64_t new_hp = mining_result.remaining_hp;
+        if (mineral->respawn_time == 0 && new_hp == 0)
+        {
+            new_hp = mineral->hp;
+        }
+        if (new_hp > mineral->hp)
+        {
+            new_hp = mineral->hp;
+        }
+
+        if (!game_repo_.set_current_mineral(user_id_, data.mineral_id, new_hp))
+        {
+            spdlog::warn("offline reward failed to update mineral state: user={} mineral_id={}",
+                         user_id_, data.mineral_id);
+        }
+
+        uint64_t respawn_until_ms = 0;
+        if (mining_result.respawn_remaining_ms > 0)
+        {
+            respawn_until_ms = now_ms + mining_result.respawn_remaining_ms;
+        }
+
+        std::unordered_map<std::string, std::string> cache_fields{
+            {"mineral_id", std::to_string(data.mineral_id)},
+            {"current_hp", std::to_string(new_hp)},
+            {"max_hp", std::to_string(mineral->hp)},
+            {"respawn_until_ms", std::to_string(respawn_until_ms)},
+            {"updated_at", std::to_string(now_ms / 1000)}
+        };
+        const std::string mining_key = "session:mining:" + user_id_;
+        redis_.hset_fields(mining_key, cache_fields, std::chrono::seconds(kMiningCacheTtlSeconds));
+    }
+
+    if (mining_result.gold_earned > 0 || mining_result.mining_count > 0)
+    {
+        mining_service_.apply_offline_reward(user_id_, mining_result.gold_earned, mining_result.mining_count);
+    }
+
+    out_result.set_elapsed_seconds(elapsed_seconds);
+    out_result.set_gold_earned(mining_result.gold_earned);
+    out_result.set_mining_count(mining_result.mining_count);
+    out_result.set_total_gold(0);
+
+    redis_.delete_key(key);
     return true;
 }
 

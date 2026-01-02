@@ -105,3 +105,18 @@ std::optional<std::string> RedisClient::get_string(const std::string& key) {
         return std::nullopt;
     }
 }
+
+bool RedisClient::delete_key(const std::string& key) {
+    try {
+        sw::redis::ConnectionOptions opts;
+        opts.host = host_;
+        opts.port = static_cast<int>(port_);
+        auto redis = sw::redis::Redis(opts);
+
+        redis.del(key);
+        return true;
+    } catch (const std::exception& ex) {
+        spdlog::warn("Redis del failed for key {}: {}", key, ex.what());
+        return false;
+    }
+}
