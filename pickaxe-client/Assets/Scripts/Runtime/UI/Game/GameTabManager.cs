@@ -90,10 +90,6 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 settingsButton.onClick.AddListener(() => ShowTab(GameTab.Settings));
             }
-            else
-            {
-                Debug.LogWarning("GameTabManager: SettingsButton이 할당되지 않았습니다.");
-            }
 
             isInitialized = true;
 

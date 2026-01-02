@@ -26,6 +26,19 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI adWatchResultCrystalText;
         [SerializeField] private Button adWatchResultCloseButton;
         [SerializeField] private Color adWatchFailColor = new Color(1f, 0.6f, 0.6f);
+        [SerializeField] private Button menuButton;
+        [SerializeField] private GameObject menuDropdown;
+        [SerializeField] private Button menuBackgroundButton;
+        [SerializeField] private Button menuSettingsButton;
+        [SerializeField] private Button menuLogoutButton;
+        [SerializeField] private Button menuExitButton;
+        [SerializeField] private GameObject settingsModal;
+        [SerializeField] private Button settingsCloseButton;
+        [SerializeField] private Button settingsBackgroundButton;
+        [SerializeField] private GameObject logoutConfirmModal;
+        [SerializeField] private Button logoutConfirmButton;
+        [SerializeField] private Button logoutCancelButton;
+        [SerializeField] private Button logoutBackgroundButton;
 
         private ulong? currentGold;
         private uint? currentCrystal;
@@ -64,6 +77,10 @@ namespace InfinitePickaxe.Client.UI.Game
                 adWatchResultColorCached = true;
             }
 
+            SetupMenuButtons();
+            SetupSettingsModalButtons();
+            SetupLogoutModalButtons();
+
             messageHandler = MessageHandler.Instance;
             if (messageHandler != null)
             {
@@ -86,6 +103,10 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 messageHandler.OnAdWatchResult -= HandleAdWatchResult;
             }
+
+            CloseMenu();
+            CloseSettingsModal();
+            CloseLogoutModal();
 
             UnsubscribeAdState();
         }
@@ -214,6 +235,180 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 adWatchResultModal.SetActive(false);
             }
+        }
+
+        private void SetupMenuButtons()
+        {
+            if (menuButton != null)
+            {
+                menuButton.onClick.RemoveAllListeners();
+                menuButton.onClick.AddListener(ToggleMenu);
+            }
+
+            if (menuBackgroundButton != null)
+            {
+                menuBackgroundButton.onClick.RemoveAllListeners();
+                menuBackgroundButton.onClick.AddListener(CloseMenu);
+            }
+
+            if (menuSettingsButton != null)
+            {
+                menuSettingsButton.onClick.RemoveAllListeners();
+                menuSettingsButton.onClick.AddListener(OpenSettingsModal);
+            }
+
+            if (menuLogoutButton != null)
+            {
+                menuLogoutButton.onClick.RemoveAllListeners();
+                menuLogoutButton.onClick.AddListener(OpenLogoutModal);
+            }
+
+            if (menuExitButton != null)
+            {
+                menuExitButton.onClick.RemoveAllListeners();
+                menuExitButton.onClick.AddListener(RequestGameExit);
+            }
+
+            CloseMenu();
+        }
+
+        private void ToggleMenu()
+        {
+            if (menuDropdown == null)
+            {
+                return;
+            }
+
+            bool nextActive = !menuDropdown.activeSelf;
+            menuDropdown.SetActive(nextActive);
+            if (nextActive)
+            {
+                menuDropdown.transform.SetAsLastSibling();
+            }
+        }
+
+        private void CloseMenu()
+        {
+            if (menuDropdown != null)
+            {
+                menuDropdown.SetActive(false);
+            }
+        }
+
+        private void OpenSettingsModal()
+        {
+            CloseMenu();
+
+            if (settingsModal == null)
+            {
+                return;
+            }
+
+            settingsModal.SetActive(true);
+            settingsModal.transform.SetAsLastSibling();
+
+            var controller = settingsModal.GetComponentInChildren<SettingsTabController>();
+            controller?.RefreshData();
+        }
+
+        private void CloseSettingsModal()
+        {
+            if (settingsModal != null)
+            {
+                settingsModal.SetActive(false);
+            }
+        }
+
+        private void OpenLogoutModal()
+        {
+            CloseMenu();
+
+            if (logoutConfirmModal == null)
+            {
+                ConfirmLogout();
+                return;
+            }
+
+            logoutConfirmModal.SetActive(true);
+            logoutConfirmModal.transform.SetAsLastSibling();
+        }
+
+        private void CloseLogoutModal()
+        {
+            if (logoutConfirmModal != null)
+            {
+                logoutConfirmModal.SetActive(false);
+            }
+        }
+
+        private void ConfirmLogout()
+        {
+            CloseLogoutModal();
+
+            var gameController = FindObjectOfType<GameSceneController>();
+            if (gameController != null)
+            {
+                gameController.LogoutToTitle();
+                return;
+            }
+        }
+
+        private void RequestGameExit()
+        {
+            CloseMenu();
+
+            var gameController = FindObjectOfType<GameSceneController>();
+            gameController?.RequestExitFromGame();
+        }
+
+        private void SetupSettingsModalButtons()
+        {
+            if (settingsModal == null)
+            {
+                return;
+            }
+
+            if (settingsBackgroundButton != null)
+            {
+                settingsBackgroundButton.onClick.RemoveAllListeners();
+                settingsBackgroundButton.onClick.AddListener(CloseSettingsModal);
+            }
+
+            if (settingsCloseButton != null)
+            {
+                settingsCloseButton.onClick.RemoveAllListeners();
+                settingsCloseButton.onClick.AddListener(CloseSettingsModal);
+            }
+
+            CloseSettingsModal();
+        }
+
+        private void SetupLogoutModalButtons()
+        {
+            if (logoutConfirmModal == null)
+            {
+                return;
+            }
+
+            if (logoutBackgroundButton != null)
+            {
+                logoutBackgroundButton.onClick.RemoveAllListeners();
+                logoutBackgroundButton.onClick.AddListener(CloseLogoutModal);
+            }
+
+            if (logoutCancelButton != null)
+            {
+                logoutCancelButton.onClick.RemoveAllListeners();
+                logoutCancelButton.onClick.AddListener(CloseLogoutModal);
+            }
+
+            if (logoutConfirmButton != null)
+            {
+                logoutConfirmButton.onClick.RemoveAllListeners();
+                logoutConfirmButton.onClick.AddListener(ConfirmLogout);
+            }
+
+            CloseLogoutModal();
         }
     }
 }

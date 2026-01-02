@@ -25,6 +25,13 @@ namespace InfinitePickaxe.Client.Core
 
         public bool TryGetSlot(uint index, out PickaxeSlotInfo info) => slots.TryGetValue(index, out info);
 
+        public void ResetAll()
+        {
+            slots.Clear();
+            TotalDps = 0;
+            RaiseChanged();
+        }
+
         public void UpdateFromSnapshot(UserDataSnapshot snapshot)
         {
             if (snapshot == null) return;

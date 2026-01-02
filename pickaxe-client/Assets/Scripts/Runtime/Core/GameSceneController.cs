@@ -638,6 +638,32 @@ namespace InfinitePickaxe.Client.Core
 #endif
         }
 
+        public void LogoutToTitle()
+        {
+            suppressDisconnectNotice = true;
+            CancelReconnectOverlay();
+            HideLoadingOverlay();
+
+            if (networkManager == null)
+            {
+                networkManager = NetworkManager.Instance;
+            }
+
+            if (networkManager != null && networkManager.IsConnected)
+            {
+                networkManager.Disconnect();
+            }
+
+            sessionService?.Clear();
+
+            UserResourceCache.Instance.Reset();
+            GemStateCache.Instance.ResetAll();
+            QuestStateCache.Instance.ResetAll();
+            PickaxeStateCache.Instance.ResetAll();
+
+            ReturnToLogin();
+        }
+
         private void HandleOfflineModeStartResult(OfflineModeStartResult result)
         {
             offlineModeRequestPending = false;
