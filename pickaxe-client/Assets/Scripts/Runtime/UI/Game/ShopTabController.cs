@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -34,17 +31,6 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button toastConfirmButton;
         [SerializeField] private GemGachaResultModalController gemGachaResultModal;
 
-        [Header("Ad UI References")]
-        [SerializeField] private Button watchAdButton1;
-        [SerializeField] private Button watchAdButton2;
-        [SerializeField] private Button watchAdButton3;
-        [SerializeField] private TextMeshProUGUI adCountText;
-
-        [Header("Shop Data")]
-        [SerializeField] private int watchedAdCount = 0;
-        [SerializeField] private int maxAdCount = 3;
-
-        private const string CrystalRewardAdType = "crystal_reward";
         private const int SinglePullCost = 50;
         private const int MultiPullCost = 500;
         private const int MultiPullCount = 11;
@@ -55,9 +41,6 @@ namespace InfinitePickaxe.Client.UI.Game
         private SubTab currentSubTab = SubTab.Gems;
 
         private MessageHandler messageHandler;
-        private QuestStateCache questState;
-        private bool adStateSubscribed;
-        private float nextTimerRefreshTime;
 
         protected override void Initialize()
         {
@@ -86,19 +69,6 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             // 광고 버튼 이벤트 리스너 등록
-            if (watchAdButton1 != null)
-            {
-                watchAdButton1.onClick.AddListener(() => OnWatchAdClicked(1));
-            }
-            if (watchAdButton2 != null)
-            {
-                watchAdButton2.onClick.AddListener(() => OnWatchAdClicked(2));
-            }
-            if (watchAdButton3 != null)
-            {
-                watchAdButton3.onClick.AddListener(() => OnWatchAdClicked(3));
-            }
-
             // 서브탭 AutoBind
             AutoBindSubTabs();
 
@@ -120,7 +90,6 @@ namespace InfinitePickaxe.Client.UI.Game
             base.OnEnable();
 
             SubscribeMessageHandler();
-            SubscribeAdState();
             SubscribeResourceCache();
             RefreshData();
         }
@@ -129,23 +98,12 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             base.OnDisable();
             UnsubscribeMessageHandler();
-            UnsubscribeAdState();
             UnsubscribeResourceCache();
-        }
-
-        private void Update()
-        {
-            if (!isActive) return;
-            if (Time.unscaledTime < nextTimerRefreshTime) return;
-
-            nextTimerRefreshTime = Time.unscaledTime + 1f;
-            UpdateAdCount();
         }
 
         private void OnDestroy()
         {
             UnsubscribeMessageHandler();
-            UnsubscribeAdState();
             UnsubscribeResourceCache();
         }
 
@@ -154,7 +112,6 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         public override void RefreshData()
         {
-            UpdateAdCount();
         }
 
         #region Tab Switching
@@ -464,73 +421,6 @@ namespace InfinitePickaxe.Client.UI.Game
 
         #endregion
 
-        #region Ad UI (필요시)
-
-        private void UpdateAdCount()
-        {
-            int watched = watchedAdCount;
-            int limit = maxAdCount;
-
-            if (questState != null && questState.TryGetAdCounter(CrystalRewardAdType, out var counter))
-            {
-                watched = (int)counter.AdCount;
-                if (counter.DailyLimit > 0)
-                {
-                    limit = (int)counter.DailyLimit;
-                }
-            }
-
-            watchedAdCount = watched;
-            maxAdCount = limit;
-
-            if (adCountText != null)
-            {
-                string timer = FormatResetTimer(questState != null ? questState.AdCountersResetTimestampMs : 0);
-                var textValue = $"광고 보상 (?�늘 {watchedAdCount}/{maxAdCount})";
-                if (!string.IsNullOrEmpty(timer))
-                {
-                    textValue += $" | 리셋 {timer}";
-                }
-                adCountText.text = textValue;
-            }
-
-            if (watchAdButton1 != null)
-            {
-                watchAdButton1.interactable = watchedAdCount < 1 && maxAdCount >= 1;
-            }
-            if (watchAdButton2 != null)
-            {
-                watchAdButton2.interactable = watchedAdCount < 2 && maxAdCount >= 2;
-            }
-            if (watchAdButton3 != null)
-            {
-                watchAdButton3.interactable = watchedAdCount < 3 && maxAdCount >= 3;
-            }
-        }
-
-        /// <summary>
-        /// 광고 시청 버튼 클릭 이벤트
-        /// </summary>
-        private void OnWatchAdClicked(int tier)
-        {
-            messageHandler ??= MessageHandler.Instance;
-            messageHandler?.NotifyAdWatchComplete(CrystalRewardAdType);
-            Debug.Log($"ShopTabController: 광고 ?�청 ?�료 (Tier {tier})");
-        }
-
-        private string FormatResetTimer(ulong resetTimestampMs)
-        {
-            if (resetTimestampMs == 0) return string.Empty;
-
-            long remainingMs = (long)resetTimestampMs - ServerTimeCache.Instance.NowMs;
-            if (remainingMs < 0) remainingMs = 0;
-
-            var span = TimeSpan.FromMilliseconds(remainingMs);
-            int hours = (int)Math.Floor(span.TotalHours);
-            return $"{hours:00}:{span.Minutes:00}:{span.Seconds:00}";
-        }
-
-        #endregion
 
         #region Message & Cache
 
@@ -558,30 +448,6 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnUserDataSnapshot -= HandleSnapshot;
             messageHandler.OnCurrencyUpdate -= HandleCurrencyUpdate;
             messageHandler.OnGemGachaResult -= OnGemGachaResult;
-        }
-
-        private void SubscribeAdState()
-        {
-            if (adStateSubscribed) return;
-            questState = QuestStateCache.Instance;
-            if (questState != null)
-            {
-                questState.OnAdCountersChanged += HandleAdCountersChanged;
-                adStateSubscribed = true;
-                UpdateAdCount();
-            }
-        }
-
-        private void UnsubscribeAdState()
-        {
-            if (!adStateSubscribed || questState == null) return;
-            questState.OnAdCountersChanged -= HandleAdCountersChanged;
-            adStateSubscribed = false;
-        }
-
-        private void HandleAdCountersChanged()
-        {
-            UpdateAdCount();
         }
 
         private void HandleHandshake(HandshakeResponse res)
