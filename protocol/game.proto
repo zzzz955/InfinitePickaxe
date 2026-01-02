@@ -424,8 +424,8 @@ message MilestoneClaim {
 message MilestoneClaimResult {
   bool success = 1;
   uint32 milestone_count = 2;
-  uint32 offline_hours_gained = 3;  // 오프라인 보상 시간 증가량
-  uint32 total_offline_hours = 4;   // 현재 총 오프라인 보유 시간
+  uint32 offline_seconds_gained = 3;  // offline time delta (seconds)
+  uint32 total_offline_seconds = 4;   // total offline time (seconds)
   uint32 reward_crystal = 5;        // 이번 수령으로 받은 크리스탈
   uint32 total_crystal = 6;         // 수령 후 총 크리스탈
   string error_code = 7;

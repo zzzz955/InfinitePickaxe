@@ -66,6 +66,7 @@ namespace InfinitePickaxe.Client.Core
         private bool offlineModeRequestPending = false;
         private bool suppressDisconnectNotice = false;
         private MineralMetaResolver mineralMetaResolver;
+        private UserResourceCache resourceCache;
 
         public GameObject LoadingPanel => loadingPanel;
 
@@ -407,7 +408,22 @@ namespace InfinitePickaxe.Client.Core
                 return false;
             }
 
-            if (snapshot.CurrentOfflineSeconds == 0)
+            if (resourceCache == null)
+            {
+                resourceCache = UserResourceCache.Instance;
+            }
+
+            uint availableSeconds = 0;
+            if (resourceCache != null && resourceCache.TryGetOfflineSeconds(out var cachedSeconds))
+            {
+                availableSeconds = cachedSeconds;
+            }
+            else
+            {
+                availableSeconds = snapshot.CurrentOfflineSeconds;
+            }
+
+            if (availableSeconds == 0)
             {
                 errorCode = "NO_OFFLINE_TIME";
                 return false;
@@ -436,7 +452,6 @@ namespace InfinitePickaxe.Client.Core
                 return false;
             }
 
-            uint availableSeconds = snapshot.CurrentOfflineSeconds;
             ulong currentHp = snapshot.MineralHp ?? 0;
             estimate = EstimateOfflineReward(availableSeconds, mineral, PickaxeStateCache.Instance.TotalDps, currentHp);
             return true;
@@ -541,6 +556,14 @@ namespace InfinitePickaxe.Client.Core
             if (offlineModeMiningCountText != null)
             {
                 offlineModeMiningCountText.text = string.Format("\uC608\uC0C1 \uCC44\uAD74 \uD69F\uC218: {0}", estimate.MiningCount.ToString("N0"));
+            }
+        }
+
+        private void HandleResourceCacheChanged()
+        {
+            if (offlineModeDetailModal != null && offlineModeDetailModal.activeSelf)
+            {
+                UpdateOfflineModeDetailUI();
             }
         }
 
@@ -747,6 +770,15 @@ namespace InfinitePickaxe.Client.Core
                 messageHandler = MessageHandler.Instance;
             }
 
+            if (resourceCache == null)
+            {
+                resourceCache = UserResourceCache.Instance;
+            }
+            if (resourceCache != null)
+            {
+                resourceCache.OnChanged += HandleResourceCacheChanged;
+            }
+
             if (messageHandler != null)
             {
                 messageHandler.OnHandshakeResult += HandleHandshakeResult;
@@ -779,6 +811,11 @@ namespace InfinitePickaxe.Client.Core
             {
                 networkManager.OnDisconnected -= HandleDisconnected;
                 networkManager.OnReconnecting -= HandleReconnecting;
+            }
+
+            if (resourceCache != null)
+            {
+                resourceCache.OnChanged -= HandleResourceCacheChanged;
             }
         }
 

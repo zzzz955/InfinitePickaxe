@@ -350,8 +350,8 @@ infinitepickaxe::MilestoneClaimResult MissionService::handle_milestone_claim(
     }
 
     res.set_success(true);
-    res.set_offline_hours_gained(bonus_hours);
-    res.set_total_offline_hours(updated_seconds.value() / 3600); // 프로토 필드가 hours 단위
+    res.set_offline_seconds_gained(bonus_seconds);
+    res.set_total_offline_seconds(updated_seconds.value());
     res.set_reward_crystal(milestone_crystal);
     res.set_total_crystal(total_crystal);
     res.set_error_code("");

@@ -521,7 +521,8 @@ namespace InfinitePickaxe.Client.Net
         {
             if (result.Success)
             {
-                Debug.Log($"마일스톤 보상 획득: {result.OfflineHoursGained}시간, 총 {result.TotalOfflineHours}시간");
+                Debug.Log($"마일스톤 보상 획득: {result.OfflineSecondsGained}초, 총 {result.TotalOfflineSeconds}초");
+                UpdateSnapshotOfflineSeconds(result.TotalOfflineSeconds);
             }
             else
             {
@@ -619,6 +620,7 @@ namespace InfinitePickaxe.Client.Net
             {
                 Debug.LogWarning($"offline mode start failed: {result.ErrorCode}");
             }
+            UpdateSnapshotOfflineSeconds(result.CurrentOfflineSeconds);
             OnOfflineModeStartResult?.Invoke(result);
         }
 
@@ -644,6 +646,7 @@ namespace InfinitePickaxe.Client.Net
             GemStateCache.Instance.UpdateFromGemListResponse(response);
             // 장착 정보 동기화 (PickaxeStateCache로부터)
             GemStateCache.Instance.SyncEquippedGemsFromSlots();
+            UpdateSnapshotGemInventory(response.TotalGems, response.InventoryCapacity);
             OnGemListResponse?.Invoke(response);
         }
 
@@ -653,6 +656,7 @@ namespace InfinitePickaxe.Client.Net
             {
                 Debug.Log($"젬 뽑기 성공: {result.Gems.Count}개 획득, 남은 크리스탈 {result.RemainingCrystal}");
                 GemStateCache.Instance.ApplyGachaResult(result);
+                UpdateSnapshotGemInventory(result.TotalGems, result.InventoryCapacity);
                 if (result.RemainingCrystal > 0)
                 {
                     var currencyUpdate = new CurrencyUpdate
@@ -683,6 +687,7 @@ namespace InfinitePickaxe.Client.Net
                     pendingSynthesisGemIds = null;
                 }
                 GemStateCache.Instance.ApplySynthesisResult(result);
+                UpdateSnapshotGemInventory(result.TotalGems, null);
             }
             else
             {
@@ -698,6 +703,7 @@ namespace InfinitePickaxe.Client.Net
             {
                 Debug.Log($"???ë? ???©ì„± ?±ê³µ: {result.SuccessCount}/{result.Attempted}");
                 RequestGemList();
+                UpdateSnapshotGemInventory(result.TotalGems, null);
             }
             else
             {
@@ -740,6 +746,7 @@ namespace InfinitePickaxe.Client.Net
                 Debug.Log($"젬 분해 성공: 크리스탈 {result.CrystalEarned}개 획득");
                 GemStateCache.Instance.ApplyDiscardResult(result, pendingDiscardGemIds);
                 pendingDiscardGemIds = null;
+                UpdateSnapshotGemInventory(result.TotalGems, null);
                 if (result.TotalCrystal > 0)
                 {
                     var currencyUpdate = new CurrencyUpdate
@@ -819,6 +826,7 @@ namespace InfinitePickaxe.Client.Net
             {
                 Debug.Log($"젬 인벤토리 확장 성공: {result.NewCapacity}칸으로 확장, 사용 크리스탈 {result.CrystalSpent}");
                 GemStateCache.Instance.ApplyInventoryExpandResult(result);
+                UpdateSnapshotGemInventory(null, result.NewCapacity);
                 if (result.RemainingCrystal > 0)
                 {
                     var currencyUpdate = new CurrencyUpdate
@@ -1208,6 +1216,8 @@ namespace InfinitePickaxe.Client.Net
         {
             if (gold.HasValue) lastGold = gold.Value;
             if (crystal.HasValue) lastCrystal = crystal.Value;
+            UpdateSnapshotCurrency(gold, crystal);
+            UserResourceCache.Instance.UpdateCurrency(gold, crystal);
         }
 
         private void CacheSnapshot(UserDataSnapshot snapshot)
@@ -1215,6 +1225,7 @@ namespace InfinitePickaxe.Client.Net
             if (snapshot != null)
             {
                 lastSnapshot = snapshot;
+                UserResourceCache.Instance.UpdateFromSnapshot(snapshot);
             }
         }
 
@@ -1228,6 +1239,53 @@ namespace InfinitePickaxe.Client.Net
             lastSnapshot.CurrentMineralId = mineralId;
             lastSnapshot.MineralHp = currentHp;
             lastSnapshot.MineralMaxHp = maxHp;
+        }
+
+        private void UpdateSnapshotOfflineSeconds(uint totalSeconds)
+        {
+            UserResourceCache.Instance.UpdateOfflineSeconds(totalSeconds);
+            if (lastSnapshot == null)
+            {
+                return;
+            }
+
+            lastSnapshot.CurrentOfflineSeconds = totalSeconds;
+        }
+
+        private void UpdateSnapshotGemInventory(uint? totalGems, uint? capacity)
+        {
+            if (lastSnapshot == null)
+            {
+                return;
+            }
+
+            if (totalGems.HasValue)
+            {
+                lastSnapshot.TotalGems = totalGems.Value;
+            }
+
+            if (capacity.HasValue)
+            {
+                lastSnapshot.GemInventoryCapacity = capacity.Value;
+            }
+        }
+
+        private void UpdateSnapshotCurrency(ulong? gold, uint? crystal)
+        {
+            if (lastSnapshot == null)
+            {
+                return;
+            }
+
+            if (gold.HasValue)
+            {
+                lastSnapshot.Gold = gold.Value;
+            }
+
+            if (crystal.HasValue)
+            {
+                lastSnapshot.Crystal = crystal.Value;
+            }
         }
 
         #endregion
