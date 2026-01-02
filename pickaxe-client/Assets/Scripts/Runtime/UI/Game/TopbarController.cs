@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
-using InfinitePickaxe.Client.Net;
-using Infinitepickaxe;
+using InfinitePickaxe.Client.Core;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -17,69 +16,40 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private ulong? currentGold;
         private uint? currentCrystal;
-        private MessageHandler messageHandler;
+        private UserResourceCache resourceCache;
 
         private void OnEnable()
         {
-            messageHandler = MessageHandler.Instance;
-            if (messageHandler != null)
+            resourceCache = UserResourceCache.Instance;
+            if (resourceCache != null)
             {
-                messageHandler.OnHandshakeResult += HandleHandshake;
-                messageHandler.OnUserDataSnapshot += HandleSnapshot;
-                messageHandler.OnCurrencyUpdate += HandleCurrencyUpdate;
-                messageHandler.OnMiningComplete += HandleMiningComplete;
+                resourceCache.OnChanged += HandleResourceChanged;
+                ApplyResourceCache();
             }
         }
 
         private void OnDisable()
         {
-            if (messageHandler != null)
+            if (resourceCache != null)
             {
-                messageHandler.OnHandshakeResult -= HandleHandshake;
-                messageHandler.OnUserDataSnapshot -= HandleSnapshot;
-                messageHandler.OnCurrencyUpdate -= HandleCurrencyUpdate;
-                messageHandler.OnMiningComplete -= HandleMiningComplete;
+                resourceCache.OnChanged -= HandleResourceChanged;
             }
         }
 
-        private void HandleHandshake(HandshakeResponse res)
+        private void HandleResourceChanged()
         {
-            if (res != null && res.Snapshot != null)
-            {
-                HandleSnapshot(res.Snapshot);
-            }
+            ApplyResourceCache();
         }
 
-        private void HandleSnapshot(UserDataSnapshot snapshot)
+        private void ApplyResourceCache()
         {
-            if (snapshot.Gold.HasValue)
+            if (resourceCache == null)
             {
-                currentGold = snapshot.Gold.Value;
+                return;
             }
-            if (snapshot.Crystal.HasValue)
-            {
-                currentCrystal = snapshot.Crystal.Value;
-            }
-            Apply();
-        }
 
-        private void HandleCurrencyUpdate(CurrencyUpdate update)
-        {
-            if (update.Gold.HasValue)
-            {
-                currentGold = update.Gold.Value;
-            }
-            if (update.Crystal.HasValue)
-            {
-                currentCrystal = update.Crystal.Value;
-            }
-            Apply();
-        }
-
-        private void HandleMiningComplete(MiningComplete complete)
-        {
-            // MiningComplete는 total_gold를 내려준다.
-            currentGold = complete.TotalGold;
+            currentGold = resourceCache.Gold;
+            currentCrystal = resourceCache.Crystal;
             Apply();
         }
 

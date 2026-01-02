@@ -73,6 +73,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private uint selectedSlotIndex = 0;
         private ulong currentGold;
         private bool hasGoldInfo;
+        private UserResourceCache resourceCache;
         private bool hasSlotData;
         private bool upgradeInProgress;
         private readonly UpgradeMetaResolver metaResolver = new UpgradeMetaResolver();
@@ -86,6 +87,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private readonly List<(TextMeshProUGUI label, Color color)> labelDefaultColors = new List<(TextMeshProUGUI, Color)>();
         private bool subscribed;
         private bool cacheSubscribed;
+        private bool resourceSubscribed;
         private bool hasLastResultRates;
         private uint lastResultSlot;
         private uint lastResultBaseRateBp;
@@ -218,6 +220,17 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler.OnCurrencyUpdate += HandleCurrencyUpdate;
             messageHandler.OnMiningComplete += HandleMiningComplete;
             subscribed = true;
+
+            if (!resourceSubscribed)
+            {
+                resourceCache = UserResourceCache.Instance;
+                if (resourceCache != null)
+                {
+                    resourceCache.OnChanged += HandleResourceCacheChanged;
+                    resourceSubscribed = true;
+                    ApplyResourceCache();
+                }
+            }
         }
 
         private void SubscribeCache()
@@ -237,12 +250,35 @@ namespace InfinitePickaxe.Client.UI.Game
             RefreshData();
         }
 
+        private void HandleResourceCacheChanged()
+        {
+            ApplyResourceCache();
+        }
+
+        private void ApplyResourceCache()
+        {
+            if (resourceCache == null) return;
+
+            if (resourceCache.Gold.HasValue)
+            {
+                currentGold = resourceCache.Gold.Value;
+                hasGoldInfo = true;
+            }
+            RefreshData();
+        }
+
         private void OnDestroy()
         {
             if (cacheSubscribed && pickaxeCache != null)
             {
                 pickaxeCache.OnChanged -= HandleCacheChanged;
                 cacheSubscribed = false;
+            }
+
+            if (resourceSubscribed && resourceCache != null)
+            {
+                resourceCache.OnChanged -= HandleResourceCacheChanged;
+                resourceSubscribed = false;
             }
 
             if (!subscribed || messageHandler == null) return;
@@ -273,15 +309,10 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (snapshot == null) return;
 
-            if (snapshot.Gold.HasValue)
-            {
-                currentGold = snapshot.Gold.Value;
-                hasGoldInfo = true;
-            }
-
             pickaxeCache?.UpdateFromSnapshot(snapshot);
             SyncSlotsFromCache();
             hasSlotData = slotInfos.Count > 0;
+            ApplyResourceCache();
             RefreshData();
         }
 
@@ -297,12 +328,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void HandleCurrencyUpdate(CurrencyUpdate update)
         {
-            if (update?.Gold.HasValue == true)
-            {
-                currentGold = update.Gold.Value;
-                hasGoldInfo = true;
-                RefreshData();
-            }
+            ApplyResourceCache();
         }
 
         private void HandleUpgradeResult(UpgradeResult result)
@@ -355,9 +381,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void HandleMiningComplete(MiningComplete complete)
         {
-            currentGold = complete.TotalGold;
-            hasGoldInfo = true;
-            RefreshData();
+            ApplyResourceCache();
         }
 
         private void OnSlotButtonClicked(uint slotIndex)

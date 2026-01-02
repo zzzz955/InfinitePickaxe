@@ -1233,7 +1233,7 @@ namespace InfinitePickaxe.Client.UI.Game
             else
             {
                 // 잠긴 슬롯: 슬롯 해금 모달 열기
-                uint currentCrystal = MessageHandler.Instance != null ? (MessageHandler.Instance.LastCrystal ?? 0) : 0;
+                uint currentCrystal = UserResourceCache.Instance.Crystal ?? 0;
                 OnLockedPickaxeSlotClicked((uint)slotIndex, currentCrystal);
             }
         }

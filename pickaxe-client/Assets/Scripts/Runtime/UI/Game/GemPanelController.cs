@@ -161,6 +161,8 @@ namespace InfinitePickaxe.Client.UI.Game
         private bool cacheSubscribed;
         private uint currentCrystal;
         private bool hasCrystalInfo;
+        private UserResourceCache resourceCache;
+        private bool resourceSubscribed;
         private GemFilter currentFilter = GemFilter.All;
         private GemMode currentMode = GemMode.Fusion;
         private string selectedBaseGemId;
@@ -1598,6 +1600,17 @@ namespace InfinitePickaxe.Client.UI.Game
                 gemCache.OnInventoryChanged += HandleInventoryChanged;
                 cacheSubscribed = true;
             }
+
+            if (!resourceSubscribed)
+            {
+                resourceCache = UserResourceCache.Instance;
+                if (resourceCache != null)
+                {
+                    resourceCache.OnChanged += HandleResourceCacheChanged;
+                    resourceSubscribed = true;
+                    ApplyResourceCache();
+                }
+            }
         }
 
         private void OnDestroy()
@@ -1606,6 +1619,12 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 gemCache.OnInventoryChanged -= HandleInventoryChanged;
                 cacheSubscribed = false;
+            }
+
+            if (resourceSubscribed && resourceCache != null)
+            {
+                resourceCache.OnChanged -= HandleResourceCacheChanged;
+                resourceSubscribed = false;
             }
 
             if (!subscribed || messageHandler == null) return;
@@ -1727,11 +1746,24 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void HandleCurrencyUpdate(CurrencyUpdate update)
         {
-            if (update?.Crystal.HasValue == true)
+            ApplyResourceCache();
+        }
+
+        private void HandleResourceCacheChanged()
+        {
+            ApplyResourceCache();
+        }
+
+        private void ApplyResourceCache()
+        {
+            if (resourceCache == null) return;
+
+            if (resourceCache.Crystal.HasValue)
             {
-                currentCrystal = update.Crystal.Value;
+                currentCrystal = resourceCache.Crystal.Value;
                 hasCrystalInfo = true;
             }
+
             if (conversionConfirmModal != null && conversionConfirmModal.activeSelf)
             {
                 RefreshConversionConfirmModal();

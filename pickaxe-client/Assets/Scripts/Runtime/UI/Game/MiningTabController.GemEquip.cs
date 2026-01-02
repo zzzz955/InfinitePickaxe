@@ -965,7 +965,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (gemInventoryExpandConfirmModal == null) return;
 
             // 현재 보유 크리스탈 (MessageHandler에서 가져오기)
-            uint currentCrystal = MessageHandler.Instance != null ? (MessageHandler.Instance.LastCrystal ?? 0) : 0;
+            uint currentCrystal = UserResourceCache.Instance.Crystal ?? 0;
 
             // 확장 비용 (메타데이터 또는 하드코딩)
             uint expandCost = 200;

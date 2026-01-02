@@ -364,6 +364,7 @@ namespace InfinitePickaxe.Client.Net
         private void HandleMiningComplete(MiningComplete complete)
         {
             Debug.Log($"채굴 완료: 광물 #{complete.MineralId}, 획득 골드 {complete.GoldEarned}");
+            CacheCurrency(complete.TotalGold, null);
             OnMiningComplete?.Invoke(complete);
         }
 
@@ -590,8 +591,12 @@ namespace InfinitePickaxe.Client.Net
 
         private void HandleOfflineRewardResult(OfflineRewardResult result)
         {
+            if (result == null)
+            {
+                return;
+            }
             Debug.Log($"오프라인 보상: 골드 {result.GoldEarned}, 경과 시간 {result.ElapsedSeconds}초");
-            if (result != null && (result.TotalGold > 0 || result.GoldEarned > 0))
+            if (result != null)
             {
                 var currencyUpdate = new CurrencyUpdate
                 {
@@ -657,7 +662,7 @@ namespace InfinitePickaxe.Client.Net
                 Debug.Log($"젬 뽑기 성공: {result.Gems.Count}개 획득, 남은 크리스탈 {result.RemainingCrystal}");
                 GemStateCache.Instance.ApplyGachaResult(result);
                 UpdateSnapshotGemInventory(result.TotalGems, result.InventoryCapacity);
-                if (result.RemainingCrystal > 0)
+                if (result != null)
                 {
                     var currencyUpdate = new CurrencyUpdate
                     {
@@ -719,7 +724,7 @@ namespace InfinitePickaxe.Client.Net
                 Debug.Log($"젬 타입 전환 성공: 크리스탈 {result.CrystalSpent}개 사용");
                 GemStateCache.Instance.ApplyConversionResult(result, pendingConversionGemId);
                 pendingConversionGemId = null;
-                if (result.RemainingCrystal > 0)
+                if (result != null)
                 {
                     var currencyUpdate = new CurrencyUpdate
                     {
@@ -747,7 +752,7 @@ namespace InfinitePickaxe.Client.Net
                 GemStateCache.Instance.ApplyDiscardResult(result, pendingDiscardGemIds);
                 pendingDiscardGemIds = null;
                 UpdateSnapshotGemInventory(result.TotalGems, null);
-                if (result.TotalCrystal > 0)
+                if (result != null)
                 {
                     var currencyUpdate = new CurrencyUpdate
                     {
@@ -801,7 +806,7 @@ namespace InfinitePickaxe.Client.Net
             {
                 Debug.Log($"젬 슬롯 해금 성공: 곡괭이 슬롯 {result.PickaxeSlotIndex}, 젬 슬롯 {result.GemSlotIndex}, 사용 크리스탈 {result.CrystalSpent}");
                 GemStateCache.Instance.ApplySlotUnlockResult(result);
-                if (result.RemainingCrystal > 0)
+                if (result != null)
                 {
                     var currencyUpdate = new CurrencyUpdate
                     {
@@ -827,7 +832,7 @@ namespace InfinitePickaxe.Client.Net
                 Debug.Log($"젬 인벤토리 확장 성공: {result.NewCapacity}칸으로 확장, 사용 크리스탈 {result.CrystalSpent}");
                 GemStateCache.Instance.ApplyInventoryExpandResult(result);
                 UpdateSnapshotGemInventory(null, result.NewCapacity);
-                if (result.RemainingCrystal > 0)
+                if (result != null)
                 {
                     var currencyUpdate = new CurrencyUpdate
                     {

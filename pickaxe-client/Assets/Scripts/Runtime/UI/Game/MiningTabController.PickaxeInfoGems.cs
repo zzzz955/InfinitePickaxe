@@ -567,8 +567,7 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             // 현재 보유 크리스탈 정보 가져오기
-            var messageHandler = MessageHandler.Instance;
-            uint currentCrystal = messageHandler?.LastCrystal ?? 0;
+            uint currentCrystal = UserResourceCache.Instance.Crystal ?? 0;
 
             controller.OnLockedGemSlotClicked(pickaxeSlotIndex, gemSlotIndex, unlockedSlots, currentCrystal);
         }
