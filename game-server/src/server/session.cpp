@@ -1775,6 +1775,12 @@ void Session::handle_gem_gacha(const infinitepickaxe::Envelope &env)
     res_env.set_type(infinitepickaxe::GEM_GACHA_RESULT);
     *res_env.mutable_gem_gacha_result() = result;
     send_envelope(res_env);
+
+    if (result.success()) {
+        uint32_t created_count = static_cast<uint32_t>(result.gems_size());
+        auto updates = mission_service_.handle_gem_created(user_id_, created_count);
+        send_mission_progress_updates(updates);
+    }
 }
 
 void Session::handle_gem_synthesis(const infinitepickaxe::Envelope &env)
@@ -1801,6 +1807,19 @@ void Session::handle_gem_synthesis(const infinitepickaxe::Envelope &env)
     res_env.set_type(infinitepickaxe::GEM_SYNTHESIS_RESULT);
     *res_env.mutable_gem_synthesis_result() = result;
     send_envelope(res_env);
+
+    if (result.success()) {
+        std::vector<infinitepickaxe::MissionProgressUpdate> updates;
+        auto synthesis_updates = mission_service_.handle_gem_synthesis(user_id_, 1);
+        updates.insert(updates.end(), synthesis_updates.begin(), synthesis_updates.end());
+
+        if (result.synthesis_success()) {
+            auto create_updates = mission_service_.handle_gem_created(user_id_, 1);
+            updates.insert(updates.end(), create_updates.begin(), create_updates.end());
+        }
+
+        send_mission_progress_updates(updates);
+    }
 }
 
 void Session::handle_gem_auto_synthesis(const infinitepickaxe::Envelope &env)
@@ -1822,6 +1841,19 @@ void Session::handle_gem_auto_synthesis(const infinitepickaxe::Envelope &env)
     res_env.set_type(infinitepickaxe::GEM_AUTO_SYNTHESIS_RESULT);
     *res_env.mutable_gem_auto_synthesis_result() = result;
     send_envelope(res_env);
+
+    if (result.success()) {
+        std::vector<infinitepickaxe::MissionProgressUpdate> updates;
+        auto synthesis_updates = mission_service_.handle_gem_synthesis(user_id_, result.attempted());
+        updates.insert(updates.end(), synthesis_updates.begin(), synthesis_updates.end());
+
+        if (result.success_count() > 0) {
+            auto create_updates = mission_service_.handle_gem_created(user_id_, result.success_count());
+            updates.insert(updates.end(), create_updates.begin(), create_updates.end());
+        }
+
+        send_mission_progress_updates(updates);
+    }
 }
 
 void Session::handle_gem_conversion(const infinitepickaxe::Envelope &env)
@@ -1846,6 +1878,11 @@ void Session::handle_gem_conversion(const infinitepickaxe::Envelope &env)
     res_env.set_type(infinitepickaxe::GEM_CONVERSION_RESULT);
     *res_env.mutable_gem_conversion_result() = result;
     send_envelope(res_env);
+
+    if (result.success()) {
+        auto updates = mission_service_.handle_gem_conversion(user_id_, 1);
+        send_mission_progress_updates(updates);
+    }
 }
 
 void Session::handle_gem_discard(const infinitepickaxe::Envelope &env)
@@ -1872,6 +1909,12 @@ void Session::handle_gem_discard(const infinitepickaxe::Envelope &env)
     res_env.set_type(infinitepickaxe::GEM_DISCARD_RESULT);
     *res_env.mutable_gem_discard_result() = result;
     send_envelope(res_env);
+
+    if (result.success()) {
+        uint32_t discard_count = static_cast<uint32_t>(gem_ids.size());
+        auto updates = mission_service_.handle_gem_discard(user_id_, discard_count);
+        send_mission_progress_updates(updates);
+    }
 }
 
 void Session::handle_gem_equip(const infinitepickaxe::Envelope &env)

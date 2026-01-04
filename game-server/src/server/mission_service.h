@@ -40,6 +40,14 @@ public:
         const std::string& user_id, uint64_t gold_delta);
     std::vector<infinitepickaxe::MissionProgressUpdate> handle_play_time_seconds(
         const std::string& user_id, uint32_t seconds);
+    std::vector<infinitepickaxe::MissionProgressUpdate> handle_gem_created(
+        const std::string& user_id, uint32_t created_count);
+    std::vector<infinitepickaxe::MissionProgressUpdate> handle_gem_conversion(
+        const std::string& user_id, uint32_t conversion_count);
+    std::vector<infinitepickaxe::MissionProgressUpdate> handle_gem_synthesis(
+        const std::string& user_id, uint32_t synthesis_count);
+    std::vector<infinitepickaxe::MissionProgressUpdate> handle_gem_discard(
+        const std::string& user_id, uint32_t discard_count);
 
 private:
     DailyMissionInfo ensure_daily_state_kst(const std::string& user_id);

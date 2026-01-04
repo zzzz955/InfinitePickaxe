@@ -423,6 +423,58 @@ std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_play_
     });
 }
 
+std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_gem_created(
+    const std::string& user_id, uint32_t created_count) {
+    if (created_count == 0) {
+        return {};
+    }
+    return apply_progress_delta(user_id, [created_count](const MissionSlot& slot, const MissionMeta*) -> uint64_t {
+        if (slot.mission_type == "gem_create") {
+            return created_count;
+        }
+        return 0;
+    });
+}
+
+std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_gem_conversion(
+    const std::string& user_id, uint32_t conversion_count) {
+    if (conversion_count == 0) {
+        return {};
+    }
+    return apply_progress_delta(user_id, [conversion_count](const MissionSlot& slot, const MissionMeta*) -> uint64_t {
+        if (slot.mission_type == "gem_conversion") {
+            return conversion_count;
+        }
+        return 0;
+    });
+}
+
+std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_gem_synthesis(
+    const std::string& user_id, uint32_t synthesis_count) {
+    if (synthesis_count == 0) {
+        return {};
+    }
+    return apply_progress_delta(user_id, [synthesis_count](const MissionSlot& slot, const MissionMeta*) -> uint64_t {
+        if (slot.mission_type == "gem_synthesis") {
+            return synthesis_count;
+        }
+        return 0;
+    });
+}
+
+std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_gem_discard(
+    const std::string& user_id, uint32_t discard_count) {
+    if (discard_count == 0) {
+        return {};
+    }
+    return apply_progress_delta(user_id, [discard_count](const MissionSlot& slot, const MissionMeta*) -> uint64_t {
+        if (slot.mission_type == "gem_discard") {
+            return discard_count;
+        }
+        return 0;
+    });
+}
+
 // private helpers
 DailyMissionInfo MissionService::ensure_daily_state_kst(const std::string& user_id) {
     return repo_.get_or_create_daily_mission_info(user_id);

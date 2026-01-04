@@ -804,6 +804,14 @@ namespace InfinitePickaxe.Client.UI.Game
                     return $"강화 {target}회 시도";
                 case "gold":
                     return $"골드 {target:N0} 획득";
+                case "gem_create":
+                    return $"보석 {target}개 획득";
+                case "gem_conversion":
+                    return $"보석 타입 전환 {target}회 수행";
+                case "gem_synthesis":
+                    return $"보석 {target}회 합성";
+                case "gem_discard":
+                    return $"보석 {target}개 분해";
                 case "mine_mineral":
                     if (string.IsNullOrEmpty(mineralName))
                     {
@@ -830,6 +838,14 @@ namespace InfinitePickaxe.Client.UI.Game
                     return "강화 시도";
                 case "gold":
                     return "골드";
+                case "gem_create":
+                    return "보석 획득";
+                case "gem_conversion":
+                    return "보석 전환";
+                case "gem_synthesis":
+                    return "보석 합성";
+                case "gem_discard":
+                    return "보석 분해";
                 case "mine_mineral":
                     return string.IsNullOrEmpty(mineralName) ? "광물 채굴" : $"{mineralName} 채굴";
                 default:
