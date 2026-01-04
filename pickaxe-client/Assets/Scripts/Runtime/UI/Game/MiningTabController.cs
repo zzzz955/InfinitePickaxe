@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.U2D;
+using UnityEngine.Serialization;
 using TMPro;
 using InfinitePickaxe.Client.Net;
 using Infinitepickaxe;
@@ -82,6 +83,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         // 채굴 중단 요청 시 서버와 합의한 sentinel ID (0은 중단, 실제 광물 ID는 1부터 시작)
         private const uint StopMineralId = 0;
+        private const string DamageSpriteLabelResourcePath = "UI/DamageSpriteLabel";
 
         // 런타임 기본 스프라이트 캐시 (빈 스프라이트일 때 fillAmount가 먹지 않는 문제 회피)
         private static Sprite runtimeDefaultSprite;
@@ -146,22 +148,32 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private float swingDuration = 1.0f; // 공격속도 1.0초 기준
         [SerializeField, Range(0.1f, 0.9f)] private float swingDownPortion = 0.35f;
 
-        [Header("Damage Text (Floating)")]
-        [SerializeField] private RectTransform damageTextRoot;
-        [SerializeField] private TextMeshProUGUI damageTextPrefab;
-        [SerializeField] private float damageTextLifetime = 0.9f;
-        [SerializeField] private float damageTextRiseSpeed = 80f;
-        [SerializeField] private Vector2 damageTextRandomOffset = new Vector2(60f, 10f);
-        [SerializeField] private Color normalDamageColor = new Color(1f, 0.95f, 0.85f, 1f);
-        [SerializeField] private Color criticalDamageColor = new Color(1f, 0.35f, 0.2f, 1f);
+        [Header("Damage Sprite (Floating)")]
+        [FormerlySerializedAs("damageTextRoot")]
+        [SerializeField] private RectTransform damageSpriteRoot;
+        [SerializeField] private GameObject damageSpriteLabelPrefab;
+        [FormerlySerializedAs("damageTextLifetime")]
+        [SerializeField] private float damageSpriteLifetime = 0.9f;
+        [FormerlySerializedAs("damageTextRiseSpeed")]
+        [SerializeField] private float damageSpriteRiseSpeed = 80f;
+        [FormerlySerializedAs("damageTextRandomOffset")]
+        [SerializeField] private Vector2 damageSpriteRandomOffset = new Vector2(60f, 0f);
+        [SerializeField] private Vector2 damageDigitVerticalJitterRange = new Vector2(-6f, 6f);
+        [SerializeField] private float damageDigitSpacing = 4f;
+        [SerializeField] private float damageDigitMinWidth = 0f;
+        [SerializeField] private float damageDigitScale = 1f;
         [SerializeField] private float criticalScale = 1.2f;
 
         private float targetFillNormalized = 1f;
         private float displayedFillNormalized = 1f;
         private float safeMaxForDisplay = 1f;
         private Color currentFillColor = Color.green;
-        private readonly List<DamageTextEntry> activeDamageTexts = new List<DamageTextEntry>();
-        private readonly Queue<TextMeshProUGUI> damageTextPool = new Queue<TextMeshProUGUI>();
+        private readonly List<DamageSpriteEntry> activeDamageSprites = new List<DamageSpriteEntry>();
+        private readonly Queue<DamageSpriteLabel> damageSpritePool = new Queue<DamageSpriteLabel>();
+        private readonly List<float> damageDigitWidths = new List<float>(16);
+        private readonly Sprite[] damageNormalSprites = new Sprite[10];
+        private readonly Sprite[] damageCriticalSprites = new Sprite[10];
+        private bool damageFontLoaded = false;
         private readonly PickaxeSwingState[] swingStates = new PickaxeSwingState[4];
         private readonly bool[] swingDirections = new bool[4];
 
@@ -705,7 +717,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             AnimateHPBar();
             UpdatePickaxeSwings();
-            UpdateDamageTextAnimations();
+            UpdateDamageSpriteAnimations();
         }
 
         private void AnimateHPBar()
@@ -933,39 +945,41 @@ namespace InfinitePickaxe.Client.UI.Game
             img.rectTransform.localScale = new Vector3(Mathf.Abs(s.x), Mathf.Abs(s.y), 1f);
         }
 
-        private void UpdateDamageTextAnimations()
+        private void UpdateDamageSpriteAnimations()
         {
-            if (activeDamageTexts.Count == 0) return;
+            if (activeDamageSprites.Count == 0) return;
 
             float dt = Time.deltaTime;
-            for (int i = activeDamageTexts.Count - 1; i >= 0; i--)
+            for (int i = activeDamageSprites.Count - 1; i >= 0; i--)
             {
-                var entry = activeDamageTexts[i];
+                var entry = activeDamageSprites[i];
+                if (entry.Label == null || entry.Label.Root == null)
+                {
+                    activeDamageSprites.RemoveAt(i);
+                    continue;
+                }
+
                 entry.Elapsed += dt;
                 float t = entry.Elapsed / entry.Lifetime;
 
-                if (entry.Rect != null)
-                {
-                    var pos = entry.Rect.anchoredPosition;
-                    pos.y += entry.RiseSpeed * dt;
-                    entry.Rect.anchoredPosition = pos;
-                }
+                var rect = entry.Label.Root;
+                var pos = rect.anchoredPosition;
+                pos.y += entry.RiseSpeed * dt;
+                rect.anchoredPosition = pos;
 
-                if (entry.Text != null)
+                if (entry.Label.Group != null)
                 {
-                    var c = entry.Text.color;
-                    c.a = Mathf.Lerp(entry.StartAlpha, 0f, t);
-                    entry.Text.color = c;
+                    entry.Label.Group.alpha = Mathf.Lerp(entry.StartAlpha, 0f, t);
                 }
 
                 if (entry.Elapsed >= entry.Lifetime)
                 {
-                    RecycleDamageText(entry);
-                    activeDamageTexts.RemoveAt(i);
+                    RecycleDamageSprite(entry);
+                    activeDamageSprites.RemoveAt(i);
                 }
                 else
                 {
-                    activeDamageTexts[i] = entry;
+                    activeDamageSprites[i] = entry;
                 }
             }
         }
@@ -1775,7 +1789,7 @@ namespace InfinitePickaxe.Client.UI.Game
             // - 데미지 텍스트 표시 (Floating Damage Number)
             // - 사운드 재생
 
-            ShowDamageText(damage, isCritical);
+            ShowDamageSprite(damage, isCritical);
             StartPickaxeSwing(slotIndex);
 
 #if UNITY_EDITOR || DEBUG_MINING
@@ -2065,9 +2079,9 @@ namespace InfinitePickaxe.Client.UI.Game
             return mineralListContent != null && mineralItemTemplate != null;
         }
 
-        private void ShowDamageText(ulong damage, bool isCritical)
+        private void ShowDamageSprite(ulong damage, bool isCritical)
         {
-            var root = damageTextRoot;
+            var root = damageSpriteRoot;
             if (root == null)
             {
                 root = mineHPSliderBackground != null
@@ -2077,72 +2091,240 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (root == null) return;
 
-            var label = GetDamageTextInstance(root);
-            if (label == null) return;
+            var label = GetDamageSpriteLabelInstance(root);
+            if (label == null || label.Root == null) return;
 
-            label.text = damage.ToString("N0");
-            var color = isCritical ? criticalDamageColor : normalDamageColor;
-            label.color = color;
-            var scale = isCritical ? criticalScale : 1f;
-            label.rectTransform.localScale = Vector3.one * scale;
+            string value = damage.ToString();
+            ApplyDamageDigits(label, value, isCritical);
 
-            var offset = new Vector2(
-                UnityEngine.Random.Range(-damageTextRandomOffset.x, damageTextRandomOffset.x),
-                UnityEngine.Random.Range(0f, damageTextRandomOffset.y)
-            );
-            label.rectTransform.anchoredPosition = offset;
-
-            var entry = new DamageTextEntry
+            if (label.Group != null)
             {
-                Text = label,
-                Rect = label.rectTransform,
+                label.Group.alpha = 1f;
+            }
+
+            float scale = isCritical ? criticalScale : 1f;
+            label.Root.localScale = Vector3.one * scale;
+
+            float rangeX = Mathf.Abs(damageSpriteRandomOffset.x);
+            var offset = new Vector2(
+                UnityEngine.Random.Range(-rangeX, rangeX),
+                0f
+            );
+            label.Root.anchoredPosition = offset;
+
+            var entry = new DamageSpriteEntry
+            {
+                Label = label,
                 Elapsed = 0f,
-                Lifetime = Mathf.Max(0.1f, damageTextLifetime),
-                RiseSpeed = damageTextRiseSpeed,
-                StartAlpha = color.a
+                Lifetime = Mathf.Max(0.1f, damageSpriteLifetime),
+                RiseSpeed = damageSpriteRiseSpeed,
+                StartAlpha = label.Group != null ? label.Group.alpha : 1f
             };
 
-            activeDamageTexts.Add(entry);
-            label.gameObject.SetActive(true);
+            activeDamageSprites.Add(entry);
         }
 
-        private TextMeshProUGUI GetDamageTextInstance(RectTransform parent)
+        private void ApplyDamageDigits(DamageSpriteLabel label, string value, bool isCritical)
         {
-            TextMeshProUGUI label = null;
-            while (damageTextPool.Count > 0 && label == null)
+            if (label == null || label.Root == null || string.IsNullOrEmpty(value)) return;
+
+            EnsureDamageFontLoaded();
+
+            int count = value.Length;
+            EnsureDamageDigitCount(label, count);
+
+            damageDigitWidths.Clear();
+            float totalWidth = 0f;
+            float maxHeight = 0f;
+
+            for (int i = 0; i < count; i++)
             {
-                label = damageTextPool.Dequeue();
+                int digit = value[i] - '0';
+                var sprite = GetDamageDigitSprite(digit, isCritical);
+                var img = label.Digits[i];
+                if (img == null)
+                {
+                    damageDigitWidths.Add(0f);
+                    continue;
+                }
+
+                img.sprite = sprite;
+                img.enabled = sprite != null;
+                img.color = Color.white;
+                img.type = Image.Type.Simple;
+                img.preserveAspect = true;
+                img.SetNativeSize();
+
+                var rect = img.rectTransform;
+                var size = rect.sizeDelta;
+                size.x = Mathf.Max(size.x, damageDigitMinWidth);
+                rect.sizeDelta = size;
+                rect.localScale = Vector3.one * damageDigitScale;
+
+                float width = size.x * damageDigitScale;
+                float height = size.y * damageDigitScale;
+                damageDigitWidths.Add(width);
+
+                totalWidth += width;
+                if (i < count - 1) totalWidth += damageDigitSpacing;
+                if (height > maxHeight) maxHeight = height;
+            }
+
+            float cursor = -totalWidth * 0.5f;
+            for (int i = 0; i < count; i++)
+            {
+                var img = label.Digits[i];
+                if (img == null) continue;
+
+                float width = damageDigitWidths[i];
+                float jitter = UnityEngine.Random.Range(damageDigitVerticalJitterRange.x, damageDigitVerticalJitterRange.y);
+
+                var rect = img.rectTransform;
+                rect.anchoredPosition = new Vector2(cursor + width * 0.5f, jitter);
+                cursor += width + damageDigitSpacing;
+            }
+
+            label.Root.sizeDelta = new Vector2(totalWidth, maxHeight);
+        }
+
+        private void EnsureDamageDigitCount(DamageSpriteLabel label, int count)
+        {
+            if (label == null) return;
+
+            var root = label.DigitRoot != null ? label.DigitRoot : label.Root;
+            if (root == null) return;
+
+            while (label.Digits.Count < count)
+            {
+                Image img = null;
+                if (label.DigitTemplate != null)
+                {
+                    img = Instantiate(label.DigitTemplate, root);
+                    img.gameObject.SetActive(true);
+                }
+                else
+                {
+                    var go = new GameObject($"Digit_{label.Digits.Count}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                    go.transform.SetParent(root, false);
+                    img = go.GetComponent<Image>();
+                }
+
+                img.gameObject.name = $"Digit_{label.Digits.Count}";
+                img.raycastTarget = false;
+                img.type = Image.Type.Simple;
+                img.preserveAspect = true;
+
+                var rect = img.rectTransform;
+                rect.anchorMin = new Vector2(0.5f, 0.5f);
+                rect.anchorMax = new Vector2(0.5f, 0.5f);
+                rect.pivot = new Vector2(0.5f, 0.5f);
+
+                label.Digits.Add(img);
+            }
+
+            for (int i = 0; i < label.Digits.Count; i++)
+            {
+                var img = label.Digits[i];
+                if (img != null)
+                {
+                    img.gameObject.SetActive(i < count);
+                }
+            }
+        }
+
+        private DamageSpriteLabel GetDamageSpriteLabelInstance(RectTransform parent)
+        {
+            DamageSpriteLabel label = null;
+            while (damageSpritePool.Count > 0 && label == null)
+            {
+                label = damageSpritePool.Dequeue();
             }
 
             if (label == null)
             {
-                if (damageTextPrefab != null)
-                {
-                    label = Instantiate(damageTextPrefab, parent);
-                }
-                else
-                {
-                    var go = new GameObject("DamageText");
-                    go.transform.SetParent(parent, false);
-                    label = go.AddComponent<TextMeshProUGUI>();
-                    label.fontSize = 48f;
-                    label.alignment = TextAlignmentOptions.Center;
-                    label.outlineWidth = 0.15f;
-                }
+                label = CreateDamageSpriteLabel(parent);
             }
-            else
+            else if (label.Root != null)
             {
-                label.transform.SetParent(parent, false);
+                label.Root.SetParent(parent, false);
+            }
+
+            if (label != null && label.Root != null)
+            {
+                label.Root.gameObject.SetActive(true);
             }
 
             return label;
         }
 
-        private void RecycleDamageText(DamageTextEntry entry)
+        private DamageSpriteLabel CreateDamageSpriteLabel(RectTransform parent)
         {
-            if (entry.Text == null) return;
-            entry.Text.gameObject.SetActive(false);
-            damageTextPool.Enqueue(entry.Text);
+            GameObject go = null;
+            if (damageSpriteLabelPrefab == null)
+            {
+                damageSpriteLabelPrefab = Resources.Load<GameObject>(DamageSpriteLabelResourcePath);
+            }
+
+            if (damageSpriteLabelPrefab != null)
+            {
+                go = Instantiate(damageSpriteLabelPrefab, parent);
+            }
+            else
+            {
+                go = new GameObject("DamageSpriteLabel", typeof(RectTransform), typeof(CanvasGroup));
+                go.transform.SetParent(parent, false);
+            }
+
+            var root = go.GetComponent<RectTransform>();
+            var group = go.GetComponent<CanvasGroup>() ?? go.AddComponent<CanvasGroup>();
+            group.interactable = false;
+            group.blocksRaycasts = false;
+
+            var label = new DamageSpriteLabel
+            {
+                Root = root,
+                Group = group
+            };
+
+            var templateTf = go.transform.Find("DigitTemplate");
+            if (templateTf != null)
+            {
+                label.DigitTemplate = templateTf.GetComponent<Image>();
+                label.DigitRoot = templateTf.parent as RectTransform ?? root;
+                templateTf.gameObject.SetActive(false);
+            }
+            else
+            {
+                label.DigitRoot = root;
+            }
+
+            return label;
+        }
+
+        private void EnsureDamageFontLoaded()
+        {
+            if (damageFontLoaded) return;
+
+            for (int i = 0; i < 10; i++)
+            {
+                damageNormalSprites[i] = Resources.Load<Sprite>($"Sprites/UI/DamageFonts/damage_font_normal_{i}");
+                damageCriticalSprites[i] = Resources.Load<Sprite>($"Sprites/UI/DamageFonts/damage_font_critical_{i}");
+            }
+
+            damageFontLoaded = true;
+        }
+
+        private Sprite GetDamageDigitSprite(int digit, bool isCritical)
+        {
+            if (digit < 0 || digit > 9) return null;
+            return isCritical ? damageCriticalSprites[digit] : damageNormalSprites[digit];
+        }
+
+        private void RecycleDamageSprite(DamageSpriteEntry entry)
+        {
+            if (entry.Label == null || entry.Label.Root == null) return;
+            entry.Label.Root.gameObject.SetActive(false);
+            damageSpritePool.Enqueue(entry.Label);
         }
 
         private void StartPickaxeSwing(uint slotIndex)
@@ -2201,10 +2383,18 @@ namespace InfinitePickaxe.Client.UI.Game
             return null;
         }
 
-        private struct DamageTextEntry
+        private sealed class DamageSpriteLabel
         {
-            public TextMeshProUGUI Text;
-            public RectTransform Rect;
+            public RectTransform Root;
+            public CanvasGroup Group;
+            public RectTransform DigitRoot;
+            public Image DigitTemplate;
+            public readonly List<Image> Digits = new List<Image>();
+        }
+
+        private struct DamageSpriteEntry
+        {
+            public DamageSpriteLabel Label;
             public float Elapsed;
             public float Lifetime;
             public float RiseSpeed;
