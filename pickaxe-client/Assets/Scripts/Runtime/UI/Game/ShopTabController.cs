@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using InfinitePickaxe.Client.Core;
 using InfinitePickaxe.Client.Net;
+using InfinitePickaxe.Client.Metadata;
 using Infinitepickaxe;
 
 namespace InfinitePickaxe.Client.UI.Game
@@ -31,9 +32,10 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button toastConfirmButton;
         [SerializeField] private GemGachaResultModalController gemGachaResultModal;
 
-        private const int SinglePullCost = 50;
-        private const int MultiPullCost = 500;
-        private const int MultiPullCount = 11;
+        [SerializeField] private int fallbackSinglePullCost = 30;
+        [SerializeField] private int fallbackMultiPullCost = 300;
+        [SerializeField] private int fallbackMultiPullCount = 11;
+        private readonly GemMetaResolver metaResolver = new GemMetaResolver();
 
         private uint currentCrystal;
         private UserResourceCache resourceCache;
@@ -332,10 +334,38 @@ namespace InfinitePickaxe.Client.UI.Game
 
         #region Gem Shop UI
 
+        private int ResolveSinglePullCost()
+        {
+            int cost = (int)metaResolver.SinglePullCost;
+            return cost > 0 ? cost : fallbackSinglePullCost;
+        }
+
+        private int ResolveMultiPullCost()
+        {
+            int cost = (int)metaResolver.MultiPullCost;
+            return cost > 0 ? cost : fallbackMultiPullCost;
+        }
+
+        private int ResolveMultiPullCount()
+        {
+            int count = (int)metaResolver.MultiPullCount;
+            return count > 0 ? count : fallbackMultiPullCount;
+        }
+
+        private bool IsMultiPull(int pullCount)
+        {
+            int multiCount = ResolveMultiPullCount();
+            if (multiCount > 0)
+            {
+                return pullCount == multiCount;
+            }
+            return pullCount != 1;
+        }
+
         private void OnGemPullClicked(bool isMulti)
         {
-            int cost = isMulti ? MultiPullCost : SinglePullCost;
-            int count = isMulti ? MultiPullCount : 1;
+            int cost = isMulti ? ResolveMultiPullCost() : ResolveSinglePullCost();
+            int count = isMulti ? ResolveMultiPullCount() : 1;
 
             // ?�리?�탈 부�?체크
             if (currentCrystal < cost)
@@ -400,7 +430,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            int pullCount = result.Gems.Count >= 10 ? MultiPullCount : 1;
+            int pullCount = (result.Gems != null && result.Gems.Count > 0) ? result.Gems.Count : 1;
 
             gemGachaResultModal.SetResult(
                 result,
@@ -415,7 +445,7 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void OnPullAgainFromModal(int pullCount)
         {
-            bool isMulti = (pullCount == MultiPullCount);
+            bool isMulti = IsMultiPull(pullCount);
             OnGemPullClicked(isMulti);
         }
 

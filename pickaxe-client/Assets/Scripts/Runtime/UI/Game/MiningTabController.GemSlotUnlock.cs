@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Infinitepickaxe;
 using InfinitePickaxe.Client.Net;
+using InfinitePickaxe.Client.Metadata;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -19,8 +20,8 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button unlockConfirmButton;
         [SerializeField] private Button unlockCancelButton;
 
-        // 슬롯 해금 비용 (메타데이터와 동일)
-        private static readonly uint[] GemSlotUnlockCosts = { 0, 100, 200, 400, 800, 1600 };
+        private readonly GemMetaResolver gemMetaResolver = new GemMetaResolver();
+        private static readonly uint[] fallbackGemSlotUnlockCosts = { 0, 100, 200, 400, 800, 1600 };
 
         // 현재 해금 시도 중인 슬롯 정보
         private uint pendingUnlockPickaxeSlotIndex;
@@ -165,13 +166,11 @@ namespace InfinitePickaxe.Client.UI.Game
             if (gemSlotUnlockModal == null) return;
 
             // 슬롯 해금 비용 조회
-            if (gemSlotIndex >= GemSlotUnlockCosts.Length)
+            if (!TryResolveGemSlotUnlockCost(gemSlotIndex, out var cost))
             {
                 Debug.LogError($"Invalid gem slot index: {gemSlotIndex}");
                 return;
             }
-
-            uint cost = GemSlotUnlockCosts[gemSlotIndex];
 
             // 정보 저장
             pendingUnlockPickaxeSlotIndex = pickaxeSlotIndex;
@@ -200,6 +199,23 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             gemSlotUnlockModal.SetActive(true);
+        }
+
+        private bool TryResolveGemSlotUnlockCost(uint gemSlotIndex, out uint cost)
+        {
+            if (gemMetaResolver.TryGetSlotUnlockCost(gemSlotIndex, out cost))
+            {
+                return true;
+            }
+
+            if (gemSlotIndex < fallbackGemSlotUnlockCosts.Length)
+            {
+                cost = fallbackGemSlotUnlockCosts[gemSlotIndex];
+                return true;
+            }
+
+            cost = 0;
+            return false;
         }
 
         /// <summary>

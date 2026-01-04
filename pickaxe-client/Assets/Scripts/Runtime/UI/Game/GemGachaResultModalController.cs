@@ -4,12 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Infinitepickaxe;
+using InfinitePickaxe.Client.Metadata;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
     /// <summary>
     /// 보석 가챠 결과 모달 컨트롤러
-    /// 1회/11회 뽑기 결과를 동일 프리팹으로 처리
+    /// 단일/멀티 뽑기 결과를 동일 프리팹으로 처리
     /// </summary>
     public class GemGachaResultModalController : MonoBehaviour
     {
@@ -27,13 +28,14 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private GameObject gemResultItemPrefab;
 
         private GemGachaResult currentResult;
-        private int lastPullCount; // 1 또는 11
+        private int lastPullCount; // 단일/멀티 뽑기 횟수
         private uint currentCrystal;
         private Action<int> onPullAgainCallback;
 
-        private const int SinglePullCost = 50;
-        private const int MultiPullCost = 500;
-        private const int MultiPullCount = 11;
+        [SerializeField] private int fallbackSinglePullCost = 30;
+        [SerializeField] private int fallbackMultiPullCost = 300;
+        [SerializeField] private int fallbackMultiPullCount = 11;
+        private readonly GemMetaResolver metaResolver = new GemMetaResolver();
 
         private void Awake()
         {
@@ -52,20 +54,20 @@ namespace InfinitePickaxe.Client.UI.Game
         /// 가챠 결과 설정 및 모달 표시
         /// </summary>
         /// <param name="result">가챠 결과</param>
-        /// <param name="pullCount">뽑기 횟수 (1 또는 11)</param>
+        /// <param name="pullCount">뽑기 횟수 (단일/멀티)</param>
         /// <param name="currentCrystalAmount">현재 보유 크리스탈</param>
         /// <param name="onPullAgain">한번 더 뽑기 콜백</param>
         public void SetResult(GemGachaResult result, int pullCount, uint currentCrystalAmount, Action<int> onPullAgain)
         {
             currentResult = result;
-            lastPullCount = pullCount;
+            lastPullCount = pullCount > 0 ? pullCount : 1;
             currentCrystal = currentCrystalAmount;
             onPullAgainCallback = onPullAgain;
 
             // 타이틀 설정
             if (titleText != null)
             {
-                string pullType = pullCount == 1 ? "1회 뽑기" : "11회 뽑기";
+                string pullType = $"{lastPullCount}회 뽑기";
                 titleText.text = $"{pullType} 결과";
             }
 
@@ -133,14 +135,14 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (pullAgainButton == null || pullAgainButtonText == null) return;
 
-            int cost = lastPullCount == 1 ? SinglePullCost : MultiPullCost;
+            int cost = IsMultiPull(lastPullCount) ? ResolveMultiPullCost() : ResolveSinglePullCost();
             bool canAfford = currentCrystal >= cost;
 
             pullAgainButton.interactable = canAfford;
 
             if (canAfford)
             {
-                string pullType = lastPullCount == 1 ? "1회" : "11회";
+                string pullType = $"{lastPullCount}회";
                 pullAgainButtonText.text = $"한번 더 뽑기 ({pullType}, 크리스탈 {cost})";
             }
             else
@@ -149,12 +151,40 @@ namespace InfinitePickaxe.Client.UI.Game
             }
         }
 
+        private int ResolveSinglePullCost()
+        {
+            int cost = (int)metaResolver.SinglePullCost;
+            return cost > 0 ? cost : fallbackSinglePullCost;
+        }
+
+        private int ResolveMultiPullCost()
+        {
+            int cost = (int)metaResolver.MultiPullCost;
+            return cost > 0 ? cost : fallbackMultiPullCost;
+        }
+
+        private int ResolveMultiPullCount()
+        {
+            int count = (int)metaResolver.MultiPullCount;
+            return count > 0 ? count : fallbackMultiPullCount;
+        }
+
+        private bool IsMultiPull(int pullCount)
+        {
+            int multiCount = ResolveMultiPullCount();
+            if (multiCount > 0)
+            {
+                return pullCount == multiCount;
+            }
+            return pullCount != 1;
+        }
+
         /// <summary>
         /// "한번 더 뽑기" 버튼 클릭
         /// </summary>
         private void OnPullAgainClicked()
         {
-            int cost = lastPullCount == 1 ? SinglePullCost : MultiPullCost;
+            int cost = IsMultiPull(lastPullCount) ? ResolveMultiPullCost() : ResolveSinglePullCost();
 
             // 재화 체크 (다시 확인)
             if (currentCrystal < cost)
