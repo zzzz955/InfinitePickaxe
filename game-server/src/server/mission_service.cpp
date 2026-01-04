@@ -296,15 +296,22 @@ infinitepickaxe::MilestoneClaimResult MissionService::handle_milestone_claim(
     res.set_success(false);
     res.set_milestone_count(milestone_count);
 
-    uint32_t bonus_hours = 0;
+    const MilestoneBonus* milestone_meta = nullptr;
     for (const auto& m : meta_.milestone_bonuses()) {
         if (m.completed == milestone_count) {
-            bonus_hours = m.bonus_hours;
+            milestone_meta = &m;
             break;
         }
     }
 
-    if (bonus_hours == 0) {
+    if (!milestone_meta) {
+        res.set_error_code("INVALID_MILESTONE");
+        return res;
+    }
+
+    uint32_t bonus_hours = milestone_meta->bonus_hours;
+    uint32_t milestone_crystal = milestone_meta->reward_crystal;
+    if (bonus_hours == 0 && milestone_crystal == 0) {
         res.set_error_code("INVALID_MILESTONE");
         return res;
     }
@@ -333,12 +340,7 @@ infinitepickaxe::MilestoneClaimResult MissionService::handle_milestone_claim(
         return res;
     }
 
-    // 크리스탈 보상: 3/5/7 완료 시 20/30/50
-    uint32_t milestone_crystal = 0;
-    if (milestone_count == 3) milestone_crystal = 20;
-    else if (milestone_count == 5) milestone_crystal = 30;
-    else if (milestone_count == 7) milestone_crystal = 50;
-
+    // 크리스탈 보상: 메타데이터 reward_crystal 기준
     uint32_t total_crystal = 0;
     if (milestone_crystal > 0) {
         auto total_opt = game_repo_.add_crystal(user_id, milestone_crystal);

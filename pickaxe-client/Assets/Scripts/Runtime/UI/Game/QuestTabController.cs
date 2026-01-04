@@ -446,7 +446,9 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (text != null)
             {
-                text.text = $"일일 미션 {milestoneCount}개 완료 : {stateLabel}";
+                uint rewardCrystal = GetMilestoneRewardCrystal(milestoneCount);
+                string rewardLabel = rewardCrystal > 0 ? $" | 보상 {rewardCrystal:N0} 크리스탈" : string.Empty;
+                text.text = $"일일 미션 {milestoneCount}개 완료 : {stateLabel}{rewardLabel}";
                 text.color = stateColor;
             }
 
@@ -683,6 +685,19 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (milestone.Completed == milestoneCount)
                 {
                     return milestone.BonusHours;
+                }
+            }
+            return 0;
+        }
+
+        private uint GetMilestoneRewardCrystal(uint milestoneCount)
+        {
+            if (missionMetaResolver == null) return 0;
+            foreach (var milestone in missionMetaResolver.Milestones)
+            {
+                if (milestone.Completed == milestoneCount)
+                {
+                    return milestone.RewardCrystal;
                 }
             }
             return 0;

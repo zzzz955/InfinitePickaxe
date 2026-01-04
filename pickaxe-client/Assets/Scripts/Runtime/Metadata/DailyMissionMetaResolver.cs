@@ -113,10 +113,12 @@ namespace InfinitePickaxe.Client.Metadata
                     if (!TryGetUInt(milestoneDict, out var completed, "completed")) continue;
 
                     var bonus = TryGetUInt(milestoneDict, out var bonusHours, "bonus_hours") ? bonusHours : 0;
+                    var reward = TryGetUInt(milestoneDict, out var rewardCrystal, "reward_crystal") ? rewardCrystal : 0;
                     milestones.Add(new DailyMissionMilestoneMeta
                     {
                         Completed = completed,
-                        BonusHours = bonus
+                        BonusHours = bonus,
+                        RewardCrystal = reward
                     });
                 }
 
@@ -212,5 +214,6 @@ namespace InfinitePickaxe.Client.Metadata
     {
         public uint Completed { get; set; }
         public uint BonusHours { get; set; }
+        public uint RewardCrystal { get; set; }
     }
 }

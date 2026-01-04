@@ -124,7 +124,8 @@ bool MetadataLoader::load(const std::string& base_path) {
                     MilestoneBonus b;
                     b.completed = e.value("completed", 0);
                     b.bonus_hours = e.value("bonus_hours", 0);
-                    if (b.completed > 0 && b.bonus_hours > 0) {
+                    b.reward_crystal = e.value("reward_crystal", 0);
+                    if (b.completed > 0 && (b.bonus_hours > 0 || b.reward_crystal > 0)) {
                         milestone_bonuses_.push_back(b);
                     }
                 }

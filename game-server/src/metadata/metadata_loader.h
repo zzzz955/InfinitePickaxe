@@ -37,6 +37,7 @@ struct MissionMeta {
 struct MilestoneBonus {
     uint32_t completed;
     uint32_t bonus_hours;
+    uint32_t reward_crystal;
 };
 
 struct DailyMissionConfig {
