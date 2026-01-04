@@ -159,9 +159,10 @@ namespace InfinitePickaxe.Client.UI.Game
         [FormerlySerializedAs("damageTextRandomOffset")]
         [SerializeField] private Vector2 damageSpriteRandomOffset = new Vector2(60f, 0f);
         [SerializeField] private Vector2 damageDigitVerticalJitterRange = new Vector2(-6f, 6f);
-        [SerializeField] private float damageDigitSpacing = 4f;
+        [SerializeField] private float damageDigitSpacing = -6f;
         [SerializeField] private float damageDigitMinWidth = 0f;
         [SerializeField] private float damageDigitScale = 1f;
+        [SerializeField] private float damageSpriteStackSpacing = 0f;
         [SerializeField] private float criticalScale = 1.2f;
 
         private float targetFillNormalized = 1f;
@@ -2095,7 +2096,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (label == null || label.Root == null) return;
 
             string value = damage.ToString();
-            ApplyDamageDigits(label, value, isCritical);
+            float baseHeight = ApplyDamageDigits(label, value, isCritical);
 
             if (label.Group != null)
             {
@@ -2103,6 +2104,8 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             float scale = isCritical ? criticalScale : 1f;
+            float stackHeight = (baseHeight + damageSpriteStackSpacing) * scale;
+            ShiftActiveDamageSpritesUp(stackHeight);
             label.Root.localScale = Vector3.one * scale;
 
             float rangeX = Mathf.Abs(damageSpriteRandomOffset.x);
@@ -2124,9 +2127,9 @@ namespace InfinitePickaxe.Client.UI.Game
             activeDamageSprites.Add(entry);
         }
 
-        private void ApplyDamageDigits(DamageSpriteLabel label, string value, bool isCritical)
+        private float ApplyDamageDigits(DamageSpriteLabel label, string value, bool isCritical)
         {
-            if (label == null || label.Root == null || string.IsNullOrEmpty(value)) return;
+            if (label == null || label.Root == null || string.IsNullOrEmpty(value)) return 0f;
 
             EnsureDamageFontLoaded();
 
@@ -2136,6 +2139,9 @@ namespace InfinitePickaxe.Client.UI.Game
             damageDigitWidths.Clear();
             float totalWidth = 0f;
             float maxHeight = 0f;
+            float jitterMin = Mathf.Min(damageDigitVerticalJitterRange.x, damageDigitVerticalJitterRange.y);
+            float jitterMax = Mathf.Max(damageDigitVerticalJitterRange.x, damageDigitVerticalJitterRange.y);
+            float jitterSpan = Mathf.Abs(jitterMin) + Mathf.Abs(jitterMax);
 
             for (int i = 0; i < count; i++)
             {
@@ -2177,14 +2183,31 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (img == null) continue;
 
                 float width = damageDigitWidths[i];
-                float jitter = UnityEngine.Random.Range(damageDigitVerticalJitterRange.x, damageDigitVerticalJitterRange.y);
+                float jitter = UnityEngine.Random.Range(jitterMin, jitterMax);
 
                 var rect = img.rectTransform;
                 rect.anchoredPosition = new Vector2(cursor + width * 0.5f, jitter);
                 cursor += width + damageDigitSpacing;
             }
 
-            label.Root.sizeDelta = new Vector2(totalWidth, maxHeight);
+            float totalHeight = maxHeight + jitterSpan;
+            label.Root.sizeDelta = new Vector2(totalWidth, totalHeight);
+            return totalHeight;
+        }
+
+        private void ShiftActiveDamageSpritesUp(float offset)
+        {
+            if (offset <= 0f) return;
+
+            for (int i = 0; i < activeDamageSprites.Count; i++)
+            {
+                var entry = activeDamageSprites[i];
+                if (entry.Label == null || entry.Label.Root == null) continue;
+
+                var pos = entry.Label.Root.anchoredPosition;
+                pos.y += offset;
+                entry.Label.Root.anchoredPosition = pos;
+            }
         }
 
         private void EnsureDamageDigitCount(DamageSpriteLabel label, int count)

@@ -1203,7 +1203,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 600, y: 0}
+  m_SizeDelta: {x: 800, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &133178133
 MonoBehaviour:
@@ -1252,8 +1252,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 52
+  m_fontSizeBase: 52
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2183,8 +2183,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1068300618}
   - {fileID: 764205686}
+  - {fileID: 1068300618}
   m_Father: {fileID: 1650969917}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4383,13 +4383,14 @@ MonoBehaviour:
   swingDownPortion: 0.35
   damageSpriteRoot: {fileID: 1068300618}
   damageSpriteLabelPrefab: {fileID: 100000, guid: b7f1c2d3e4f5067890abcdeffedcba12, type: 3}
-  damageSpriteLifetime: 1.2
+  damageSpriteLifetime: 1
   damageSpriteRiseSpeed: 90
   damageSpriteRandomOffset: {x: 60, y: 10}
   damageDigitVerticalJitterRange: {x: -6, y: 6}
-  damageDigitSpacing: 4
+  damageDigitSpacing: -4
   damageDigitMinWidth: 0
-  damageDigitScale: 1
+  damageDigitScale: 0.7
+  damageSpriteStackSpacing: -16
   criticalScale: 1.25
   gemEquipModal: {fileID: 2025867224}
   gemGridContent: {fileID: 2025867223}
@@ -9914,7 +9915,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -250}
-  m_SizeDelta: {x: 600, y: 500}
+  m_SizeDelta: {x: 600, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1098137243
 PrefabInstance:
@@ -14305,7 +14306,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 320, y: 0}
+  m_SizeDelta: {x: 240, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1438385304
 MonoBehaviour:
@@ -15111,7 +15112,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 540, y: -560}
-  m_SizeDelta: {x: 920, y: 100}
+  m_SizeDelta: {x: 1040, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1552489192
 MonoBehaviour:
