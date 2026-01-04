@@ -6,22 +6,22 @@
   },
   {
     "grade_id": 1,
-    "random_cost": 30,
-    "fixed_cost": 90
+    "random_cost": 20,
+    "fixed_cost": 60
   },
   {
     "grade_id": 2,
-    "random_cost": 100,
-    "fixed_cost": 300
+    "random_cost": 50,
+    "fixed_cost": 150
   },
   {
     "grade_id": 3,
-    "random_cost": 300,
-    "fixed_cost": 900
+    "random_cost": 200,
+    "fixed_cost": 600
   },
   {
     "grade_id": 4,
-    "random_cost": 1000,
-    "fixed_cost": 3000
+    "random_cost": 500,
+    "fixed_cost": 1500
   }
 ]

@@ -24,9 +24,9 @@
         "daily_limit": 3,
         "effect": "crystal_reward",
         "rewards_by_view": [
-          10,
-          14,
-          18
+          20,
+          30,
+          50
         ]
       }
     ]
@@ -43,7 +43,7 @@
         "target": 10,
         "mineral_id": null,
         "description": "아무 광물이나 10회 채굴",
-        "reward_crystal": 10
+        "reward_crystal": 20
       },
       {
         "id": 2,
@@ -52,7 +52,7 @@
         "target": 300,
         "mineral_id": null,
         "description": "게임 접속 5분 유지",
-        "reward_crystal": 10
+        "reward_crystal": 20
       },
       {
         "id": 3,
@@ -61,7 +61,7 @@
         "target": 2,
         "mineral_id": null,
         "description": "강화 2회 성공",
-        "reward_crystal": 10
+        "reward_crystal": 20
       },
       {
         "id": 4,
@@ -70,7 +70,7 @@
         "target": 4,
         "mineral_id": null,
         "description": "강화 4회 수행",
-        "reward_crystal": 10
+        "reward_crystal": 20
       },
       {
         "id": 5,
@@ -79,7 +79,7 @@
         "target": 2500,
         "mineral_id": null,
         "description": "골드 2,500 획득",
-        "reward_crystal": 10
+        "reward_crystal": 20
       },
       {
         "id": 6,
@@ -88,7 +88,7 @@
         "target": 5,
         "mineral_id": 5,
         "description": "강철 5회 채굴",
-        "reward_crystal": 10
+        "reward_crystal": 20
       },
       {
         "id": 7,
@@ -97,7 +97,7 @@
         "target": 5,
         "mineral_id": 6,
         "description": "흑철 5회 채굴",
-        "reward_crystal": 10
+        "reward_crystal": 20
       },
       {
         "id": 8,
@@ -106,7 +106,7 @@
         "target": 5,
         "mineral_id": 7,
         "description": "은 5회 채굴",
-        "reward_crystal": 10
+        "reward_crystal": 20
       },
       {
         "id": 9,
@@ -115,7 +115,7 @@
         "target": 5,
         "mineral_id": 8,
         "description": "리튬 5회 채굴",
-        "reward_crystal": 10
+        "reward_crystal": 20
       },
       {
         "id": 10,
@@ -124,7 +124,43 @@
         "target": 5,
         "mineral_id": 9,
         "description": "운모 5회 채굴",
-        "reward_crystal": 10
+        "reward_crystal": 20
+      },
+      {
+        "id": 11,
+        "difficulty": "Easy",
+        "type": "gem_create",
+        "target": 3,
+        "mineral_id": null,
+        "description": "보석 3개 획득",
+        "reward_crystal": 20
+      },
+      {
+        "id": 12,
+        "difficulty": "Easy",
+        "type": "gem_conversion",
+        "target": 1,
+        "mineral_id": null,
+        "description": "보석 타입 전환 1회 수행",
+        "reward_crystal": 20
+      },
+      {
+        "id": 12,
+        "difficulty": "Easy",
+        "type": "gem_synthesis",
+        "target": 1,
+        "mineral_id": null,
+        "description": "보석 1회 합성",
+        "reward_crystal": 20
+      },
+      {
+        "id": 13,
+        "difficulty": "Easy",
+        "type": "gem_discard",
+        "target": 1,
+        "mineral_id": null,
+        "description": "보석 1개 분해",
+        "reward_crystal": 20
       },
       {
         "id": 101,
@@ -133,7 +169,7 @@
         "target": 20,
         "mineral_id": null,
         "description": "아무 광물이나 25회 채굴",
-        "reward_crystal": 14
+        "reward_crystal": 30
       },
       {
         "id": 102,
@@ -142,7 +178,7 @@
         "target": 900,
         "mineral_id": null,
         "description": "게임 접속 15분 유지",
-        "reward_crystal": 14
+        "reward_crystal": 30
       },
       {
         "id": 103,
@@ -151,7 +187,7 @@
         "target": 4,
         "mineral_id": null,
         "description": "강화 5회 성공",
-        "reward_crystal": 14
+        "reward_crystal": 30
       },
       {
         "id": 104,
@@ -160,7 +196,7 @@
         "target": 8,
         "mineral_id": null,
         "description": "강화 10회 수행",
-        "reward_crystal": 14
+        "reward_crystal": 30
       },
       {
         "id": 105,
@@ -169,7 +205,7 @@
         "target": 10000,
         "mineral_id": null,
         "description": "골드 10,000 획득",
-        "reward_crystal": 14
+        "reward_crystal": 30
       },
       {
         "id": 106,
@@ -178,7 +214,7 @@
         "target": 5,
         "mineral_id": 10,
         "description": "에메랄드 10회 채굴",
-        "reward_crystal": 14
+        "reward_crystal": 30
       },
       {
         "id": 107,
@@ -187,7 +223,7 @@
         "target": 5,
         "mineral_id": 11,
         "description": "아쿠아마린 5회 채굴",
-        "reward_crystal": 14
+        "reward_crystal": 30
       },
       {
         "id": 108,
@@ -196,7 +232,7 @@
         "target": 5,
         "mineral_id": 12,
         "description": "금 5회 채굴",
-        "reward_crystal": 14
+        "reward_crystal": 30
       },
       {
         "id": 109,
@@ -205,7 +241,7 @@
         "target": 5,
         "mineral_id": 13,
         "description": "다이아몬드 5회 채굴",
-        "reward_crystal": 14
+        "reward_crystal": 30
       },
       {
         "id": 110,
@@ -214,7 +250,43 @@
         "target": 5,
         "mineral_id": 14,
         "description": "석영 5회 채굴",
-        "reward_crystal": 14
+        "reward_crystal": 30
+      },
+      {
+        "id": 111,
+        "difficulty": "Medium",
+        "type": "gem_create",
+        "target": 5,
+        "mineral_id": null,
+        "description": "보석 5개 획득",
+        "reward_crystal": 30
+      },
+      {
+        "id": 112,
+        "difficulty": "Medium",
+        "type": "gem_conversion",
+        "target": 2,
+        "mineral_id": null,
+        "description": "보석 타입 전환 2회 수행",
+        "reward_crystal": 30
+      },
+      {
+        "id": 112,
+        "difficulty": "Medium",
+        "type": "gem_synthesis",
+        "target": 3,
+        "mineral_id": null,
+        "description": "보석 3회 합성",
+        "reward_crystal": 30
+      },
+      {
+        "id": 113,
+        "difficulty": "Medium",
+        "type": "gem_discard",
+        "target": 3,
+        "mineral_id": null,
+        "description": "보석 3개 분해",
+        "reward_crystal": 30
       },
       {
         "id": 201,
@@ -223,7 +295,7 @@
         "target": 50,
         "mineral_id": null,
         "description": "아무 광물이나 50회 채굴",
-        "reward_crystal": 18
+        "reward_crystal": 40
       },
       {
         "id": 202,
@@ -232,7 +304,7 @@
         "target": 1800,
         "mineral_id": null,
         "description": "게임 접속 30분 유지",
-        "reward_crystal": 18
+        "reward_crystal": 40
       },
       {
         "id": 203,
@@ -241,7 +313,7 @@
         "target": 6,
         "mineral_id": null,
         "description": "강화 6회 성공",
-        "reward_crystal": 18
+        "reward_crystal": 40
       },
       {
         "id": 204,
@@ -250,7 +322,7 @@
         "target": 12,
         "mineral_id": null,
         "description": "강화 12회 수행",
-        "reward_crystal": 18
+        "reward_crystal": 40
       },
       {
         "id": 205,
@@ -259,7 +331,7 @@
         "target": 50000,
         "mineral_id": null,
         "description": "골드 50,000 획득",
-        "reward_crystal": 18
+        "reward_crystal": 40
       },
       {
         "id": 206,
@@ -268,7 +340,7 @@
         "target": 5,
         "mineral_id": 15,
         "description": "감람석 5회 채굴",
-        "reward_crystal": 18
+        "reward_crystal": 40
       },
       {
         "id": 207,
@@ -277,7 +349,7 @@
         "target": 5,
         "mineral_id": 16,
         "description": "백금 5회 채굴",
-        "reward_crystal": 18
+        "reward_crystal": 40
       },
       {
         "id": 208,
@@ -286,7 +358,7 @@
         "target": 5,
         "mineral_id": 17,
         "description": "비스무트 5회 채굴",
-        "reward_crystal": 18
+        "reward_crystal": 40
       },
       {
         "id": 209,
@@ -295,7 +367,7 @@
         "target": 5,
         "mineral_id": 18,
         "description": "오리할콘 5회 채굴",
-        "reward_crystal": 18
+        "reward_crystal": 40
       },
       {
         "id": 210,
@@ -304,21 +376,60 @@
         "target": 5,
         "mineral_id": 19,
         "description": "토파즈 5회 채굴",
-        "reward_crystal": 18
+        "reward_crystal": 40
+      },
+      {
+        "id": 211,
+        "difficulty": "Hard",
+        "type": "gem_create",
+        "target": 10,
+        "mineral_id": null,
+        "description": "보석 10개 획득",
+        "reward_crystal": 40
+      },
+      {
+        "id": 212,
+        "difficulty": "Hard",
+        "type": "gem_conversion",
+        "target": 3,
+        "mineral_id": null,
+        "description": "보석 타입 전환 3회 수행",
+        "reward_crystal": 40
+      },
+      {
+        "id": 212,
+        "difficulty": "Hard",
+        "type": "gem_synthesis",
+        "target": 5,
+        "mineral_id": null,
+        "description": "보석 5회 합성",
+        "reward_crystal": 40
+      },
+      {
+        "id": 213,
+        "difficulty": "Hard",
+        "type": "gem_discard",
+        "target": 5,
+        "mineral_id": null,
+        "description": "보석 5개 분해",
+        "reward_crystal": 40
       }
     ],
     "milestone_offline_bonus_hours": [
       {
         "completed": 3,
-        "bonus_hours": 1
+        "bonus_hours": 1,
+        "reward_crystal": 30
       },
       {
         "completed": 5,
-        "bonus_hours": 1
+        "bonus_hours": 1,
+        "reward_crystal": 50
       },
       {
         "completed": 7,
-        "bonus_hours": 1
+        "bonus_hours": 1,
+        "reward_crystal": 70
       }
     ]
   },
@@ -1964,23 +2075,23 @@
     },
     {
       "grade_id": 1,
-      "random_cost": 30,
-      "fixed_cost": 90
+      "random_cost": 20,
+      "fixed_cost": 60
     },
     {
       "grade_id": 2,
-      "random_cost": 100,
-      "fixed_cost": 300
+      "random_cost": 50,
+      "fixed_cost": 150
     },
     {
       "grade_id": 3,
-      "random_cost": 300,
-      "fixed_cost": 900
+      "random_cost": 200,
+      "fixed_cost": 600
     },
     {
       "grade_id": 4,
-      "random_cost": 1000,
-      "fixed_cost": 3000
+      "random_cost": 500,
+      "fixed_cost": 1500
     }
   ],
   "gem_discard": [
@@ -2007,7 +2118,7 @@
   ],
   "gem_inventory": {
     "base_capacity": 48,
-    "max_capacity": 128,
+    "max_capacity": 200,
     "expand_step": 8,
     "expand_cost": 200
   },
@@ -2040,23 +2151,23 @@
     },
     {
       "slot_index": 1,
-      "unlock_cost_crystal": 100
+      "unlock_cost_crystal": 50
     },
     {
       "slot_index": 2,
-      "unlock_cost_crystal": 200
+      "unlock_cost_crystal": 100
     },
     {
       "slot_index": 3,
-      "unlock_cost_crystal": 400
+      "unlock_cost_crystal": 200
     },
     {
       "slot_index": 4,
-      "unlock_cost_crystal": 800
+      "unlock_cost_crystal": 500
     },
     {
       "slot_index": 5,
-      "unlock_cost_crystal": 1600
+      "unlock_cost_crystal": 1000
     }
   ]
 }

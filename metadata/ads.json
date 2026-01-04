@@ -23,9 +23,9 @@
       "daily_limit": 3,
       "effect": "crystal_reward",
       "rewards_by_view": [
-        10,
-        14,
-        18
+        20,
+        30,
+        50
       ]
     }
   ]

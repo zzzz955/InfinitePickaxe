@@ -237,6 +237,7 @@ function buildDailyMissions() {
     return {
       completed: toNumber(row.completed, `${context} completed`),
       bonus_hours: toNumber(row.bonus_hours, `${context} bonus_hours`),
+      reward_crystal: toNumber(row.reward_crystal, `${context} reward_crystal`),
     };
   });
 

@@ -1,5 +1,5 @@
 key,value
 base_capacity,48
-max_capacity,128
+max_capacity,200
 expand_step,8
 expand_cost,200
