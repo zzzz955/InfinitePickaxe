@@ -16548,17 +16548,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1669788953 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7000000003, guid: efec760879b5442b897e0f3d843d64b1, type: 3}
-  m_PrefabInstance: {fileID: 1669788948}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1669788954 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6000000003, guid: efec760879b5442b897e0f3d843d64b1, type: 3}
@@ -21352,7 +21341,7 @@ PrefabInstance:
     - target: {fileID: 471376357836263920, guid: 41ea5157ed614c8ea4ac1b0e81dcbd76, type: 3}
       propertyPath: autoSynthesisConfirmSuccessText
       value: 
-      objectReference: {fileID: 1669788953}
+      objectReference: {fileID: 0}
     - target: {fileID: 471376357836263920, guid: 41ea5157ed614c8ea4ac1b0e81dcbd76, type: 3}
       propertyPath: conversionConfirmCurrentCrystalText
       value: 
