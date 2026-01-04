@@ -1,4 +1,4 @@
 key,value
-single_pull_cost,50
-multi_pull_cost,500
+single_pull_cost,30
+multi_pull_cost,300
 multi_pull_count,11

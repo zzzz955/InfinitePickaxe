@@ -1,22 +1,22 @@
 [
   {
     "grade_id": 0,
-    "crystal_reward": 5
+    "crystal_reward": 25
   },
   {
     "grade_id": 1,
-    "crystal_reward": 15
+    "crystal_reward": 75
   },
   {
     "grade_id": 2,
-    "crystal_reward": 50
+    "crystal_reward": 225
   },
   {
     "grade_id": 3,
-    "crystal_reward": 150
+    "crystal_reward": 675
   },
   {
     "grade_id": 4,
-    "crystal_reward": 500
+    "crystal_reward": 2025
   }
 ]
