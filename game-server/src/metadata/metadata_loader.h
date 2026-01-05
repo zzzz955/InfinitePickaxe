@@ -34,6 +34,18 @@ struct MissionMeta {
     std::optional<uint32_t> mineral_id;
 };
 
+struct AchievementMeta {
+    uint32_t id{0};
+    uint32_t chain_id{0};
+    uint32_t step_index{0};
+    std::string type;
+    uint64_t target{0};
+    std::string title;
+    std::string description;
+    uint32_t reward_crystal{0};
+    uint64_t reward_gold{0};
+};
+
 struct MilestoneBonus {
     uint32_t completed;
     uint32_t bonus_hours;
@@ -166,6 +178,7 @@ public:
     const PickaxeLevel* pickaxe_level(uint32_t level) const;
     const MineralMeta* mineral(uint32_t id) const;
     const std::vector<MissionMeta>& missions() const { return missions_; }
+    const std::vector<AchievementMeta>& achievements() const { return achievements_; }
     const DailyMissionConfig& daily_missions_config() const { return daily_missions_config_; }
     const std::vector<MilestoneBonus>& milestone_bonuses() const { return milestone_bonuses_; }
     const std::vector<AdTypeMeta>& ad_types() const { return ad_types_; }
@@ -190,11 +203,17 @@ public:
     const GemTypeMeta* gem_type(uint32_t id) const;
     const GemGradeMeta* gem_grade(uint32_t id) const;
     const GemDefinition* gem_definition(uint32_t gem_id) const;
+    const AchievementMeta* achievement(uint32_t id) const {
+        auto it = achievements_by_id_.find(id);
+        if (it == achievements_by_id_.end()) return nullptr;
+        return &achievements_[it->second];
+    }
 
 private:
     std::unordered_map<uint32_t, PickaxeLevel> pickaxe_levels_;
     std::unordered_map<uint32_t, MineralMeta> minerals_;
     std::vector<MissionMeta> missions_;
+    std::vector<AchievementMeta> achievements_;
     DailyMissionConfig daily_missions_config_;
     std::vector<MilestoneBonus> milestone_bonuses_;
     std::vector<AdTypeMeta> ad_types_;
@@ -219,4 +238,5 @@ private:
     std::unordered_map<uint32_t, GemTypeMeta> gem_types_by_id_;
     std::unordered_map<uint32_t, GemGradeMeta> gem_grades_by_id_;
     std::unordered_map<uint32_t, GemDefinition> gem_definitions_by_id_;
+    std::unordered_map<uint32_t, size_t> achievements_by_id_;
 };

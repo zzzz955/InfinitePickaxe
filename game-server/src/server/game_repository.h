@@ -39,6 +39,7 @@ public:
     // 유저 게임 데이터 조회
     UserGameData get_user_game_data(const std::string& user_id);
     std::optional<uint32_t> add_crystal(const std::string& user_id, uint32_t delta);
+    std::optional<uint64_t> add_gold(const std::string& user_id, uint64_t delta);
     bool set_current_mineral(const std::string& user_id, uint32_t mineral_id, uint64_t mineral_hp);
 
     // 보석 인벤토리 조회

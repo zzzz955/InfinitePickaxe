@@ -3,6 +3,8 @@
 #include "server/game_repository.h"
 #include "server/ad_repository.h"
 #include "server/ad_service.h"
+#include "server/achievement_repository.h"
+#include "server/achievement_service.h"
 #include "server/redis_client.h"
 #include "metadata/metadata_loader.h"
 #include "server/connection_pool.h"
@@ -36,6 +38,7 @@ int main() {
         MiningRepository mining_repo(db_pool);
         AdRepository ad_repo(db_pool);
         MissionRepository mission_repo(db_pool);
+        AchievementRepository achievement_repo(db_pool);
         SlotRepository slot_repo(db_pool);
         OfflineRepository offline_repo(db_pool);
         GemRepository gem_repo(db_pool);
@@ -44,13 +47,14 @@ int main() {
         UpgradeService upgrade_service(upgrade_repo, metadata);
         AdService ad_service(ad_repo, game_repo, metadata);
         MissionService mission_service(mission_repo, game_repo, offline_repo, ad_service, metadata, redis_client);
+        AchievementService achievement_service(achievement_repo, game_repo, metadata);
         SlotService slot_service(slot_repo, game_repo, gem_repo, metadata);
         GemService gem_service(gem_repo, slot_repo, metadata);
         OfflineService offline_service(offline_repo, metadata);
         boost::asio::io_context io;
 
         TcpServer server(io, cfg.listen_port, auth_service, game_repo,
-                         mining_service, upgrade_service, mission_service,
+                         mining_service, upgrade_service, mission_service, achievement_service,
                          slot_service, offline_service, ad_service, gem_service,
                          redis_client, metadata);
         server.start();

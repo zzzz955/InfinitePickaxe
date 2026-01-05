@@ -14,6 +14,7 @@
 #include "mining_service.h"
 #include "upgrade_service.h"
 #include "mission_service.h"
+#include "achievement_service.h"
 #include "slot_service.h"
 #include "offline_service.h"
 #include "gem_service.h"
@@ -51,6 +52,7 @@ public:
             MiningService& mining_service,
             UpgradeService& upgrade_service,
             MissionService& mission_service,
+            AchievementService& achievement_service,
             SlotService& slot_service,
             OfflineService& offline_service,
             AdService& ad_service,
@@ -78,6 +80,9 @@ private:
     void handle_mission_progress_update(const infinitepickaxe::Envelope& env);
     void handle_mission_complete(const infinitepickaxe::Envelope& env);
     void handle_mission_reroll(const infinitepickaxe::Envelope& env);
+    void handle_achievements(const infinitepickaxe::Envelope& env);
+    void handle_achievement_progress_update(const infinitepickaxe::Envelope& env);
+    void handle_achievement_claim(const infinitepickaxe::Envelope& env);
     void handle_ad_watch(const infinitepickaxe::Envelope& env);
     void handle_milestone_claim(const infinitepickaxe::Envelope& env);
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
@@ -110,8 +115,10 @@ private:
                            uint32_t critical_hit_percent, uint32_t critical_damage);
     void refresh_slots_from_service(bool preserve_timers);
     void send_mission_progress_updates(const std::vector<infinitepickaxe::MissionProgressUpdate>& updates);
+    void send_achievement_progress_updates(const std::vector<infinitepickaxe::AchievementProgressUpdate>& updates);
     void send_daily_missions_state();
     void send_milestone_state();
+    void send_achievements_state();
     void send_ad_counters_state();
     void flush_play_time_progress(bool force);
     void cache_mining_state();
@@ -127,6 +134,7 @@ private:
     MiningService& mining_service_;
     UpgradeService& upgrade_service_;
     MissionService& mission_service_;
+    AchievementService& achievement_service_;
     SlotService& slot_service_;
     OfflineService& offline_service_;
     AdService& ad_service_;

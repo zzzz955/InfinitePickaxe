@@ -271,6 +271,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  MiningService &mining_service,
                  UpgradeService &upgrade_service,
                  MissionService &mission_service,
+                 AchievementService &achievement_service,
                  SlotService &slot_service,
                  OfflineService &offline_service,
                  AdService &ad_service,
@@ -286,6 +287,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       mining_service_(mining_service),
       upgrade_service_(upgrade_service),
       mission_service_(mission_service),
+      achievement_service_(achievement_service),
       slot_service_(slot_service),
       offline_service_(offline_service),
       ad_service_(ad_service),
@@ -597,6 +599,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
 
     send_daily_missions_state();
     send_milestone_state();
+    send_achievements_state();
     send_ad_counters_state();
     if (has_offline_reward)
     {
@@ -727,6 +730,8 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope &env)
     if (slot.has_value()) {
         auto updates = mission_service_.handle_upgrade_try(user_id_, res.success());
         send_mission_progress_updates(updates);
+        auto achievement_updates = achievement_service_.handle_upgrade_try(user_id_, res.success());
+        send_achievement_progress_updates(achievement_updates);
     }
 }
 
@@ -845,6 +850,42 @@ void Session::handle_mission_reroll(const infinitepickaxe::Envelope &env)
     *response_env.mutable_mission_reroll_result() = res;
     send_envelope(response_env);
     send_daily_missions_state();
+}
+
+void Session::handle_achievements(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_achievements_request())
+    {
+        send_error("2004", "achievements_request message missing");
+        return;
+    }
+    send_achievements_state();
+}
+
+void Session::handle_achievement_progress_update(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_achievement_progress_update())
+    {
+        send_error("2004", "achievement_progress_update message missing");
+        return;
+    }
+    spdlog::debug("Ignoring client achievement_progress_update (server-authoritative): user={}", user_id_);
+}
+
+void Session::handle_achievement_claim(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_achievement_claim())
+    {
+        send_error("2004", "achievement_claim message missing");
+        return;
+    }
+    const auto &req = env.achievement_claim();
+    auto res = achievement_service_.claim_achievement(user_id_, req.achievement_id());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::ACHIEVEMENT_CLAIM_RESULT);
+    *response_env.mutable_achievement_claim_result() = res;
+    send_envelope(response_env);
 }
 
 void Session::handle_ad_watch(const infinitepickaxe::Envelope &env)
@@ -1052,6 +1093,12 @@ void Session::init_router()
                              { handle_mission_complete(e); });
     router_.register_handler(infinitepickaxe::MISSION_REROLL, [this](const infinitepickaxe::Envelope &e)
                              { handle_mission_reroll(e); });
+    router_.register_handler(infinitepickaxe::ACHIEVEMENTS_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_achievements(e); });
+    router_.register_handler(infinitepickaxe::ACHIEVEMENT_PROGRESS_UPDATE, [this](const infinitepickaxe::Envelope &e)
+                             { handle_achievement_progress_update(e); });
+    router_.register_handler(infinitepickaxe::ACHIEVEMENT_CLAIM, [this](const infinitepickaxe::Envelope &e)
+                             { handle_achievement_claim(e); });
     router_.register_handler(infinitepickaxe::AD_WATCH_COMPLETE, [this](const infinitepickaxe::Envelope &e)
                              { handle_ad_watch(e); });
     router_.register_handler(infinitepickaxe::MILESTONE_CLAIM, [this](const infinitepickaxe::Envelope &e)
@@ -1133,6 +1180,17 @@ void Session::send_mission_progress_updates(const std::vector<infinitepickaxe::M
     }
 }
 
+void Session::send_achievement_progress_updates(const std::vector<infinitepickaxe::AchievementProgressUpdate>& updates)
+{
+    for (const auto& update : updates)
+    {
+        infinitepickaxe::Envelope env;
+        env.set_type(infinitepickaxe::ACHIEVEMENT_PROGRESS_UPDATE);
+        *env.mutable_achievement_progress_update() = update;
+        send_envelope(env);
+    }
+}
+
 void Session::send_daily_missions_state()
 {
     auto res = mission_service_.get_missions(user_id_);
@@ -1148,6 +1206,15 @@ void Session::send_milestone_state()
     infinitepickaxe::Envelope env;
     env.set_type(infinitepickaxe::MILESTONE_STATE);
     *env.mutable_milestone_state() = state;
+    send_envelope(env);
+}
+
+void Session::send_achievements_state()
+{
+    auto state = achievement_service_.get_state(user_id_);
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::ACHIEVEMENTS_RESPONSE);
+    *env.mutable_achievements_response() = state;
     send_envelope(env);
 }
 
@@ -1386,6 +1453,8 @@ void Session::flush_play_time_progress(bool force)
     play_time_accum_ms_ -= static_cast<float>(flush_seconds * 1000);
     auto updates = mission_service_.handle_play_time_seconds(user_id_, flush_seconds);
     send_mission_progress_updates(updates);
+    auto achievement_updates = achievement_service_.handle_play_time_seconds(user_id_, flush_seconds);
+    send_achievement_progress_updates(achievement_updates);
 }
 
 void Session::close(bool allow_grace)
@@ -1733,6 +1802,12 @@ void Session::handle_mining_complete_immediate()
     auto gold_updates = mission_service_.handle_gold_earned(user_id_, completion_result.gold_earned());
     updates.insert(updates.end(), gold_updates.begin(), gold_updates.end());
     send_mission_progress_updates(updates);
+    auto achievement_updates = achievement_service_.handle_mining_complete(user_id_);
+    auto achievement_gold_updates = achievement_service_.handle_gold_earned(user_id_, completion_result.gold_earned());
+    achievement_updates.insert(achievement_updates.end(),
+                               achievement_gold_updates.begin(),
+                               achievement_gold_updates.end());
+    send_achievement_progress_updates(achievement_updates);
     cache_mining_state();
 
     spdlog::info("Mining completed: user={} mineral={} gold_earned={} respawn_time={}s",
@@ -1780,6 +1855,8 @@ void Session::handle_gem_gacha(const infinitepickaxe::Envelope &env)
         uint32_t created_count = static_cast<uint32_t>(result.gems_size());
         auto updates = mission_service_.handle_gem_created(user_id_, created_count);
         send_mission_progress_updates(updates);
+        auto achievement_updates = achievement_service_.handle_gem_created(user_id_, created_count);
+        send_achievement_progress_updates(achievement_updates);
     }
 }
 
@@ -1819,6 +1896,21 @@ void Session::handle_gem_synthesis(const infinitepickaxe::Envelope &env)
         }
 
         send_mission_progress_updates(updates);
+
+        std::vector<infinitepickaxe::AchievementProgressUpdate> achievement_updates;
+        auto achievement_synthesis_updates = achievement_service_.handle_gem_synthesis(user_id_, 1);
+        achievement_updates.insert(achievement_updates.end(),
+                                   achievement_synthesis_updates.begin(),
+                                   achievement_synthesis_updates.end());
+
+        if (result.synthesis_success()) {
+            auto achievement_create_updates = achievement_service_.handle_gem_created(user_id_, 1);
+            achievement_updates.insert(achievement_updates.end(),
+                                       achievement_create_updates.begin(),
+                                       achievement_create_updates.end());
+        }
+
+        send_achievement_progress_updates(achievement_updates);
     }
 }
 
@@ -1853,6 +1945,21 @@ void Session::handle_gem_auto_synthesis(const infinitepickaxe::Envelope &env)
         }
 
         send_mission_progress_updates(updates);
+
+        std::vector<infinitepickaxe::AchievementProgressUpdate> achievement_updates;
+        auto achievement_synthesis_updates = achievement_service_.handle_gem_synthesis(user_id_, result.attempted());
+        achievement_updates.insert(achievement_updates.end(),
+                                   achievement_synthesis_updates.begin(),
+                                   achievement_synthesis_updates.end());
+
+        if (result.success_count() > 0) {
+            auto achievement_create_updates = achievement_service_.handle_gem_created(user_id_, result.success_count());
+            achievement_updates.insert(achievement_updates.end(),
+                                       achievement_create_updates.begin(),
+                                       achievement_create_updates.end());
+        }
+
+        send_achievement_progress_updates(achievement_updates);
     }
 }
 
@@ -1882,6 +1989,8 @@ void Session::handle_gem_conversion(const infinitepickaxe::Envelope &env)
     if (result.success()) {
         auto updates = mission_service_.handle_gem_conversion(user_id_, 1);
         send_mission_progress_updates(updates);
+        auto achievement_updates = achievement_service_.handle_gem_conversion(user_id_, 1);
+        send_achievement_progress_updates(achievement_updates);
     }
 }
 
@@ -1914,6 +2023,8 @@ void Session::handle_gem_discard(const infinitepickaxe::Envelope &env)
         uint32_t discard_count = static_cast<uint32_t>(gem_ids.size());
         auto updates = mission_service_.handle_gem_discard(user_id_, discard_count);
         send_mission_progress_updates(updates);
+        auto achievement_updates = achievement_service_.handle_gem_discard(user_id_, discard_count);
+        send_achievement_progress_updates(achievement_updates);
     }
 }
 

@@ -215,6 +215,25 @@ std::optional<uint32_t> GameRepository::add_crystal(const std::string& user_id, 
     }
 }
 
+std::optional<uint64_t> GameRepository::add_gold(const std::string& user_id, uint64_t delta) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto row = tx.exec_params1(
+            "UPDATE game_schema.user_game_data "
+            "SET gold = gold + $2 "
+            "WHERE user_id = $1 "
+            "RETURNING gold",
+            user_id, static_cast<int64_t>(delta));
+        uint64_t total = row[0].as<uint64_t>();
+        tx.commit();
+        return total;
+    } catch (const std::exception& ex) {
+        spdlog::error("add_gold failed for user {}: {}", user_id, ex.what());
+        return std::nullopt;
+    }
+}
+
 bool GameRepository::set_current_mineral(const std::string& user_id, uint32_t mineral_id, uint64_t mineral_hp) {
     try {
         auto conn = pool_.acquire();

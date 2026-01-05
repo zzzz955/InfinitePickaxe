@@ -9,6 +9,7 @@ bool MetadataLoader::load(const std::string& base_path) {
         pickaxe_levels_.clear();
         minerals_.clear();
         missions_.clear();
+        achievements_.clear();
         milestone_bonuses_.clear();
         ad_types_.clear();
         ad_types_by_id_.clear();
@@ -27,6 +28,7 @@ bool MetadataLoader::load(const std::string& base_path) {
         gem_types_by_id_.clear();
         gem_grades_by_id_.clear();
         gem_definitions_by_id_.clear();
+        achievements_by_id_.clear();
         gem_gacha_ = GemGachaMeta{};
         gem_inventory_config_ = GemInventoryConfig{};
 
@@ -128,6 +130,28 @@ bool MetadataLoader::load(const std::string& base_path) {
                     if (b.completed > 0 && (b.bonus_hours > 0 || b.reward_crystal > 0)) {
                         milestone_bonuses_.push_back(b);
                     }
+                }
+            }
+        }
+
+        // achievements
+        if (bundle.contains("achievements") && bundle["achievements"].is_array()) {
+            const auto& j = bundle["achievements"];
+            achievements_.reserve(j.size());
+            for (auto& e : j) {
+                AchievementMeta a;
+                a.id = e.value("achievement_id", e.value("id", 0));
+                a.chain_id = e.value("chain_id", 0);
+                a.step_index = e.value("step_index", 0);
+                a.type = e.value("type", "");
+                a.target = e.value<uint64_t>("target", 0);
+                a.title = e.value("title", "");
+                a.description = e.value("description", "");
+                a.reward_crystal = e.value("reward_crystal", 0);
+                a.reward_gold = e.value<uint64_t>("reward_gold", 0);
+                achievements_.push_back(a);
+                if (a.id > 0) {
+                    achievements_by_id_[a.id] = achievements_.size() - 1;
                 }
             }
         }
