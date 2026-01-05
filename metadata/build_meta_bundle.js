@@ -109,6 +109,19 @@ function toNumber(value, context) {
   return num;
 }
 
+function toOptionalNumber(value, context) {
+  if (value === undefined || value === null) {
+    return null;
+  }
+
+  const trimmed = `${value}`.trim();
+  if (trimmed === '' || trimmed.toLowerCase() === 'null') {
+    return null;
+  }
+
+  return toNumber(trimmed, context);
+}
+
 function toBoolean(value, context) {
   const normalized = String(value).toLowerCase();
 
@@ -251,6 +264,39 @@ function buildDailyMissions() {
       missions,
       milestone_offline_bonus_hours: milestones,
     },
+  };
+}
+
+function buildAchievements() {
+  const achievements = readCsv('achievements.csv').map((row, idx) => {
+    const context = `achievements.csv row ${idx + 2}`;
+    const entry = {
+      achievement_id: toNumber(requireField(row.achievement_id, 'achievement_id', context), `${context} achievement_id`),
+      chain_id: toNumber(requireField(row.chain_id, 'chain_id', context), `${context} chain_id`),
+      step_index: toNumber(requireField(row.step_index, 'step_index', context), `${context} step_index`),
+      type: requireField(row.type, 'type', context),
+      target: toNumber(requireField(row.target, 'target', context), `${context} target`),
+      title: requireField(row.title, 'title', context),
+      description: requireField(row.description, 'description', context),
+    };
+
+    const rewardCrystal = toOptionalNumber(row.reward_crystal, `${context} reward_crystal`);
+    if (rewardCrystal !== null) {
+      entry.reward_crystal = rewardCrystal;
+    }
+
+    const rewardGold = toOptionalNumber(row.reward_gold, `${context} reward_gold`);
+    if (rewardGold !== null) {
+      entry.reward_gold = rewardGold;
+    }
+
+    return entry;
+  });
+
+  return {
+    key: 'achievements',
+    file: 'achievements.json',
+    data: achievements,
   };
 }
 
@@ -560,6 +606,7 @@ function buildPickaxeSlotUnlockCosts() {
 const builders = [
   buildAds,
   buildDailyMissions,
+  buildAchievements,
   buildMinerals,
   buildMissionReroll,
   buildOfflineDefaults,
