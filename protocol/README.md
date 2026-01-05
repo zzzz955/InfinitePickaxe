@@ -3,7 +3,7 @@
 공통 `.proto` 스키마를 관리합니다. C++/C# 양쪽에서 같은 파일을 코드 생성해 사용합니다.
 
 - 전송: TCP length-prefix(4바이트) + `Envelope` protobuf 메시지
-- 메시지: MVP 기준 (Handshake, Heartbeat, Mining*, Upgrade, Mission, SlotUnlock, OfflineReward, Gem*, Error)
+- 메시지: MVP 기준 (Handshake, Heartbeat, Mining*, Upgrade, Mission, Achievement, SlotUnlock, OfflineReward, Gem*, Error)
 
 ## 메시지 카테고리
 
@@ -34,6 +34,11 @@
 - MissionReroll, MissionRerollResult
 - MilestoneClaim, MilestoneClaimResult
 - MilestoneState
+
+### 업적 (140-144)
+- AchievementsRequest/Response
+- AchievementProgressUpdate
+- AchievementClaim, AchievementClaimResult
 
 ### 광고 (70-79)
 - AdWatchComplete, AdWatchResult

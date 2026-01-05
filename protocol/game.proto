@@ -69,6 +69,13 @@ enum MessageType {
   MILESTONE_CLAIM_RESULT = 68;
   MILESTONE_STATE = 69;
 
+  // 업적
+  ACHIEVEMENTS_REQUEST = 140;
+  ACHIEVEMENTS_RESPONSE = 141;
+  ACHIEVEMENT_PROGRESS_UPDATE = 142;
+  ACHIEVEMENT_CLAIM = 143;
+  ACHIEVEMENT_CLAIM_RESULT = 144;
+
   // 광고
   AD_WATCH_COMPLETE = 70;
   AD_WATCH_RESULT = 71;
@@ -150,6 +157,12 @@ message Envelope {
     MilestoneClaim milestone_claim = 77;
     MilestoneClaimResult milestone_claim_result = 78;
     MilestoneState milestone_state = 79;
+
+    AchievementsRequest achievements_request = 150;
+    AchievementsResponse achievements_response = 151;
+    AchievementProgressUpdate achievement_progress_update = 152;
+    AchievementClaim achievement_claim = 153;
+    AchievementClaimResult achievement_claim_result = 154;
 
     AdWatchComplete ad_watch_complete = 80;
     AdWatchResult ad_watch_result = 81;
@@ -437,6 +450,48 @@ message MilestoneState {
   uint64 reset_timestamp_ms = 3;
 }
 
+// -------------- 업적 --------------
+
+message AchievementsRequest {
+  // 빈 요청
+}
+
+message AchievementProgress {
+  string achievement_type = 1;
+  uint64 current_value = 2;
+}
+
+message AchievementChainState {
+  uint32 chain_id = 1;
+  uint32 last_claimed_step = 2;
+}
+
+message AchievementsResponse {
+  repeated AchievementProgress progresses = 1;
+  repeated AchievementChainState chains = 2;
+}
+
+message AchievementProgressUpdate {
+  string achievement_type = 1;
+  uint64 current_value = 2;
+}
+
+message AchievementClaim {
+  uint32 achievement_id = 1;
+}
+
+message AchievementClaimResult {
+  bool success = 1;
+  uint32 achievement_id = 2;
+  uint32 chain_id = 3;
+  uint32 claimed_step = 4;
+  uint32 reward_crystal = 5;
+  uint64 reward_gold = 6;
+  uint32 total_crystal = 7;
+  uint64 total_gold = 8;
+  string error_code = 9;
+}
+
 // -------------- 슬롯 해금 --------------
 
 message SlotUnlock {
@@ -478,7 +533,7 @@ message AdCountersState {
 message CurrencyUpdate {
   google.protobuf.UInt64Value gold = 1;
   google.protobuf.UInt32Value crystal = 2;
-  string reason = 3;  // "mining", "upgrade", "ad", "mission", "milestone" 등
+  string reason = 3;  // "mining", "upgrade", "ad", "mission", "milestone", "achievement" 등
 }
 
 // -------------- 오프라인 보상 --------------
