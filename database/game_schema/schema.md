@@ -74,6 +74,24 @@
 | created_at | TIMESTAMP | DEFAULT now |  |
 | updated_at | TIMESTAMP | DEFAULT now |  |
 
+## user_achievement_counters
+| 컬럼 | 타입 | 제약/기본값 | 비고 |
+| --- | --- | --- | --- |
+| user_id | UUID | PK part |  |
+| achievement_type | VARCHAR(50) | PK part | 업적 타입 |
+| current_value | BIGINT | DEFAULT 0, CHECK >=0 | 누적 진행도 |
+| created_at | TIMESTAMP | DEFAULT now |  |
+| updated_at | TIMESTAMP | DEFAULT now |  |
+
+## user_achievement_chains
+| 컬럼 | 타입 | 제약/기본값 | 비고 |
+| --- | --- | --- | --- |
+| user_id | UUID | PK part |  |
+| chain_id | INTEGER | PK part, CHECK >0 | 체인 ID |
+| last_claimed_step | INTEGER | DEFAULT 0, CHECK >=0 | 마지막 수령 단계 |
+| created_at | TIMESTAMP | DEFAULT now |  |
+| updated_at | TIMESTAMP | DEFAULT now |  |
+
 ## user_gem_inventory
 | 컬럼 | 타입 | 제약/기본값 | 비고 |
 | --- | --- | --- | --- |
@@ -134,4 +152,4 @@
 - idx_equipped_gems_instance: gem_instance_id
 
 ## 트리거
-- updated_at 자동 갱신: user_game_data, pickaxe_slots, user_ad_counters, user_mission_daily, user_mission_slots, user_gem_inventory, user_gems, pickaxe_gem_slots, pickaxe_equipped_gems 테이블에 BEFORE UPDATE 트리거 적용.
+- updated_at 자동 갱신: user_game_data, pickaxe_slots, user_ad_counters, user_mission_daily, user_mission_slots, user_achievement_counters, user_achievement_chains, user_gem_inventory, user_gems, pickaxe_gem_slots, pickaxe_equipped_gems 테이블에 BEFORE UPDATE 트리거 적용.

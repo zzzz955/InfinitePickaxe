@@ -7,6 +7,8 @@ DROP TRIGGER IF EXISTS trg_pickaxe_slots_updated ON game_schema.pickaxe_slots;
 DROP TRIGGER IF EXISTS trg_user_ad_counters_updated ON game_schema.user_ad_counters;
 DROP TRIGGER IF EXISTS trg_user_mission_daily_updated ON game_schema.user_mission_daily;
 DROP TRIGGER IF EXISTS trg_user_mission_slots_updated ON game_schema.user_mission_slots;
+DROP TRIGGER IF EXISTS trg_user_achievement_counters_updated ON game_schema.user_achievement_counters;
+DROP TRIGGER IF EXISTS trg_user_achievement_chains_updated ON game_schema.user_achievement_chains;
 DROP TRIGGER IF EXISTS trg_user_gem_inventory_updated ON game_schema.user_gem_inventory;
 DROP TRIGGER IF EXISTS trg_user_gems_updated ON game_schema.user_gems;
 DROP TRIGGER IF EXISTS trg_pickaxe_gem_slots_updated ON game_schema.pickaxe_gem_slots;
@@ -20,6 +22,8 @@ DROP TABLE IF EXISTS game_schema.user_gems;
 DROP TABLE IF EXISTS game_schema.user_gem_inventory;
 DROP TABLE IF EXISTS game_schema.user_milestones;
 DROP TABLE IF EXISTS game_schema.user_offline_state;
+DROP TABLE IF EXISTS game_schema.user_achievement_chains;
+DROP TABLE IF EXISTS game_schema.user_achievement_counters;
 DROP TABLE IF EXISTS game_schema.user_mission_slots;
 DROP TABLE IF EXISTS game_schema.user_mission_daily;
 DROP TABLE IF EXISTS game_schema.user_ad_counters;
@@ -113,6 +117,28 @@ CREATE TABLE IF NOT EXISTS game_schema.user_mission_slots (
 );
 CREATE INDEX IF NOT EXISTS idx_mission_slots_status ON game_schema.user_mission_slots(user_id, status);
 CREATE INDEX IF NOT EXISTS idx_mission_slots_expiry ON game_schema.user_mission_slots(expires_at);
+
+-- 업적 누적 진행도
+CREATE TABLE IF NOT EXISTS game_schema.user_achievement_counters (
+    user_id           UUID NOT NULL,
+    achievement_type  VARCHAR(50) NOT NULL,
+    current_value     BIGINT NOT NULL DEFAULT 0 CHECK (current_value >= 0),
+    created_at        TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at        TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_user_achievement_counters PRIMARY KEY (user_id, achievement_type)
+);
+CREATE INDEX IF NOT EXISTS idx_user_achievement_counters_user ON game_schema.user_achievement_counters(user_id);
+
+-- 업적 체인 수령 상태
+CREATE TABLE IF NOT EXISTS game_schema.user_achievement_chains (
+    user_id            UUID NOT NULL,
+    chain_id           INTEGER NOT NULL CHECK (chain_id > 0),
+    last_claimed_step  INTEGER NOT NULL DEFAULT 0 CHECK (last_claimed_step >= 0),
+    created_at         TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at         TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_user_achievement_chains PRIMARY KEY (user_id, chain_id)
+);
+CREATE INDEX IF NOT EXISTS idx_user_achievement_chains_user ON game_schema.user_achievement_chains(user_id);
 
 -- offline state (per day)
 CREATE TABLE IF NOT EXISTS game_schema.user_offline_state (
@@ -216,6 +242,14 @@ CREATE TRIGGER trg_user_mission_daily_updated
 
 CREATE TRIGGER trg_user_mission_slots_updated
     BEFORE UPDATE ON game_schema.user_mission_slots
+    FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
+
+CREATE TRIGGER trg_user_achievement_counters_updated
+    BEFORE UPDATE ON game_schema.user_achievement_counters
+    FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
+
+CREATE TRIGGER trg_user_achievement_chains_updated
+    BEFORE UPDATE ON game_schema.user_achievement_chains
     FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
 
 CREATE TRIGGER trg_user_gem_inventory_updated
