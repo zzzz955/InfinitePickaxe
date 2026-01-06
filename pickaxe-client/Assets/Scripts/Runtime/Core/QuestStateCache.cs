@@ -13,11 +13,17 @@ namespace InfinitePickaxe.Client.Core
         private readonly Dictionary<uint, int> missionIndexBySlot = new Dictionary<uint, int>();
         private readonly Dictionary<uint, int> missionIndexById = new Dictionary<uint, int>();
 
+        private readonly List<WeeklyMissionEntry> weeklyMissions = new List<WeeklyMissionEntry>();
+        private readonly Dictionary<uint, int> weeklyMissionIndexById = new Dictionary<uint, int>();
+
         private readonly HashSet<uint> claimedMilestones = new HashSet<uint>();
+        private readonly HashSet<uint> weeklyClaimedMilestones = new HashSet<uint>();
         private readonly Dictionary<string, AdCounter> adCountersByType = new Dictionary<string, AdCounter>(StringComparer.OrdinalIgnoreCase);
 
         public event Action OnMissionsChanged;
         public event Action OnMilestoneChanged;
+        public event Action OnWeeklyMissionsChanged;
+        public event Action OnWeeklyMilestoneChanged;
         public event Action OnAdCountersChanged;
 
         public IReadOnlyList<MissionEntry> Missions => missions;
@@ -28,10 +34,19 @@ namespace InfinitePickaxe.Client.Core
         public ulong ResetTimestampMs { get; private set; }
         public bool HasDailyMissions { get; private set; }
 
+        public IReadOnlyList<WeeklyMissionEntry> WeeklyMissions => weeklyMissions;
+        public uint WeeklyClaimedCount { get; private set; }
+        public ulong WeeklyResetTimestampMs { get; private set; }
+        public bool HasWeeklyMissions { get; private set; }
+
         public uint MilestoneCompletedCount { get; private set; }
         public IReadOnlyCollection<uint> ClaimedMilestones => claimedMilestones;
         public ulong MilestoneResetTimestampMs { get; private set; }
         public bool HasMilestoneState { get; private set; }
+
+        public IReadOnlyCollection<uint> WeeklyClaimedMilestones => weeklyClaimedMilestones;
+        public ulong WeeklyMilestoneResetTimestampMs { get; private set; }
+        public bool HasWeeklyMilestoneState { get; private set; }
 
         public IReadOnlyDictionary<string, AdCounter> AdCounters => adCountersByType;
         public ulong AdCountersResetTimestampMs { get; private set; }
@@ -51,10 +66,20 @@ namespace InfinitePickaxe.Client.Core
             ResetTimestampMs = 0;
             HasDailyMissions = false;
 
+            weeklyMissions.Clear();
+            weeklyMissionIndexById.Clear();
+            WeeklyClaimedCount = 0;
+            WeeklyResetTimestampMs = 0;
+            HasWeeklyMissions = false;
+
             claimedMilestones.Clear();
             MilestoneCompletedCount = 0;
             MilestoneResetTimestampMs = 0;
             HasMilestoneState = false;
+
+            weeklyClaimedMilestones.Clear();
+            WeeklyMilestoneResetTimestampMs = 0;
+            HasWeeklyMilestoneState = false;
 
             adCountersByType.Clear();
             AdCountersResetTimestampMs = 0;
@@ -62,6 +87,8 @@ namespace InfinitePickaxe.Client.Core
 
             OnMissionsChanged?.Invoke();
             OnMilestoneChanged?.Invoke();
+            OnWeeklyMissionsChanged?.Invoke();
+            OnWeeklyMilestoneChanged?.Invoke();
             OnAdCountersChanged?.Invoke();
         }
 
@@ -100,6 +127,32 @@ namespace InfinitePickaxe.Client.Core
             OnMissionsChanged?.Invoke();
         }
 
+        public void UpdateFromWeeklyMissionsResponse(WeeklyMissionsResponse response)
+        {
+            if (response == null) return;
+
+            weeklyMissions.Clear();
+            weeklyMissionIndexById.Clear();
+
+            foreach (var mission in response.Missions)
+            {
+                if (mission == null) continue;
+                int index = weeklyMissions.Count;
+                weeklyMissions.Add(mission);
+
+                if (mission.MissionId > 0)
+                {
+                    weeklyMissionIndexById[mission.MissionId] = index;
+                }
+            }
+
+            WeeklyClaimedCount = response.ClaimedCount;
+            WeeklyResetTimestampMs = response.ResetTimestampMs;
+            HasWeeklyMissions = true;
+
+            OnWeeklyMissionsChanged?.Invoke();
+        }
+
         public void UpdateFromMissionProgress(MissionProgressUpdate update)
         {
             if (update == null) return;
@@ -113,6 +166,21 @@ namespace InfinitePickaxe.Client.Core
 
             missions[index] = mission;
             OnMissionsChanged?.Invoke();
+        }
+
+        public void UpdateFromWeeklyMissionProgress(WeeklyMissionProgressUpdate update)
+        {
+            if (update == null) return;
+
+            if (!TryGetWeeklyMissionIndex(update, out var index)) return;
+
+            var mission = weeklyMissions[index];
+            mission.CurrentValue = update.CurrentValue;
+            mission.TargetValue = update.TargetValue;
+            mission.Status = update.Status ?? mission.Status;
+
+            weeklyMissions[index] = mission;
+            OnWeeklyMissionsChanged?.Invoke();
         }
 
         public void UpdateFromMilestoneState(MilestoneState state)
@@ -129,6 +197,22 @@ namespace InfinitePickaxe.Client.Core
             HasMilestoneState = true;
 
             OnMilestoneChanged?.Invoke();
+        }
+
+        public void UpdateFromWeeklyMilestoneState(WeeklyMilestoneState state)
+        {
+            if (state == null) return;
+
+            WeeklyClaimedCount = state.ClaimedCount;
+            weeklyClaimedMilestones.Clear();
+            foreach (var milestone in state.ClaimedMilestones)
+            {
+                weeklyClaimedMilestones.Add(milestone);
+            }
+            WeeklyMilestoneResetTimestampMs = state.ResetTimestampMs;
+            HasWeeklyMilestoneState = true;
+
+            OnWeeklyMilestoneChanged?.Invoke();
         }
 
         public void UpdateFromAdCountersState(AdCountersState state)
@@ -167,6 +251,25 @@ namespace InfinitePickaxe.Client.Core
             return claimedMilestones.Contains(milestoneCount);
         }
 
+        public bool IsWeeklyMilestoneClaimed(uint milestoneCount)
+        {
+            return weeklyClaimedMilestones.Contains(milestoneCount);
+        }
+
+        public void ApplyWeeklyMissionClaimResult(WeeklyMissionClaimResult result)
+        {
+            if (result == null || !result.Success) return;
+            if (!TryGetWeeklyMissionIndex(result.MissionId, out var index)) return;
+
+            var mission = weeklyMissions[index];
+            if (mission.Status == "claimed") return;
+            mission.Status = "claimed";
+            weeklyMissions[index] = mission;
+            WeeklyClaimedCount += 1;
+
+            OnWeeklyMissionsChanged?.Invoke();
+        }
+
         private void ReplaceAdCounters(IEnumerable<AdCounter> counters)
         {
             adCountersByType.Clear();
@@ -191,6 +294,32 @@ namespace InfinitePickaxe.Client.Core
             if (update.MissionId > 0 && missionIndexById.TryGetValue(update.MissionId, out index))
             {
                 return index >= 0 && index < missions.Count;
+            }
+
+            return false;
+        }
+
+        private bool TryGetWeeklyMissionIndex(WeeklyMissionProgressUpdate update, out int index)
+        {
+            index = -1;
+            if (update.MissionId == 0) return false;
+
+            if (weeklyMissionIndexById.TryGetValue(update.MissionId, out index))
+            {
+                return index >= 0 && index < weeklyMissions.Count;
+            }
+
+            return false;
+        }
+
+        private bool TryGetWeeklyMissionIndex(uint missionId, out int index)
+        {
+            index = -1;
+            if (missionId == 0) return false;
+
+            if (weeklyMissionIndexById.TryGetValue(missionId, out index))
+            {
+                return index >= 0 && index < weeklyMissions.Count;
             }
 
             return false;

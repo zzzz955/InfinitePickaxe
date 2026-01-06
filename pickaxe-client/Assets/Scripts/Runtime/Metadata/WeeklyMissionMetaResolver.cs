@@ -145,18 +145,6 @@ namespace InfinitePickaxe.Client.Metadata
             return false;
         }
 
-        private static uint? TryGetNullableUInt(Dictionary<string, object> dict, params string[] keys)
-        {
-            foreach (var key in keys)
-            {
-                if (!dict.TryGetValue(key, out var obj)) continue;
-                if (obj == null) return null;
-                if (TryConvertToUInt(obj, out var parsed)) return parsed;
-            }
-
-            return null;
-        }
-
         private static bool TryConvertToUInt(object obj, out uint value)
         {
             switch (obj)
@@ -187,6 +175,7 @@ namespace InfinitePickaxe.Client.Metadata
             value = 0;
             return false;
         }
+
     }
 
     public sealed class WeeklyMissionMeta

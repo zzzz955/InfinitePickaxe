@@ -6,13 +6,16 @@ namespace InfinitePickaxe.Client.UI.Game
     public partial class QuestTabController
     {
         private const int SubTabDailyIndex = 0;
-        private const int SubTabAchievementIndex = 1;
+        private const int SubTabWeeklyIndex = 1;
+        private const int SubTabAchievementIndex = 2;
 
         [Header("Quest Sub Tabs")]
         [SerializeField] private RectTransform subTabBar;
         [SerializeField] private Button dailyTabButton;
+        [SerializeField] private Button weeklyTabButton;
         [SerializeField] private Button achievementTabButton;
         [SerializeField] private GameObject dailyTabRoot;
+        [SerializeField] private GameObject weeklyTabRoot;
         [SerializeField] private GameObject achievementTabRoot;
         [SerializeField] private Color subTabSelectedColor = new Color(0.22f, 0.22f, 0.22f, 0.95f);
         [SerializeField] private Color subTabUnselectedColor = new Color(0.1f, 0.1f, 0.1f, 0.7f);
@@ -42,6 +45,7 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             if (dailyTabButton == null) dailyTabButton = FindButton("DailyTabButton");
+            if (weeklyTabButton == null) weeklyTabButton = FindButton("WeeklyTabButton");
             if (achievementTabButton == null) achievementTabButton = FindButton("AchievementTabButton");
 
             if (dailyTabRoot == null)
@@ -54,6 +58,12 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 var achievementPanel = FindChildRecursive(root, "AchievementPanel");
                 if (achievementPanel != null) achievementTabRoot = achievementPanel.gameObject;
+            }
+
+            if (weeklyTabRoot == null)
+            {
+                var weeklyPanel = FindChildRecursive(root, "WeeklyQuestPanel");
+                if (weeklyPanel != null) weeklyTabRoot = weeklyPanel.gameObject;
             }
         }
 
@@ -76,6 +86,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 achievementTabButton.onClick.RemoveAllListeners();
                 achievementTabButton.onClick.AddListener(() => SetSubTab(SubTabAchievementIndex));
             }
+
+            if (weeklyTabButton != null)
+            {
+                weeklyTabButton.onClick.RemoveAllListeners();
+                weeklyTabButton.onClick.AddListener(() => SetSubTab(SubTabWeeklyIndex));
+            }
         }
 
         private void SetSubTab(int index)
@@ -83,15 +99,23 @@ namespace InfinitePickaxe.Client.UI.Game
             currentSubTabIndex = NormalizeSubTabIndex(index);
 
             if (dailyTabRoot != null) dailyTabRoot.SetActive(currentSubTabIndex == SubTabDailyIndex);
+            if (weeklyTabRoot != null) weeklyTabRoot.SetActive(currentSubTabIndex == SubTabWeeklyIndex);
             if (achievementTabRoot != null) achievementTabRoot.SetActive(currentSubTabIndex == SubTabAchievementIndex);
 
             UpdateSubTabButton(dailyTabButton, currentSubTabIndex == SubTabDailyIndex);
+            UpdateSubTabButton(weeklyTabButton, currentSubTabIndex == SubTabWeeklyIndex);
             UpdateSubTabButton(achievementTabButton, currentSubTabIndex == SubTabAchievementIndex);
 
             if (currentSubTabIndex == SubTabAchievementIndex)
             {
                 RequestAchievementsIfNeeded();
                 UpdateAchievementList();
+            }
+            else if (currentSubTabIndex == SubTabWeeklyIndex)
+            {
+                RequestWeeklyMissionsIfNeeded();
+                UpdateWeeklyMissionList();
+                UpdateWeeklyMilestones();
             }
             else
             {
@@ -105,6 +129,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private int NormalizeSubTabIndex(int index)
         {
             index = Mathf.Clamp(index, SubTabDailyIndex, SubTabAchievementIndex);
+            if (index == SubTabWeeklyIndex && weeklyTabRoot == null) return SubTabDailyIndex;
             if (index == SubTabAchievementIndex && achievementTabRoot == null) return SubTabDailyIndex;
             return index;
         }

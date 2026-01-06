@@ -62,6 +62,7 @@ namespace InfinitePickaxe.Client.UI.Game
             EnsureSubTabReferences();
             EnsureReferences();
             EnsureAchievementReferences();
+            EnsureWeeklyReferences();
             messageHandler = MessageHandler.Instance;
             questState = QuestStateCache.Instance;
             missionMetaResolver = new DailyMissionMetaResolver();
@@ -102,9 +103,11 @@ namespace InfinitePickaxe.Client.UI.Game
             EnsureSubTabReferences();
             EnsureReferences();
             EnsureAchievementReferences();
+            EnsureWeeklyReferences();
             InitializeSubTabs();
             SubscribeState();
             SubscribeAchievementState();
+            SubscribeWeeklyMessageHandler();
             RefreshData();
         }
 
@@ -113,18 +116,26 @@ namespace InfinitePickaxe.Client.UI.Game
             base.OnDisable();
             UnsubscribeState();
             UnsubscribeAchievementState();
+            UnsubscribeWeeklyMessageHandler();
         }
 
         private void Update()
         {
             if (!isActive) return;
-            if (currentSubTabIndex != SubTabDailyIndex) return;
             if (Time.unscaledTime < nextTimerRefreshTime) return;
 
             nextTimerRefreshTime = Time.unscaledTime + 1f;
-            UpdateQuestCount();
-            UpdateMilestones();
-            UpdateRefreshButton();
+            if (currentSubTabIndex == SubTabDailyIndex)
+            {
+                UpdateQuestCount();
+                UpdateMilestones();
+                UpdateRefreshButton();
+            }
+            else if (currentSubTabIndex == SubTabWeeklyIndex)
+            {
+                UpdateWeeklyTitle();
+                UpdateWeeklyMilestones();
+            }
         }
 
         public override void RefreshData()
@@ -134,6 +145,8 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateMissionList();
             UpdateMilestones();
             UpdateRefreshButton();
+            UpdateWeeklyMissionList();
+            UpdateWeeklyMilestones();
             UpdateAchievementList();
         }
 
@@ -158,6 +171,7 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             EnsureAchievementMeta();
+            EnsureWeeklyMeta();
         }
 
         private void EnsureReferences()
@@ -268,6 +282,8 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 questState.OnMissionsChanged += HandleMissionsChanged;
                 questState.OnMilestoneChanged += HandleMilestonesChanged;
+                questState.OnWeeklyMissionsChanged += HandleWeeklyMissionsChanged;
+                questState.OnWeeklyMilestoneChanged += HandleWeeklyMilestonesChanged;
                 cacheSubscribed = true;
             }
         }
@@ -278,6 +294,8 @@ namespace InfinitePickaxe.Client.UI.Game
 
             questState.OnMissionsChanged -= HandleMissionsChanged;
             questState.OnMilestoneChanged -= HandleMilestonesChanged;
+            questState.OnWeeklyMissionsChanged -= HandleWeeklyMissionsChanged;
+            questState.OnWeeklyMilestoneChanged -= HandleWeeklyMilestonesChanged;
             cacheSubscribed = false;
         }
 

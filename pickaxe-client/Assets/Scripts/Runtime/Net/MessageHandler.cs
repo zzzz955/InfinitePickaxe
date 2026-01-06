@@ -80,6 +80,11 @@ namespace InfinitePickaxe.Client.Net
         public event Action<MissionProgressUpdate> OnMissionProgressUpdate;
         public event Action<MissionCompleteResult> OnMissionCompleteResult;
         public event Action<MissionRerollResult> OnMissionRerollResult;
+        public event Action<WeeklyMissionsResponse> OnWeeklyMissionsResponse;
+        public event Action<WeeklyMissionProgressUpdate> OnWeeklyMissionProgressUpdate;
+        public event Action<WeeklyMissionClaimResult> OnWeeklyMissionClaimResult;
+        public event Action<WeeklyMilestoneClaimResult> OnWeeklyMilestoneClaimResult;
+        public event Action<WeeklyMilestoneState> OnWeeklyMilestoneState;
 
         // 업적
         public event Action<AchievementsResponse> OnAchievementsResponse;
@@ -223,6 +228,26 @@ namespace InfinitePickaxe.Client.Net
 
                     case MessageType.MissionRerollResult:
                         HandleMissionRerollResult(envelope.MissionRerollResult);
+                        break;
+
+                    case MessageType.WeeklyMissionsResponse:
+                        HandleWeeklyMissionsResponse(envelope.WeeklyMissionsResponse);
+                        break;
+
+                    case MessageType.WeeklyMissionProgressUpdate:
+                        HandleWeeklyMissionProgressUpdate(envelope.WeeklyMissionProgressUpdate);
+                        break;
+
+                    case MessageType.WeeklyMissionClaimResult:
+                        HandleWeeklyMissionClaimResult(envelope.WeeklyMissionClaimResult);
+                        break;
+
+                    case MessageType.WeeklyMilestoneClaimResult:
+                        HandleWeeklyMilestoneClaimResult(envelope.WeeklyMilestoneClaimResult);
+                        break;
+
+                    case MessageType.WeeklyMilestoneState:
+                        HandleWeeklyMilestoneState(envelope.WeeklyMilestoneState);
                         break;
 
                     case MessageType.AchievementsResponse:
@@ -534,6 +559,83 @@ namespace InfinitePickaxe.Client.Net
                 Debug.LogWarning($"미션 리롤 실패: {result.ErrorCode}");
             }
             OnMissionRerollResult?.Invoke(result);
+        }
+
+        private void HandleWeeklyMissionsResponse(WeeklyMissionsResponse response)
+        {
+            Debug.Log($"weekly missions response: missions={response.Missions.Count}, claimed={response.ClaimedCount}");
+            QuestStateCache.Instance.UpdateFromWeeklyMissionsResponse(response);
+            OnWeeklyMissionsResponse?.Invoke(response);
+        }
+
+        private void HandleWeeklyMissionProgressUpdate(WeeklyMissionProgressUpdate update)
+        {
+#if UNITY_EDITOR || DEBUG_NET
+            Debug.Log($"weekly mission progress: mission_id={update.MissionId}, {update.CurrentValue}/{update.TargetValue}, status={update.Status}");
+#endif
+            QuestStateCache.Instance.UpdateFromWeeklyMissionProgress(update);
+            OnWeeklyMissionProgressUpdate?.Invoke(update);
+        }
+
+        private void HandleWeeklyMissionClaimResult(WeeklyMissionClaimResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"weekly mission claim success: mission_id={result.MissionId}, crystal={result.RewardCrystal}, gold={result.RewardGold}");
+            }
+            else
+            {
+                Debug.LogWarning($"weekly mission claim failed: {result.ErrorCode}");
+            }
+
+            QuestStateCache.Instance.ApplyWeeklyMissionClaimResult(result);
+
+            if (result.Success || result.TotalGold > 0 || result.TotalCrystal > 0)
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = result.TotalGold,
+                    Crystal = result.TotalCrystal,
+                    Reason = "weekly_mission_claim"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+            }
+
+            OnWeeklyMissionClaimResult?.Invoke(result);
+        }
+
+        private void HandleWeeklyMilestoneClaimResult(WeeklyMilestoneClaimResult result)
+        {
+            if (result.Success)
+            {
+                Debug.Log($"weekly milestone claim success: milestone={result.MilestoneCount}, crystal={result.RewardCrystal}, gold={result.RewardGold}");
+            }
+            else
+            {
+                Debug.LogWarning($"weekly milestone claim failed: {result.ErrorCode}");
+            }
+
+            if (result.Success || result.TotalGold > 0 || result.TotalCrystal > 0)
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = result.TotalGold,
+                    Crystal = result.TotalCrystal,
+                    Reason = "weekly_milestone_claim"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+            }
+
+            OnWeeklyMilestoneClaimResult?.Invoke(result);
+        }
+
+        private void HandleWeeklyMilestoneState(WeeklyMilestoneState state)
+        {
+            Debug.Log($"weekly milestone state: claimed={state.ClaimedCount}, milestones={state.ClaimedMilestones.Count}");
+            QuestStateCache.Instance.UpdateFromWeeklyMilestoneState(state);
+            OnWeeklyMilestoneState?.Invoke(state);
         }
 
         private void HandleAchievementsResponse(AchievementsResponse response)
@@ -1019,6 +1121,17 @@ namespace InfinitePickaxe.Client.Net
             NetworkManager.Instance.SendMessage(envelope);
         }
 
+        public void RequestWeeklyMissions()
+        {
+            var request = new WeeklyMissionsRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.WeeklyMissionsRequest,
+                WeeklyMissionsRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
         public void RequestAchievements()
         {
             var request = new AchievementsRequest();
@@ -1090,6 +1203,35 @@ namespace InfinitePickaxe.Client.Net
             {
                 Type = MessageType.MilestoneClaim,
                 MilestoneClaim = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestWeeklyMissionClaim(uint missionId)
+        {
+            if (missionId == 0) return;
+            var request = new WeeklyMissionClaim
+            {
+                MissionId = missionId
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.WeeklyMissionClaim,
+                WeeklyMissionClaim = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestWeeklyMilestoneClaim(uint milestoneCount)
+        {
+            var request = new WeeklyMilestoneClaim
+            {
+                MilestoneCount = milestoneCount
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.WeeklyMilestoneClaim,
+                WeeklyMilestoneClaim = request
             };
             NetworkManager.Instance.SendMessage(envelope);
         }
