@@ -39,7 +39,8 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Vector2 offset = new Vector2(20f, 0f);
         [SerializeField] private float edgePadding = 10f;
 
-        private RectTransform modalRectTransform;
+        private RectTransform modalPanelRectTransform;
+        private RectTransform canvasRectTransform;
         private Canvas parentCanvas;
         private bool isListeningForOutsideClick;
 
@@ -122,10 +123,15 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void Initialize()
         {
-            modalRectTransform = GetComponent<RectTransform>();
             parentCanvas = GetComponentInParent<Canvas>();
+            canvasRectTransform = parentCanvas != null ? parentCanvas.GetComponent<RectTransform>() : null;
 
             AutoBindReferences();
+
+            if (modalPanel != null)
+            {
+                modalPanelRectTransform = modalPanel.GetComponent<RectTransform>();
+            }
         }
 
         private void AutoBindReferences()
@@ -172,6 +178,11 @@ namespace InfinitePickaxe.Client.UI.Game
             if (gemDescriptionText == null)
             {
                 gemDescriptionText = panel.Find("Description")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (modalPanelRectTransform == null && modalPanel != null)
+            {
+                modalPanelRectTransform = modalPanel.GetComponent<RectTransform>();
             }
         }
 
@@ -267,11 +278,11 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private void PositionTooltip(Vector3 worldPosition)
         {
-            if (modalRectTransform == null || parentCanvas == null) return;
+            if (modalPanelRectTransform == null || parentCanvas == null || canvasRectTransform == null) return;
 
             // 월드 위치를 캔버스 로컬 위치로 변환
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                parentCanvas.GetComponent<RectTransform>(),
+                canvasRectTransform,
                 RectTransformUtility.WorldToScreenPoint(parentCanvas.worldCamera, worldPosition),
                 parentCanvas.worldCamera,
                 out Vector2 localPosition
@@ -280,35 +291,40 @@ namespace InfinitePickaxe.Client.UI.Game
             // 초기 위치: 우측에 배치
             Vector2 targetPosition = localPosition + offset;
 
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(modalPanelRectTransform);
+
             // 화면 경계 체크
-            Rect canvasRect = parentCanvas.GetComponent<RectTransform>().rect;
-            Vector2 modalSize = modalRectTransform.sizeDelta;
+            Rect canvasRect = canvasRectTransform.rect;
+            Vector2 modalSize = modalPanelRectTransform.rect.size;
+            Vector2 modalPivot = modalPanelRectTransform.pivot;
 
             // 우측 경계 초과 시 좌측에 배치
-            if (targetPosition.x + modalSize.x / 2 > canvasRect.xMax - edgePadding)
+            if (targetPosition.x + modalSize.x * (1f - modalPivot.x) > canvasRect.xMax - edgePadding)
             {
-                targetPosition.x = localPosition.x - offset.x - modalSize.x;
+                float rightEdge = localPosition.x - offset.x;
+                targetPosition.x = rightEdge - modalSize.x * (1f - modalPivot.x);
             }
 
             // 좌측 경계 초과 시 우측으로 강제
-            if (targetPosition.x - modalSize.x / 2 < canvasRect.xMin + edgePadding)
+            if (targetPosition.x - modalSize.x * modalPivot.x < canvasRect.xMin + edgePadding)
             {
-                targetPosition.x = canvasRect.xMin + edgePadding + modalSize.x / 2;
+                targetPosition.x = canvasRect.xMin + edgePadding + modalSize.x * modalPivot.x;
             }
 
             // 상단 경계 초과 시 아래로 이동
-            if (targetPosition.y + modalSize.y / 2 > canvasRect.yMax - edgePadding)
+            if (targetPosition.y + modalSize.y * (1f - modalPivot.y) > canvasRect.yMax - edgePadding)
             {
-                targetPosition.y = canvasRect.yMax - edgePadding - modalSize.y / 2;
+                targetPosition.y = canvasRect.yMax - edgePadding - modalSize.y * (1f - modalPivot.y);
             }
 
             // 하단 경계 초과 시 위로 이동
-            if (targetPosition.y - modalSize.y / 2 < canvasRect.yMin + edgePadding)
+            if (targetPosition.y - modalSize.y * modalPivot.y < canvasRect.yMin + edgePadding)
             {
-                targetPosition.y = canvasRect.yMin + edgePadding + modalSize.y / 2;
+                targetPosition.y = canvasRect.yMin + edgePadding + modalSize.y * modalPivot.y;
             }
 
-            modalRectTransform.anchoredPosition = targetPosition;
+            modalPanelRectTransform.anchoredPosition = targetPosition;
         }
 
         /// <summary>
