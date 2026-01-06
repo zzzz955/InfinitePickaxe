@@ -81,6 +81,11 @@ namespace InfinitePickaxe.Client.Net
         public event Action<MissionCompleteResult> OnMissionCompleteResult;
         public event Action<MissionRerollResult> OnMissionRerollResult;
 
+        // 업적
+        public event Action<AchievementsResponse> OnAchievementsResponse;
+        public event Action<AchievementProgressUpdate> OnAchievementProgressUpdate;
+        public event Action<AchievementClaimResult> OnAchievementClaimResult;
+
         // 마일스톤
         public event Action<MilestoneClaimResult> OnMilestoneClaimResult;
         public event Action<MilestoneState> OnMilestoneState;
@@ -220,6 +225,18 @@ namespace InfinitePickaxe.Client.Net
                         HandleMissionRerollResult(envelope.MissionRerollResult);
                         break;
 
+                    case MessageType.AchievementsResponse:
+                        HandleAchievementsResponse(envelope.AchievementsResponse);
+                        break;
+
+                    case MessageType.AchievementProgressUpdate:
+                        HandleAchievementProgressUpdate(envelope.AchievementProgressUpdate);
+                        break;
+
+                    case MessageType.AchievementClaimResult:
+                        HandleAchievementClaimResult(envelope.AchievementClaimResult);
+                        break;
+
                     case MessageType.MilestoneClaimResult:
                         HandleMilestoneClaimResult(envelope.MilestoneClaimResult);
                         break;
@@ -326,6 +343,7 @@ namespace InfinitePickaxe.Client.Net
             if (result != null && result.Success)
             {
                 QuestStateCache.Instance.ResetAll();
+                AchievementStateCache.Instance.ResetAll();
             }
             OnHandshakeResult?.Invoke(result);
         }
@@ -516,6 +534,59 @@ namespace InfinitePickaxe.Client.Net
                 Debug.LogWarning($"미션 리롤 실패: {result.ErrorCode}");
             }
             OnMissionRerollResult?.Invoke(result);
+        }
+
+        private void HandleAchievementsResponse(AchievementsResponse response)
+        {
+            if (response == null)
+            {
+                return;
+            }
+            Debug.Log($"achievements response: progresses={response.Progresses.Count}, chains={response.Chains.Count}");
+            AchievementStateCache.Instance.UpdateFromAchievementsResponse(response);
+            OnAchievementsResponse?.Invoke(response);
+        }
+
+        private void HandleAchievementProgressUpdate(AchievementProgressUpdate update)
+        {
+#if UNITY_EDITOR || DEBUG_NET
+            Debug.Log($"achievement progress update: {update.AchievementType}={update.CurrentValue}");
+#endif
+            AchievementStateCache.Instance.UpdateFromProgressUpdate(update);
+            OnAchievementProgressUpdate?.Invoke(update);
+        }
+
+        private void HandleAchievementClaimResult(AchievementClaimResult result)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            if (result.Success)
+            {
+                Debug.Log($"achievement claim success: achievement_id={result.AchievementId}, chain_id={result.ChainId}, step={result.ClaimedStep}, crystal={result.RewardCrystal}, gold={result.RewardGold}");
+            }
+            else
+            {
+                Debug.LogWarning($"achievement claim failed: {result.ErrorCode}");
+            }
+
+            AchievementStateCache.Instance.ApplyClaimResult(result);
+
+            if (result.Success || result.TotalGold > 0 || result.TotalCrystal > 0)
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = result.TotalGold,
+                    Crystal = result.TotalCrystal,
+                    Reason = "achievement_claim"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+            }
+
+            OnAchievementClaimResult?.Invoke(result);
         }
 
         private void HandleMilestoneClaimResult(MilestoneClaimResult result)
@@ -944,6 +1015,33 @@ namespace InfinitePickaxe.Client.Net
             {
                 Type = MessageType.DailyMissionsRequest,
                 DailyMissionsRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestAchievements()
+        {
+            var request = new AchievementsRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.AchievementsRequest,
+                AchievementsRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestAchievementClaim(uint achievementId)
+        {
+            if (achievementId == 0) return;
+
+            var request = new AchievementClaim
+            {
+                AchievementId = achievementId
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.AchievementClaim,
+                AchievementClaim = request
             };
             NetworkManager.Instance.SendMessage(envelope);
         }

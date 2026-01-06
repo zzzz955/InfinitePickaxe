@@ -10,7 +10,7 @@ using Infinitepickaxe;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
-    public class QuestTabController : BaseTabController
+    public partial class QuestTabController : BaseTabController
     {
         private const string MissionRerollAdType = "mission_reroll";
         private const string DailyLimitReachedMessage = "오늘 보상 한도 도달";
@@ -59,7 +59,9 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             base.Initialize();
 
+            EnsureSubTabReferences();
             EnsureReferences();
+            EnsureAchievementReferences();
             messageHandler = MessageHandler.Instance;
             questState = QuestStateCache.Instance;
             missionMetaResolver = new DailyMissionMetaResolver();
@@ -90,14 +92,19 @@ namespace InfinitePickaxe.Client.UI.Game
                 milestone7Button.onClick.AddListener(() => OnMilestoneClaimClicked(7));
             }
 
+            InitializeSubTabs();
             RefreshData();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
+            EnsureSubTabReferences();
             EnsureReferences();
+            EnsureAchievementReferences();
+            InitializeSubTabs();
             SubscribeState();
+            SubscribeAchievementState();
             RefreshData();
         }
 
@@ -105,11 +112,13 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             base.OnDisable();
             UnsubscribeState();
+            UnsubscribeAchievementState();
         }
 
         private void Update()
         {
             if (!isActive) return;
+            if (currentSubTabIndex != SubTabDailyIndex) return;
             if (Time.unscaledTime < nextTimerRefreshTime) return;
 
             nextTimerRefreshTime = Time.unscaledTime + 1f;
@@ -125,6 +134,7 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateMissionList();
             UpdateMilestones();
             UpdateRefreshButton();
+            UpdateAchievementList();
         }
 
         private void EnsureMeta()
@@ -146,38 +156,43 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 mineralMetaResolver.Reload();
             }
+
+            EnsureAchievementMeta();
         }
 
         private void EnsureReferences()
         {
+            EnsureSubTabReferences();
+            var questRoot = dailyTabRoot != null ? dailyTabRoot.transform : transform;
+
             if (questCountText == null)
             {
-                questCountText = transform.Find("TitleArea/QuestCountText")?.GetComponent<TextMeshProUGUI>();
+                questCountText = questRoot.Find("TitleArea/QuestCountText")?.GetComponent<TextMeshProUGUI>();
             }
 
             if (questListContainer == null)
             {
-                questListContainer = transform.Find("QuestListContainer");
+                questListContainer = questRoot.Find("QuestListContainer");
             }
 
             if (refreshArea == null)
             {
-                refreshArea = transform.Find("RefreshArea")?.gameObject;
+                refreshArea = questRoot.Find("RefreshArea")?.gameObject;
             }
 
             if (refreshQuestButton == null)
             {
-                refreshQuestButton = transform.Find("RefreshArea/ButtonRow/RefreshButton")?.GetComponent<Button>();
+                refreshQuestButton = questRoot.Find("RefreshArea/ButtonRow/RefreshButton")?.GetComponent<Button>();
             }
 
             if (adRefreshButton == null)
             {
-                adRefreshButton = transform.Find("RefreshArea/ButtonRow/AdRefreshButton")?.GetComponent<Button>();
+                adRefreshButton = questRoot.Find("RefreshArea/ButtonRow/AdRefreshButton")?.GetComponent<Button>();
             }
 
             if (refreshCountText == null)
             {
-                refreshCountText = transform.Find("RefreshArea/RefreshCountText")?.GetComponent<TextMeshProUGUI>();
+                refreshCountText = questRoot.Find("RefreshArea/RefreshCountText")?.GetComponent<TextMeshProUGUI>();
             }
 
             if (allCompleteMessage == null && questListContainer != null)
@@ -187,12 +202,12 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (allCompleteMessage == null)
             {
-                allCompleteMessage = transform.Find("AllCompleteMessage")?.GetComponent<TextMeshProUGUI>();
+                allCompleteMessage = questRoot.Find("AllCompleteMessage")?.GetComponent<TextMeshProUGUI>();
             }
 
             if (allCompleteMessage == null)
             {
-                var texts = GetComponentsInChildren<TextMeshProUGUI>(true);
+                var texts = questRoot.GetComponentsInChildren<TextMeshProUGUI>(true);
                 for (int i = 0; i < texts.Length; i++)
                 {
                     if (texts[i] != null && texts[i].name == "AllCompleteMessage")
@@ -205,37 +220,37 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (milestoneTitleText == null)
             {
-                milestoneTitleText = transform.Find("MilestonePanel/MilestoneTitleText")?.GetComponent<TextMeshProUGUI>();
+                milestoneTitleText = questRoot.Find("MilestonePanel/MilestoneTitleText")?.GetComponent<TextMeshProUGUI>();
             }
 
             if (milestone3Text == null)
             {
-                milestone3Text = transform.Find("MilestonePanel/Milestone3Row/Milestone3Text")?.GetComponent<TextMeshProUGUI>();
+                milestone3Text = questRoot.Find("MilestonePanel/Milestone3Row/Milestone3Text")?.GetComponent<TextMeshProUGUI>();
             }
 
             if (milestone5Text == null)
             {
-                milestone5Text = transform.Find("MilestonePanel/Milestone5Row/Milestone5Text")?.GetComponent<TextMeshProUGUI>();
+                milestone5Text = questRoot.Find("MilestonePanel/Milestone5Row/Milestone5Text")?.GetComponent<TextMeshProUGUI>();
             }
 
             if (milestone7Text == null)
             {
-                milestone7Text = transform.Find("MilestonePanel/Milestone7Row/Milestone7Text")?.GetComponent<TextMeshProUGUI>();
+                milestone7Text = questRoot.Find("MilestonePanel/Milestone7Row/Milestone7Text")?.GetComponent<TextMeshProUGUI>();
             }
 
             if (milestone3Button == null)
             {
-                milestone3Button = transform.Find("MilestonePanel/Milestone3Row/Milestone3Button")?.GetComponent<Button>();
+                milestone3Button = questRoot.Find("MilestonePanel/Milestone3Row/Milestone3Button")?.GetComponent<Button>();
             }
 
             if (milestone5Button == null)
             {
-                milestone5Button = transform.Find("MilestonePanel/Milestone5Row/Milestone5Button")?.GetComponent<Button>();
+                milestone5Button = questRoot.Find("MilestonePanel/Milestone5Row/Milestone5Button")?.GetComponent<Button>();
             }
 
             if (milestone7Button == null)
             {
-                milestone7Button = transform.Find("MilestonePanel/Milestone7Row/Milestone7Button")?.GetComponent<Button>();
+                milestone7Button = questRoot.Find("MilestonePanel/Milestone7Row/Milestone7Button")?.GetComponent<Button>();
             }
 
             if (adRefreshButtonText == null && adRefreshButton != null)

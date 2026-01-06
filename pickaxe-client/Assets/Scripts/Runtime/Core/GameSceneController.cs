@@ -659,6 +659,7 @@ namespace InfinitePickaxe.Client.Core
             UserResourceCache.Instance.Reset();
             GemStateCache.Instance.ResetAll();
             QuestStateCache.Instance.ResetAll();
+            AchievementStateCache.Instance.ResetAll();
             PickaxeStateCache.Instance.ResetAll();
 
             ReturnToLogin();
