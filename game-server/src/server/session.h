@@ -80,6 +80,10 @@ private:
     void handle_mission_progress_update(const infinitepickaxe::Envelope& env);
     void handle_mission_complete(const infinitepickaxe::Envelope& env);
     void handle_mission_reroll(const infinitepickaxe::Envelope& env);
+    void handle_weekly_missions(const infinitepickaxe::Envelope& env);
+    void handle_weekly_mission_progress_update(const infinitepickaxe::Envelope& env);
+    void handle_weekly_mission_claim(const infinitepickaxe::Envelope& env);
+    void handle_weekly_milestone_claim(const infinitepickaxe::Envelope& env);
     void handle_achievements(const infinitepickaxe::Envelope& env);
     void handle_achievement_progress_update(const infinitepickaxe::Envelope& env);
     void handle_achievement_claim(const infinitepickaxe::Envelope& env);
@@ -115,9 +119,12 @@ private:
                            uint32_t critical_hit_percent, uint32_t critical_damage);
     void refresh_slots_from_service(bool preserve_timers);
     void send_mission_progress_updates(const std::vector<infinitepickaxe::MissionProgressUpdate>& updates);
+    void send_weekly_mission_progress_updates(const std::vector<infinitepickaxe::WeeklyMissionProgressUpdate>& updates);
     void send_achievement_progress_updates(const std::vector<infinitepickaxe::AchievementProgressUpdate>& updates);
     void send_daily_missions_state();
     void send_milestone_state();
+    void send_weekly_missions_state();
+    void send_weekly_milestone_state();
     void send_achievements_state();
     void send_ad_counters_state();
     void flush_play_time_progress(bool force);
@@ -161,6 +168,7 @@ private:
     float mining_cache_accum_ms_{0.0f};
     static constexpr uint32_t kMiningCacheFlushSeconds = 5;
     uint64_t next_daily_reset_ms_{0};
+    uint64_t next_weekly_reset_ms_{0};
 
     std::array<uint8_t, 4> len_buf_{};
     std::vector<uint8_t> payload_buf_;

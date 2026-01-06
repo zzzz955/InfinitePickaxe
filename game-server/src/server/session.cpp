@@ -494,6 +494,7 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
     boost::system::error_code timer_ec;
     auth_timer_.cancel(timer_ec);
     next_daily_reset_ms_ = kst_next_midnight_ms();
+    next_weekly_reset_ms_ = kst_next_week_reset_ms();
 
     bool resumed = false;
     std::chrono::system_clock::time_point disconnected_at{};
@@ -599,6 +600,8 @@ void Session::handle_handshake(const infinitepickaxe::Envelope &env)
 
     send_daily_missions_state();
     send_milestone_state();
+    send_weekly_missions_state();
+    send_weekly_milestone_state();
     send_achievements_state();
     send_ad_counters_state();
     if (has_offline_reward)
@@ -730,6 +733,8 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope &env)
     if (slot.has_value()) {
         auto updates = mission_service_.handle_upgrade_try(user_id_, res.success());
         send_mission_progress_updates(updates);
+        auto weekly_updates = mission_service_.handle_weekly_upgrade_try(user_id_, res.success());
+        send_weekly_mission_progress_updates(weekly_updates);
         bool count_upgrade_fail = !res.success() && res.error_code() == "3000";
         auto achievement_updates = achievement_service_.handle_upgrade_try(user_id_, res.success(), count_upgrade_fail);
         send_achievement_progress_updates(achievement_updates);
@@ -851,6 +856,62 @@ void Session::handle_mission_reroll(const infinitepickaxe::Envelope &env)
     *response_env.mutable_mission_reroll_result() = res;
     send_envelope(response_env);
     send_daily_missions_state();
+}
+
+void Session::handle_weekly_missions(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_weekly_missions_request())
+    {
+        send_error("2004", "weekly_missions_request message missing");
+        return;
+    }
+    send_weekly_missions_state();
+    send_weekly_milestone_state();
+}
+
+void Session::handle_weekly_mission_progress_update(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_weekly_mission_progress_update())
+    {
+        send_error("2004", "weekly_mission_progress_update message missing");
+        return;
+    }
+    spdlog::debug("Ignoring client weekly_mission_progress_update (server-authoritative): user={}", user_id_);
+}
+
+void Session::handle_weekly_mission_claim(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_weekly_mission_claim())
+    {
+        send_error("2004", "weekly_mission_claim message missing");
+        return;
+    }
+    const auto &req = env.weekly_mission_claim();
+    auto res = mission_service_.claim_weekly_mission_reward(user_id_, req.mission_id());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::WEEKLY_MISSION_CLAIM_RESULT);
+    *response_env.mutable_weekly_mission_claim_result() = res;
+    send_envelope(response_env);
+    send_weekly_missions_state();
+    send_weekly_milestone_state();
+}
+
+void Session::handle_weekly_milestone_claim(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_weekly_milestone_claim())
+    {
+        send_error("2004", "weekly_milestone_claim message missing");
+        return;
+    }
+    const auto &req = env.weekly_milestone_claim();
+    auto res = mission_service_.handle_weekly_milestone_claim(user_id_, req.milestone_count());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::WEEKLY_MILESTONE_CLAIM_RESULT);
+    *response_env.mutable_weekly_milestone_claim_result() = res;
+    send_envelope(response_env);
+    send_weekly_milestone_state();
 }
 
 void Session::handle_achievements(const infinitepickaxe::Envelope &env)
@@ -1094,6 +1155,14 @@ void Session::init_router()
                              { handle_mission_complete(e); });
     router_.register_handler(infinitepickaxe::MISSION_REROLL, [this](const infinitepickaxe::Envelope &e)
                              { handle_mission_reroll(e); });
+    router_.register_handler(infinitepickaxe::WEEKLY_MISSIONS_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_weekly_missions(e); });
+    router_.register_handler(infinitepickaxe::WEEKLY_MISSION_PROGRESS_UPDATE, [this](const infinitepickaxe::Envelope &e)
+                             { handle_weekly_mission_progress_update(e); });
+    router_.register_handler(infinitepickaxe::WEEKLY_MISSION_CLAIM, [this](const infinitepickaxe::Envelope &e)
+                             { handle_weekly_mission_claim(e); });
+    router_.register_handler(infinitepickaxe::WEEKLY_MILESTONE_CLAIM, [this](const infinitepickaxe::Envelope &e)
+                             { handle_weekly_milestone_claim(e); });
     router_.register_handler(infinitepickaxe::ACHIEVEMENTS_REQUEST, [this](const infinitepickaxe::Envelope &e)
                              { handle_achievements(e); });
     router_.register_handler(infinitepickaxe::ACHIEVEMENT_PROGRESS_UPDATE, [this](const infinitepickaxe::Envelope &e)
@@ -1181,6 +1250,18 @@ void Session::send_mission_progress_updates(const std::vector<infinitepickaxe::M
     }
 }
 
+void Session::send_weekly_mission_progress_updates(
+    const std::vector<infinitepickaxe::WeeklyMissionProgressUpdate>& updates)
+{
+    for (const auto& update : updates)
+    {
+        infinitepickaxe::Envelope env;
+        env.set_type(infinitepickaxe::WEEKLY_MISSION_PROGRESS_UPDATE);
+        *env.mutable_weekly_mission_progress_update() = update;
+        send_envelope(env);
+    }
+}
+
 void Session::send_achievement_progress_updates(const std::vector<infinitepickaxe::AchievementProgressUpdate>& updates)
 {
     for (const auto& update : updates)
@@ -1207,6 +1288,24 @@ void Session::send_milestone_state()
     infinitepickaxe::Envelope env;
     env.set_type(infinitepickaxe::MILESTONE_STATE);
     *env.mutable_milestone_state() = state;
+    send_envelope(env);
+}
+
+void Session::send_weekly_missions_state()
+{
+    auto res = mission_service_.get_weekly_missions(user_id_);
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::WEEKLY_MISSIONS_RESPONSE);
+    *env.mutable_weekly_missions_response() = res;
+    send_envelope(env);
+}
+
+void Session::send_weekly_milestone_state()
+{
+    auto state = mission_service_.get_weekly_milestone_state(user_id_);
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::WEEKLY_MILESTONE_STATE);
+    *env.mutable_weekly_milestone_state() = state;
     send_envelope(env);
 }
 
@@ -1454,6 +1553,8 @@ void Session::flush_play_time_progress(bool force)
     play_time_accum_ms_ -= static_cast<float>(flush_seconds * 1000);
     auto updates = mission_service_.handle_play_time_seconds(user_id_, flush_seconds);
     send_mission_progress_updates(updates);
+    auto weekly_updates = mission_service_.handle_weekly_play_time_seconds(user_id_, flush_seconds);
+    send_weekly_mission_progress_updates(weekly_updates);
     auto achievement_updates = achievement_service_.handle_play_time_seconds(user_id_, flush_seconds);
     send_achievement_progress_updates(achievement_updates);
 }
@@ -1528,6 +1629,17 @@ void Session::update_mining_tick_internal(float delta_ms)
         send_milestone_state();
         send_ad_counters_state();
         next_daily_reset_ms_ = kst_next_midnight_ms();
+    }
+
+    if (next_weekly_reset_ms_ == 0)
+    {
+        next_weekly_reset_ms_ = kst_next_week_reset_ms();
+    }
+    else if (now_ms >= next_weekly_reset_ms_)
+    {
+        send_weekly_missions_state();
+        send_weekly_milestone_state();
+        next_weekly_reset_ms_ = kst_next_week_reset_ms();
     }
 
     play_time_accum_ms_ += delta_ms;
@@ -1803,6 +1915,10 @@ void Session::handle_mining_complete_immediate()
     auto gold_updates = mission_service_.handle_gold_earned(user_id_, completion_result.gold_earned());
     updates.insert(updates.end(), gold_updates.begin(), gold_updates.end());
     send_mission_progress_updates(updates);
+    auto weekly_updates = mission_service_.handle_weekly_mining_complete(user_id_, mining_state_.current_mineral_id);
+    auto weekly_gold_updates = mission_service_.handle_weekly_gold_earned(user_id_, completion_result.gold_earned());
+    weekly_updates.insert(weekly_updates.end(), weekly_gold_updates.begin(), weekly_gold_updates.end());
+    send_weekly_mission_progress_updates(weekly_updates);
     auto achievement_updates = achievement_service_.handle_mining_complete(user_id_);
     auto achievement_gold_updates = achievement_service_.handle_gold_earned(user_id_, completion_result.gold_earned());
     achievement_updates.insert(achievement_updates.end(),
@@ -1856,6 +1972,8 @@ void Session::handle_gem_gacha(const infinitepickaxe::Envelope &env)
         uint32_t created_count = static_cast<uint32_t>(result.gems_size());
         auto updates = mission_service_.handle_gem_created(user_id_, created_count);
         send_mission_progress_updates(updates);
+        auto weekly_updates = mission_service_.handle_weekly_gem_created(user_id_, created_count);
+        send_weekly_mission_progress_updates(weekly_updates);
         auto achievement_updates = achievement_service_.handle_gem_created(user_id_, created_count);
         send_achievement_progress_updates(achievement_updates);
     }
@@ -1897,6 +2015,19 @@ void Session::handle_gem_synthesis(const infinitepickaxe::Envelope &env)
         }
 
         send_mission_progress_updates(updates);
+
+        std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> weekly_updates;
+        auto weekly_synthesis_updates = mission_service_.handle_weekly_gem_synthesis(user_id_, 1);
+        weekly_updates.insert(weekly_updates.end(),
+                              weekly_synthesis_updates.begin(), weekly_synthesis_updates.end());
+
+        if (result.synthesis_success()) {
+            auto weekly_create_updates = mission_service_.handle_weekly_gem_created(user_id_, 1);
+            weekly_updates.insert(weekly_updates.end(),
+                                  weekly_create_updates.begin(), weekly_create_updates.end());
+        }
+
+        send_weekly_mission_progress_updates(weekly_updates);
 
         std::vector<infinitepickaxe::AchievementProgressUpdate> achievement_updates;
         uint32_t success_count = result.synthesis_success() ? 1 : 0;
@@ -1948,6 +2079,19 @@ void Session::handle_gem_auto_synthesis(const infinitepickaxe::Envelope &env)
 
         send_mission_progress_updates(updates);
 
+        std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> weekly_updates;
+        auto weekly_synthesis_updates = mission_service_.handle_weekly_gem_synthesis(user_id_, result.attempted());
+        weekly_updates.insert(weekly_updates.end(),
+                              weekly_synthesis_updates.begin(), weekly_synthesis_updates.end());
+
+        if (result.success_count() > 0) {
+            auto weekly_create_updates = mission_service_.handle_weekly_gem_created(user_id_, result.success_count());
+            weekly_updates.insert(weekly_updates.end(),
+                                  weekly_create_updates.begin(), weekly_create_updates.end());
+        }
+
+        send_weekly_mission_progress_updates(weekly_updates);
+
         std::vector<infinitepickaxe::AchievementProgressUpdate> achievement_updates;
         auto achievement_synthesis_updates = achievement_service_.handle_gem_synthesis(
             user_id_, result.attempted(), result.success_count());
@@ -1992,6 +2136,8 @@ void Session::handle_gem_conversion(const infinitepickaxe::Envelope &env)
     if (result.success()) {
         auto updates = mission_service_.handle_gem_conversion(user_id_, 1);
         send_mission_progress_updates(updates);
+        auto weekly_updates = mission_service_.handle_weekly_gem_conversion(user_id_, 1);
+        send_weekly_mission_progress_updates(weekly_updates);
         auto achievement_updates = achievement_service_.handle_gem_conversion(user_id_, 1);
         send_achievement_progress_updates(achievement_updates);
     }
@@ -2026,6 +2172,8 @@ void Session::handle_gem_discard(const infinitepickaxe::Envelope &env)
         uint32_t discard_count = static_cast<uint32_t>(gem_ids.size());
         auto updates = mission_service_.handle_gem_discard(user_id_, discard_count);
         send_mission_progress_updates(updates);
+        auto weekly_updates = mission_service_.handle_weekly_gem_discard(user_id_, discard_count);
+        send_weekly_mission_progress_updates(weekly_updates);
         auto achievement_updates = achievement_service_.handle_gem_discard(user_id_, discard_count);
         send_achievement_progress_updates(achievement_updates);
     }

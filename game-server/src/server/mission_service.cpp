@@ -15,6 +15,7 @@
 namespace {
 constexpr int kMissionCacheTtlSeconds = 60 * 60 * 48;
 constexpr int kMissionFlushIntervalSeconds = 60 * 5;
+constexpr int kWeeklyMissionCacheTtlSeconds = 60 * 60 * 24 * 8;
 
 std::string kst_date_key() {
     auto now = std::chrono::system_clock::now() + std::chrono::hours(9);
@@ -23,6 +24,12 @@ std::string kst_date_key() {
     char buf[16];
     std::strftime(buf, sizeof(buf), "%Y%m%d", &tm);
     return std::string(buf);
+}
+
+std::string week_key_from_date(const std::string& date) {
+    std::string key = date;
+    key.erase(std::remove(key.begin(), key.end(), '-'), key.end());
+    return key;
 }
 
 bool parse_uint32(const std::string& value, uint32_t& out) {
@@ -120,6 +127,54 @@ infinitepickaxe::DailyMissionsResponse MissionService::get_missions(const std::s
     return response;
 }
 
+infinitepickaxe::WeeklyMissionsResponse MissionService::get_weekly_missions(const std::string& user_id) {
+    infinitepickaxe::WeeklyMissionsResponse response;
+
+    ensure_weekly_missions_assigned(user_id);
+
+    const std::string week_start = current_week_start_date();
+    const std::string week_key = week_key_from_date(week_start);
+
+    auto missions = load_cached_weekly_missions(user_id, week_key);
+    if (missions.size() < meta_.weekly_missions().size()) {
+        std::vector<WeeklyMissionSeed> seeds;
+        seeds.reserve(meta_.weekly_missions().size());
+        for (const auto& meta : meta_.weekly_missions()) {
+            if (meta.id == 0) {
+                continue;
+            }
+            WeeklyMissionSeed seed;
+            seed.mission_id = meta.id;
+            seed.mission_type = meta.type;
+            seed.target_value = meta.target;
+            seed.reward_crystal = meta.reward_crystal;
+            seeds.push_back(seed);
+        }
+        repo_.ensure_weekly_missions(user_id, week_start, seeds);
+        missions = repo_.get_weekly_missions(user_id, week_start);
+        cache_weekly_missions(user_id, week_key, missions);
+    }
+
+    response.set_claimed_count(repo_.get_weekly_claimed_count(user_id, week_start));
+    response.set_reset_timestamp_ms(kst_next_week_reset_ms());
+
+    for (const auto& mission : missions) {
+        const MissionMeta* meta = get_weekly_mission_meta_by_id(mission.mission_id);
+        auto* entry = response.add_missions();
+        entry->set_mission_id(mission.mission_id);
+        entry->set_mission_type(meta ? meta->type : mission.mission_type);
+        entry->set_title(meta ? meta->title : "");
+        entry->set_description(meta ? meta->description : "");
+        entry->set_target_value(meta ? meta->target : mission.target_value);
+        entry->set_current_value(mission.current_value);
+        entry->set_reward_crystal(meta ? meta->reward_crystal : mission.reward_crystal);
+        entry->set_reward_gold(0);
+        entry->set_status(mission.status);
+    }
+
+    return response;
+}
+
 // Complete mission and grant reward
 infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
     const std::string& user_id, uint32_t slot_no) {
@@ -203,6 +258,91 @@ infinitepickaxe::MissionCompleteResult MissionService::claim_mission_reward(
 
     spdlog::debug("claim_mission_reward: user={} slot={} reward={} total_crystal={}",
                   user_id, slot_no, slot.reward_crystal, total_crystal);
+
+    return result;
+}
+
+infinitepickaxe::WeeklyMissionClaimResult MissionService::claim_weekly_mission_reward(
+    const std::string& user_id, uint32_t mission_id) {
+
+    infinitepickaxe::WeeklyMissionClaimResult result;
+    result.set_success(false);
+    result.set_mission_id(mission_id);
+
+    ensure_weekly_missions_assigned(user_id);
+
+    const std::string week_start = current_week_start_date();
+    const std::string week_key = week_key_from_date(week_start);
+
+    auto cached = load_cached_weekly_mission(user_id, week_key, mission_id);
+    const bool cache_found = cached.has_value();
+    WeeklyMission mission{};
+
+    if (cache_found) {
+        mission = cached.value();
+        if (mission.current_value >= mission.target_value && mission.status == "active") {
+            mission.status = "completed";
+        }
+        if (mission.status == "claimed") {
+            result.set_error_code("ALREADY_CLAIMED");
+            return result;
+        }
+        if (mission.status != "completed") {
+            result.set_error_code("MISSION_NOT_COMPLETED");
+            return result;
+        }
+        flush_weekly_mission_to_db(user_id, week_start, mission);
+    } else {
+        auto mission_opt = repo_.get_weekly_mission(user_id, week_start, mission_id);
+        if (!mission_opt.has_value()) {
+            result.set_error_code("MISSION_NOT_FOUND");
+            return result;
+        }
+        mission = mission_opt.value();
+        if (mission.status == "claimed") {
+            result.set_error_code("ALREADY_CLAIMED");
+            return result;
+        }
+        if (mission.status != "completed") {
+            result.set_error_code("MISSION_NOT_COMPLETED");
+            return result;
+        }
+    }
+
+    if (!repo_.claim_weekly_mission_reward(user_id, week_start, mission_id)) {
+        result.set_error_code("DB_ERROR");
+        return result;
+    }
+
+    uint32_t total_crystal = 0;
+    if (mission.reward_crystal > 0) {
+        auto total_opt = game_repo_.add_crystal(user_id, mission.reward_crystal);
+        if (!total_opt.has_value()) {
+            result.set_error_code("DB_ERROR");
+            return result;
+        }
+        total_crystal = total_opt.value();
+    }
+
+    uint64_t reward_gold = 0;
+    uint64_t total_gold = 0;
+
+    result.set_success(true);
+    result.set_reward_crystal(mission.reward_crystal);
+    result.set_reward_gold(reward_gold);
+    result.set_total_crystal(total_crystal);
+    result.set_total_gold(total_gold);
+    result.set_error_code("");
+
+    mission.status = "claimed";
+    if (cache_found) {
+        update_weekly_cache(user_id, week_key, mission);
+    } else {
+        cache_weekly_mission(user_id, week_key, mission);
+    }
+
+    spdlog::debug("claim_weekly_mission_reward: user={} mission_id={} reward_crystal={}",
+                  user_id, mission_id, mission.reward_crystal);
 
     return result;
 }
@@ -373,6 +513,82 @@ infinitepickaxe::MilestoneState MissionService::get_milestone_state(const std::s
     return state;
 }
 
+infinitepickaxe::WeeklyMilestoneClaimResult MissionService::handle_weekly_milestone_claim(
+    const std::string& user_id, uint32_t milestone_count) {
+
+    infinitepickaxe::WeeklyMilestoneClaimResult res;
+    res.set_success(false);
+    res.set_milestone_count(milestone_count);
+
+    const WeeklyMilestoneReward* milestone_meta = nullptr;
+    for (const auto& m : meta_.weekly_milestone_rewards()) {
+        if (m.completed == milestone_count) {
+            milestone_meta = &m;
+            break;
+        }
+    }
+
+    if (!milestone_meta) {
+        res.set_error_code("INVALID_MILESTONE");
+        return res;
+    }
+
+    uint32_t reward_crystal = milestone_meta->reward_crystal;
+    if (reward_crystal == 0) {
+        res.set_error_code("INVALID_MILESTONE");
+        return res;
+    }
+
+    const std::string week_start = current_week_start_date();
+    uint32_t claimed_count = repo_.get_weekly_claimed_count(user_id, week_start);
+    if (claimed_count < milestone_count) {
+        res.set_error_code("MILESTONE_NOT_REACHED");
+        return res;
+    }
+
+    if (repo_.has_weekly_milestone_claimed(user_id, week_start, milestone_count)) {
+        res.set_error_code("ALREADY_CLAIMED");
+        return res;
+    }
+
+    if (!repo_.insert_weekly_milestone_claim(user_id, week_start, milestone_count)) {
+        res.set_error_code("DB_ERROR");
+        return res;
+    }
+
+    uint32_t total_crystal = 0;
+    if (reward_crystal > 0) {
+        auto total_opt = game_repo_.add_crystal(user_id, reward_crystal);
+        if (!total_opt.has_value()) {
+            res.set_error_code("DB_ERROR");
+            return res;
+        }
+        total_crystal = total_opt.value();
+    }
+
+    res.set_success(true);
+    res.set_reward_crystal(reward_crystal);
+    res.set_reward_gold(0);
+    res.set_total_crystal(total_crystal);
+    res.set_total_gold(0);
+    res.set_error_code("");
+    return res;
+}
+
+infinitepickaxe::WeeklyMilestoneState MissionService::get_weekly_milestone_state(
+    const std::string& user_id) {
+    infinitepickaxe::WeeklyMilestoneState state;
+    const std::string week_start = current_week_start_date();
+    state.set_claimed_count(repo_.get_weekly_claimed_count(user_id, week_start));
+    state.set_reset_timestamp_ms(kst_next_week_reset_ms());
+
+    auto claimed = repo_.get_weekly_claimed_milestones(user_id, week_start);
+    for (auto milestone : claimed) {
+        state.add_claimed_milestones(milestone);
+    }
+    return state;
+}
+
 std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_mining_complete(
     const std::string& user_id, uint32_t mineral_id) {
     return apply_progress_delta(user_id, [mineral_id](const MissionSlot& slot, const MissionMeta* meta) -> uint64_t {
@@ -473,6 +689,127 @@ std::vector<infinitepickaxe::MissionProgressUpdate> MissionService::handle_gem_d
         }
         return 0;
     });
+}
+
+std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::handle_weekly_mining_complete(
+    const std::string& user_id, uint32_t mineral_id) {
+    ensure_weekly_missions_assigned(user_id);
+    return apply_weekly_progress_delta(user_id,
+        [mineral_id](const WeeklyMission& mission, const MissionMeta* meta) -> uint64_t {
+            if (mission.mission_type == "mine_any") {
+                return 1;
+            }
+            if (mission.mission_type == "mine_mineral" && meta && meta->mineral_id.has_value() &&
+                meta->mineral_id.value() == mineral_id) {
+                return 1;
+            }
+            return 0;
+        });
+}
+
+std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::handle_weekly_upgrade_try(
+    const std::string& user_id, bool success) {
+    ensure_weekly_missions_assigned(user_id);
+    return apply_weekly_progress_delta(user_id,
+        [success](const WeeklyMission& mission, const MissionMeta*) -> uint64_t {
+            if (mission.mission_type == "upgrade_try") {
+                return 1;
+            }
+            if (success && mission.mission_type == "upgrade_success") {
+                return 1;
+            }
+            return 0;
+        });
+}
+
+std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::handle_weekly_gold_earned(
+    const std::string& user_id, uint64_t gold_delta) {
+    if (gold_delta == 0) {
+        return {};
+    }
+    ensure_weekly_missions_assigned(user_id);
+    return apply_weekly_progress_delta(user_id,
+        [gold_delta](const WeeklyMission& mission, const MissionMeta*) -> uint64_t {
+            if (mission.mission_type == "gold") {
+                return gold_delta;
+            }
+            return 0;
+        });
+}
+
+std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::handle_weekly_play_time_seconds(
+    const std::string& user_id, uint32_t seconds) {
+    if (seconds == 0) {
+        return {};
+    }
+    ensure_weekly_missions_assigned(user_id);
+    return apply_weekly_progress_delta(user_id,
+        [seconds](const WeeklyMission& mission, const MissionMeta*) -> uint64_t {
+            if (mission.mission_type == "play_time") {
+                return seconds;
+            }
+            return 0;
+        });
+}
+
+std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::handle_weekly_gem_created(
+    const std::string& user_id, uint32_t created_count) {
+    if (created_count == 0) {
+        return {};
+    }
+    ensure_weekly_missions_assigned(user_id);
+    return apply_weekly_progress_delta(user_id,
+        [created_count](const WeeklyMission& mission, const MissionMeta*) -> uint64_t {
+            if (mission.mission_type == "gem_create") {
+                return created_count;
+            }
+            return 0;
+        });
+}
+
+std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::handle_weekly_gem_conversion(
+    const std::string& user_id, uint32_t conversion_count) {
+    if (conversion_count == 0) {
+        return {};
+    }
+    ensure_weekly_missions_assigned(user_id);
+    return apply_weekly_progress_delta(user_id,
+        [conversion_count](const WeeklyMission& mission, const MissionMeta*) -> uint64_t {
+            if (mission.mission_type == "gem_conversion") {
+                return conversion_count;
+            }
+            return 0;
+        });
+}
+
+std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::handle_weekly_gem_synthesis(
+    const std::string& user_id, uint32_t synthesis_count) {
+    if (synthesis_count == 0) {
+        return {};
+    }
+    ensure_weekly_missions_assigned(user_id);
+    return apply_weekly_progress_delta(user_id,
+        [synthesis_count](const WeeklyMission& mission, const MissionMeta*) -> uint64_t {
+            if (mission.mission_type == "gem_synthesis" || mission.mission_type == "gem_synthesis_try") {
+                return synthesis_count;
+            }
+            return 0;
+        });
+}
+
+std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::handle_weekly_gem_discard(
+    const std::string& user_id, uint32_t discard_count) {
+    if (discard_count == 0) {
+        return {};
+    }
+    ensure_weekly_missions_assigned(user_id);
+    return apply_weekly_progress_delta(user_id,
+        [discard_count](const WeeklyMission& mission, const MissionMeta*) -> uint64_t {
+            if (mission.mission_type == "gem_discard") {
+                return discard_count;
+            }
+            return 0;
+        });
 }
 
 // private helpers
@@ -749,4 +1086,240 @@ void MissionService::flush_slot_to_db(const std::string& user_id, const MissionS
     if (slot.status == "completed") {
         repo_.complete_mission(user_id, slot.slot_no);
     }
+}
+
+std::string MissionService::current_week_start_date() const {
+    return kst_week_start_date_string();
+}
+
+void MissionService::ensure_weekly_missions_assigned(const std::string& user_id) {
+    const auto& missions = meta_.weekly_missions();
+    if (missions.empty()) {
+        return;
+    }
+
+    const std::string week_start = current_week_start_date();
+    const std::string week_key = week_key_from_date(week_start);
+    const std::string assigned_key = "weekly:assigned:" + user_id + ":" + week_key;
+    if (redis_.get_string(assigned_key).has_value()) {
+        return;
+    }
+
+    std::vector<WeeklyMissionSeed> seeds;
+    seeds.reserve(missions.size());
+    for (const auto& mission : missions) {
+        if (mission.id == 0) {
+            continue;
+        }
+        WeeklyMissionSeed seed;
+        seed.mission_id = mission.id;
+        seed.mission_type = mission.type;
+        seed.target_value = mission.target;
+        seed.reward_crystal = mission.reward_crystal;
+        seeds.push_back(seed);
+    }
+
+    if (repo_.ensure_weekly_missions(user_id, week_start, seeds)) {
+        redis_.set_string(assigned_key, "1", std::chrono::seconds(kWeeklyMissionCacheTtlSeconds));
+    }
+}
+
+const MissionMeta* MissionService::get_weekly_mission_meta_by_id(uint32_t meta_id) const {
+    for (const auto& m : meta_.weekly_missions()) {
+        if (m.id == meta_id) return &m;
+    }
+    return nullptr;
+}
+
+std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::apply_weekly_progress_delta(
+    const std::string& user_id,
+    const std::function<uint64_t(const WeeklyMission&, const MissionMeta*)>& delta_fn) {
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> updates;
+    const std::string week_start = current_week_start_date();
+    const std::string week_key = week_key_from_date(week_start);
+    auto missions = load_cached_weekly_missions(user_id, week_key);
+    bool any_updated = false;
+    for (auto& mission : missions) {
+        if (mission.status != "active") {
+            continue;
+        }
+        const MissionMeta* meta = get_weekly_mission_meta_by_id(mission.mission_id);
+        uint64_t delta = delta_fn(mission, meta);
+        if (delta == 0) {
+            continue;
+        }
+
+        uint64_t sum = static_cast<uint64_t>(mission.current_value) + delta;
+        uint32_t target = mission.target_value;
+        uint32_t new_value = static_cast<uint32_t>(sum > target ? target : sum);
+        if (new_value == mission.current_value) {
+            continue;
+        }
+
+        auto update_opt = apply_weekly_progress_update(user_id, mission, new_value);
+        if (update_opt.has_value()) {
+            updates.push_back(update_opt.value());
+            any_updated = true;
+            mission.current_value = new_value;
+            if (new_value >= mission.target_value) {
+                mission.status = "completed";
+            }
+        }
+    }
+    if (any_updated) {
+        flush_weekly_missions_if_due(user_id, week_key, missions);
+    }
+    return updates;
+}
+
+std::optional<infinitepickaxe::WeeklyMissionProgressUpdate> MissionService::apply_weekly_progress_update(
+    const std::string& user_id, const WeeklyMission& mission, uint32_t new_value) {
+    const std::string week_start = current_week_start_date();
+    const std::string week_key = week_key_from_date(week_start);
+
+    std::string new_status = mission.status;
+    if (new_value >= mission.target_value) {
+        new_status = "completed";
+    }
+
+    WeeklyMission updated = mission;
+    updated.current_value = new_value;
+    updated.status = new_status;
+    update_weekly_cache(user_id, week_key, updated);
+    if (new_status == "completed") {
+        flush_weekly_mission_to_db(user_id, week_start, updated);
+    }
+
+    infinitepickaxe::WeeklyMissionProgressUpdate update;
+    update.set_mission_id(mission.mission_id);
+    update.set_current_value(new_value);
+    update.set_target_value(mission.target_value);
+    update.set_status(new_status);
+    return update;
+}
+
+std::vector<WeeklyMission> MissionService::load_cached_weekly_missions(
+    const std::string& user_id, const std::string& week_key) {
+    std::vector<WeeklyMission> missions;
+    const auto& weekly_meta = meta_.weekly_missions();
+    if (weekly_meta.empty()) {
+        return missions;
+    }
+
+    bool all_cached = true;
+    for (const auto& meta : weekly_meta) {
+        if (meta.id == 0) {
+            continue;
+        }
+        auto cached = load_cached_weekly_mission(user_id, week_key, meta.id);
+        if (!cached.has_value()) {
+            all_cached = false;
+            break;
+        }
+        missions.push_back(cached.value());
+    }
+
+    if (all_cached && !missions.empty()) {
+        return missions;
+    }
+
+    const std::string week_start = current_week_start_date();
+    missions = repo_.get_weekly_missions(user_id, week_start);
+    cache_weekly_missions(user_id, week_key, missions);
+    return missions;
+}
+
+std::optional<WeeklyMission> MissionService::load_cached_weekly_mission(
+    const std::string& user_id, const std::string& week_key, uint32_t mission_id) {
+    const std::string key = "weekly:mission:" + user_id + ":" + week_key + ":" + std::to_string(mission_id);
+    std::unordered_map<std::string, std::string> fields;
+    if (!redis_.hgetall(key, fields) || fields.empty()) {
+        return std::nullopt;
+    }
+
+    WeeklyMission mission;
+    mission.user_id = user_id;
+    mission.week_start_date = current_week_start_date();
+    mission.mission_id = mission_id;
+    mission.mission_type = fields["mission_type"];
+    if (!parse_uint32(fields["target_value"], mission.target_value)) return std::nullopt;
+    if (!parse_uint32(fields["current_value"], mission.current_value)) return std::nullopt;
+    if (!parse_uint32(fields["reward_crystal"], mission.reward_crystal)) return std::nullopt;
+    mission.status = fields["status"];
+
+    return mission;
+}
+
+void MissionService::cache_weekly_mission(const std::string& user_id, const std::string& week_key,
+                                          const WeeklyMission& mission) {
+    const std::string key = "weekly:mission:" + user_id + ":" + week_key + ":" + std::to_string(mission.mission_id);
+    std::unordered_map<std::string, std::string> fields{
+        {"mission_type", mission.mission_type},
+        {"target_value", std::to_string(mission.target_value)},
+        {"current_value", std::to_string(mission.current_value)},
+        {"reward_crystal", std::to_string(mission.reward_crystal)},
+        {"status", mission.status},
+    };
+    redis_.hset_fields(key, fields, std::chrono::seconds(kWeeklyMissionCacheTtlSeconds));
+}
+
+void MissionService::cache_weekly_missions(const std::string& user_id, const std::string& week_key,
+                                           const std::vector<WeeklyMission>& missions) {
+    for (const auto& mission : missions) {
+        cache_weekly_mission(user_id, week_key, mission);
+    }
+}
+
+void MissionService::update_weekly_cache(const std::string& user_id, const std::string& week_key,
+                                         const WeeklyMission& mission) {
+    const std::string key = "weekly:mission:" + user_id + ":" + week_key + ":" + std::to_string(mission.mission_id);
+    std::unordered_map<std::string, std::string> fields{
+        {"current_value", std::to_string(mission.current_value)},
+        {"status", mission.status},
+    };
+    redis_.hset_fields(key, fields, std::chrono::seconds(kWeeklyMissionCacheTtlSeconds));
+}
+
+bool MissionService::flush_weekly_missions_if_due(const std::string& user_id, const std::string& week_key,
+                                                  const std::vector<WeeklyMission>& missions) {
+    const std::string key = "weekly:flush:" + user_id + ":" + week_key;
+    auto now = std::chrono::system_clock::now();
+    auto now_seconds = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
+
+    auto last_str = redis_.get_string(key);
+    long long last = 0;
+    if (last_str.has_value()) {
+        try {
+            last = std::stoll(last_str.value());
+        } catch (...) {
+            last = 0;
+        }
+    }
+
+    if (last != 0 && (now_seconds - last) < kMissionFlushIntervalSeconds) {
+        return false;
+    }
+
+    const std::string week_start = current_week_start_date();
+    flush_weekly_missions_to_db(user_id, week_start, missions);
+    redis_.set_string(key, std::to_string(now_seconds), std::chrono::seconds(kWeeklyMissionCacheTtlSeconds));
+    return true;
+}
+
+void MissionService::flush_weekly_missions_to_db(const std::string& user_id,
+                                                 const std::string& week_start_date,
+                                                 const std::vector<WeeklyMission>& missions) {
+    for (const auto& mission : missions) {
+        if (mission.status == "claimed") {
+            continue;
+        }
+        flush_weekly_mission_to_db(user_id, week_start_date, mission);
+    }
+}
+
+void MissionService::flush_weekly_mission_to_db(const std::string& user_id,
+                                                const std::string& week_start_date,
+                                                const WeeklyMission& mission) {
+    repo_.update_weekly_mission_progress(user_id, week_start_date,
+                                         mission.mission_id, mission.current_value, mission.status);
 }

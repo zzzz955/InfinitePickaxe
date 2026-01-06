@@ -30,6 +30,24 @@ struct MissionSlot {
     std::optional<std::chrono::system_clock::time_point> expires_at;
 };
 
+struct WeeklyMission {
+    std::string user_id;
+    std::string week_start_date;
+    uint32_t mission_id;
+    std::string mission_type;
+    uint32_t target_value;
+    uint32_t current_value;
+    uint32_t reward_crystal;
+    std::string status;
+};
+
+struct WeeklyMissionSeed {
+    uint32_t mission_id;
+    std::string mission_type;
+    uint32_t target_value;
+    uint32_t reward_crystal;
+};
+
 class MissionRepository {
 public:
     explicit MissionRepository(ConnectionPool& pool) : pool_(pool) {}
@@ -72,6 +90,33 @@ bool increment_reroll_count(const std::string& user_id);
 
     // 미션 슬롯 삭제 (리롤 시)
     bool delete_mission_slot(const std::string& user_id, uint32_t slot_no);
+
+    bool ensure_weekly_missions(const std::string& user_id,
+                                const std::string& week_start_date,
+                                const std::vector<WeeklyMissionSeed>& seeds);
+    std::vector<WeeklyMission> get_weekly_missions(const std::string& user_id,
+                                                   const std::string& week_start_date);
+    std::optional<WeeklyMission> get_weekly_mission(const std::string& user_id,
+                                                    const std::string& week_start_date,
+                                                    uint32_t mission_id);
+    bool update_weekly_mission_progress(const std::string& user_id,
+                                        const std::string& week_start_date,
+                                        uint32_t mission_id,
+                                        uint32_t new_current_value,
+                                        const std::string& new_status);
+    bool claim_weekly_mission_reward(const std::string& user_id,
+                                     const std::string& week_start_date,
+                                     uint32_t mission_id);
+    uint32_t get_weekly_claimed_count(const std::string& user_id,
+                                      const std::string& week_start_date);
+    bool has_weekly_milestone_claimed(const std::string& user_id,
+                                      const std::string& week_start_date,
+                                      uint32_t milestone_count);
+    bool insert_weekly_milestone_claim(const std::string& user_id,
+                                       const std::string& week_start_date,
+                                       uint32_t milestone_count);
+    std::vector<uint32_t> get_weekly_claimed_milestones(const std::string& user_id,
+                                                        const std::string& week_start_date);
 
 private:
     ConnectionPool& pool_;

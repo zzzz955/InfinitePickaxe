@@ -21,9 +21,12 @@ public:
           ad_service_(ad_service), meta_(meta), redis_(redis) {}
 
     infinitepickaxe::DailyMissionsResponse get_missions(const std::string& user_id);
+    infinitepickaxe::WeeklyMissionsResponse get_weekly_missions(const std::string& user_id);
 
     infinitepickaxe::MissionCompleteResult claim_mission_reward(
         const std::string& user_id, uint32_t slot_no);
+    infinitepickaxe::WeeklyMissionClaimResult claim_weekly_mission_reward(
+        const std::string& user_id, uint32_t mission_id);
 
     infinitepickaxe::MissionRerollResult reroll_missions(const std::string& user_id);
     infinitepickaxe::MissionRerollResult reroll_missions_ad(const std::string& user_id);
@@ -31,6 +34,9 @@ public:
     infinitepickaxe::MilestoneClaimResult handle_milestone_claim(
         const std::string& user_id, uint32_t milestone_count);
     infinitepickaxe::MilestoneState get_milestone_state(const std::string& user_id);
+    infinitepickaxe::WeeklyMilestoneClaimResult handle_weekly_milestone_claim(
+        const std::string& user_id, uint32_t milestone_count);
+    infinitepickaxe::WeeklyMilestoneState get_weekly_milestone_state(const std::string& user_id);
 
     std::vector<infinitepickaxe::MissionProgressUpdate> handle_mining_complete(
         const std::string& user_id, uint32_t mineral_id);
@@ -47,6 +53,23 @@ public:
     std::vector<infinitepickaxe::MissionProgressUpdate> handle_gem_synthesis(
         const std::string& user_id, uint32_t synthesis_count);
     std::vector<infinitepickaxe::MissionProgressUpdate> handle_gem_discard(
+        const std::string& user_id, uint32_t discard_count);
+
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> handle_weekly_mining_complete(
+        const std::string& user_id, uint32_t mineral_id);
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> handle_weekly_upgrade_try(
+        const std::string& user_id, bool success);
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> handle_weekly_gold_earned(
+        const std::string& user_id, uint64_t gold_delta);
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> handle_weekly_play_time_seconds(
+        const std::string& user_id, uint32_t seconds);
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> handle_weekly_gem_created(
+        const std::string& user_id, uint32_t created_count);
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> handle_weekly_gem_conversion(
+        const std::string& user_id, uint32_t conversion_count);
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> handle_weekly_gem_synthesis(
+        const std::string& user_id, uint32_t synthesis_count);
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> handle_weekly_gem_discard(
         const std::string& user_id, uint32_t discard_count);
 
 private:
@@ -70,6 +93,32 @@ private:
     bool flush_slots_if_due(const std::string& user_id, const std::vector<MissionSlot>& slots);
     void flush_slots_to_db(const std::string& user_id, const std::vector<MissionSlot>& slots);
     void flush_slot_to_db(const std::string& user_id, const MissionSlot& slot);
+
+    std::string current_week_start_date() const;
+    void ensure_weekly_missions_assigned(const std::string& user_id);
+    const MissionMeta* get_weekly_mission_meta_by_id(uint32_t meta_id) const;
+    std::vector<infinitepickaxe::WeeklyMissionProgressUpdate> apply_weekly_progress_delta(
+        const std::string& user_id,
+        const std::function<uint64_t(const WeeklyMission&, const MissionMeta*)>& delta_fn);
+    std::optional<infinitepickaxe::WeeklyMissionProgressUpdate> apply_weekly_progress_update(
+        const std::string& user_id, const WeeklyMission& mission, uint32_t new_value);
+    std::vector<WeeklyMission> load_cached_weekly_missions(const std::string& user_id,
+                                                           const std::string& week_key);
+    std::optional<WeeklyMission> load_cached_weekly_mission(const std::string& user_id,
+                                                            const std::string& week_key,
+                                                            uint32_t mission_id);
+    void cache_weekly_mission(const std::string& user_id, const std::string& week_key,
+                              const WeeklyMission& mission);
+    void cache_weekly_missions(const std::string& user_id, const std::string& week_key,
+                               const std::vector<WeeklyMission>& missions);
+    void update_weekly_cache(const std::string& user_id, const std::string& week_key,
+                             const WeeklyMission& mission);
+    bool flush_weekly_missions_if_due(const std::string& user_id, const std::string& week_key,
+                                      const std::vector<WeeklyMission>& missions);
+    void flush_weekly_missions_to_db(const std::string& user_id, const std::string& week_start_date,
+                                     const std::vector<WeeklyMission>& missions);
+    void flush_weekly_mission_to_db(const std::string& user_id, const std::string& week_start_date,
+                                    const WeeklyMission& mission);
 
     MissionRepository& repo_;
     GameRepository& game_repo_;

@@ -411,3 +411,243 @@ bool MissionRepository::delete_mission_slot(const std::string& user_id, uint32_t
         return false;
     }
 }
+
+bool MissionRepository::ensure_weekly_missions(const std::string& user_id,
+                                               const std::string& week_start_date,
+                                               const std::vector<WeeklyMissionSeed>& seeds) {
+    if (seeds.empty()) {
+        return true;
+    }
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        for (const auto& seed : seeds) {
+            tx.exec_params(
+                "INSERT INTO game_schema.user_mission_weekly "
+                "(user_id, week_start_date, mission_id, mission_type, target_value, "
+                " current_value, reward_crystal, status, assigned_at) "
+                "VALUES ($1, $2::date, $3, $4, $5, 0, $6, 'active', NOW()) "
+                "ON CONFLICT DO NOTHING",
+                user_id, week_start_date, seed.mission_id, seed.mission_type,
+                seed.target_value, seed.reward_crystal
+            );
+        }
+
+        tx.commit();
+        spdlog::debug("ensure_weekly_missions: user={} week_start={}", user_id, week_start_date);
+        return true;
+    } catch (const std::exception& ex) {
+        spdlog::error("ensure_weekly_missions failed: user={} week_start={} error={}",
+                      user_id, week_start_date, ex.what());
+        return false;
+    }
+}
+
+std::vector<WeeklyMission> MissionRepository::get_weekly_missions(
+    const std::string& user_id, const std::string& week_start_date) {
+    std::vector<WeeklyMission> missions;
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        auto res = tx.exec_params(
+            "SELECT user_id, week_start_date, mission_id, mission_type, target_value, "
+            "       current_value, reward_crystal, status "
+            "FROM game_schema.user_mission_weekly "
+            "WHERE user_id = $1 AND week_start_date = $2::date "
+            "ORDER BY mission_id ASC",
+            user_id, week_start_date
+        );
+
+        for (auto row : res) {
+            WeeklyMission mission;
+            mission.user_id = row["user_id"].as<std::string>();
+            mission.week_start_date = row["week_start_date"].as<std::string>();
+            mission.mission_id = row["mission_id"].as<uint32_t>();
+            mission.mission_type = row["mission_type"].as<std::string>();
+            mission.target_value = row["target_value"].as<uint32_t>();
+            mission.current_value = row["current_value"].as<uint32_t>();
+            mission.reward_crystal = row["reward_crystal"].as<uint32_t>();
+            mission.status = row["status"].as<std::string>();
+            missions.push_back(mission);
+        }
+
+        tx.commit();
+    } catch (const std::exception& ex) {
+        spdlog::error("get_weekly_missions failed: user={} week_start={} error={}",
+                      user_id, week_start_date, ex.what());
+    }
+    return missions;
+}
+
+std::optional<WeeklyMission> MissionRepository::get_weekly_mission(
+    const std::string& user_id, const std::string& week_start_date, uint32_t mission_id) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        auto res = tx.exec_params(
+            "SELECT user_id, week_start_date, mission_id, mission_type, target_value, "
+            "       current_value, reward_crystal, status "
+            "FROM game_schema.user_mission_weekly "
+            "WHERE user_id = $1 AND week_start_date = $2::date AND mission_id = $3",
+            user_id, week_start_date, mission_id
+        );
+
+        if (res.empty()) {
+            return std::nullopt;
+        }
+
+        auto row = res[0];
+        WeeklyMission mission;
+        mission.user_id = row["user_id"].as<std::string>();
+        mission.week_start_date = row["week_start_date"].as<std::string>();
+        mission.mission_id = row["mission_id"].as<uint32_t>();
+        mission.mission_type = row["mission_type"].as<std::string>();
+        mission.target_value = row["target_value"].as<uint32_t>();
+        mission.current_value = row["current_value"].as<uint32_t>();
+        mission.reward_crystal = row["reward_crystal"].as<uint32_t>();
+        mission.status = row["status"].as<std::string>();
+
+        tx.commit();
+        return mission;
+    } catch (const std::exception& ex) {
+        spdlog::error("get_weekly_mission failed: user={} week_start={} mission_id={} error={}",
+                      user_id, week_start_date, mission_id, ex.what());
+        return std::nullopt;
+    }
+}
+
+bool MissionRepository::update_weekly_mission_progress(
+    const std::string& user_id, const std::string& week_start_date, uint32_t mission_id,
+    uint32_t new_current_value, const std::string& new_status) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        tx.exec_params(
+            "UPDATE game_schema.user_mission_weekly "
+            "SET current_value = $4, status = $5, "
+            "    completed_at = CASE WHEN $5 = 'completed' AND completed_at IS NULL THEN NOW() ELSE completed_at END "
+            "WHERE user_id = $1 AND week_start_date = $2::date AND mission_id = $3",
+            user_id, week_start_date, mission_id, new_current_value, new_status
+        );
+
+        tx.commit();
+        spdlog::debug("update_weekly_mission_progress: user={} week_start={} mission_id={} value={} status={}",
+                      user_id, week_start_date, mission_id, new_current_value, new_status);
+        return true;
+    } catch (const std::exception& ex) {
+        spdlog::error("update_weekly_mission_progress failed: user={} week_start={} mission_id={} error={}",
+                      user_id, week_start_date, mission_id, ex.what());
+        return false;
+    }
+}
+
+bool MissionRepository::claim_weekly_mission_reward(
+    const std::string& user_id, const std::string& week_start_date, uint32_t mission_id) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        tx.exec_params(
+            "UPDATE game_schema.user_mission_weekly "
+            "SET status = 'claimed', claimed_at = NOW() "
+            "WHERE user_id = $1 AND week_start_date = $2::date AND mission_id = $3",
+            user_id, week_start_date, mission_id
+        );
+
+        tx.commit();
+        spdlog::debug("claim_weekly_mission_reward: user={} week_start={} mission_id={}",
+                      user_id, week_start_date, mission_id);
+        return true;
+    } catch (const std::exception& ex) {
+        spdlog::error("claim_weekly_mission_reward failed: user={} week_start={} mission_id={} error={}",
+                      user_id, week_start_date, mission_id, ex.what());
+        return false;
+    }
+}
+
+uint32_t MissionRepository::get_weekly_claimed_count(
+    const std::string& user_id, const std::string& week_start_date) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+
+        auto res = tx.exec_params(
+            "SELECT COUNT(*) AS cnt FROM game_schema.user_mission_weekly "
+            "WHERE user_id = $1 AND week_start_date = $2::date AND status = 'claimed'",
+            user_id, week_start_date
+        );
+
+        tx.commit();
+        if (!res.empty()) {
+            return res[0]["cnt"].as<uint32_t>();
+        }
+    } catch (const std::exception& ex) {
+        spdlog::error("get_weekly_claimed_count failed: user={} week_start={} error={}",
+                      user_id, week_start_date, ex.what());
+    }
+    return 0;
+}
+
+bool MissionRepository::has_weekly_milestone_claimed(
+    const std::string& user_id, const std::string& week_start_date, uint32_t milestone_count) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto res = tx.exec_params(
+            "SELECT 1 FROM game_schema.user_weekly_milestones "
+            "WHERE user_id = $1 AND week_start_date = $2::date AND milestone_count = $3 "
+            "LIMIT 1",
+            user_id, week_start_date, milestone_count);
+        tx.commit();
+        return !res.empty();
+    } catch (const std::exception& ex) {
+        spdlog::error("has_weekly_milestone_claimed failed: user={} week_start={} milestone={} error={}",
+                      user_id, week_start_date, milestone_count, ex.what());
+        return false;
+    }
+}
+
+bool MissionRepository::insert_weekly_milestone_claim(
+    const std::string& user_id, const std::string& week_start_date, uint32_t milestone_count) {
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto res = tx.exec_params(
+            "INSERT INTO game_schema.user_weekly_milestones (user_id, week_start_date, milestone_count) "
+            "VALUES ($1, $2::date, $3) "
+            "ON CONFLICT DO NOTHING",
+            user_id, week_start_date, milestone_count);
+        tx.commit();
+        return res.affected_rows() > 0;
+    } catch (const std::exception& ex) {
+        spdlog::error("insert_weekly_milestone_claim failed: user={} week_start={} milestone={} error={}",
+                      user_id, week_start_date, milestone_count, ex.what());
+        return false;
+    }
+}
+
+std::vector<uint32_t> MissionRepository::get_weekly_claimed_milestones(
+    const std::string& user_id, const std::string& week_start_date) {
+    std::vector<uint32_t> milestones;
+    try {
+        auto conn = pool_.acquire();
+        pqxx::work tx(*conn);
+        auto res = tx.exec_params(
+            "SELECT milestone_count FROM game_schema.user_weekly_milestones "
+            "WHERE user_id = $1 AND week_start_date = $2::date "
+            "ORDER BY milestone_count",
+            user_id, week_start_date);
+        for (auto row : res) {
+            milestones.push_back(row["milestone_count"].as<uint32_t>());
+        }
+        tx.commit();
+    } catch (const std::exception& ex) {
+        spdlog::error("get_weekly_claimed_milestones failed: user={} week_start={} error={}",
+                      user_id, week_start_date, ex.what());
+    }
+    return milestones;
+}
