@@ -21,7 +21,7 @@ public:
     std::vector<infinitepickaxe::AchievementProgressUpdate> handle_mining_complete(
         const std::string& user_id);
     std::vector<infinitepickaxe::AchievementProgressUpdate> handle_upgrade_try(
-        const std::string& user_id, bool success);
+        const std::string& user_id, bool success, bool count_fail);
     std::vector<infinitepickaxe::AchievementProgressUpdate> handle_gold_earned(
         const std::string& user_id, uint64_t gold_delta);
     std::vector<infinitepickaxe::AchievementProgressUpdate> handle_play_time_seconds(
@@ -31,7 +31,7 @@ public:
     std::vector<infinitepickaxe::AchievementProgressUpdate> handle_gem_conversion(
         const std::string& user_id, uint32_t conversion_count);
     std::vector<infinitepickaxe::AchievementProgressUpdate> handle_gem_synthesis(
-        const std::string& user_id, uint32_t synthesis_count);
+        const std::string& user_id, uint32_t attempt_count, uint32_t success_count);
     std::vector<infinitepickaxe::AchievementProgressUpdate> handle_gem_discard(
         const std::string& user_id, uint32_t discard_count);
 

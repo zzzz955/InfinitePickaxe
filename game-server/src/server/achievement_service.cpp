@@ -152,11 +152,13 @@ std::vector<infinitepickaxe::AchievementProgressUpdate> AchievementService::hand
 }
 
 std::vector<infinitepickaxe::AchievementProgressUpdate> AchievementService::handle_upgrade_try(
-    const std::string& user_id, bool success) {
+    const std::string& user_id, bool success, bool count_fail) {
     std::vector<std::pair<std::string, uint64_t>> deltas;
     deltas.emplace_back("upgrade_try", 1);
     if (success) {
         deltas.emplace_back("upgrade_success", 1);
+    } else if (count_fail) {
+        deltas.emplace_back("upgrade_fail", 1);
     }
     return apply_progress_delta(user_id, deltas);
 }
@@ -194,11 +196,25 @@ std::vector<infinitepickaxe::AchievementProgressUpdate> AchievementService::hand
 }
 
 std::vector<infinitepickaxe::AchievementProgressUpdate> AchievementService::handle_gem_synthesis(
-    const std::string& user_id, uint32_t synthesis_count) {
-    if (synthesis_count == 0) {
+    const std::string& user_id, uint32_t attempt_count, uint32_t success_count) {
+    if (attempt_count == 0) {
         return {};
     }
-    return apply_progress_delta(user_id, {{"gem_synthesis", synthesis_count}});
+
+    uint32_t fail_count = 0;
+    if (attempt_count > success_count) {
+        fail_count = attempt_count - success_count;
+    }
+
+    std::vector<std::pair<std::string, uint64_t>> deltas;
+    deltas.emplace_back("gem_synthesis_try", attempt_count);
+    if (success_count > 0) {
+        deltas.emplace_back("gem_synthesis_success", success_count);
+    }
+    if (fail_count > 0) {
+        deltas.emplace_back("gem_synthesis_fail", fail_count);
+    }
+    return apply_progress_delta(user_id, deltas);
 }
 
 std::vector<infinitepickaxe::AchievementProgressUpdate> AchievementService::handle_gem_discard(

@@ -730,7 +730,8 @@ void Session::handle_upgrade(const infinitepickaxe::Envelope &env)
     if (slot.has_value()) {
         auto updates = mission_service_.handle_upgrade_try(user_id_, res.success());
         send_mission_progress_updates(updates);
-        auto achievement_updates = achievement_service_.handle_upgrade_try(user_id_, res.success());
+        bool count_upgrade_fail = !res.success() && res.error_code() == "3000";
+        auto achievement_updates = achievement_service_.handle_upgrade_try(user_id_, res.success(), count_upgrade_fail);
         send_achievement_progress_updates(achievement_updates);
     }
 }
@@ -1898,7 +1899,8 @@ void Session::handle_gem_synthesis(const infinitepickaxe::Envelope &env)
         send_mission_progress_updates(updates);
 
         std::vector<infinitepickaxe::AchievementProgressUpdate> achievement_updates;
-        auto achievement_synthesis_updates = achievement_service_.handle_gem_synthesis(user_id_, 1);
+        uint32_t success_count = result.synthesis_success() ? 1 : 0;
+        auto achievement_synthesis_updates = achievement_service_.handle_gem_synthesis(user_id_, 1, success_count);
         achievement_updates.insert(achievement_updates.end(),
                                    achievement_synthesis_updates.begin(),
                                    achievement_synthesis_updates.end());
@@ -1947,7 +1949,8 @@ void Session::handle_gem_auto_synthesis(const infinitepickaxe::Envelope &env)
         send_mission_progress_updates(updates);
 
         std::vector<infinitepickaxe::AchievementProgressUpdate> achievement_updates;
-        auto achievement_synthesis_updates = achievement_service_.handle_gem_synthesis(user_id_, result.attempted());
+        auto achievement_synthesis_updates = achievement_service_.handle_gem_synthesis(
+            user_id_, result.attempted(), result.success_count());
         achievement_updates.insert(achievement_updates.end(),
                                    achievement_synthesis_updates.begin(),
                                    achievement_synthesis_updates.end());
