@@ -120,6 +120,33 @@ CREATE TABLE IF NOT EXISTS game_schema.user_mission_slots (
 );
 CREATE INDEX IF NOT EXISTS idx_mission_slots_status ON game_schema.user_mission_slots(user_id, status);
 CREATE INDEX IF NOT EXISTS idx_mission_slots_expiry ON game_schema.user_mission_slots(expires_at);
+CREATE TABLE IF NOT EXISTS game_schema.user_mission_weekly (
+    user_id         UUID NOT NULL,
+    week_start_date DATE NOT NULL,
+    mission_id      INTEGER NOT NULL CHECK (mission_id > 0),
+    mission_type    VARCHAR(50) NOT NULL,
+    target_value    INTEGER NOT NULL CHECK (target_value > 0),
+    current_value   INTEGER NOT NULL DEFAULT 0 CHECK (current_value >= 0),
+    reward_crystal  INTEGER NOT NULL DEFAULT 0 CHECK (reward_crystal >= 0),
+    status          VARCHAR(16) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'completed', 'claimed')),
+    assigned_at     TIMESTAMP NOT NULL DEFAULT NOW(),
+    completed_at    TIMESTAMP,
+    claimed_at      TIMESTAMP,
+    created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_user_mission_weekly PRIMARY KEY (user_id, week_start_date, mission_id)
+);
+CREATE INDEX IF NOT EXISTS idx_mission_weekly_status ON game_schema.user_mission_weekly(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_mission_weekly_week ON game_schema.user_mission_weekly(user_id, week_start_date);
+
+CREATE TABLE IF NOT EXISTS game_schema.user_weekly_milestones (
+    user_id         UUID NOT NULL,
+    week_start_date DATE NOT NULL,
+    milestone_count INTEGER NOT NULL CHECK (milestone_count > 0),
+    claimed_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_user_weekly_milestones PRIMARY KEY (user_id, week_start_date, milestone_count)
+);
+CREATE INDEX IF NOT EXISTS idx_user_weekly_milestones_week ON game_schema.user_weekly_milestones(user_id, week_start_date);
 
 -- 업적 누적 진행도
 CREATE TABLE IF NOT EXISTS game_schema.user_achievement_counters (
@@ -245,6 +272,10 @@ CREATE TRIGGER trg_user_mission_daily_updated
 
 CREATE TRIGGER trg_user_mission_slots_updated
     BEFORE UPDATE ON game_schema.user_mission_slots
+    FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
+
+CREATE TRIGGER trg_user_mission_weekly_updated
+    BEFORE UPDATE ON game_schema.user_mission_weekly
     FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
 
 CREATE TRIGGER trg_user_achievement_counters_updated
