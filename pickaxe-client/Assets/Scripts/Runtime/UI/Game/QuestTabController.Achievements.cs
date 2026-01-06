@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -173,9 +174,26 @@ namespace InfinitePickaxe.Client.UI.Game
                 displayValue = targetValue;
             }
 
-            string progressLabel = targetValue > 0
-                ? $"{displayValue:N0}/{targetValue:N0}"
-                : displayValue.ToString("N0");
+            string progressLabel;
+            if (currentStep.Type.Equals("play_time", StringComparison.OrdinalIgnoreCase))
+            {
+                string currentLabel = FormatPlayTime(displayValue);
+                if (targetValue > 0)
+                {
+                    string targetLabel = FormatPlayTime(targetValue);
+                    progressLabel = $"{currentLabel}/{targetLabel}";
+                }
+                else
+                {
+                    progressLabel = currentLabel;
+                }
+            }
+            else
+            {
+                progressLabel = targetValue > 0
+                    ? $"{displayValue:N0}/{targetValue:N0}"
+                    : displayValue.ToString("N0");
+            }
 
             data = new AchievementCardData
             {
@@ -237,6 +255,18 @@ namespace InfinitePickaxe.Client.UI.Game
             if (achievementId == 0) return;
             messageHandler ??= MessageHandler.Instance;
             messageHandler?.RequestAchievementClaim(achievementId);
+        }
+
+        private string FormatPlayTime(ulong seconds)
+        {
+            ulong totalMinutes = seconds / 60;
+            if (totalMinutes >= 60)
+            {
+                ulong hours = totalMinutes / 60;
+                ulong minutes = totalMinutes % 60;
+                return $"{hours:N0}시간 {minutes:N0}분";
+            }
+            return $"{totalMinutes:N0}분";
         }
     }
 }
