@@ -150,8 +150,6 @@ bool MetadataLoader::load(const std::string& base_path) {
                 MissionMeta m;
                 m.index = idx++;
                 m.id = e.value("id", m.index);
-                m.chain_id = e.value("chain_id", 0);
-                m.step_index = e.value("step_index", 0);
                 m.type = e.value("type", "");
                 m.target = e.value("target", 0);
                 m.reward_crystal = e.value("reward_crystal", 0);

@@ -84,8 +84,6 @@ namespace InfinitePickaxe.Client.Metadata
                     var meta = new WeeklyMissionMeta
                     {
                         Id = id,
-                        ChainId = TryGetUInt(missionDict, out var chainId, "chain_id") ? chainId : 0,
-                        StepIndex = TryGetUInt(missionDict, out var stepIndex, "step_index") ? stepIndex : 0,
                         Type = TryGetString(missionDict, out var type, "type") ? type : string.Empty,
                         Target = TryGetUInt(missionDict, out var target, "target") ? target : 0,
                         Title = TryGetString(missionDict, out var title, "title") ? title : string.Empty,
@@ -194,8 +192,6 @@ namespace InfinitePickaxe.Client.Metadata
     public sealed class WeeklyMissionMeta
     {
         public uint Id { get; set; }
-        public uint ChainId { get; set; }
-        public uint StepIndex { get; set; }
         public string Type { get; set; } = string.Empty;
         public uint Target { get; set; }
         public string Title { get; set; } = string.Empty;

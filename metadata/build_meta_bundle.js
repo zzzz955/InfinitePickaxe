@@ -275,8 +275,6 @@ function buildWeeklyMissions() {
     const context = `weekly_missions.csv row ${idx + 2}`;
     const entry = {
       id: toNumber(requireField(row.id, 'id', context), `${context} id`),
-      chain_id: toNumber(requireField(row.chain_id, 'chain_id', context), `${context} chain_id`),
-      step_index: toNumber(requireField(row.step_index, 'step_index', context), `${context} step_index`),
       type: requireField(row.type, 'type', context),
       target: toNumber(row.target, `${context} target`),
       title: requireField(row.title, 'title', context),

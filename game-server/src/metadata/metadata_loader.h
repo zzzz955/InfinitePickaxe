@@ -26,8 +26,6 @@ struct MineralMeta {
 struct MissionMeta {
     uint32_t index{0};
     uint32_t id{0};
-    uint32_t chain_id{0};
-    uint32_t step_index{0};
     std::string type;
     uint32_t target;
     uint32_t reward_crystal;

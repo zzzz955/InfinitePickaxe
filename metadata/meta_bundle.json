@@ -439,8 +439,6 @@
     "missions": [
       {
         "id": 101,
-        "chain_id": 1,
-        "step_index": 1,
         "type": "mine_any",
         "target": 100,
         "title": "광물 채굴 1",
@@ -449,8 +447,6 @@
       },
       {
         "id": 102,
-        "chain_id": 1,
-        "step_index": 2,
         "type": "mine_any",
         "target": 200,
         "title": "광물 채굴 2",
@@ -459,8 +455,6 @@
       },
       {
         "id": 103,
-        "chain_id": 1,
-        "step_index": 3,
         "type": "mine_any",
         "target": 300,
         "title": "광물 채굴 3",
@@ -469,8 +463,6 @@
       },
       {
         "id": 104,
-        "chain_id": 1,
-        "step_index": 4,
         "type": "mine_any",
         "target": 400,
         "title": "광물 채굴 4",
@@ -479,8 +471,6 @@
       },
       {
         "id": 105,
-        "chain_id": 1,
-        "step_index": 5,
         "type": "mine_any",
         "target": 500,
         "title": "광물 채굴 5",
@@ -489,8 +479,6 @@
       },
       {
         "id": 201,
-        "chain_id": 2,
-        "step_index": 1,
         "type": "play_time",
         "target": 3600,
         "title": "플레이 타임 1",
@@ -499,8 +487,6 @@
       },
       {
         "id": 202,
-        "chain_id": 2,
-        "step_index": 2,
         "type": "play_time",
         "target": 18000,
         "title": "플레이 타임 2",
@@ -509,8 +495,6 @@
       },
       {
         "id": 203,
-        "chain_id": 2,
-        "step_index": 3,
         "type": "play_time",
         "target": 36000,
         "title": "플레이 타임 3",
@@ -519,8 +503,6 @@
       },
       {
         "id": 301,
-        "chain_id": 3,
-        "step_index": 1,
         "type": "upgrade_try",
         "target": 30,
         "title": "강화 도전 1",
@@ -529,8 +511,6 @@
       },
       {
         "id": 302,
-        "chain_id": 3,
-        "step_index": 2,
         "type": "upgrade_try",
         "target": 60,
         "title": "강화 도전 2",
@@ -539,8 +519,6 @@
       },
       {
         "id": 303,
-        "chain_id": 3,
-        "step_index": 3,
         "type": "upgrade_try",
         "target": 90,
         "title": "강화 도전 3",
@@ -549,8 +527,6 @@
       },
       {
         "id": 304,
-        "chain_id": 3,
-        "step_index": 4,
         "type": "upgrade_try",
         "target": 120,
         "title": "강화 도전 4",
@@ -559,8 +535,6 @@
       },
       {
         "id": 305,
-        "chain_id": 3,
-        "step_index": 5,
         "type": "upgrade_try",
         "target": 150,
         "title": "강화 도전 5",
@@ -569,8 +543,6 @@
       },
       {
         "id": 401,
-        "chain_id": 4,
-        "step_index": 1,
         "type": "gem_create",
         "target": 30,
         "title": "보석 수집 1",
@@ -579,8 +551,6 @@
       },
       {
         "id": 402,
-        "chain_id": 4,
-        "step_index": 2,
         "type": "gem_create",
         "target": 60,
         "title": "보석 수집 2",
@@ -589,8 +559,6 @@
       },
       {
         "id": 403,
-        "chain_id": 4,
-        "step_index": 3,
         "type": "gem_create",
         "target": 90,
         "title": "보석 수집 3",
@@ -599,8 +567,6 @@
       },
       {
         "id": 404,
-        "chain_id": 4,
-        "step_index": 4,
         "type": "gem_create",
         "target": 120,
         "title": "보석 수집 4",
@@ -609,8 +575,6 @@
       },
       {
         "id": 405,
-        "chain_id": 4,
-        "step_index": 5,
         "type": "gem_create",
         "target": 150,
         "title": "보석 수집 5",
@@ -619,8 +583,6 @@
       },
       {
         "id": 501,
-        "chain_id": 5,
-        "step_index": 1,
         "type": "gem_synthesis_try",
         "target": 10,
         "title": "보석 합성 1",
@@ -629,8 +591,6 @@
       },
       {
         "id": 502,
-        "chain_id": 5,
-        "step_index": 2,
         "type": "gem_synthesis_try",
         "target": 20,
         "title": "보석 합성 2",
@@ -639,8 +599,6 @@
       },
       {
         "id": 503,
-        "chain_id": 5,
-        "step_index": 3,
         "type": "gem_synthesis_try",
         "target": 30,
         "title": "보석 합성 3",
@@ -649,8 +607,6 @@
       },
       {
         "id": 504,
-        "chain_id": 5,
-        "step_index": 4,
         "type": "gem_synthesis_try",
         "target": 40,
         "title": "보석 합성 4",
@@ -659,8 +615,6 @@
       },
       {
         "id": 505,
-        "chain_id": 5,
-        "step_index": 5,
         "type": "gem_synthesis_try",
         "target": 50,
         "title": "보석 합성 5",
@@ -669,8 +623,6 @@
       },
       {
         "id": 601,
-        "chain_id": 6,
-        "step_index": 1,
         "type": "gem_conversion",
         "target": 5,
         "title": "보석 전환 1",
@@ -679,8 +631,6 @@
       },
       {
         "id": 602,
-        "chain_id": 6,
-        "step_index": 2,
         "type": "gem_conversion",
         "target": 10,
         "title": "보석 전환 2",
@@ -689,8 +639,6 @@
       },
       {
         "id": 603,
-        "chain_id": 6,
-        "step_index": 3,
         "type": "gem_conversion",
         "target": 15,
         "title": "보석 전환 3",
@@ -699,8 +647,6 @@
       },
       {
         "id": 604,
-        "chain_id": 6,
-        "step_index": 4,
         "type": "gem_conversion",
         "target": 20,
         "title": "보석 전환 4",
@@ -709,8 +655,6 @@
       },
       {
         "id": 605,
-        "chain_id": 6,
-        "step_index": 5,
         "type": "gem_conversion",
         "target": 25,
         "title": "보석 전환 5",
@@ -719,8 +663,6 @@
       },
       {
         "id": 701,
-        "chain_id": 7,
-        "step_index": 1,
         "type": "gold",
         "target": 10000,
         "title": "골드 수집 1",
@@ -729,8 +671,6 @@
       },
       {
         "id": 702,
-        "chain_id": 7,
-        "step_index": 2,
         "type": "gold",
         "target": 100000,
         "title": "골드 수집 2",
@@ -739,8 +679,6 @@
       },
       {
         "id": 703,
-        "chain_id": 7,
-        "step_index": 3,
         "type": "gold",
         "target": 1000000,
         "title": "골드 수집 3",
@@ -749,8 +687,6 @@
       },
       {
         "id": 704,
-        "chain_id": 7,
-        "step_index": 4,
         "type": "gold",
         "target": 10000000,
         "title": "골드 수집 4",
@@ -759,8 +695,6 @@
       },
       {
         "id": 705,
-        "chain_id": 7,
-        "step_index": 5,
         "type": "gold",
         "target": 100000000,
         "title": "골드 수집 5",
