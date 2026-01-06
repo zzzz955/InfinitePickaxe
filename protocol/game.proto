@@ -68,6 +68,14 @@ enum MessageType {
   MILESTONE_CLAIM = 67;
   MILESTONE_CLAIM_RESULT = 68;
   MILESTONE_STATE = 69;
+  WEEKLY_MISSIONS_REQUEST = 160;
+  WEEKLY_MISSIONS_RESPONSE = 161;
+  WEEKLY_MISSION_PROGRESS_UPDATE = 162;
+  WEEKLY_MISSION_CLAIM = 163;
+  WEEKLY_MISSION_CLAIM_RESULT = 164;
+  WEEKLY_MILESTONE_CLAIM = 165;
+  WEEKLY_MILESTONE_CLAIM_RESULT = 166;
+  WEEKLY_MILESTONE_STATE = 167;
 
   // 업적
   ACHIEVEMENTS_REQUEST = 140;
@@ -157,6 +165,14 @@ message Envelope {
     MilestoneClaim milestone_claim = 77;
     MilestoneClaimResult milestone_claim_result = 78;
     MilestoneState milestone_state = 79;
+    WeeklyMissionsRequest weekly_missions_request = 170;
+    WeeklyMissionsResponse weekly_missions_response = 171;
+    WeeklyMissionProgressUpdate weekly_mission_progress_update = 172;
+    WeeklyMissionClaim weekly_mission_claim = 173;
+    WeeklyMissionClaimResult weekly_mission_claim_result = 174;
+    WeeklyMilestoneClaim weekly_milestone_claim = 175;
+    WeeklyMilestoneClaimResult weekly_milestone_claim_result = 176;
+    WeeklyMilestoneState weekly_milestone_state = 177;
 
     AchievementsRequest achievements_request = 150;
     AchievementsResponse achievements_response = 151;
@@ -446,6 +462,68 @@ message MilestoneClaimResult {
 
 message MilestoneState {
   uint32 completed_count = 1;
+  repeated uint32 claimed_milestones = 2;
+  uint64 reset_timestamp_ms = 3;
+}
+
+message WeeklyMissionsRequest {
+}
+
+message WeeklyMissionEntry {
+  uint32 mission_id = 1;
+  string mission_type = 2;
+  string title = 3;
+  string description = 4;
+  uint32 target_value = 5;
+  uint32 current_value = 6;
+  uint32 reward_crystal = 7;
+  uint64 reward_gold = 8;
+  string status = 9;
+}
+
+message WeeklyMissionsResponse {
+  repeated WeeklyMissionEntry missions = 1;
+  uint32 claimed_count = 2;
+  uint64 reset_timestamp_ms = 3;
+}
+
+message WeeklyMissionProgressUpdate {
+  uint32 mission_id = 1;
+  uint32 current_value = 2;
+  uint32 target_value = 3;
+  string status = 4;
+}
+
+message WeeklyMissionClaim {
+  uint32 mission_id = 1;
+}
+
+message WeeklyMissionClaimResult {
+  bool success = 1;
+  uint32 mission_id = 2;
+  uint32 reward_crystal = 3;
+  uint64 reward_gold = 4;
+  uint32 total_crystal = 5;
+  uint64 total_gold = 6;
+  string error_code = 7;
+}
+
+message WeeklyMilestoneClaim {
+  uint32 milestone_count = 1;
+}
+
+message WeeklyMilestoneClaimResult {
+  bool success = 1;
+  uint32 milestone_count = 2;
+  uint32 reward_crystal = 3;
+  uint64 reward_gold = 4;
+  uint32 total_crystal = 5;
+  uint64 total_gold = 6;
+  string error_code = 7;
+}
+
+message WeeklyMilestoneState {
+  uint32 claimed_count = 1;
   repeated uint32 claimed_milestones = 2;
   uint64 reset_timestamp_ms = 3;
 }
