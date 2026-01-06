@@ -26,9 +26,12 @@ struct MineralMeta {
 struct MissionMeta {
     uint32_t index{0};
     uint32_t id{0};
+    uint32_t chain_id{0};
+    uint32_t step_index{0};
     std::string type;
     uint32_t target;
     uint32_t reward_crystal;
+    std::string title;
     std::string description;
     std::string difficulty;
     std::optional<uint32_t> mineral_id;
@@ -55,6 +58,16 @@ struct MilestoneBonus {
 struct DailyMissionConfig {
     uint32_t total_slots{3};
     uint32_t max_daily_assign{7};
+};
+
+struct WeeklyMissionConfig {
+    std::string reset_weekday_kst;
+    std::string reset_time_kst;
+};
+
+struct WeeklyMilestoneReward {
+    uint32_t completed;
+    uint32_t reward_crystal;
 };
 
 struct AdTypeMeta {
@@ -178,9 +191,12 @@ public:
     const PickaxeLevel* pickaxe_level(uint32_t level) const;
     const MineralMeta* mineral(uint32_t id) const;
     const std::vector<MissionMeta>& missions() const { return missions_; }
+    const std::vector<MissionMeta>& weekly_missions() const { return weekly_missions_; }
     const std::vector<AchievementMeta>& achievements() const { return achievements_; }
     const DailyMissionConfig& daily_missions_config() const { return daily_missions_config_; }
+    const WeeklyMissionConfig& weekly_missions_config() const { return weekly_missions_config_; }
     const std::vector<MilestoneBonus>& milestone_bonuses() const { return milestone_bonuses_; }
+    const std::vector<WeeklyMilestoneReward>& weekly_milestone_rewards() const { return weekly_milestone_rewards_; }
     const std::vector<AdTypeMeta>& ad_types() const { return ad_types_; }
     const AdTypeMeta* ad_meta(const std::string& id) const;
     const MissionRerollMeta& mission_reroll() const { return mission_reroll_; }
@@ -213,9 +229,12 @@ private:
     std::unordered_map<uint32_t, PickaxeLevel> pickaxe_levels_;
     std::unordered_map<uint32_t, MineralMeta> minerals_;
     std::vector<MissionMeta> missions_;
+    std::vector<MissionMeta> weekly_missions_;
     std::vector<AchievementMeta> achievements_;
     DailyMissionConfig daily_missions_config_;
+    WeeklyMissionConfig weekly_missions_config_;
     std::vector<MilestoneBonus> milestone_bonuses_;
+    std::vector<WeeklyMilestoneReward> weekly_milestone_rewards_;
     std::vector<AdTypeMeta> ad_types_;
     std::unordered_map<std::string, AdTypeMeta> ad_types_by_id_;
     MissionRerollMeta mission_reroll_;

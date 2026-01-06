@@ -267,6 +267,46 @@ function buildDailyMissions() {
   };
 }
 
+function buildWeeklyMissions() {
+  const config = readKeyValueConfig('weekly_missions_config.csv');
+  const missions = [];
+
+  readCsv('weekly_missions.csv').forEach((row, idx) => {
+    const context = `weekly_missions.csv row ${idx + 2}`;
+    const entry = {
+      id: toNumber(requireField(row.id, 'id', context), `${context} id`),
+      chain_id: toNumber(requireField(row.chain_id, 'chain_id', context), `${context} chain_id`),
+      step_index: toNumber(requireField(row.step_index, 'step_index', context), `${context} step_index`),
+      type: requireField(row.type, 'type', context),
+      target: toNumber(row.target, `${context} target`),
+      title: requireField(row.title, 'title', context),
+      description: requireField(row.description, 'description', context),
+      reward_crystal: toNumber(row.reward_crystal, `${context} reward_crystal`),
+    };
+    missions.push(entry);
+  });
+
+  const milestones = readCsv('weekly_missions_milestones.csv').map((row, idx) => {
+    const context = `weekly_missions_milestones.csv row ${idx + 2}`;
+
+    return {
+      completed: toNumber(row.completed, `${context} completed`),
+      reward_crystal: toNumber(row.reward_crystal, `${context} reward_crystal`),
+    };
+  });
+
+  return {
+    key: 'weekly_missions',
+    file: 'weekly_missions.json',
+    data: {
+      reset_weekday_kst: requireField(config.reset_weekday_kst, 'reset_weekday_kst', 'weekly_missions_config.csv'),
+      reset_time_kst: requireField(config.reset_time_kst, 'reset_time_kst', 'weekly_missions_config.csv'),
+      missions,
+      milestone_rewards: milestones,
+    },
+  };
+}
+
 function buildAchievements() {
   const achievements = readCsv('achievements.csv').map((row, idx) => {
     const context = `achievements.csv row ${idx + 2}`;
@@ -606,6 +646,7 @@ function buildPickaxeSlotUnlockCosts() {
 const builders = [
   buildAds,
   buildDailyMissions,
+  buildWeeklyMissions,
   buildAchievements,
   buildMinerals,
   buildMissionReroll,

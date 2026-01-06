@@ -9,11 +9,14 @@ bool MetadataLoader::load(const std::string& base_path) {
         pickaxe_levels_.clear();
         minerals_.clear();
         missions_.clear();
+        weekly_missions_.clear();
         achievements_.clear();
         milestone_bonuses_.clear();
+        weekly_milestone_rewards_.clear();
         ad_types_.clear();
         ad_types_by_id_.clear();
         daily_missions_config_ = DailyMissionConfig{};
+        weekly_missions_config_ = WeeklyMissionConfig{};
         mission_reroll_ = MissionRerollMeta{};
         offline_defaults_ = OfflineDefaults{};
         new_user_defaults_ = NewUserDefaults{};
@@ -129,6 +132,54 @@ bool MetadataLoader::load(const std::string& base_path) {
                     b.reward_crystal = e.value("reward_crystal", 0);
                     if (b.completed > 0 && (b.bonus_hours > 0 || b.reward_crystal > 0)) {
                         milestone_bonuses_.push_back(b);
+                    }
+                }
+            }
+        }
+
+        // weekly_missions
+        if (bundle.contains("weekly_missions")) {
+            nlohmann::json j = bundle["weekly_missions"];
+            if (j.is_object()) {
+                weekly_missions_config_.reset_weekday_kst = j.value("reset_weekday_kst", "");
+                weekly_missions_config_.reset_time_kst = j.value("reset_time_kst", "");
+            }
+
+            uint32_t idx = 0;
+            auto parse_weekly_mission = [&](const nlohmann::json& e) {
+                MissionMeta m;
+                m.index = idx++;
+                m.id = e.value("id", m.index);
+                m.chain_id = e.value("chain_id", 0);
+                m.step_index = e.value("step_index", 0);
+                m.type = e.value("type", "");
+                m.target = e.value("target", 0);
+                m.reward_crystal = e.value("reward_crystal", 0);
+                m.title = e.value("title", "");
+                m.description = e.value("description", "");
+                if (e.contains("mineral_id") && !e["mineral_id"].is_null()) {
+                    m.mineral_id = e.value("mineral_id", 0);
+                }
+                weekly_missions_.push_back(m);
+            };
+
+            if (j.is_array()) {
+                for (auto& e : j) {
+                    parse_weekly_mission(e);
+                }
+            } else if (j.contains("missions") && j["missions"].is_array()) {
+                for (auto& e : j["missions"]) {
+                    parse_weekly_mission(e);
+                }
+            }
+
+            if (j.contains("milestone_rewards")) {
+                for (auto& e : j["milestone_rewards"]) {
+                    WeeklyMilestoneReward reward;
+                    reward.completed = e.value("completed", 0);
+                    reward.reward_crystal = e.value("reward_crystal", 0);
+                    if (reward.completed > 0 && reward.reward_crystal > 0) {
+                        weekly_milestone_rewards_.push_back(reward);
                     }
                 }
             }
