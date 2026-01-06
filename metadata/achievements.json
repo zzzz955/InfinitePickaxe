@@ -502,7 +502,7 @@
     "target": 40,
     "title": "강화 도전 5",
     "description": "강화 40회 시도",
-    "reward_crystal": 5,
+    "reward_crystal": 10,
     "reward_gold": 400
   },
   {
@@ -1129,7 +1129,7 @@
     "target": 10,
     "title": "보석 수집 3",
     "description": "보석 10개 획득",
-    "reward_crystal": 60
+    "reward_crystal": 30
   },
   {
     "achievement_id": 6004,
@@ -1139,7 +1139,7 @@
     "target": 20,
     "title": "보석 수집 4",
     "description": "보석 20개 획득",
-    "reward_crystal": 120
+    "reward_crystal": 50
   },
   {
     "achievement_id": 6005,
@@ -1149,7 +1149,7 @@
     "target": 30,
     "title": "보석 수집 5",
     "description": "보석 30개 획득",
-    "reward_crystal": 180
+    "reward_crystal": 50
   },
   {
     "achievement_id": 6006,
@@ -1159,7 +1159,7 @@
     "target": 40,
     "title": "보석 수집 6",
     "description": "보석 40개 획득",
-    "reward_crystal": 240
+    "reward_crystal": 50
   },
   {
     "achievement_id": 6007,
@@ -1169,7 +1169,7 @@
     "target": 50,
     "title": "보석 수집 7",
     "description": "보석 50개 획득",
-    "reward_crystal": 300
+    "reward_crystal": 50
   },
   {
     "achievement_id": 6008,
@@ -1179,7 +1179,7 @@
     "target": 70,
     "title": "보석 수집 8",
     "description": "보석 70개 획득",
-    "reward_crystal": 420
+    "reward_crystal": 100
   },
   {
     "achievement_id": 6009,
@@ -1189,7 +1189,7 @@
     "target": 90,
     "title": "보석 수집 9",
     "description": "보석 90개 획득",
-    "reward_crystal": 540
+    "reward_crystal": 100
   },
   {
     "achievement_id": 6010,
@@ -1199,7 +1199,7 @@
     "target": 120,
     "title": "보석 수집 10",
     "description": "보석 120개 획득",
-    "reward_crystal": 720
+    "reward_crystal": 150
   },
   {
     "achievement_id": 6011,
@@ -1209,7 +1209,7 @@
     "target": 150,
     "title": "보석 수집 11",
     "description": "보석 150개 획득",
-    "reward_crystal": 900
+    "reward_crystal": 150
   },
   {
     "achievement_id": 6012,
@@ -1219,7 +1219,7 @@
     "target": 200,
     "title": "보석 수집 12",
     "description": "보석 200개 획득",
-    "reward_crystal": 1200
+    "reward_crystal": 200
   },
   {
     "achievement_id": 6013,
@@ -1229,7 +1229,7 @@
     "target": 250,
     "title": "보석 수집 13",
     "description": "보석 250개 획득",
-    "reward_crystal": 1500
+    "reward_crystal": 200
   },
   {
     "achievement_id": 6014,
@@ -1239,7 +1239,7 @@
     "target": 300,
     "title": "보석 수집 14",
     "description": "보석 300개 획득",
-    "reward_crystal": 1800
+    "reward_crystal": 200
   },
   {
     "achievement_id": 6015,
@@ -1249,7 +1249,7 @@
     "target": 400,
     "title": "보석 수집 15",
     "description": "보석 400개 획득",
-    "reward_crystal": 2400
+    "reward_crystal": 200
   },
   {
     "achievement_id": 6016,
@@ -1259,7 +1259,7 @@
     "target": 500,
     "title": "보석 수집 16",
     "description": "보석 500개 획득",
-    "reward_crystal": 3000
+    "reward_crystal": 200
   },
   {
     "achievement_id": 6017,
@@ -1269,7 +1269,7 @@
     "target": 600,
     "title": "보석 수집 17",
     "description": "보석 600개 획득",
-    "reward_crystal": 3600
+    "reward_crystal": 400
   },
   {
     "achievement_id": 6018,
@@ -1279,7 +1279,7 @@
     "target": 800,
     "title": "보석 수집 18",
     "description": "보석 800개 획득",
-    "reward_crystal": 4800
+    "reward_crystal": 400
   },
   {
     "achievement_id": 6019,
@@ -1289,7 +1289,7 @@
     "target": 1000,
     "title": "보석 수집 19",
     "description": "보석 1000개 획득",
-    "reward_crystal": 6000
+    "reward_crystal": 400
   },
   {
     "achievement_id": 6020,
@@ -1299,7 +1299,7 @@
     "target": 1250,
     "title": "보석 수집 20",
     "description": "보석 1250개 획득",
-    "reward_crystal": 7500
+    "reward_crystal": 500
   },
   {
     "achievement_id": 6021,
@@ -1309,7 +1309,7 @@
     "target": 1500,
     "title": "보석 수집 21",
     "description": "보석 1500개 획득",
-    "reward_crystal": 9000
+    "reward_crystal": 500
   },
   {
     "achievement_id": 6022,
@@ -1319,7 +1319,7 @@
     "target": 1750,
     "title": "보석 수집 22",
     "description": "보석 1750개 획득",
-    "reward_crystal": 10500
+    "reward_crystal": 500
   },
   {
     "achievement_id": 6023,
@@ -1329,7 +1329,7 @@
     "target": 2000,
     "title": "보석 수집 23",
     "description": "보석 2000개 획득",
-    "reward_crystal": 12000
+    "reward_crystal": 500
   },
   {
     "achievement_id": 6024,
@@ -1339,7 +1339,7 @@
     "target": 2500,
     "title": "보석 수집 24",
     "description": "보석 2500개 획득",
-    "reward_crystal": 7500
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 6025,
@@ -1349,7 +1349,7 @@
     "target": 3000,
     "title": "보석 수집 25",
     "description": "보석 3000개 획득",
-    "reward_crystal": 9000
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 6026,
@@ -1359,7 +1359,7 @@
     "target": 3500,
     "title": "보석 수집 26",
     "description": "보석 3500개 획득",
-    "reward_crystal": 10500
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 6027,
@@ -1369,7 +1369,7 @@
     "target": 4000,
     "title": "보석 수집 27",
     "description": "보석 4000개 획득",
-    "reward_crystal": 12000
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 6028,
@@ -1379,7 +1379,7 @@
     "target": 4500,
     "title": "보석 수집 28",
     "description": "보석 4500개 획득",
-    "reward_crystal": 13500
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 6029,
@@ -1389,7 +1389,7 @@
     "target": 5000,
     "title": "보석 수집 29",
     "description": "보석 5000개 획득",
-    "reward_crystal": 15000
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 6030,
@@ -1399,7 +1399,7 @@
     "target": 6000,
     "title": "보석 수집 30",
     "description": "보석 6000개 획득",
-    "reward_crystal": 18000
+    "reward_crystal": 2000
   },
   {
     "achievement_id": 6031,
@@ -1409,7 +1409,7 @@
     "target": 7000,
     "title": "보석 수집 31",
     "description": "보석 7000개 획득",
-    "reward_crystal": 21000
+    "reward_crystal": 2000
   },
   {
     "achievement_id": 6032,
@@ -1419,7 +1419,7 @@
     "target": 8000,
     "title": "보석 수집 32",
     "description": "보석 8000개 획득",
-    "reward_crystal": 24000
+    "reward_crystal": 2000
   },
   {
     "achievement_id": 6033,
@@ -1429,7 +1429,7 @@
     "target": 9000,
     "title": "보석 수집 33",
     "description": "보석 9000개 획득",
-    "reward_crystal": 27000
+    "reward_crystal": 2000
   },
   {
     "achievement_id": 6034,
@@ -1439,7 +1439,7 @@
     "target": 10000,
     "title": "보석 수집 34",
     "description": "보석 10000개 획득",
-    "reward_crystal": 30000
+    "reward_crystal": 2000
   },
   {
     "achievement_id": 7001,
@@ -1469,7 +1469,7 @@
     "target": 10,
     "title": "보석 합성 3",
     "description": "보석 합성 10회",
-    "reward_crystal": 50
+    "reward_crystal": 30
   },
   {
     "achievement_id": 7004,
@@ -1479,7 +1479,7 @@
     "target": 20,
     "title": "보석 합성 4",
     "description": "보석 합성 20회",
-    "reward_crystal": 100
+    "reward_crystal": 50
   },
   {
     "achievement_id": 7005,
@@ -1489,7 +1489,7 @@
     "target": 30,
     "title": "보석 합성 5",
     "description": "보석 합성 30회",
-    "reward_crystal": 150
+    "reward_crystal": 50
   },
   {
     "achievement_id": 7006,
@@ -1499,7 +1499,7 @@
     "target": 40,
     "title": "보석 합성 6",
     "description": "보석 합성 40회",
-    "reward_crystal": 200
+    "reward_crystal": 50
   },
   {
     "achievement_id": 7007,
@@ -1509,7 +1509,7 @@
     "target": 60,
     "title": "보석 합성 7",
     "description": "보석 합성 60회",
-    "reward_crystal": 300
+    "reward_crystal": 100
   },
   {
     "achievement_id": 7008,
@@ -1519,7 +1519,7 @@
     "target": 80,
     "title": "보석 합성 8",
     "description": "보석 합성 80회",
-    "reward_crystal": 400
+    "reward_crystal": 100
   },
   {
     "achievement_id": 7009,
@@ -1529,7 +1529,7 @@
     "target": 100,
     "title": "보석 합성 9",
     "description": "보석 합성 100회",
-    "reward_crystal": 500
+    "reward_crystal": 100
   },
   {
     "achievement_id": 7010,
@@ -1539,7 +1539,7 @@
     "target": 125,
     "title": "보석 합성 10",
     "description": "보석 합성 125회",
-    "reward_crystal": 625
+    "reward_crystal": 120
   },
   {
     "achievement_id": 7011,
@@ -1549,7 +1549,7 @@
     "target": 150,
     "title": "보석 합성 11",
     "description": "보석 합성 150회",
-    "reward_crystal": 750
+    "reward_crystal": 120
   },
   {
     "achievement_id": 7012,
@@ -1559,7 +1559,7 @@
     "target": 180,
     "title": "보석 합성 12",
     "description": "보석 합성 180회",
-    "reward_crystal": 900
+    "reward_crystal": 140
   },
   {
     "achievement_id": 7013,
@@ -1569,7 +1569,7 @@
     "target": 210,
     "title": "보석 합성 13",
     "description": "보석 합성 210회",
-    "reward_crystal": 1050
+    "reward_crystal": 140
   },
   {
     "achievement_id": 7014,
@@ -1579,7 +1579,7 @@
     "target": 250,
     "title": "보석 합성 14",
     "description": "보석 합성 250회",
-    "reward_crystal": 1250
+    "reward_crystal": 160
   },
   {
     "achievement_id": 7015,
@@ -1589,7 +1589,7 @@
     "target": 300,
     "title": "보석 합성 15",
     "description": "보석 합성 300회",
-    "reward_crystal": 1500
+    "reward_crystal": 180
   },
   {
     "achievement_id": 7016,
@@ -1599,7 +1599,7 @@
     "target": 350,
     "title": "보석 합성 16",
     "description": "보석 합성 350회",
-    "reward_crystal": 1750
+    "reward_crystal": 180
   },
   {
     "achievement_id": 7017,
@@ -1609,7 +1609,7 @@
     "target": 400,
     "title": "보석 합성 17",
     "description": "보석 합성 400회",
-    "reward_crystal": 2000
+    "reward_crystal": 350
   },
   {
     "achievement_id": 7018,
@@ -1619,7 +1619,7 @@
     "target": 500,
     "title": "보석 합성 18",
     "description": "보석 합성 500회",
-    "reward_crystal": 2500
+    "reward_crystal": 350
   },
   {
     "achievement_id": 7019,
@@ -1629,7 +1629,7 @@
     "target": 600,
     "title": "보석 합성 19",
     "description": "보석 합성 600회",
-    "reward_crystal": 3000
+    "reward_crystal": 350
   },
   {
     "achievement_id": 7020,
@@ -1639,7 +1639,7 @@
     "target": 700,
     "title": "보석 합성 20",
     "description": "보석 합성 700회",
-    "reward_crystal": 3500
+    "reward_crystal": 350
   },
   {
     "achievement_id": 7021,
@@ -1649,7 +1649,7 @@
     "target": 800,
     "title": "보석 합성 21",
     "description": "보석 합성 800회",
-    "reward_crystal": 4000
+    "reward_crystal": 350
   },
   {
     "achievement_id": 7022,
@@ -1659,7 +1659,7 @@
     "target": 1000,
     "title": "보석 합성 22",
     "description": "보석 합성 1000회",
-    "reward_crystal": 5000
+    "reward_crystal": 500
   },
   {
     "achievement_id": 8001,
@@ -1689,7 +1689,7 @@
     "target": 10,
     "title": "보석 합성 성공 3",
     "description": "보석 합성 성공 10회",
-    "reward_crystal": 15
+    "reward_crystal": 10
   },
   {
     "achievement_id": 8004,
@@ -1699,7 +1699,7 @@
     "target": 20,
     "title": "보석 합성 성공 4",
     "description": "보석 합성 성공 20회",
-    "reward_crystal": 30
+    "reward_crystal": 20
   },
   {
     "achievement_id": 8005,
@@ -1709,7 +1709,7 @@
     "target": 40,
     "title": "보석 합성 성공 5",
     "description": "보석 합성 성공 40회",
-    "reward_crystal": 60
+    "reward_crystal": 20
   },
   {
     "achievement_id": 8006,
@@ -1719,7 +1719,7 @@
     "target": 60,
     "title": "보석 합성 성공 6",
     "description": "보석 합성 성공 60회",
-    "reward_crystal": 90
+    "reward_crystal": 20
   },
   {
     "achievement_id": 8007,
@@ -1729,7 +1729,7 @@
     "target": 80,
     "title": "보석 합성 성공 7",
     "description": "보석 합성 성공 80회",
-    "reward_crystal": 120
+    "reward_crystal": 20
   },
   {
     "achievement_id": 8008,
@@ -1739,7 +1739,7 @@
     "target": 100,
     "title": "보석 합성 성공 8",
     "description": "보석 합성 성공 100회",
-    "reward_crystal": 150
+    "reward_crystal": 20
   },
   {
     "achievement_id": 8009,
@@ -1749,7 +1749,7 @@
     "target": 130,
     "title": "보석 합성 성공 9",
     "description": "보석 합성 성공 130회",
-    "reward_crystal": 195
+    "reward_crystal": 30
   },
   {
     "achievement_id": 8010,
@@ -1759,7 +1759,7 @@
     "target": 160,
     "title": "보석 합성 성공 10",
     "description": "보석 합성 성공 160회",
-    "reward_crystal": 240
+    "reward_crystal": 30
   },
   {
     "achievement_id": 8011,
@@ -1769,7 +1769,7 @@
     "target": 200,
     "title": "보석 합성 성공 11",
     "description": "보석 합성 성공 200회",
-    "reward_crystal": 300
+    "reward_crystal": 40
   },
   {
     "achievement_id": 8012,
@@ -1779,7 +1779,7 @@
     "target": 250,
     "title": "보석 합성 성공 12",
     "description": "보석 합성 성공 250회",
-    "reward_crystal": 375
+    "reward_crystal": 50
   },
   {
     "achievement_id": 8013,
@@ -1789,7 +1789,7 @@
     "target": 300,
     "title": "보석 합성 성공 13",
     "description": "보석 합성 성공 300회",
-    "reward_crystal": 450
+    "reward_crystal": 50
   },
   {
     "achievement_id": 8014,
@@ -1799,7 +1799,7 @@
     "target": 350,
     "title": "보석 합성 성공 14",
     "description": "보석 합성 성공 350회",
-    "reward_crystal": 525
+    "reward_crystal": 50
   },
   {
     "achievement_id": 8015,
@@ -1809,7 +1809,7 @@
     "target": 400,
     "title": "보석 합성 성공 15",
     "description": "보석 합성 성공 400회",
-    "reward_crystal": 600
+    "reward_crystal": 50
   },
   {
     "achievement_id": 8016,
@@ -1819,7 +1819,7 @@
     "target": 500,
     "title": "보석 합성 성공 16",
     "description": "보석 합성 성공 500회",
-    "reward_crystal": 750
+    "reward_crystal": 100
   },
   {
     "achievement_id": 8017,
@@ -1829,7 +1829,7 @@
     "target": 600,
     "title": "보석 합성 성공 17",
     "description": "보석 합성 성공 600회",
-    "reward_crystal": 900
+    "reward_crystal": 100
   },
   {
     "achievement_id": 8018,
@@ -1839,7 +1839,7 @@
     "target": 700,
     "title": "보석 합성 성공 18",
     "description": "보석 합성 성공 700회",
-    "reward_crystal": 1050
+    "reward_crystal": 100
   },
   {
     "achievement_id": 8019,
@@ -1849,7 +1849,7 @@
     "target": 800,
     "title": "보석 합성 성공 19",
     "description": "보석 합성 성공 800회",
-    "reward_crystal": 1200
+    "reward_crystal": 100
   },
   {
     "achievement_id": 8020,
@@ -1859,7 +1859,7 @@
     "target": 900,
     "title": "보석 합성 성공 20",
     "description": "보석 합성 성공 900회",
-    "reward_crystal": 1350
+    "reward_crystal": 100
   },
   {
     "achievement_id": 8021,
@@ -1869,7 +1869,7 @@
     "target": 1000,
     "title": "보석 합성 성공 21",
     "description": "보석 합성 성공 1000회",
-    "reward_crystal": 1500
+    "reward_crystal": 100
   },
   {
     "achievement_id": 9001,
@@ -1899,7 +1899,7 @@
     "target": 10,
     "title": "보석 합성 실패 3",
     "description": "보석 합성 실패 10회",
-    "reward_crystal": 30
+    "reward_crystal": 20
   },
   {
     "achievement_id": 9004,
@@ -1909,7 +1909,7 @@
     "target": 20,
     "title": "보석 합성 실패 4",
     "description": "보석 합성 실패 20회",
-    "reward_crystal": 60
+    "reward_crystal": 40
   },
   {
     "achievement_id": 9005,
@@ -1919,7 +1919,7 @@
     "target": 30,
     "title": "보석 합성 실패 5",
     "description": "보석 합성 실패 30회",
-    "reward_crystal": 90
+    "reward_crystal": 40
   },
   {
     "achievement_id": 9006,
@@ -1929,7 +1929,7 @@
     "target": 40,
     "title": "보석 합성 실패 6",
     "description": "보석 합성 실패 40회",
-    "reward_crystal": 120
+    "reward_crystal": 40
   },
   {
     "achievement_id": 9007,
@@ -1939,7 +1939,7 @@
     "target": 60,
     "title": "보석 합성 실패 7",
     "description": "보석 합성 실패 60회",
-    "reward_crystal": 180
+    "reward_crystal": 80
   },
   {
     "achievement_id": 9008,
@@ -1949,7 +1949,7 @@
     "target": 80,
     "title": "보석 합성 실패 8",
     "description": "보석 합성 실패 80회",
-    "reward_crystal": 240
+    "reward_crystal": 80
   },
   {
     "achievement_id": 9009,
@@ -1959,7 +1959,7 @@
     "target": 100,
     "title": "보석 합성 실패 9",
     "description": "보석 합성 실패 100회",
-    "reward_crystal": 300
+    "reward_crystal": 80
   },
   {
     "achievement_id": 9010,
@@ -1969,7 +1969,7 @@
     "target": 125,
     "title": "보석 합성 실패 10",
     "description": "보석 합성 실패 125회",
-    "reward_crystal": 375
+    "reward_crystal": 100
   },
   {
     "achievement_id": 9011,
@@ -1979,7 +1979,7 @@
     "target": 150,
     "title": "보석 합성 실패 11",
     "description": "보석 합성 실패 150회",
-    "reward_crystal": 450
+    "reward_crystal": 100
   },
   {
     "achievement_id": 9012,
@@ -1989,7 +1989,7 @@
     "target": 180,
     "title": "보석 합성 실패 12",
     "description": "보석 합성 실패 180회",
-    "reward_crystal": 540
+    "reward_crystal": 120
   },
   {
     "achievement_id": 9013,
@@ -1999,7 +1999,7 @@
     "target": 210,
     "title": "보석 합성 실패 13",
     "description": "보석 합성 실패 210회",
-    "reward_crystal": 630
+    "reward_crystal": 120
   },
   {
     "achievement_id": 9014,
@@ -2009,7 +2009,7 @@
     "target": 250,
     "title": "보석 합성 실패 14",
     "description": "보석 합성 실패 250회",
-    "reward_crystal": 750
+    "reward_crystal": 130
   },
   {
     "achievement_id": 9015,
@@ -2019,7 +2019,7 @@
     "target": 300,
     "title": "보석 합성 실패 15",
     "description": "보석 합성 실패 300회",
-    "reward_crystal": 900
+    "reward_crystal": 150
   },
   {
     "achievement_id": 9016,
@@ -2029,7 +2029,7 @@
     "target": 350,
     "title": "보석 합성 실패 16",
     "description": "보석 합성 실패 350회",
-    "reward_crystal": 1050
+    "reward_crystal": 150
   },
   {
     "achievement_id": 9017,
@@ -2039,7 +2039,7 @@
     "target": 400,
     "title": "보석 합성 실패 17",
     "description": "보석 합성 실패 400회",
-    "reward_crystal": 1200
+    "reward_crystal": 150
   },
   {
     "achievement_id": 9018,
@@ -2049,7 +2049,7 @@
     "target": 500,
     "title": "보석 합성 실패 18",
     "description": "보석 합성 실패 500회",
-    "reward_crystal": 1500
+    "reward_crystal": 300
   },
   {
     "achievement_id": 9019,
@@ -2059,7 +2059,7 @@
     "target": 600,
     "title": "보석 합성 실패 19",
     "description": "보석 합성 실패 600회",
-    "reward_crystal": 1800
+    "reward_crystal": 300
   },
   {
     "achievement_id": 9020,
@@ -2069,7 +2069,7 @@
     "target": 700,
     "title": "보석 합성 실패 20",
     "description": "보석 합성 실패 700회",
-    "reward_crystal": 2100
+    "reward_crystal": 300
   },
   {
     "achievement_id": 9021,
@@ -2079,7 +2079,7 @@
     "target": 800,
     "title": "보석 합성 실패 21",
     "description": "보석 합성 실패 800회",
-    "reward_crystal": 2400
+    "reward_crystal": 300
   },
   {
     "achievement_id": 9022,
@@ -2089,7 +2089,7 @@
     "target": 1000,
     "title": "보석 합성 실패 22",
     "description": "보석 합성 실패 1000회",
-    "reward_crystal": 3000
+    "reward_crystal": 600
   },
   {
     "achievement_id": 10001,
@@ -2109,7 +2109,7 @@
     "target": 3,
     "title": "보석 전환 2",
     "description": "보석 타입 전환 3회",
-    "reward_crystal": 15
+    "reward_crystal": 10
   },
   {
     "achievement_id": 10003,
@@ -2119,7 +2119,7 @@
     "target": 5,
     "title": "보석 전환 3",
     "description": "보석 타입 전환 5회",
-    "reward_crystal": 25
+    "reward_crystal": 10
   },
   {
     "achievement_id": 10004,
@@ -2129,7 +2129,7 @@
     "target": 10,
     "title": "보석 전환 4",
     "description": "보석 타입 전환 10회",
-    "reward_crystal": 50
+    "reward_crystal": 20
   },
   {
     "achievement_id": 10005,
@@ -2139,7 +2139,7 @@
     "target": 15,
     "title": "보석 전환 5",
     "description": "보석 타입 전환 15회",
-    "reward_crystal": 75
+    "reward_crystal": 20
   },
   {
     "achievement_id": 10006,
@@ -2149,7 +2149,7 @@
     "target": 20,
     "title": "보석 전환 6",
     "description": "보석 타입 전환 20회",
-    "reward_crystal": 100
+    "reward_crystal": 20
   },
   {
     "achievement_id": 10007,
@@ -2159,7 +2159,7 @@
     "target": 30,
     "title": "보석 전환 7",
     "description": "보석 타입 전환 30회",
-    "reward_crystal": 150
+    "reward_crystal": 40
   },
   {
     "achievement_id": 10008,
@@ -2169,7 +2169,7 @@
     "target": 40,
     "title": "보석 전환 8",
     "description": "보석 타입 전환 40회",
-    "reward_crystal": 200
+    "reward_crystal": 40
   },
   {
     "achievement_id": 10009,
@@ -2179,7 +2179,7 @@
     "target": 60,
     "title": "보석 전환 9",
     "description": "보석 타입 전환 60회",
-    "reward_crystal": 300
+    "reward_crystal": 80
   },
   {
     "achievement_id": 10010,
@@ -2189,7 +2189,7 @@
     "target": 80,
     "title": "보석 전환 10",
     "description": "보석 타입 전환 80회",
-    "reward_crystal": 400
+    "reward_crystal": 80
   },
   {
     "achievement_id": 10011,
@@ -2199,7 +2199,7 @@
     "target": 100,
     "title": "보석 전환 11",
     "description": "보석 타입 전환 100회",
-    "reward_crystal": 500
+    "reward_crystal": 80
   },
   {
     "achievement_id": 10012,
@@ -2209,7 +2209,7 @@
     "target": 130,
     "title": "보석 전환 12",
     "description": "보석 타입 전환 130회",
-    "reward_crystal": 650
+    "reward_crystal": 120
   },
   {
     "achievement_id": 10013,
@@ -2219,7 +2219,7 @@
     "target": 160,
     "title": "보석 전환 13",
     "description": "보석 타입 전환 160회",
-    "reward_crystal": 800
+    "reward_crystal": 120
   },
   {
     "achievement_id": 10014,
@@ -2229,7 +2229,7 @@
     "target": 200,
     "title": "보석 전환 14",
     "description": "보석 타입 전환 200회",
-    "reward_crystal": 1000
+    "reward_crystal": 160
   },
   {
     "achievement_id": 10015,
@@ -2239,7 +2239,7 @@
     "target": 250,
     "title": "보석 전환 15",
     "description": "보석 타입 전환 250회",
-    "reward_crystal": 1250
+    "reward_crystal": 200
   },
   {
     "achievement_id": 10016,
@@ -2249,7 +2249,7 @@
     "target": 300,
     "title": "보석 전환 16",
     "description": "보석 타입 전환 300회",
-    "reward_crystal": 1500
+    "reward_crystal": 200
   },
   {
     "achievement_id": 10017,
@@ -2259,7 +2259,7 @@
     "target": 360,
     "title": "보석 전환 17",
     "description": "보석 타입 전환 360회",
-    "reward_crystal": 1800
+    "reward_crystal": 240
   },
   {
     "achievement_id": 10018,
@@ -2269,7 +2269,7 @@
     "target": 430,
     "title": "보석 전환 18",
     "description": "보석 타입 전환 430회",
-    "reward_crystal": 2150
+    "reward_crystal": 280
   },
   {
     "achievement_id": 10019,
@@ -2279,7 +2279,7 @@
     "target": 500,
     "title": "보석 전환 19",
     "description": "보석 타입 전환 500회",
-    "reward_crystal": 2500
+    "reward_crystal": 280
   },
   {
     "achievement_id": 10020,
@@ -2289,7 +2289,7 @@
     "target": 600,
     "title": "보석 전환 20",
     "description": "보석 타입 전환 600회",
-    "reward_crystal": 3000
+    "reward_crystal": 400
   },
   {
     "achievement_id": 10021,
@@ -2299,7 +2299,7 @@
     "target": 700,
     "title": "보석 전환 21",
     "description": "보석 타입 전환 700회",
-    "reward_crystal": 3500
+    "reward_crystal": 400
   },
   {
     "achievement_id": 10022,
@@ -2309,7 +2309,7 @@
     "target": 800,
     "title": "보석 전환 22",
     "description": "보석 타입 전환 800회",
-    "reward_crystal": 4000
+    "reward_crystal": 400
   },
   {
     "achievement_id": 10023,
@@ -2319,7 +2319,7 @@
     "target": 900,
     "title": "보석 전환 23",
     "description": "보석 타입 전환 900회",
-    "reward_crystal": 4500
+    "reward_crystal": 400
   },
   {
     "achievement_id": 10024,
@@ -2329,7 +2329,7 @@
     "target": 1000,
     "title": "보석 전환 24",
     "description": "보석 타입 전환 1000회",
-    "reward_crystal": 5000
+    "reward_crystal": 400
   },
   {
     "achievement_id": 11001,
@@ -2349,7 +2349,7 @@
     "target": 3,
     "title": "보석 분해 2",
     "description": "보석 3개 분해",
-    "reward_crystal": 15
+    "reward_crystal": 25
   },
   {
     "achievement_id": 11003,
@@ -2379,7 +2379,7 @@
     "target": 15,
     "title": "보석 전환 5",
     "description": "보석 15개 분해",
-    "reward_crystal": 75
+    "reward_crystal": 50
   },
   {
     "achievement_id": 11006,
@@ -2389,7 +2389,7 @@
     "target": 20,
     "title": "보석 전환 6",
     "description": "보석 20개 분해",
-    "reward_crystal": 100
+    "reward_crystal": 50
   },
   {
     "achievement_id": 11007,
@@ -2399,7 +2399,7 @@
     "target": 30,
     "title": "보석 전환 7",
     "description": "보석 30개 분해",
-    "reward_crystal": 150
+    "reward_crystal": 100
   },
   {
     "achievement_id": 11008,
@@ -2409,7 +2409,7 @@
     "target": 40,
     "title": "보석 전환 8",
     "description": "보석 40개 분해",
-    "reward_crystal": 200
+    "reward_crystal": 100
   },
   {
     "achievement_id": 11009,
@@ -2419,7 +2419,7 @@
     "target": 60,
     "title": "보석 전환 9",
     "description": "보석 60개 분해",
-    "reward_crystal": 300
+    "reward_crystal": 200
   },
   {
     "achievement_id": 11010,
@@ -2429,7 +2429,7 @@
     "target": 80,
     "title": "보석 전환 10",
     "description": "보석 80개 분해",
-    "reward_crystal": 400
+    "reward_crystal": 200
   },
   {
     "achievement_id": 11011,
@@ -2439,7 +2439,7 @@
     "target": 100,
     "title": "보석 전환 11",
     "description": "보석 100개 분해",
-    "reward_crystal": 500
+    "reward_crystal": 200
   },
   {
     "achievement_id": 11012,
@@ -2449,7 +2449,7 @@
     "target": 130,
     "title": "보석 전환 12",
     "description": "보석 130개 분해",
-    "reward_crystal": 650
+    "reward_crystal": 300
   },
   {
     "achievement_id": 11013,
@@ -2459,7 +2459,7 @@
     "target": 160,
     "title": "보석 전환 13",
     "description": "보석 160개 분해",
-    "reward_crystal": 800
+    "reward_crystal": 300
   },
   {
     "achievement_id": 11014,
@@ -2469,7 +2469,7 @@
     "target": 200,
     "title": "보석 전환 14",
     "description": "보석 200개 분해",
-    "reward_crystal": 1000
+    "reward_crystal": 400
   },
   {
     "achievement_id": 11015,
@@ -2479,7 +2479,7 @@
     "target": 250,
     "title": "보석 전환 15",
     "description": "보석 250개 분해",
-    "reward_crystal": 1250
+    "reward_crystal": 500
   },
   {
     "achievement_id": 11016,
@@ -2489,7 +2489,7 @@
     "target": 300,
     "title": "보석 전환 16",
     "description": "보석 300개 분해",
-    "reward_crystal": 1500
+    "reward_crystal": 500
   },
   {
     "achievement_id": 11017,
@@ -2499,7 +2499,7 @@
     "target": 360,
     "title": "보석 전환 17",
     "description": "보석 360개 분해",
-    "reward_crystal": 1800
+    "reward_crystal": 600
   },
   {
     "achievement_id": 11018,
@@ -2509,7 +2509,7 @@
     "target": 430,
     "title": "보석 전환 18",
     "description": "보석 430개 분해",
-    "reward_crystal": 2150
+    "reward_crystal": 700
   },
   {
     "achievement_id": 11019,
@@ -2519,7 +2519,7 @@
     "target": 500,
     "title": "보석 전환 19",
     "description": "보석 500개 분해",
-    "reward_crystal": 2500
+    "reward_crystal": 700
   },
   {
     "achievement_id": 11020,
@@ -2529,7 +2529,7 @@
     "target": 600,
     "title": "보석 전환 20",
     "description": "보석 600개 분해",
-    "reward_crystal": 3000
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 11021,
@@ -2539,7 +2539,7 @@
     "target": 700,
     "title": "보석 전환 21",
     "description": "보석 700개 분해",
-    "reward_crystal": 3500
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 11022,
@@ -2549,7 +2549,7 @@
     "target": 800,
     "title": "보석 전환 22",
     "description": "보석 800개 분해",
-    "reward_crystal": 4000
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 11023,
@@ -2559,7 +2559,7 @@
     "target": 900,
     "title": "보석 전환 23",
     "description": "보석 900개 분해",
-    "reward_crystal": 4500
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 11024,
@@ -2569,7 +2569,7 @@
     "target": 1000,
     "title": "보석 전환 24",
     "description": "보석 1000개 분해",
-    "reward_crystal": 5000
+    "reward_crystal": 1000
   },
   {
     "achievement_id": 12001,
