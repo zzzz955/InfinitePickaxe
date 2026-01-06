@@ -91,6 +91,17 @@ infinitepickaxe::AchievementClaimResult AchievementService::claim_achievement(co
     }
 
     if (!repo_.try_claim_chain_step(user_id, meta->chain_id, last_claimed, meta->step_index)) {
+        auto current_last = repo_.get_last_claimed_step(user_id, meta->chain_id).value_or(0);
+        if (current_last >= meta->step_index) {
+            result.set_error_code("ALREADY_CLAIMED");
+            return result;
+        }
+        if (current_last + 1 != meta->step_index) {
+            result.set_error_code("PREVIOUS_STEP_NOT_CLAIMED");
+            return result;
+        }
+        spdlog::warn("achievement claim update failed: user={} chain_id={} expected_prev={} current_prev={} new_step={}",
+                     user_id, meta->chain_id, last_claimed, current_last, meta->step_index);
         result.set_error_code("DB_ERROR");
         return result;
     }

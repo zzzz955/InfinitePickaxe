@@ -78,15 +78,21 @@ bool AchievementRepository::try_claim_chain_step(const std::string& user_id,
         auto conn = pool_.acquire();
         pqxx::work tx(*conn);
         auto res = tx.exec_params(
-            "WITH upsert AS ( "
-            "  INSERT INTO game_schema.user_achievement_chains (user_id, chain_id, last_claimed_step) "
-            "  SELECT $1, $2, $3 WHERE $4 = 0 "
-            "  ON CONFLICT (user_id, chain_id) DO UPDATE "
+            "WITH updated AS ( "
+            "  UPDATE game_schema.user_achievement_chains "
             "  SET last_claimed_step = $3 "
-            "  WHERE user_achievement_chains.last_claimed_step = $4 "
+            "  WHERE user_id = $1 AND chain_id = $2 AND last_claimed_step = $4 "
+            "  RETURNING last_claimed_step "
+            "), inserted AS ( "
+            "  INSERT INTO game_schema.user_achievement_chains (user_id, chain_id, last_claimed_step) "
+            "  SELECT $1, $2, $3 "
+            "  WHERE $4 = 0 AND NOT EXISTS (SELECT 1 FROM updated) "
+            "  ON CONFLICT DO NOTHING "
             "  RETURNING last_claimed_step "
             ") "
-            "SELECT last_claimed_step FROM upsert",
+            "SELECT last_claimed_step FROM updated "
+            "UNION ALL "
+            "SELECT last_claimed_step FROM inserted",
             user_id, static_cast<int32_t>(chain_id), static_cast<int32_t>(new_step),
             static_cast<int32_t>(expected_prev_step));
         tx.commit();
