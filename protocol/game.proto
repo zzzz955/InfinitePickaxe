@@ -122,6 +122,27 @@ enum MessageType {
   GEM_INVENTORY_EXPAND_RESULT = 127;
   GEM_AUTO_SYNTHESIS_REQUEST = 128;
   GEM_AUTO_SYNTHESIS_RESULT = 129;
+
+  // 무한의 갱도
+  INFINITE_MINE_STATE_REQUEST = 200;
+  INFINITE_MINE_STATE_RESPONSE = 201;
+  INFINITE_MINE_CHALLENGE_START_REQUEST = 202;
+  INFINITE_MINE_CHALLENGE_START_RESULT = 203;
+  INFINITE_MINE_CHALLENGE_UPDATE = 204;
+  INFINITE_MINE_CHALLENGE_RESULT = 205;
+  INFINITE_MINE_AUTO_CLAIM_REQUEST = 206;
+  INFINITE_MINE_AUTO_CLAIM_RESULT = 207;
+  INFINITE_MINE_AUTO_CLAIM_ALL_REQUEST = 208;
+  INFINITE_MINE_AUTO_CLAIM_ALL_RESULT = 209;
+  INFINITE_MINE_EXIT_REQUEST = 210;
+  INFINITE_MINE_EXIT_RESULT = 211;
+}
+
+enum InfiniteMineChallengeResultReason {
+  INFINITE_MINE_RESULT_UNKNOWN = 0;
+  CLEARED = 1;
+  TIMEOUT = 2;
+  CANCELED = 3;
 }
 
 // 공통 Envelope: Type으로 메시지 구분
@@ -213,6 +234,19 @@ message Envelope {
     GemInventoryExpandResult gem_inventory_expand_result = 137;
     GemAutoSynthesisRequest gem_auto_synthesis_request = 138;
     GemAutoSynthesisResult gem_auto_synthesis_result = 139;
+
+    InfiniteMineStateRequest infinite_mine_state_request = 200;
+    InfiniteMineStateResponse infinite_mine_state_response = 201;
+    InfiniteMineChallengeStartRequest infinite_mine_challenge_start_request = 202;
+    InfiniteMineChallengeStartResult infinite_mine_challenge_start_result = 203;
+    InfiniteMineChallengeUpdate infinite_mine_challenge_update = 204;
+    InfiniteMineChallengeResult infinite_mine_challenge_result = 205;
+    InfiniteMineAutoClaimRequest infinite_mine_auto_claim_request = 206;
+    InfiniteMineAutoClaimResult infinite_mine_auto_claim_result = 207;
+    InfiniteMineAutoClaimAllRequest infinite_mine_auto_claim_all_request = 208;
+    InfiniteMineAutoClaimAllResult infinite_mine_auto_claim_all_result = 209;
+    InfiniteMineExitRequest infinite_mine_exit_request = 210;
+    InfiniteMineExitResult infinite_mine_exit_result = 211;
   }
 }
 
@@ -806,4 +840,93 @@ message GemInventoryExpandResult {
   uint32 crystal_spent = 3;
   uint32 remaining_crystal = 4;
   string error_code = 5;          // "MAX_CAPACITY", "INSUFFICIENT_CRYSTAL" 등
+}
+
+// -------------- 무한의 갱도 --------------
+
+message InfiniteMineStateRequest {
+  // 빈 요청
+}
+
+message InfiniteMineFloorState {
+  uint32 floor = 1;
+  bool auto_claimable = 2;
+  bool auto_claimed_today = 3;
+}
+
+message InfiniteMineStateResponse {
+  uint64 reset_timestamp_ms = 1;
+  uint32 time_limit_sec = 2;
+  uint32 max_floor = 3;
+  uint32 highest_cleared_floor = 4;
+  repeated InfiniteMineFloorState floor_states = 5; // 클리어된 층만 포함
+}
+
+message InfiniteMineChallengeStartRequest {
+  uint32 floor = 1;
+}
+
+message InfiniteMineChallengeStartResult {
+  bool success = 1;
+  uint32 floor = 2;
+  uint64 current_hp = 3;
+  uint64 max_hp = 4;
+  uint32 time_limit_sec = 5;
+  uint64 remaining_ms = 6;
+  string error_code = 7;
+}
+
+message InfiniteMineChallengeUpdate {
+  uint32 floor = 1;
+  uint64 current_hp = 2;
+  uint64 max_hp = 3;
+  uint64 remaining_ms = 4;
+  repeated PickaxeAttack attacks = 5;
+  uint64 server_timestamp = 6;
+}
+
+message InfiniteMineChallengeResult {
+  bool success = 1;
+  uint32 floor = 2;
+  InfiniteMineChallengeResultReason reason = 3;
+  uint64 reward_gold = 4;
+  uint32 reward_crystal = 5;
+  uint64 total_gold = 6;
+  uint32 total_crystal = 7;
+}
+
+message InfiniteMineAutoClaimRequest {
+  uint32 floor = 1;
+}
+
+message InfiniteMineAutoClaimResult {
+  bool success = 1;
+  uint32 floor = 2;
+  uint64 reward_gold = 3;
+  uint32 reward_crystal = 4;
+  uint64 total_gold = 5;
+  uint32 total_crystal = 6;
+  string error_code = 7;
+}
+
+message InfiniteMineAutoClaimAllRequest {
+  // 빈 요청
+}
+
+message InfiniteMineAutoClaimAllResult {
+  bool success = 1;
+  uint64 total_reward_gold = 2;
+  uint32 total_reward_crystal = 3;
+  uint64 total_gold = 4;
+  uint32 total_crystal = 5;
+  string error_code = 6;
+}
+
+message InfiniteMineExitRequest {
+  // 빈 요청
+}
+
+message InfiniteMineExitResult {
+  bool success = 1;
+  string error_code = 2;
 }
