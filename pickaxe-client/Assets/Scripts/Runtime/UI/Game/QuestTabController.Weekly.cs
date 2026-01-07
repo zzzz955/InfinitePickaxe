@@ -17,6 +17,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Transform weeklyMissionListContainer;
         [SerializeField] private GameObject weeklyMissionCardPrefab;
         [SerializeField] private Slider weeklyMilestoneSlider;
+        [SerializeField] private RectTransform weeklyMilestoneFillArea;
         [SerializeField] private Transform weeklyMilestoneRewardContainer;
         [SerializeField] private WeeklyRewardModalController weeklyRewardModal;
         [SerializeField] private List<WeeklyMilestoneRewardView> weeklyMilestoneRewardViews = new List<WeeklyMilestoneRewardView>();
@@ -64,6 +65,26 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 var sliderTf = FindChildRecursive(root, "WeeklyMilestoneSlider");
                 if (sliderTf != null) weeklyMilestoneSlider = sliderTf.GetComponent<Slider>();
+            }
+
+            if (weeklyMilestoneFillArea == null && weeklyMilestoneSlider != null)
+            {
+                if (weeklyMilestoneSlider.fillRect != null && weeklyMilestoneSlider.fillRect.parent is RectTransform fillParent)
+                {
+                    weeklyMilestoneFillArea = fillParent;
+                }
+                else
+                {
+                    var fillAreaTf = FindChildRecursive(weeklyMilestoneSlider.transform, "Fill Area");
+                    if (fillAreaTf == null)
+                    {
+                        fillAreaTf = FindChildRecursive(weeklyMilestoneSlider.transform, "FillArea");
+                    }
+                    if (fillAreaTf != null)
+                    {
+                        weeklyMilestoneFillArea = fillAreaTf.GetComponent<RectTransform>();
+                    }
+                }
             }
 
             if (weeklyMilestoneRewardContainer == null)
@@ -337,6 +358,7 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateWeeklyTitle();
             UpdateWeeklyMilestoneSlider();
             UpdateWeeklyMilestoneRewards();
+            UpdateWeeklyMilestoneRewardPositions();
         }
 
         private void UpdateWeeklyMilestoneSlider()
@@ -369,6 +391,43 @@ namespace InfinitePickaxe.Client.UI.Game
                 bool canClaim = hasState && claimedCount >= milestoneCount && !claimed;
 
                 view.Apply(rewardCrystal, canClaim, claimed, OnWeeklyMilestoneClaimClicked);
+            }
+        }
+
+        private void UpdateWeeklyMilestoneRewardPositions()
+        {
+            if (weeklyMilestoneRewardViews == null || weeklyMilestoneRewardViews.Count == 0) return;
+            if (weeklyMilestoneRewardContainer == null) return;
+
+            if (weeklyMilestoneFillArea == null)
+            {
+                EnsureWeeklyReferences();
+            }
+            if (weeklyMilestoneFillArea == null) return;
+
+            float minValue = weeklyMilestoneSlider != null ? weeklyMilestoneSlider.minValue : 0f;
+            float maxValue = weeklyMilestoneSlider != null ? weeklyMilestoneSlider.maxValue : 0f;
+            if (Mathf.Abs(maxValue - minValue) <= Mathf.Epsilon) return;
+
+            var rect = weeklyMilestoneFillArea.rect;
+
+            for (int i = 0; i < weeklyMilestoneRewardViews.Count; i++)
+            {
+                var view = weeklyMilestoneRewardViews[i];
+                if (view == null) continue;
+
+                var rewardRect = view.GetComponent<RectTransform>();
+                if (rewardRect == null) continue;
+
+                float t = Mathf.InverseLerp(minValue, maxValue, view.MilestoneCount);
+                float x = Mathf.Lerp(rect.xMin, rect.xMax, t);
+                Vector3 worldPos = weeklyMilestoneFillArea.TransformPoint(new Vector3(x, rect.center.y, 0f));
+                Vector3 localPos = weeklyMilestoneRewardContainer.InverseTransformPoint(worldPos);
+
+                var rewardLocal = rewardRect.localPosition;
+                float centerOffset = (0.5f - rewardRect.pivot.x) * rewardRect.rect.width * rewardRect.localScale.x;
+                rewardLocal.x = localPos.x - centerOffset;
+                rewardRect.localPosition = rewardLocal;
             }
         }
 
