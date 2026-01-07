@@ -7,6 +7,7 @@
 #include <array>
 #include <limits>
 #include <unordered_map>
+#include <vector>
 #include "auth_service.h"
 #include "game_repository.h"
 #include "game.pb.h"
@@ -21,6 +22,7 @@
 #include "session_registry.h"
 
 class AdService;
+class InfiniteMineService;
 
 // 각 슬롯의 채굴 상태
 struct SlotMiningState {
@@ -44,6 +46,26 @@ struct MiningState {
     uint64_t last_sent_hp = std::numeric_limits<uint64_t>::max(); // 마지막으로 전송한 HP (푸시 최소화)
 };
 
+struct InfiniteMineSlotState {
+    uint32_t slot_index;
+    uint64_t attack_power;
+    float attack_speed;
+    uint32_t critical_hit_percent;
+    uint32_t critical_damage;
+    float next_attack_timer_ms;
+};
+
+struct InfiniteMineState {
+    bool is_active = false;
+    bool is_challenging = false;
+    uint32_t floor = 0;
+    uint64_t current_hp = 0;
+    uint64_t max_hp = 0;
+    uint64_t remaining_ms = 0;
+    float update_accum_ms = 0.0f;
+    std::vector<InfiniteMineSlotState> slots;
+};
+
 class Session : public std::enable_shared_from_this<Session> {
 public:
     Session(boost::asio::ip::tcp::socket socket,
@@ -53,6 +75,7 @@ public:
             UpgradeService& upgrade_service,
             MissionService& mission_service,
             AchievementService& achievement_service,
+            InfiniteMineService& infinite_mine_service,
             SlotService& slot_service,
             OfflineService& offline_service,
             AdService& ad_service,
@@ -87,6 +110,11 @@ private:
     void handle_achievements(const infinitepickaxe::Envelope& env);
     void handle_achievement_progress_update(const infinitepickaxe::Envelope& env);
     void handle_achievement_claim(const infinitepickaxe::Envelope& env);
+    void handle_infinite_mine_state(const infinitepickaxe::Envelope& env);
+    void handle_infinite_mine_challenge_start(const infinitepickaxe::Envelope& env);
+    void handle_infinite_mine_auto_claim(const infinitepickaxe::Envelope& env);
+    void handle_infinite_mine_auto_claim_all(const infinitepickaxe::Envelope& env);
+    void handle_infinite_mine_exit(const infinitepickaxe::Envelope& env);
     void handle_ad_watch(const infinitepickaxe::Envelope& env);
     void handle_milestone_claim(const infinitepickaxe::Envelope& env);
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
@@ -127,10 +155,15 @@ private:
     void send_weekly_milestone_state();
     void send_achievements_state();
     void send_ad_counters_state();
+    void send_infinite_mine_state();
     void flush_play_time_progress(bool force);
     void cache_mining_state();
     bool load_cached_mining_state(uint32_t& mineral_id, uint64_t& hp, uint64_t& respawn_until_ms);
     bool try_consume_offline_session(infinitepickaxe::OfflineRewardResult& out_result);
+    void update_infinite_mine_tick(float delta_ms);
+    void build_infinite_mine_slots();
+    void send_infinite_mine_update(const std::vector<infinitepickaxe::PickaxeAttack>& attacks);
+    void end_infinite_mine_challenge(bool success, infinitepickaxe::InfiniteMineChallengeResultReason reason);
 
     boost::asio::ip::tcp::socket socket_;
     boost::asio::strand<boost::asio::io_context::executor_type> strand_;
@@ -142,6 +175,7 @@ private:
     UpgradeService& upgrade_service_;
     MissionService& mission_service_;
     AchievementService& achievement_service_;
+    InfiniteMineService& infinite_mine_service_;
     SlotService& slot_service_;
     OfflineService& offline_service_;
     AdService& ad_service_;
@@ -163,6 +197,7 @@ private:
 
     // 채굴 시뮬레이션 상태
     MiningState mining_state_;
+    InfiniteMineState infinite_mine_state_;
     float play_time_accum_ms_{0.0f};
     static constexpr uint32_t kPlayTimeFlushSeconds = 60;
     float mining_cache_accum_ms_{0.0f};

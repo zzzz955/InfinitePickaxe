@@ -18,6 +18,7 @@ add_executable(game-server
     src/server/upgrade_repository.cpp
     src/server/mission_repository.cpp
     src/server/achievement_repository.cpp
+    src/server/infinite_mine_repository.cpp
     src/server/slot_repository.cpp
     src/server/offline_repository.cpp
     src/server/connection_pool.cpp
@@ -27,6 +28,7 @@ add_executable(game-server
     src/server/upgrade_service.cpp
     src/server/mission_service.cpp
     src/server/achievement_service.cpp
+    src/server/infinite_mine_service.cpp
     src/server/slot_service.cpp
     src/server/offline_service.cpp
     src/server/session_registry.cpp

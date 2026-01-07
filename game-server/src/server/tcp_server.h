@@ -7,6 +7,7 @@
 #include "upgrade_service.h"
 #include "mission_service.h"
 #include "achievement_service.h"
+#include "infinite_mine_service.h"
 #include "slot_service.h"
 #include "offline_service.h"
 #include "ad_service.h"
@@ -30,6 +31,7 @@ public:
               UpgradeService& upgrade_service,
               MissionService& mission_service,
               AchievementService& achievement_service,
+              InfiniteMineService& infinite_mine_service,
               SlotService& slot_service,
               OfflineService& offline_service,
               AdService& ad_service,
@@ -52,6 +54,7 @@ private:
     UpgradeService& upgrade_service_;
     MissionService& mission_service_;
     AchievementService& achievement_service_;
+    InfiniteMineService& infinite_mine_service_;
     SlotService& slot_service_;
     OfflineService& offline_service_;
     AdService& ad_service_;

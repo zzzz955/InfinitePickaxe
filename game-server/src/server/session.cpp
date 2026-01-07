@@ -1,6 +1,7 @@
 #include "session.h"
 #include "metadata/metadata_loader.h"
 #include "ad_service.h"
+#include "infinite_mine_service.h"
 #include "time_utils.h"
 #include <spdlog/spdlog.h>
 #include <iostream>
@@ -272,6 +273,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  UpgradeService &upgrade_service,
                  MissionService &mission_service,
                  AchievementService &achievement_service,
+                 InfiniteMineService &infinite_mine_service,
                  SlotService &slot_service,
                  OfflineService &offline_service,
                  AdService &ad_service,
@@ -288,6 +290,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       upgrade_service_(upgrade_service),
       mission_service_(mission_service),
       achievement_service_(achievement_service),
+      infinite_mine_service_(infinite_mine_service),
       slot_service_(slot_service),
       offline_service_(offline_service),
       ad_service_(ad_service),
@@ -950,6 +953,123 @@ void Session::handle_achievement_claim(const infinitepickaxe::Envelope &env)
     send_envelope(response_env);
 }
 
+void Session::handle_infinite_mine_state(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_infinite_mine_state_request())
+    {
+        send_error("2004", "infinite_mine_state_request message missing");
+        return;
+    }
+    send_infinite_mine_state();
+}
+
+void Session::handle_infinite_mine_challenge_start(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_infinite_mine_challenge_start_request())
+    {
+        send_error("2004", "infinite_mine_challenge_start_request message missing");
+        return;
+    }
+
+    const auto &req = env.infinite_mine_challenge_start_request();
+    infinitepickaxe::InfiniteMineChallengeStartResult res;
+
+    if (infinite_mine_state_.is_challenging)
+    {
+        res.set_success(false);
+        res.set_floor(req.floor());
+        res.set_error_code("ALREADY_CHALLENGING");
+    }
+    else
+    {
+        res = infinite_mine_service_.start_challenge(user_id_, req.floor());
+        if (res.success())
+        {
+            infinite_mine_state_.is_active = true;
+            infinite_mine_state_.is_challenging = true;
+            infinite_mine_state_.floor = res.floor();
+            infinite_mine_state_.current_hp = res.current_hp();
+            infinite_mine_state_.max_hp = res.max_hp();
+            infinite_mine_state_.remaining_ms = res.remaining_ms();
+            infinite_mine_state_.update_accum_ms = 0.0f;
+            build_infinite_mine_slots();
+        }
+    }
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::INFINITE_MINE_CHALLENGE_START_RESULT);
+    *response_env.mutable_infinite_mine_challenge_start_result() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_infinite_mine_auto_claim(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_infinite_mine_auto_claim_request())
+    {
+        send_error("2004", "infinite_mine_auto_claim_request message missing");
+        return;
+    }
+
+    const auto &req = env.infinite_mine_auto_claim_request();
+    auto res = infinite_mine_service_.claim_auto_reward(user_id_, req.floor());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::INFINITE_MINE_AUTO_CLAIM_RESULT);
+    *response_env.mutable_infinite_mine_auto_claim_result() = res;
+    send_envelope(response_env);
+
+    if (res.success())
+    {
+        send_infinite_mine_state();
+    }
+}
+
+void Session::handle_infinite_mine_auto_claim_all(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_infinite_mine_auto_claim_all_request())
+    {
+        send_error("2004", "infinite_mine_auto_claim_all_request message missing");
+        return;
+    }
+
+    auto res = infinite_mine_service_.claim_all_auto_rewards(user_id_);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::INFINITE_MINE_AUTO_CLAIM_ALL_RESULT);
+    *response_env.mutable_infinite_mine_auto_claim_all_result() = res;
+    send_envelope(response_env);
+
+    if (res.success())
+    {
+        send_infinite_mine_state();
+    }
+}
+
+void Session::handle_infinite_mine_exit(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_infinite_mine_exit_request())
+    {
+        send_error("2004", "infinite_mine_exit_request message missing");
+        return;
+    }
+
+    if (infinite_mine_state_.is_challenging)
+    {
+        end_infinite_mine_challenge(false, infinitepickaxe::CANCELED);
+    }
+
+    infinite_mine_state_ = InfiniteMineState{};
+
+    infinitepickaxe::InfiniteMineExitResult res;
+    res.set_success(true);
+    res.set_error_code("");
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::INFINITE_MINE_EXIT_RESULT);
+    *response_env.mutable_infinite_mine_exit_result() = res;
+    send_envelope(response_env);
+}
+
 void Session::handle_ad_watch(const infinitepickaxe::Envelope &env)
 {
     if (!env.has_ad_watch_complete())
@@ -1169,6 +1289,16 @@ void Session::init_router()
                              { handle_achievement_progress_update(e); });
     router_.register_handler(infinitepickaxe::ACHIEVEMENT_CLAIM, [this](const infinitepickaxe::Envelope &e)
                              { handle_achievement_claim(e); });
+    router_.register_handler(infinitepickaxe::INFINITE_MINE_STATE_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_infinite_mine_state(e); });
+    router_.register_handler(infinitepickaxe::INFINITE_MINE_CHALLENGE_START_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_infinite_mine_challenge_start(e); });
+    router_.register_handler(infinitepickaxe::INFINITE_MINE_AUTO_CLAIM_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_infinite_mine_auto_claim(e); });
+    router_.register_handler(infinitepickaxe::INFINITE_MINE_AUTO_CLAIM_ALL_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_infinite_mine_auto_claim_all(e); });
+    router_.register_handler(infinitepickaxe::INFINITE_MINE_EXIT_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_infinite_mine_exit(e); });
     router_.register_handler(infinitepickaxe::AD_WATCH_COMPLETE, [this](const infinitepickaxe::Envelope &e)
                              { handle_ad_watch(e); });
     router_.register_handler(infinitepickaxe::MILESTONE_CLAIM, [this](const infinitepickaxe::Envelope &e)
@@ -1324,6 +1454,15 @@ void Session::send_ad_counters_state()
     infinitepickaxe::Envelope env;
     env.set_type(infinitepickaxe::AD_COUNTERS_STATE);
     *env.mutable_ad_counters_state() = state;
+    send_envelope(env);
+}
+
+void Session::send_infinite_mine_state()
+{
+    auto state = infinite_mine_service_.get_state(user_id_);
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::INFINITE_MINE_STATE_RESPONSE);
+    *env.mutable_infinite_mine_state_response() = state;
     send_envelope(env);
 }
 
@@ -1628,6 +1767,7 @@ void Session::update_mining_tick_internal(float delta_ms)
         send_daily_missions_state();
         send_milestone_state();
         send_ad_counters_state();
+        send_infinite_mine_state();
         next_daily_reset_ms_ = kst_next_midnight_ms();
     }
 
@@ -1649,6 +1789,12 @@ void Session::update_mining_tick_internal(float delta_ms)
     {
         cache_mining_state();
         mining_cache_accum_ms_ = 0.0f;
+    }
+
+    if (infinite_mine_state_.is_active)
+    {
+        update_infinite_mine_tick(delta_ms);
+        return;
     }
 
     // 광물 선택이 0(중단)이면 채굴 자동 틱 중지
@@ -1733,6 +1879,197 @@ void Session::update_mining_tick_internal(float delta_ms)
         mining_state_.last_sent_hp = mining_state_.current_hp;
     }
 
+}
+
+void Session::update_infinite_mine_tick(float delta_ms)
+{
+    if (!infinite_mine_state_.is_challenging)
+    {
+        return;
+    }
+
+    infinite_mine_state_.update_accum_ms += delta_ms;
+    constexpr float kUpdateStepMs = 100.0f;
+
+    while (infinite_mine_state_.update_accum_ms >= kUpdateStepMs)
+    {
+        infinite_mine_state_.update_accum_ms -= kUpdateStepMs;
+
+        if (infinite_mine_state_.remaining_ms == 0)
+        {
+            end_infinite_mine_challenge(false, infinitepickaxe::TIMEOUT);
+            return;
+        }
+
+        uint64_t step_ms = static_cast<uint64_t>(kUpdateStepMs);
+        if (infinite_mine_state_.remaining_ms < step_ms)
+        {
+            step_ms = infinite_mine_state_.remaining_ms;
+        }
+
+        infinite_mine_state_.remaining_ms -= step_ms;
+
+        std::vector<infinitepickaxe::PickaxeAttack> attacks;
+        uint64_t total_damage = 0;
+
+        for (auto &slot : infinite_mine_state_.slots)
+        {
+            slot.next_attack_timer_ms -= static_cast<float>(step_ms);
+
+            while (slot.next_attack_timer_ms <= 0.0f)
+            {
+                const float attack_speed = std::max(slot.attack_speed, 0.01f);
+                const float attack_interval_ms = 1000.0f / attack_speed;
+
+                const bool is_crit = roll_bp_10000() < slot.critical_hit_percent;
+                uint64_t damage = slot.attack_power;
+                if (is_crit)
+                {
+                    damage = static_cast<uint64_t>(
+                        (static_cast<long double>(slot.attack_power) * static_cast<long double>(slot.critical_damage)) / 10000.0L);
+                }
+
+                infinitepickaxe::PickaxeAttack attack;
+                attack.set_slot_index(slot.slot_index);
+                attack.set_damage(damage);
+                attack.set_is_critical(is_crit);
+                attacks.push_back(attack);
+
+                slot.next_attack_timer_ms += attack_interval_ms;
+                total_damage += damage;
+            }
+        }
+
+        if (total_damage > 0)
+        {
+            if (infinite_mine_state_.current_hp > total_damage)
+            {
+                infinite_mine_state_.current_hp -= total_damage;
+            }
+            else
+            {
+                infinite_mine_state_.current_hp = 0;
+            }
+        }
+
+        if (!attacks.empty())
+        {
+            send_infinite_mine_update(attacks);
+        }
+
+        if (infinite_mine_state_.current_hp == 0)
+        {
+            end_infinite_mine_challenge(true, infinitepickaxe::CLEARED);
+            return;
+        }
+
+        if (infinite_mine_state_.remaining_ms == 0)
+        {
+            end_infinite_mine_challenge(false, infinitepickaxe::TIMEOUT);
+            return;
+        }
+    }
+}
+
+void Session::build_infinite_mine_slots()
+{
+    infinite_mine_state_.slots.clear();
+    auto slots_response = slot_service_.handle_all_slots(user_id_);
+
+    for (const auto &slot_info : slots_response.slots())
+    {
+        if (!slot_info.is_unlocked())
+        {
+            continue;
+        }
+
+        InfiniteMineSlotState slot{};
+        slot.slot_index = slot_info.slot_index();
+        slot.attack_power = slot_info.attack_power();
+        slot.attack_speed = static_cast<float>(slot_info.attack_speed()) / 10000.0f;
+        if (slot.attack_speed <= 0.0f)
+        {
+            slot.attack_speed = 0.01f;
+        }
+        slot.critical_hit_percent = slot_info.critical_hit_percent();
+        slot.critical_damage = slot_info.critical_damage();
+
+        float attack_interval_ms = 1000.0f / slot.attack_speed;
+        slot.next_attack_timer_ms = (float)(std::rand() % 1000) / 1000.0f * attack_interval_ms;
+
+        infinite_mine_state_.slots.push_back(slot);
+    }
+}
+
+void Session::send_infinite_mine_update(const std::vector<infinitepickaxe::PickaxeAttack> &attacks)
+{
+    infinitepickaxe::InfiniteMineChallengeUpdate update;
+    update.set_floor(infinite_mine_state_.floor);
+    update.set_current_hp(infinite_mine_state_.current_hp);
+    update.set_max_hp(infinite_mine_state_.max_hp);
+    update.set_remaining_ms(infinite_mine_state_.remaining_ms);
+    update.set_server_timestamp(static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch())
+            .count()));
+
+    for (const auto &attack : attacks)
+    {
+        *update.add_attacks() = attack;
+    }
+
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::INFINITE_MINE_CHALLENGE_UPDATE);
+    *env.mutable_infinite_mine_challenge_update() = update;
+    send_envelope(env);
+}
+
+void Session::end_infinite_mine_challenge(bool success, infinitepickaxe::InfiniteMineChallengeResultReason reason)
+{
+    if (!infinite_mine_state_.is_challenging)
+    {
+        return;
+    }
+
+    infinite_mine_state_.is_challenging = false;
+
+    infinitepickaxe::InfiniteMineChallengeResult result;
+    if (success && reason == infinitepickaxe::CLEARED)
+    {
+        result = infinite_mine_service_.handle_clear(user_id_, infinite_mine_state_.floor);
+        if (!result.success())
+        {
+            result.set_reason(infinitepickaxe::INFINITE_MINE_RESULT_UNKNOWN);
+        }
+    }
+    else
+    {
+        result.set_success(false);
+        result.set_floor(infinite_mine_state_.floor);
+        result.set_reason(reason);
+        result.set_reward_gold(0);
+        result.set_reward_crystal(0);
+
+        auto data = game_repo_.get_user_game_data(user_id_);
+        result.set_total_gold(data.gold);
+        result.set_total_crystal(data.crystal);
+    }
+
+    infinitepickaxe::Envelope env;
+    env.set_type(infinitepickaxe::INFINITE_MINE_CHALLENGE_RESULT);
+    *env.mutable_infinite_mine_challenge_result() = result;
+    send_envelope(env);
+
+    if (success && result.success())
+    {
+        send_infinite_mine_state();
+    }
+
+    infinite_mine_state_.current_hp = 0;
+    infinite_mine_state_.max_hp = 0;
+    infinite_mine_state_.remaining_ms = 0;
+    infinite_mine_state_.update_accum_ms = 0.0f;
+    infinite_mine_state_.slots.clear();
 }
 
 void Session::start_new_mineral()
