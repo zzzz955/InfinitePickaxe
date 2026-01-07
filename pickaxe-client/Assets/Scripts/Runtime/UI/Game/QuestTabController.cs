@@ -63,6 +63,7 @@ namespace InfinitePickaxe.Client.UI.Game
             EnsureReferences();
             EnsureAchievementReferences();
             EnsureWeeklyReferences();
+            EnsureRewardStoveReferences();
             messageHandler = MessageHandler.Instance;
             questState = QuestStateCache.Instance;
             missionMetaResolver = new DailyMissionMetaResolver();
@@ -104,10 +105,12 @@ namespace InfinitePickaxe.Client.UI.Game
             EnsureReferences();
             EnsureAchievementReferences();
             EnsureWeeklyReferences();
+            EnsureRewardStoveReferences();
             InitializeSubTabs();
             SubscribeState();
             SubscribeAchievementState();
             SubscribeWeeklyMessageHandler();
+            SubscribeRewardStoveMessageHandler();
             RefreshData();
         }
 
@@ -117,6 +120,7 @@ namespace InfinitePickaxe.Client.UI.Game
             UnsubscribeState();
             UnsubscribeAchievementState();
             UnsubscribeWeeklyMessageHandler();
+            UnsubscribeRewardStoveMessageHandler();
         }
 
         private void Update()

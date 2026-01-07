@@ -467,7 +467,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void HandleWeeklyMilestoneClaimResult(WeeklyMilestoneClaimResult result)
         {
             if (result == null || !result.Success) return;
-            ShowWeeklyRewardModal(result.RewardCrystal);
+            ShowRewardStove(result.RewardCrystal, result.RewardGold);
         }
 
         private void ShowWeeklyRewardModal(uint rewardCrystal)
