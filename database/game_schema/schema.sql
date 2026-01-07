@@ -8,6 +8,7 @@ DROP TRIGGER IF EXISTS trg_user_ad_counters_updated ON game_schema.user_ad_count
 DROP TRIGGER IF EXISTS trg_user_mission_daily_updated ON game_schema.user_mission_daily;
 DROP TRIGGER IF EXISTS trg_user_mission_slots_updated ON game_schema.user_mission_slots;
 DROP TRIGGER IF EXISTS trg_user_mission_weekly_updated ON game_schema.user_mission_weekly;
+DROP TRIGGER IF EXISTS trg_user_infinite_mine_progress_updated ON game_schema.user_infinite_mine_progress;
 DROP TRIGGER IF EXISTS trg_user_achievement_counters_updated ON game_schema.user_achievement_counters;
 DROP TRIGGER IF EXISTS trg_user_achievement_chains_updated ON game_schema.user_achievement_chains;
 DROP TRIGGER IF EXISTS trg_user_gem_inventory_updated ON game_schema.user_gem_inventory;
@@ -23,6 +24,7 @@ DROP TABLE IF EXISTS game_schema.user_gems;
 DROP TABLE IF EXISTS game_schema.user_gem_inventory;
 DROP TABLE IF EXISTS game_schema.user_milestones;
 DROP TABLE IF EXISTS game_schema.user_weekly_milestones;
+DROP TABLE IF EXISTS game_schema.user_infinite_mine_progress;
 DROP TABLE IF EXISTS game_schema.user_offline_state;
 DROP TABLE IF EXISTS game_schema.user_achievement_chains;
 DROP TABLE IF EXISTS game_schema.user_achievement_counters;
@@ -147,6 +149,17 @@ CREATE TABLE IF NOT EXISTS game_schema.user_weekly_milestones (
     CONSTRAINT pk_user_weekly_milestones PRIMARY KEY (user_id, week_start_date, milestone_count)
 );
 CREATE INDEX IF NOT EXISTS idx_user_weekly_milestones_week ON game_schema.user_weekly_milestones(user_id, week_start_date);
+
+-- infinite mine progress (per floor)
+CREATE TABLE IF NOT EXISTS game_schema.user_infinite_mine_progress (
+    user_id              UUID NOT NULL,
+    floor                INTEGER NOT NULL CHECK (floor > 0),
+    first_cleared_at     TIMESTAMP NOT NULL DEFAULT NOW(),
+    last_auto_claim_date DATE,
+    created_at           TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at           TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_user_infinite_mine_progress PRIMARY KEY (user_id, floor)
+);
 
 -- 업적 누적 진행도
 CREATE TABLE IF NOT EXISTS game_schema.user_achievement_counters (
@@ -276,6 +289,10 @@ CREATE TRIGGER trg_user_mission_slots_updated
 
 CREATE TRIGGER trg_user_mission_weekly_updated
     BEFORE UPDATE ON game_schema.user_mission_weekly
+    FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
+
+CREATE TRIGGER trg_user_infinite_mine_progress_updated
+    BEFORE UPDATE ON game_schema.user_infinite_mine_progress
     FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
 
 CREATE TRIGGER trg_user_achievement_counters_updated
