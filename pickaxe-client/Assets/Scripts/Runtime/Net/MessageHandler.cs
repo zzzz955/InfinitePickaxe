@@ -590,14 +590,25 @@ namespace InfinitePickaxe.Client.Net
 
             QuestStateCache.Instance.ApplyWeeklyMissionClaimResult(result);
 
-            if (result.Success || result.TotalGold > 0 || result.TotalCrystal > 0)
+            var currencyUpdate = new CurrencyUpdate
             {
-                var currencyUpdate = new CurrencyUpdate
-                {
-                    Gold = result.TotalGold,
-                    Crystal = result.TotalCrystal,
-                    Reason = "weekly_mission_claim"
-                };
+                Gold = null,
+                Crystal = null,
+                Reason = "weekly_mission_claim"
+            };
+            bool hasCurrencyUpdate = false;
+            if (result.TotalGold > 0)
+            {
+                currencyUpdate.Gold = result.TotalGold;
+                hasCurrencyUpdate = true;
+            }
+            if (result.TotalCrystal > 0)
+            {
+                currencyUpdate.Crystal = result.TotalCrystal;
+                hasCurrencyUpdate = true;
+            }
+            if (hasCurrencyUpdate)
+            {
                 CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
                 OnCurrencyUpdate?.Invoke(currencyUpdate);
             }
@@ -616,14 +627,25 @@ namespace InfinitePickaxe.Client.Net
                 Debug.LogWarning($"weekly milestone claim failed: {result.ErrorCode}");
             }
 
-            if (result.Success || result.TotalGold > 0 || result.TotalCrystal > 0)
+            var currencyUpdate = new CurrencyUpdate
             {
-                var currencyUpdate = new CurrencyUpdate
-                {
-                    Gold = result.TotalGold,
-                    Crystal = result.TotalCrystal,
-                    Reason = "weekly_milestone_claim"
-                };
+                Gold = null,
+                Crystal = null,
+                Reason = "weekly_milestone_claim"
+            };
+            bool hasCurrencyUpdate = false;
+            if (result.TotalGold > 0)
+            {
+                currencyUpdate.Gold = result.TotalGold;
+                hasCurrencyUpdate = true;
+            }
+            if (result.TotalCrystal > 0)
+            {
+                currencyUpdate.Crystal = result.TotalCrystal;
+                hasCurrencyUpdate = true;
+            }
+            if (hasCurrencyUpdate)
+            {
                 CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
                 OnCurrencyUpdate?.Invoke(currencyUpdate);
             }
