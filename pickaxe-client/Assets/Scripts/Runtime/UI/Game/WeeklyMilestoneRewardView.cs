@@ -11,6 +11,7 @@ namespace InfinitePickaxe.Client.UI.Game
     {
         [SerializeField] private uint milestoneCount;
         [SerializeField] private Button claimButton;
+        [SerializeField] private TextMeshProUGUI milestoneLabelText;
         [SerializeField] private TextMeshProUGUI rewardCrystalText;
         [SerializeField] private float disabledAlpha = 0.5f;
         private readonly Dictionary<Graphic, Color> buttonGraphicColors = new Dictionary<Graphic, Color>();
@@ -24,6 +25,11 @@ namespace InfinitePickaxe.Client.UI.Game
             if (rewardCrystalText != null)
             {
                 rewardCrystalText.text = rewardCrystal.ToString("N0");
+            }
+
+            if (milestoneLabelText != null)
+            {
+                milestoneLabelText.text = milestoneCount.ToString();
             }
 
             if (claimButton != null)
@@ -45,6 +51,16 @@ namespace InfinitePickaxe.Client.UI.Game
             if (claimButton == null)
             {
                 claimButton = FindButton("ClaimButton", "ClaimButton");
+            }
+
+            if (milestoneLabelText == null)
+            {
+                milestoneLabelText = FindText("MilestoneLabelText", "MilestoneLabelText");
+            }
+
+            if (milestoneLabelText == null)
+            {
+                milestoneLabelText = FindText("MilestoneCountText", "MilestoneCountText");
             }
 
             if (rewardCrystalText == null)
