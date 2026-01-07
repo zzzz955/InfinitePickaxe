@@ -1,0 +1,502 @@
+[
+  {
+    "id": 10001,
+    "name": "약한 돌",
+    "sprite_key": "infinite_t1"
+  },
+  {
+    "id": 10002,
+    "name": "약한 돌",
+    "sprite_key": "infinite_t1"
+  },
+  {
+    "id": 10003,
+    "name": "약한 돌",
+    "sprite_key": "infinite_t1"
+  },
+  {
+    "id": 10004,
+    "name": "약한 돌",
+    "sprite_key": "infinite_t1"
+  },
+  {
+    "id": 10005,
+    "name": "약한 돌",
+    "sprite_key": "infinite_t1"
+  },
+  {
+    "id": 10006,
+    "name": "돌",
+    "sprite_key": "infinite_t2"
+  },
+  {
+    "id": 10007,
+    "name": "돌",
+    "sprite_key": "infinite_t2"
+  },
+  {
+    "id": 10008,
+    "name": "돌",
+    "sprite_key": "infinite_t2"
+  },
+  {
+    "id": 10009,
+    "name": "돌",
+    "sprite_key": "infinite_t2"
+  },
+  {
+    "id": 10010,
+    "name": "돌",
+    "sprite_key": "infinite_t2"
+  },
+  {
+    "id": 10011,
+    "name": "구리",
+    "sprite_key": "infinite_t3"
+  },
+  {
+    "id": 10012,
+    "name": "구리",
+    "sprite_key": "infinite_t3"
+  },
+  {
+    "id": 10013,
+    "name": "구리",
+    "sprite_key": "infinite_t3"
+  },
+  {
+    "id": 10014,
+    "name": "구리",
+    "sprite_key": "infinite_t3"
+  },
+  {
+    "id": 10015,
+    "name": "구리",
+    "sprite_key": "infinite_t3"
+  },
+  {
+    "id": 10016,
+    "name": "산화철",
+    "sprite_key": "infinite_t4"
+  },
+  {
+    "id": 10017,
+    "name": "산화철",
+    "sprite_key": "infinite_t4"
+  },
+  {
+    "id": 10018,
+    "name": "산화철",
+    "sprite_key": "infinite_t4"
+  },
+  {
+    "id": 10019,
+    "name": "산화철",
+    "sprite_key": "infinite_t4"
+  },
+  {
+    "id": 10020,
+    "name": "산화철",
+    "sprite_key": "infinite_t4"
+  },
+  {
+    "id": 10021,
+    "name": "강철",
+    "sprite_key": "infinite_t5"
+  },
+  {
+    "id": 10022,
+    "name": "강철",
+    "sprite_key": "infinite_t5"
+  },
+  {
+    "id": 10023,
+    "name": "강철",
+    "sprite_key": "infinite_t5"
+  },
+  {
+    "id": 10024,
+    "name": "강철",
+    "sprite_key": "infinite_t5"
+  },
+  {
+    "id": 10025,
+    "name": "강철",
+    "sprite_key": "infinite_t5"
+  },
+  {
+    "id": 10026,
+    "name": "흑철",
+    "sprite_key": "infinite_t6"
+  },
+  {
+    "id": 10027,
+    "name": "흑철",
+    "sprite_key": "infinite_t6"
+  },
+  {
+    "id": 10028,
+    "name": "흑철",
+    "sprite_key": "infinite_t6"
+  },
+  {
+    "id": 10029,
+    "name": "흑철",
+    "sprite_key": "infinite_t6"
+  },
+  {
+    "id": 10030,
+    "name": "흑철",
+    "sprite_key": "infinite_t6"
+  },
+  {
+    "id": 10031,
+    "name": "은",
+    "sprite_key": "infinite_t7"
+  },
+  {
+    "id": 10032,
+    "name": "은",
+    "sprite_key": "infinite_t7"
+  },
+  {
+    "id": 10033,
+    "name": "은",
+    "sprite_key": "infinite_t7"
+  },
+  {
+    "id": 10034,
+    "name": "은",
+    "sprite_key": "infinite_t7"
+  },
+  {
+    "id": 10035,
+    "name": "은",
+    "sprite_key": "infinite_t7"
+  },
+  {
+    "id": 10036,
+    "name": "리튬",
+    "sprite_key": "infinite_t8"
+  },
+  {
+    "id": 10037,
+    "name": "리튬",
+    "sprite_key": "infinite_t8"
+  },
+  {
+    "id": 10038,
+    "name": "리튬",
+    "sprite_key": "infinite_t8"
+  },
+  {
+    "id": 10039,
+    "name": "리튬",
+    "sprite_key": "infinite_t8"
+  },
+  {
+    "id": 10040,
+    "name": "리튬",
+    "sprite_key": "infinite_t8"
+  },
+  {
+    "id": 10041,
+    "name": "운모",
+    "sprite_key": "infinite_t9"
+  },
+  {
+    "id": 10042,
+    "name": "운모",
+    "sprite_key": "infinite_t9"
+  },
+  {
+    "id": 10043,
+    "name": "운모",
+    "sprite_key": "infinite_t9"
+  },
+  {
+    "id": 10044,
+    "name": "운모",
+    "sprite_key": "infinite_t9"
+  },
+  {
+    "id": 10045,
+    "name": "운모",
+    "sprite_key": "infinite_t9"
+  },
+  {
+    "id": 10046,
+    "name": "에메랄드",
+    "sprite_key": "infinite_t10"
+  },
+  {
+    "id": 10047,
+    "name": "에메랄드",
+    "sprite_key": "infinite_t10"
+  },
+  {
+    "id": 10048,
+    "name": "에메랄드",
+    "sprite_key": "infinite_t10"
+  },
+  {
+    "id": 10049,
+    "name": "에메랄드",
+    "sprite_key": "infinite_t10"
+  },
+  {
+    "id": 10050,
+    "name": "에메랄드",
+    "sprite_key": "infinite_t10"
+  },
+  {
+    "id": 10051,
+    "name": "아쿠아마린",
+    "sprite_key": "infinite_t11"
+  },
+  {
+    "id": 10052,
+    "name": "아쿠아마린",
+    "sprite_key": "infinite_t11"
+  },
+  {
+    "id": 10053,
+    "name": "아쿠아마린",
+    "sprite_key": "infinite_t11"
+  },
+  {
+    "id": 10054,
+    "name": "아쿠아마린",
+    "sprite_key": "infinite_t11"
+  },
+  {
+    "id": 10055,
+    "name": "아쿠아마린",
+    "sprite_key": "infinite_t11"
+  },
+  {
+    "id": 10056,
+    "name": "금",
+    "sprite_key": "infinite_t12"
+  },
+  {
+    "id": 10057,
+    "name": "금",
+    "sprite_key": "infinite_t12"
+  },
+  {
+    "id": 10058,
+    "name": "금",
+    "sprite_key": "infinite_t12"
+  },
+  {
+    "id": 10059,
+    "name": "금",
+    "sprite_key": "infinite_t12"
+  },
+  {
+    "id": 10060,
+    "name": "금",
+    "sprite_key": "infinite_t12"
+  },
+  {
+    "id": 10061,
+    "name": "다이아몬드",
+    "sprite_key": "infinite_t13"
+  },
+  {
+    "id": 10062,
+    "name": "다이아몬드",
+    "sprite_key": "infinite_t13"
+  },
+  {
+    "id": 10063,
+    "name": "다이아몬드",
+    "sprite_key": "infinite_t13"
+  },
+  {
+    "id": 10064,
+    "name": "다이아몬드",
+    "sprite_key": "infinite_t13"
+  },
+  {
+    "id": 10065,
+    "name": "다이아몬드",
+    "sprite_key": "infinite_t13"
+  },
+  {
+    "id": 10066,
+    "name": "석영",
+    "sprite_key": "infinite_t14"
+  },
+  {
+    "id": 10067,
+    "name": "석영",
+    "sprite_key": "infinite_t14"
+  },
+  {
+    "id": 10068,
+    "name": "석영",
+    "sprite_key": "infinite_t14"
+  },
+  {
+    "id": 10069,
+    "name": "석영",
+    "sprite_key": "infinite_t14"
+  },
+  {
+    "id": 10070,
+    "name": "석영",
+    "sprite_key": "infinite_t14"
+  },
+  {
+    "id": 10071,
+    "name": "감람석",
+    "sprite_key": "infinite_t15"
+  },
+  {
+    "id": 10072,
+    "name": "감람석",
+    "sprite_key": "infinite_t15"
+  },
+  {
+    "id": 10073,
+    "name": "감람석",
+    "sprite_key": "infinite_t15"
+  },
+  {
+    "id": 10074,
+    "name": "감람석",
+    "sprite_key": "infinite_t15"
+  },
+  {
+    "id": 10075,
+    "name": "감람석",
+    "sprite_key": "infinite_t15"
+  },
+  {
+    "id": 10076,
+    "name": "백금",
+    "sprite_key": "infinite_t16"
+  },
+  {
+    "id": 10077,
+    "name": "백금",
+    "sprite_key": "infinite_t16"
+  },
+  {
+    "id": 10078,
+    "name": "백금",
+    "sprite_key": "infinite_t16"
+  },
+  {
+    "id": 10079,
+    "name": "백금",
+    "sprite_key": "infinite_t16"
+  },
+  {
+    "id": 10080,
+    "name": "백금",
+    "sprite_key": "infinite_t16"
+  },
+  {
+    "id": 10081,
+    "name": "비스무트",
+    "sprite_key": "infinite_t17"
+  },
+  {
+    "id": 10082,
+    "name": "비스무트",
+    "sprite_key": "infinite_t17"
+  },
+  {
+    "id": 10083,
+    "name": "비스무트",
+    "sprite_key": "infinite_t17"
+  },
+  {
+    "id": 10084,
+    "name": "비스무트",
+    "sprite_key": "infinite_t17"
+  },
+  {
+    "id": 10085,
+    "name": "비스무트",
+    "sprite_key": "infinite_t17"
+  },
+  {
+    "id": 10086,
+    "name": "오리할콘",
+    "sprite_key": "infinite_t18"
+  },
+  {
+    "id": 10087,
+    "name": "오리할콘",
+    "sprite_key": "infinite_t18"
+  },
+  {
+    "id": 10088,
+    "name": "오리할콘",
+    "sprite_key": "infinite_t18"
+  },
+  {
+    "id": 10089,
+    "name": "오리할콘",
+    "sprite_key": "infinite_t18"
+  },
+  {
+    "id": 10090,
+    "name": "오리할콘",
+    "sprite_key": "infinite_t18"
+  },
+  {
+    "id": 10091,
+    "name": "토파즈",
+    "sprite_key": "infinite_t19"
+  },
+  {
+    "id": 10092,
+    "name": "토파즈",
+    "sprite_key": "infinite_t19"
+  },
+  {
+    "id": 10093,
+    "name": "토파즈",
+    "sprite_key": "infinite_t19"
+  },
+  {
+    "id": 10094,
+    "name": "토파즈",
+    "sprite_key": "infinite_t19"
+  },
+  {
+    "id": 10095,
+    "name": "토파즈",
+    "sprite_key": "infinite_t19"
+  },
+  {
+    "id": 10096,
+    "name": "문스톤",
+    "sprite_key": "infinite_t20"
+  },
+  {
+    "id": 10097,
+    "name": "문스톤",
+    "sprite_key": "infinite_t20"
+  },
+  {
+    "id": 10098,
+    "name": "문스톤",
+    "sprite_key": "infinite_t20"
+  },
+  {
+    "id": 10099,
+    "name": "문스톤",
+    "sprite_key": "infinite_t20"
+  },
+  {
+    "id": 10100,
+    "name": "문스톤",
+    "sprite_key": "infinite_t20"
+  }
+]

@@ -4726,6 +4726,1316 @@
       "biome": "정령 광산"
     }
   ],
+  "minerals_info": [
+    {
+      "id": 10001,
+      "name": "약한 돌",
+      "sprite_key": "infinite_t1"
+    },
+    {
+      "id": 10002,
+      "name": "약한 돌",
+      "sprite_key": "infinite_t1"
+    },
+    {
+      "id": 10003,
+      "name": "약한 돌",
+      "sprite_key": "infinite_t1"
+    },
+    {
+      "id": 10004,
+      "name": "약한 돌",
+      "sprite_key": "infinite_t1"
+    },
+    {
+      "id": 10005,
+      "name": "약한 돌",
+      "sprite_key": "infinite_t1"
+    },
+    {
+      "id": 10006,
+      "name": "돌",
+      "sprite_key": "infinite_t2"
+    },
+    {
+      "id": 10007,
+      "name": "돌",
+      "sprite_key": "infinite_t2"
+    },
+    {
+      "id": 10008,
+      "name": "돌",
+      "sprite_key": "infinite_t2"
+    },
+    {
+      "id": 10009,
+      "name": "돌",
+      "sprite_key": "infinite_t2"
+    },
+    {
+      "id": 10010,
+      "name": "돌",
+      "sprite_key": "infinite_t2"
+    },
+    {
+      "id": 10011,
+      "name": "구리",
+      "sprite_key": "infinite_t3"
+    },
+    {
+      "id": 10012,
+      "name": "구리",
+      "sprite_key": "infinite_t3"
+    },
+    {
+      "id": 10013,
+      "name": "구리",
+      "sprite_key": "infinite_t3"
+    },
+    {
+      "id": 10014,
+      "name": "구리",
+      "sprite_key": "infinite_t3"
+    },
+    {
+      "id": 10015,
+      "name": "구리",
+      "sprite_key": "infinite_t3"
+    },
+    {
+      "id": 10016,
+      "name": "산화철",
+      "sprite_key": "infinite_t4"
+    },
+    {
+      "id": 10017,
+      "name": "산화철",
+      "sprite_key": "infinite_t4"
+    },
+    {
+      "id": 10018,
+      "name": "산화철",
+      "sprite_key": "infinite_t4"
+    },
+    {
+      "id": 10019,
+      "name": "산화철",
+      "sprite_key": "infinite_t4"
+    },
+    {
+      "id": 10020,
+      "name": "산화철",
+      "sprite_key": "infinite_t4"
+    },
+    {
+      "id": 10021,
+      "name": "강철",
+      "sprite_key": "infinite_t5"
+    },
+    {
+      "id": 10022,
+      "name": "강철",
+      "sprite_key": "infinite_t5"
+    },
+    {
+      "id": 10023,
+      "name": "강철",
+      "sprite_key": "infinite_t5"
+    },
+    {
+      "id": 10024,
+      "name": "강철",
+      "sprite_key": "infinite_t5"
+    },
+    {
+      "id": 10025,
+      "name": "강철",
+      "sprite_key": "infinite_t5"
+    },
+    {
+      "id": 10026,
+      "name": "흑철",
+      "sprite_key": "infinite_t6"
+    },
+    {
+      "id": 10027,
+      "name": "흑철",
+      "sprite_key": "infinite_t6"
+    },
+    {
+      "id": 10028,
+      "name": "흑철",
+      "sprite_key": "infinite_t6"
+    },
+    {
+      "id": 10029,
+      "name": "흑철",
+      "sprite_key": "infinite_t6"
+    },
+    {
+      "id": 10030,
+      "name": "흑철",
+      "sprite_key": "infinite_t6"
+    },
+    {
+      "id": 10031,
+      "name": "은",
+      "sprite_key": "infinite_t7"
+    },
+    {
+      "id": 10032,
+      "name": "은",
+      "sprite_key": "infinite_t7"
+    },
+    {
+      "id": 10033,
+      "name": "은",
+      "sprite_key": "infinite_t7"
+    },
+    {
+      "id": 10034,
+      "name": "은",
+      "sprite_key": "infinite_t7"
+    },
+    {
+      "id": 10035,
+      "name": "은",
+      "sprite_key": "infinite_t7"
+    },
+    {
+      "id": 10036,
+      "name": "리튬",
+      "sprite_key": "infinite_t8"
+    },
+    {
+      "id": 10037,
+      "name": "리튬",
+      "sprite_key": "infinite_t8"
+    },
+    {
+      "id": 10038,
+      "name": "리튬",
+      "sprite_key": "infinite_t8"
+    },
+    {
+      "id": 10039,
+      "name": "리튬",
+      "sprite_key": "infinite_t8"
+    },
+    {
+      "id": 10040,
+      "name": "리튬",
+      "sprite_key": "infinite_t8"
+    },
+    {
+      "id": 10041,
+      "name": "운모",
+      "sprite_key": "infinite_t9"
+    },
+    {
+      "id": 10042,
+      "name": "운모",
+      "sprite_key": "infinite_t9"
+    },
+    {
+      "id": 10043,
+      "name": "운모",
+      "sprite_key": "infinite_t9"
+    },
+    {
+      "id": 10044,
+      "name": "운모",
+      "sprite_key": "infinite_t9"
+    },
+    {
+      "id": 10045,
+      "name": "운모",
+      "sprite_key": "infinite_t9"
+    },
+    {
+      "id": 10046,
+      "name": "에메랄드",
+      "sprite_key": "infinite_t10"
+    },
+    {
+      "id": 10047,
+      "name": "에메랄드",
+      "sprite_key": "infinite_t10"
+    },
+    {
+      "id": 10048,
+      "name": "에메랄드",
+      "sprite_key": "infinite_t10"
+    },
+    {
+      "id": 10049,
+      "name": "에메랄드",
+      "sprite_key": "infinite_t10"
+    },
+    {
+      "id": 10050,
+      "name": "에메랄드",
+      "sprite_key": "infinite_t10"
+    },
+    {
+      "id": 10051,
+      "name": "아쿠아마린",
+      "sprite_key": "infinite_t11"
+    },
+    {
+      "id": 10052,
+      "name": "아쿠아마린",
+      "sprite_key": "infinite_t11"
+    },
+    {
+      "id": 10053,
+      "name": "아쿠아마린",
+      "sprite_key": "infinite_t11"
+    },
+    {
+      "id": 10054,
+      "name": "아쿠아마린",
+      "sprite_key": "infinite_t11"
+    },
+    {
+      "id": 10055,
+      "name": "아쿠아마린",
+      "sprite_key": "infinite_t11"
+    },
+    {
+      "id": 10056,
+      "name": "금",
+      "sprite_key": "infinite_t12"
+    },
+    {
+      "id": 10057,
+      "name": "금",
+      "sprite_key": "infinite_t12"
+    },
+    {
+      "id": 10058,
+      "name": "금",
+      "sprite_key": "infinite_t12"
+    },
+    {
+      "id": 10059,
+      "name": "금",
+      "sprite_key": "infinite_t12"
+    },
+    {
+      "id": 10060,
+      "name": "금",
+      "sprite_key": "infinite_t12"
+    },
+    {
+      "id": 10061,
+      "name": "다이아몬드",
+      "sprite_key": "infinite_t13"
+    },
+    {
+      "id": 10062,
+      "name": "다이아몬드",
+      "sprite_key": "infinite_t13"
+    },
+    {
+      "id": 10063,
+      "name": "다이아몬드",
+      "sprite_key": "infinite_t13"
+    },
+    {
+      "id": 10064,
+      "name": "다이아몬드",
+      "sprite_key": "infinite_t13"
+    },
+    {
+      "id": 10065,
+      "name": "다이아몬드",
+      "sprite_key": "infinite_t13"
+    },
+    {
+      "id": 10066,
+      "name": "석영",
+      "sprite_key": "infinite_t14"
+    },
+    {
+      "id": 10067,
+      "name": "석영",
+      "sprite_key": "infinite_t14"
+    },
+    {
+      "id": 10068,
+      "name": "석영",
+      "sprite_key": "infinite_t14"
+    },
+    {
+      "id": 10069,
+      "name": "석영",
+      "sprite_key": "infinite_t14"
+    },
+    {
+      "id": 10070,
+      "name": "석영",
+      "sprite_key": "infinite_t14"
+    },
+    {
+      "id": 10071,
+      "name": "감람석",
+      "sprite_key": "infinite_t15"
+    },
+    {
+      "id": 10072,
+      "name": "감람석",
+      "sprite_key": "infinite_t15"
+    },
+    {
+      "id": 10073,
+      "name": "감람석",
+      "sprite_key": "infinite_t15"
+    },
+    {
+      "id": 10074,
+      "name": "감람석",
+      "sprite_key": "infinite_t15"
+    },
+    {
+      "id": 10075,
+      "name": "감람석",
+      "sprite_key": "infinite_t15"
+    },
+    {
+      "id": 10076,
+      "name": "백금",
+      "sprite_key": "infinite_t16"
+    },
+    {
+      "id": 10077,
+      "name": "백금",
+      "sprite_key": "infinite_t16"
+    },
+    {
+      "id": 10078,
+      "name": "백금",
+      "sprite_key": "infinite_t16"
+    },
+    {
+      "id": 10079,
+      "name": "백금",
+      "sprite_key": "infinite_t16"
+    },
+    {
+      "id": 10080,
+      "name": "백금",
+      "sprite_key": "infinite_t16"
+    },
+    {
+      "id": 10081,
+      "name": "비스무트",
+      "sprite_key": "infinite_t17"
+    },
+    {
+      "id": 10082,
+      "name": "비스무트",
+      "sprite_key": "infinite_t17"
+    },
+    {
+      "id": 10083,
+      "name": "비스무트",
+      "sprite_key": "infinite_t17"
+    },
+    {
+      "id": 10084,
+      "name": "비스무트",
+      "sprite_key": "infinite_t17"
+    },
+    {
+      "id": 10085,
+      "name": "비스무트",
+      "sprite_key": "infinite_t17"
+    },
+    {
+      "id": 10086,
+      "name": "오리할콘",
+      "sprite_key": "infinite_t18"
+    },
+    {
+      "id": 10087,
+      "name": "오리할콘",
+      "sprite_key": "infinite_t18"
+    },
+    {
+      "id": 10088,
+      "name": "오리할콘",
+      "sprite_key": "infinite_t18"
+    },
+    {
+      "id": 10089,
+      "name": "오리할콘",
+      "sprite_key": "infinite_t18"
+    },
+    {
+      "id": 10090,
+      "name": "오리할콘",
+      "sprite_key": "infinite_t18"
+    },
+    {
+      "id": 10091,
+      "name": "토파즈",
+      "sprite_key": "infinite_t19"
+    },
+    {
+      "id": 10092,
+      "name": "토파즈",
+      "sprite_key": "infinite_t19"
+    },
+    {
+      "id": 10093,
+      "name": "토파즈",
+      "sprite_key": "infinite_t19"
+    },
+    {
+      "id": 10094,
+      "name": "토파즈",
+      "sprite_key": "infinite_t19"
+    },
+    {
+      "id": 10095,
+      "name": "토파즈",
+      "sprite_key": "infinite_t19"
+    },
+    {
+      "id": 10096,
+      "name": "문스톤",
+      "sprite_key": "infinite_t20"
+    },
+    {
+      "id": 10097,
+      "name": "문스톤",
+      "sprite_key": "infinite_t20"
+    },
+    {
+      "id": 10098,
+      "name": "문스톤",
+      "sprite_key": "infinite_t20"
+    },
+    {
+      "id": 10099,
+      "name": "문스톤",
+      "sprite_key": "infinite_t20"
+    },
+    {
+      "id": 10100,
+      "name": "문스톤",
+      "sprite_key": "infinite_t20"
+    }
+  ],
+  "infinite_mine": {
+    "reset_time_kst": "00:00",
+    "time_limit_sec": 60,
+    "max_floor": 100,
+    "auto_reward_divisor": 10,
+    "floors": [
+      {
+        "floor": 1,
+        "mineral_info_id": 10001,
+        "hp": 600,
+        "reward_gold": 100,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 2,
+        "mineral_info_id": 10001,
+        "hp": 730,
+        "reward_gold": 100,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 3,
+        "mineral_info_id": 10001,
+        "hp": 888,
+        "reward_gold": 100,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 4,
+        "mineral_info_id": 10001,
+        "hp": 1080,
+        "reward_gold": 200,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 5,
+        "mineral_info_id": 10001,
+        "hp": 1314,
+        "reward_gold": 200,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 6,
+        "mineral_info_id": 10002,
+        "hp": 1599,
+        "reward_gold": 200,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 7,
+        "mineral_info_id": 10002,
+        "hp": 1945,
+        "reward_gold": 300,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 8,
+        "mineral_info_id": 10002,
+        "hp": 2366,
+        "reward_gold": 300,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 9,
+        "mineral_info_id": 10002,
+        "hp": 2878,
+        "reward_gold": 400,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 10,
+        "mineral_info_id": 10002,
+        "hp": 3502,
+        "reward_gold": 400,
+        "reward_crystal": 10,
+        "biome_id": 1
+      },
+      {
+        "floor": 11,
+        "mineral_info_id": 10003,
+        "hp": 4260,
+        "reward_gold": 500,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 12,
+        "mineral_info_id": 10003,
+        "hp": 5182,
+        "reward_gold": 600,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 13,
+        "mineral_info_id": 10003,
+        "hp": 6304,
+        "reward_gold": 600,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 14,
+        "mineral_info_id": 10003,
+        "hp": 7669,
+        "reward_gold": 800,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 15,
+        "mineral_info_id": 10003,
+        "hp": 9330,
+        "reward_gold": 900,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 16,
+        "mineral_info_id": 10004,
+        "hp": 11350,
+        "reward_gold": 900,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 17,
+        "mineral_info_id": 10004,
+        "hp": 13808,
+        "reward_gold": 1200,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 18,
+        "mineral_info_id": 10004,
+        "hp": 16797,
+        "reward_gold": 1400,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 19,
+        "mineral_info_id": 10004,
+        "hp": 20435,
+        "reward_gold": 1400,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 20,
+        "mineral_info_id": 10004,
+        "hp": 24859,
+        "reward_gold": 1700,
+        "reward_crystal": 20,
+        "biome_id": 1
+      },
+      {
+        "floor": 21,
+        "mineral_info_id": 10005,
+        "hp": 30242,
+        "reward_gold": 2000,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 22,
+        "mineral_info_id": 10005,
+        "hp": 36790,
+        "reward_gold": 2100,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 23,
+        "mineral_info_id": 10005,
+        "hp": 44757,
+        "reward_gold": 2500,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 24,
+        "mineral_info_id": 10005,
+        "hp": 54448,
+        "reward_gold": 2800,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 25,
+        "mineral_info_id": 10005,
+        "hp": 66237,
+        "reward_gold": 3200,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 26,
+        "mineral_info_id": 10006,
+        "hp": 80580,
+        "reward_gold": 3600,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 27,
+        "mineral_info_id": 10006,
+        "hp": 98028,
+        "reward_gold": 4100,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 28,
+        "mineral_info_id": 10006,
+        "hp": 119254,
+        "reward_gold": 4600,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 29,
+        "mineral_info_id": 10006,
+        "hp": 145076,
+        "reward_gold": 5100,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 30,
+        "mineral_info_id": 10006,
+        "hp": 176489,
+        "reward_gold": 5600,
+        "reward_crystal": 30,
+        "biome_id": 2
+      },
+      {
+        "floor": 31,
+        "mineral_info_id": 10007,
+        "hp": 214705,
+        "reward_gold": 6100,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 32,
+        "mineral_info_id": 10007,
+        "hp": 261195,
+        "reward_gold": 6500,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 33,
+        "mineral_info_id": 10007,
+        "hp": 317751,
+        "reward_gold": 6900,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 34,
+        "mineral_info_id": 10007,
+        "hp": 386554,
+        "reward_gold": 7400,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 35,
+        "mineral_info_id": 10007,
+        "hp": 470255,
+        "reward_gold": 8200,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 36,
+        "mineral_info_id": 10008,
+        "hp": 572080,
+        "reward_gold": 9100,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 37,
+        "mineral_info_id": 10008,
+        "hp": 695952,
+        "reward_gold": 10400,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 38,
+        "mineral_info_id": 10008,
+        "hp": 846647,
+        "reward_gold": 12000,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 39,
+        "mineral_info_id": 10008,
+        "hp": 1029972,
+        "reward_gold": 13700,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 40,
+        "mineral_info_id": 10008,
+        "hp": 1252992,
+        "reward_gold": 15700,
+        "reward_crystal": 40,
+        "biome_id": 2
+      },
+      {
+        "floor": 41,
+        "mineral_info_id": 10009,
+        "hp": 1524303,
+        "reward_gold": 17800,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 42,
+        "mineral_info_id": 10009,
+        "hp": 1854362,
+        "reward_gold": 20700,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 43,
+        "mineral_info_id": 10009,
+        "hp": 2255888,
+        "reward_gold": 24100,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 44,
+        "mineral_info_id": 10009,
+        "hp": 2744356,
+        "reward_gold": 27900,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 45,
+        "mineral_info_id": 10009,
+        "hp": 3338593,
+        "reward_gold": 32300,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 46,
+        "mineral_info_id": 10010,
+        "hp": 4061500,
+        "reward_gold": 37600,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 47,
+        "mineral_info_id": 10010,
+        "hp": 4940939,
+        "reward_gold": 43600,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 48,
+        "mineral_info_id": 10010,
+        "hp": 6010803,
+        "reward_gold": 50600,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 49,
+        "mineral_info_id": 10010,
+        "hp": 7312325,
+        "reward_gold": 58500,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 50,
+        "mineral_info_id": 10010,
+        "hp": 8895666,
+        "reward_gold": 67500,
+        "reward_crystal": 50,
+        "biome_id": 3
+      },
+      {
+        "floor": 51,
+        "mineral_info_id": 10011,
+        "hp": 10821850,
+        "reward_gold": 77600,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 52,
+        "mineral_info_id": 10011,
+        "hp": 13165110,
+        "reward_gold": 88900,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 53,
+        "mineral_info_id": 10011,
+        "hp": 16015758,
+        "reward_gold": 101400,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 54,
+        "mineral_info_id": 10011,
+        "hp": 19483658,
+        "reward_gold": 116900,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 55,
+        "mineral_info_id": 10011,
+        "hp": 23702465,
+        "reward_gold": 134300,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 56,
+        "mineral_info_id": 10012,
+        "hp": 28834772,
+        "reward_gold": 153800,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 57,
+        "mineral_info_id": 10012,
+        "hp": 35078380,
+        "reward_gold": 175400,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 58,
+        "mineral_info_id": 10012,
+        "hp": 42673919,
+        "reward_gold": 199100,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 59,
+        "mineral_info_id": 10012,
+        "hp": 51914124,
+        "reward_gold": 225000,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 60,
+        "mineral_info_id": 10012,
+        "hp": 63155116,
+        "reward_gold": 252600,
+        "reward_crystal": 60,
+        "biome_id": 3
+      },
+      {
+        "floor": 61,
+        "mineral_info_id": 10013,
+        "hp": 76830125,
+        "reward_gold": 281700,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 62,
+        "mineral_info_id": 10013,
+        "hp": 93466192,
+        "reward_gold": 311600,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 63,
+        "mineral_info_id": 10013,
+        "hp": 113704474,
+        "reward_gold": 350600,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 64,
+        "mineral_info_id": 10013,
+        "hp": 138324961,
+        "reward_gold": 391900,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 65,
+        "mineral_info_id": 10013,
+        "hp": 168276535,
+        "reward_gold": 434700,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 66,
+        "mineral_info_id": 10014,
+        "hp": 204713539,
+        "reward_gold": 477700,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 67,
+        "mineral_info_id": 10014,
+        "hp": 249040266,
+        "reward_gold": 539600,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 68,
+        "mineral_info_id": 10014,
+        "hp": 302965081,
+        "reward_gold": 605900,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 69,
+        "mineral_info_id": 10014,
+        "hp": 368566265,
+        "reward_gold": 675700,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 70,
+        "mineral_info_id": 10014,
+        "hp": 448372105,
+        "reward_gold": 784700,
+        "reward_crystal": 70,
+        "biome_id": 4
+      },
+      {
+        "floor": 71,
+        "mineral_info_id": 10015,
+        "hp": 545458346,
+        "reward_gold": 909100,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 72,
+        "mineral_info_id": 10015,
+        "hp": 663566719,
+        "reward_gold": 1050600,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 73,
+        "mineral_info_id": 10015,
+        "hp": 807249158,
+        "reward_gold": 1210900,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 74,
+        "mineral_info_id": 10015,
+        "hp": 982043229,
+        "reward_gold": 1391200,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 75,
+        "mineral_info_id": 10015,
+        "hp": 1194685549,
+        "reward_gold": 1592900,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 76,
+        "mineral_info_id": 10016,
+        "hp": 1453371418,
+        "reward_gold": 1816700,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 77,
+        "mineral_info_id": 10016,
+        "hp": 1768070671,
+        "reward_gold": 2062700,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 78,
+        "mineral_info_id": 10016,
+        "hp": 2150911913,
+        "reward_gold": 2366000,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 79,
+        "mineral_info_id": 10016,
+        "hp": 2616649964,
+        "reward_gold": 2703900,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 80,
+        "mineral_info_id": 10016,
+        "hp": 3183234512,
+        "reward_gold": 3077100,
+        "reward_crystal": 80,
+        "biome_id": 4
+      },
+      {
+        "floor": 81,
+        "mineral_info_id": 10017,
+        "hp": 3872501900,
+        "reward_gold": 3485300,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 82,
+        "mineral_info_id": 10017,
+        "hp": 4711016707,
+        "reward_gold": 3925800,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 83,
+        "mineral_info_id": 10017,
+        "hp": 5731095552,
+        "reward_gold": 4489400,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 84,
+        "mineral_info_id": 10017,
+        "hp": 6972052587,
+        "reward_gold": 5112800,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 85,
+        "mineral_info_id": 10017,
+        "hp": 8481714681,
+        "reward_gold": 5795800,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 86,
+        "mineral_info_id": 10018,
+        "hp": 10318264676,
+        "reward_gold": 6534900,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 87,
+        "mineral_info_id": 10018,
+        "hp": 12552483776,
+        "reward_gold": 7322300,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 88,
+        "mineral_info_id": 10018,
+        "hp": 15270479475,
+        "reward_gold": 8271500,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 89,
+        "mineral_info_id": 10018,
+        "hp": 18577004165,
+        "reward_gold": 9288500,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 90,
+        "mineral_info_id": 10018,
+        "hp": 22599492328,
+        "reward_gold": 10358100,
+        "reward_crystal": 90,
+        "biome_id": 5
+      },
+      {
+        "floor": 91,
+        "mineral_info_id": 10019,
+        "hp": 27492971900,
+        "reward_gold": 11455400,
+        "reward_crystal": 100,
+        "biome_id": 5
+      },
+      {
+        "floor": 92,
+        "mineral_info_id": 10019,
+        "hp": 33446039094,
+        "reward_gold": 12542300,
+        "reward_crystal": 100,
+        "biome_id": 5
+      },
+      {
+        "floor": 93,
+        "mineral_info_id": 10019,
+        "hp": 40688126956,
+        "reward_gold": 13901800,
+        "reward_crystal": 100,
+        "biome_id": 5
+      },
+      {
+        "floor": 94,
+        "mineral_info_id": 10019,
+        "hp": 49498347787,
+        "reward_gold": 15262000,
+        "reward_crystal": 100,
+        "biome_id": 5
+      },
+      {
+        "floor": 95,
+        "mineral_info_id": 10019,
+        "hp": 60216250217,
+        "reward_gold": 16559500,
+        "reward_crystal": 100,
+        "biome_id": 5
+      },
+      {
+        "floor": 96,
+        "mineral_info_id": 10020,
+        "hp": 73254905513,
+        "reward_gold": 17703300,
+        "reward_crystal": 100,
+        "biome_id": 5
+      },
+      {
+        "floor": 97,
+        "mineral_info_id": 10020,
+        "hp": 89116827474,
+        "reward_gold": 18566000,
+        "reward_crystal": 100,
+        "biome_id": 5
+      },
+      {
+        "floor": 98,
+        "mineral_info_id": 10020,
+        "hp": 108413339468,
+        "reward_gold": 19875800,
+        "reward_crystal": 100,
+        "biome_id": 5
+      },
+      {
+        "floor": 99,
+        "mineral_info_id": 10020,
+        "hp": 131888135022,
+        "reward_gold": 20882300,
+        "reward_crystal": 100,
+        "biome_id": 5
+      },
+      {
+        "floor": 100,
+        "mineral_info_id": 10020,
+        "hp": 160445940000,
+        "reward_gold": 21392800,
+        "reward_crystal": 100,
+        "biome_id": 5
+      }
+    ]
+  },
   "mission_reroll": {
     "reset_time_kst": "00:00",
     "free_rerolls_per_day": 2,

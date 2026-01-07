@@ -1,0 +1,5 @@
+﻿key,value
+time_limit_sec,60
+max_floor,100
+auto_reward_divisor,10
+reset_time_kst,00:00

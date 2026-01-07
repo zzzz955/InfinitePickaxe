@@ -23,6 +23,28 @@ struct MineralMeta {
     uint64_t recommended_max_dps{0};
 };
 
+struct MineralInfoMeta {
+    uint32_t id;
+    std::string name;
+    std::string sprite_key;
+};
+
+struct InfiniteMineFloorMeta {
+    uint32_t floor;
+    uint32_t mineral_info_id;
+    uint64_t hp;
+    uint64_t reward_gold;
+    uint64_t reward_crystal;
+    uint32_t biome_id;
+};
+
+struct InfiniteMineConfig {
+    uint32_t time_limit_sec{60};
+    uint32_t max_floor{100};
+    uint32_t auto_reward_divisor{10};
+    std::string reset_time_kst;
+};
+
 struct MissionMeta {
     uint32_t index{0};
     uint32_t id{0};
@@ -188,6 +210,10 @@ public:
 
     const PickaxeLevel* pickaxe_level(uint32_t level) const;
     const MineralMeta* mineral(uint32_t id) const;
+    const MineralInfoMeta* mineral_info(uint32_t id) const;
+    const InfiniteMineConfig& infinite_mine_config() const { return infinite_mine_config_; }
+    const std::vector<InfiniteMineFloorMeta>& infinite_mine_floors() const { return infinite_mine_floors_; }
+    const InfiniteMineFloorMeta* infinite_mine_floor(uint32_t floor) const;
     const std::vector<MissionMeta>& missions() const { return missions_; }
     const std::vector<MissionMeta>& weekly_missions() const { return weekly_missions_; }
     const std::vector<AchievementMeta>& achievements() const { return achievements_; }
@@ -226,6 +252,10 @@ public:
 private:
     std::unordered_map<uint32_t, PickaxeLevel> pickaxe_levels_;
     std::unordered_map<uint32_t, MineralMeta> minerals_;
+    std::unordered_map<uint32_t, MineralInfoMeta> minerals_info_;
+    std::unordered_map<uint32_t, size_t> infinite_mine_floor_index_by_floor_;
+    std::vector<InfiniteMineFloorMeta> infinite_mine_floors_;
+    InfiniteMineConfig infinite_mine_config_;
     std::vector<MissionMeta> missions_;
     std::vector<MissionMeta> weekly_missions_;
     std::vector<AchievementMeta> achievements_;

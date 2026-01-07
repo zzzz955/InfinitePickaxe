@@ -360,6 +360,57 @@ function buildMinerals() {
   };
 }
 
+function buildMineralsInfo() {
+  const minerals = readCsv('minerals_info.csv').map((row, idx) => {
+    const context = `minerals_info.csv row ${idx + 2}`;
+
+    return {
+      id: toNumber(requireField(row.id, 'id', context), `${context} id`),
+      name: requireField(row.name, 'name', context),
+      sprite_key: requireField(row.sprite_key, 'sprite_key', context),
+    };
+  });
+
+  return {
+    key: 'minerals_info',
+    file: 'minerals_info.json',
+    data: minerals,
+  };
+}
+
+function buildInfiniteMine() {
+  const config = readKeyValueConfig('infinite_mine_config.csv');
+  const floors = readCsv('infinite_mine_floors.csv').map((row, idx) => {
+    const context = `infinite_mine_floors.csv row ${idx + 2}`;
+
+    let rewardGold = toOptionalNumber(row.reward_gold, `${context} reward_gold`);
+    if (rewardGold === null) rewardGold = 0;
+    let rewardCrystal = toOptionalNumber(row.reward_crystal, `${context} reward_crystal`);
+    if (rewardCrystal === null) rewardCrystal = 0;
+
+    return {
+      floor: toNumber(row.floor, `${context} floor`),
+      mineral_info_id: toNumber(row.mineral_info_id, `${context} mineral_info_id`),
+      hp: toNumber(row.hp, `${context} hp`),
+      reward_gold: rewardGold,
+      reward_crystal: rewardCrystal,
+      biome_id: toNumber(row.biome_id, `${context} biome_id`),
+    };
+  });
+
+  return {
+    key: 'infinite_mine',
+    file: 'infinite_mine.json',
+    data: {
+      reset_time_kst: requireField(config.reset_time_kst, 'reset_time_kst', 'infinite_mine_config.csv'),
+      time_limit_sec: toNumber(config.time_limit_sec, 'infinite_mine_config.csv time_limit_sec'),
+      max_floor: toNumber(config.max_floor, 'infinite_mine_config.csv max_floor'),
+      auto_reward_divisor: toNumber(config.auto_reward_divisor, 'infinite_mine_config.csv auto_reward_divisor'),
+      floors,
+    },
+  };
+}
+
 function buildMissionReroll() {
   const row = readKeyValueConfig('mission_reroll.csv');
 
@@ -647,6 +698,8 @@ const builders = [
   buildWeeklyMissions,
   buildAchievements,
   buildMinerals,
+  buildMineralsInfo,
+  buildInfiniteMine,
   buildMissionReroll,
   buildOfflineDefaults,
   buildNewUserDefaults,

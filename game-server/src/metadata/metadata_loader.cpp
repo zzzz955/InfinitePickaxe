@@ -8,6 +8,9 @@ bool MetadataLoader::load(const std::string& base_path) {
         // 기존 데이터 클리어
         pickaxe_levels_.clear();
         minerals_.clear();
+        minerals_info_.clear();
+        infinite_mine_floor_index_by_floor_.clear();
+        infinite_mine_floors_.clear();
         missions_.clear();
         weekly_missions_.clear();
         achievements_.clear();
@@ -34,6 +37,7 @@ bool MetadataLoader::load(const std::string& base_path) {
         achievements_by_id_.clear();
         gem_gacha_ = GemGachaMeta{};
         gem_inventory_config_ = GemInventoryConfig{};
+        infinite_mine_config_ = InfiniteMineConfig{};
 
         // meta_bundle.json 읽기 (번들 기반 파싱)
         std::ifstream f(base_path + "/meta_bundle.json");
@@ -81,6 +85,49 @@ bool MetadataLoader::load(const std::string& base_path) {
                     mm.recommended_min_dps = e.value<uint64_t>("recommended_min_DPS", 0);
                     mm.recommended_max_dps = e.value<uint64_t>("recommended_max_DPS", 0);
                     minerals_[mm.id] = mm;
+                }
+            }
+        }
+
+        // minerals_info
+        if (bundle.contains("minerals_info")) {
+            nlohmann::json j = bundle["minerals_info"];
+            if (j.is_array()) {
+                for (auto& e : j) {
+                    MineralInfoMeta mi;
+                    mi.id = e.value("id", 0);
+                    mi.name = e.value("name", "");
+                    mi.sprite_key = e.value("sprite_key", "");
+                    if (mi.id > 0) {
+                        minerals_info_[mi.id] = mi;
+                    }
+                }
+            }
+        }
+
+        // infinite_mine
+        if (bundle.contains("infinite_mine")) {
+            nlohmann::json j = bundle["infinite_mine"];
+            if (j.is_object()) {
+                infinite_mine_config_.reset_time_kst = j.value("reset_time_kst", "");
+                infinite_mine_config_.time_limit_sec = j.value("time_limit_sec", infinite_mine_config_.time_limit_sec);
+                infinite_mine_config_.max_floor = j.value("max_floor", infinite_mine_config_.max_floor);
+                infinite_mine_config_.auto_reward_divisor = j.value("auto_reward_divisor", infinite_mine_config_.auto_reward_divisor);
+            }
+
+            if (j.contains("floors") && j["floors"].is_array()) {
+                for (auto& e : j["floors"]) {
+                    InfiniteMineFloorMeta floor;
+                    floor.floor = e.value("floor", 0);
+                    floor.mineral_info_id = e.value("mineral_info_id", 0);
+                    floor.hp = e.value<uint64_t>("hp", 0);
+                    floor.reward_gold = e.value<uint64_t>("reward_gold", 0);
+                    floor.reward_crystal = e.value<uint64_t>("reward_crystal", 0);
+                    floor.biome_id = e.value("biome_id", 0);
+                    if (floor.floor > 0) {
+                        infinite_mine_floor_index_by_floor_[floor.floor] = infinite_mine_floors_.size();
+                        infinite_mine_floors_.push_back(floor);
+                    }
                 }
             }
         }
@@ -505,6 +552,18 @@ const MineralMeta* MetadataLoader::mineral(uint32_t id) const {
     auto it = minerals_.find(id);
     if (it == minerals_.end()) return nullptr;
     return &it->second;
+}
+
+const MineralInfoMeta* MetadataLoader::mineral_info(uint32_t id) const {
+    auto it = minerals_info_.find(id);
+    if (it == minerals_info_.end()) return nullptr;
+    return &it->second;
+}
+
+const InfiniteMineFloorMeta* MetadataLoader::infinite_mine_floor(uint32_t floor) const {
+    auto it = infinite_mine_floor_index_by_floor_.find(floor);
+    if (it == infinite_mine_floor_index_by_floor_.end()) return nullptr;
+    return &infinite_mine_floors_[it->second];
 }
 
 const AdTypeMeta* MetadataLoader::ad_meta(const std::string& id) const {
