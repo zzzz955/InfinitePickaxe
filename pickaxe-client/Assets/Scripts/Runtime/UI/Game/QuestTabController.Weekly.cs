@@ -218,7 +218,14 @@ namespace InfinitePickaxe.Client.UI.Game
             if (missions == null || missions.Count == 0) return;
 
             var ordered = new List<WeeklyMissionEntry>(missions);
-            ordered.Sort((a, b) => a.MissionId.CompareTo(b.MissionId));
+            ordered.Sort((a, b) =>
+            {
+                bool aClaimable = IsWeeklyMissionClaimable(a);
+                bool bClaimable = IsWeeklyMissionClaimable(b);
+                int claimCompare = bClaimable.CompareTo(aClaimable);
+                if (claimCompare != 0) return claimCompare;
+                return a.MissionId.CompareTo(b.MissionId);
+            });
 
             foreach (var mission in ordered)
             {
@@ -234,6 +241,12 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             return !string.IsNullOrEmpty(status)
                    && status.Trim().Equals("claimed", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool IsWeeklyMissionClaimable(WeeklyMissionEntry entry)
+        {
+            if (entry == null) return false;
+            return GetStatusState(entry.Status) == QuestMissionItemView.MissionStatusState.Completed;
         }
 
         private void ClearWeeklyMissionCards()
