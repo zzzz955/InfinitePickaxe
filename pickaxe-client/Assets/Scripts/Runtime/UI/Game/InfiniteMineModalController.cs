@@ -22,6 +22,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private RectTransform floorContent;
         [SerializeField] private GameObject floorCardPrefab;
         [SerializeField] private RewardStoveModalController rewardStoveModal;
+        [SerializeField] private InfiniteMineSimulationViewController simulationView;
 
         [Header("Floor List Virtualization")]
         [SerializeField] private float floorItemHeight = 0f;
@@ -122,6 +123,7 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 messageHandler.OnInfiniteMineAutoClaimResult += HandleAutoClaimResult;
                 messageHandler.OnInfiniteMineAutoClaimAllResult += HandleAutoClaimAllResult;
+                messageHandler.OnInfiniteMineChallengeStartResult += HandleChallengeStartResult;
                 messageHandler.OnInfiniteMineChallengeResult += HandleChallengeResult;
             }
 
@@ -140,6 +142,7 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 messageHandler.OnInfiniteMineAutoClaimResult -= HandleAutoClaimResult;
                 messageHandler.OnInfiniteMineAutoClaimAllResult -= HandleAutoClaimAllResult;
+                messageHandler.OnInfiniteMineChallengeStartResult -= HandleChallengeStartResult;
                 messageHandler.OnInfiniteMineChallengeResult -= HandleChallengeResult;
             }
 
@@ -165,6 +168,14 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (result == null || !result.Success) return;
             ShowReward(result.TotalRewardCrystal, result.TotalRewardGold);
+        }
+
+        private void HandleChallengeStartResult(InfiniteMineChallengeStartResult result)
+        {
+            if (result == null || !result.Success) return;
+            AutoBindSimulationView();
+            if (simulationView == null) return;
+            simulationView.Show();
         }
 
         private void HandleChallengeResult(InfiniteMineChallengeResult result)
@@ -785,6 +796,40 @@ namespace InfinitePickaxe.Client.UI.Game
             rewardStoveModal = instance.GetComponent<RewardStoveModalController>();
         }
 
+        private void AutoBindSimulationView()
+        {
+            if (simulationView != null)
+            {
+                if (simulationView.gameObject.scene.IsValid()) return;
+                var instance = Instantiate(simulationView.gameObject, GetOverlayRoot());
+                instance.name = "InfiniteMineSimulationView";
+                instance.SetActive(false);
+                simulationView = instance.GetComponent<InfiniteMineSimulationViewController>();
+                return;
+            }
+
+            var modalObj = GameObject.Find("InfiniteMineSimulationView");
+            if (modalObj != null)
+            {
+                simulationView = modalObj.GetComponent<InfiniteMineSimulationViewController>();
+                return;
+            }
+
+            var prefab = Resources.Load<GameObject>("UI/InfiniteMineSimulationView");
+            if (prefab == null) return;
+            var newInstance = Instantiate(prefab, GetOverlayRoot());
+            newInstance.name = "InfiniteMineSimulationView";
+            newInstance.SetActive(false);
+            simulationView = newInstance.GetComponent<InfiniteMineSimulationViewController>();
+        }
+
+        private Transform GetOverlayRoot()
+        {
+            var overlayObj = GameObject.Find("InfiniteMineOverlayCanvas");
+            if (overlayObj != null) return overlayObj.transform;
+            return transform.root;
+        }
+
         private string FormatResetTimer(ulong resetTimestampMs)
         {
             if (resetTimestampMs == 0) return string.Empty;
@@ -869,6 +914,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             EnsureFloorContent();
             AutoBindRewardStoveModal();
+            AutoBindSimulationView();
         }
 
         private TextMeshProUGUI FindText(string path, string fallbackName)
