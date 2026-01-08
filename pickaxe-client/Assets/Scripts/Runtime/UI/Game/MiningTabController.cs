@@ -1121,7 +1121,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (dpsText != null)
             {
-                var roundedDps = Mathf.FloorToInt(currentDPS);
+                var roundedDps = (ulong)currentDPS;
                 dpsText.text = $"DPS: {roundedDps:N0}";
             }
         }
