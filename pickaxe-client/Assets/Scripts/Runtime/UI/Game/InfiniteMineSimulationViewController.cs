@@ -127,6 +127,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private ulong remainingMsAtSync;
         private ulong lastServerTimestampMs;
         private float lastLocalSyncTime;
+        private long challengeStartTimestampMs = -1;
 
         private readonly List<DamageSpriteEntry> activeDamageSprites = new List<DamageSpriteEntry>();
         private readonly Queue<DamageSpriteLabel> damageSpritePool = new Queue<DamageSpriteLabel>();
@@ -219,6 +220,7 @@ namespace InfinitePickaxe.Client.UI.Game
             currentHp = result.CurrentHp;
             maxHp = result.MaxHp;
             hasActiveChallenge = true;
+            challengeStartTimestampMs = GetResultTimestampMs();
             SyncRemainingTimer(result.RemainingMs, 0);
             UpdateMineralMeta(currentFloor);
             UpdateTopBar();
@@ -313,8 +315,9 @@ namespace InfinitePickaxe.Client.UI.Game
             AutoBindResultModal();
             if (resultModal != null)
             {
+                float clearSeconds = GetClearSecondsFromResults();
                 resultModal.SetSimulationView(this);
-                resultModal.Show(result);
+                resultModal.Show(result, clearSeconds);
             }
         }
 
@@ -363,6 +366,30 @@ namespace InfinitePickaxe.Client.UI.Game
             remainingMsAtSync = remainingMs;
             lastServerTimestampMs = serverTimestamp;
             lastLocalSyncTime = Time.unscaledTime;
+        }
+
+        private float GetClearSecondsFromResults()
+        {
+            if (challengeStartTimestampMs < 0)
+            {
+                return -1f;
+            }
+
+            long endMs = GetResultTimestampMs();
+            long diffMs = endMs - challengeStartTimestampMs;
+            challengeStartTimestampMs = -1;
+            if (diffMs < 0) return -1f;
+            return diffMs / 1000f;
+        }
+
+        private long GetResultTimestampMs()
+        {
+            if (ServerTimeCache.Instance.HasServerTime)
+            {
+                return ServerTimeCache.Instance.NowMs;
+            }
+
+            return (long)(Time.realtimeSinceStartup * 1000f);
         }
 
         private float GetRemainingMsNow()
@@ -1175,6 +1202,7 @@ namespace InfinitePickaxe.Client.UI.Game
             currentHp = 0;
             maxHp = 0;
             hasActiveChallenge = false;
+            challengeStartTimestampMs = -1;
             remainingMsAtSync = 0;
             lastServerTimestampMs = 0;
             targetFillNormalized = 1f;

@@ -14,7 +14,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI currentFloorText;
         [SerializeField] private TextMeshProUGUI nextFloorText;
         [SerializeField] private TextMeshProUGUI rewardTitleText;
-        [SerializeField] private TextMeshProUGUI actionLabelText;
+        [SerializeField] private TextMeshProUGUI clearTimeText;
         [SerializeField] private TextMeshProUGUI countdownText;
 
         [Header("Rewards")]
@@ -31,6 +31,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [Header("Auto Next")]
         [SerializeField] private float autoNextDelaySeconds = 5f;
         [SerializeField] private float blinkIntervalSeconds = 1f;
+        [SerializeField, Range(0.1f, 1f)] private float blinkMinIntensity = 0.4f;
 
         [Header("Raycast Blocker")]
         [SerializeField] private Image raycastBlocker;
@@ -41,6 +42,8 @@ namespace InfinitePickaxe.Client.UI.Game
         private bool lastSuccess;
         private uint currentFloor;
         private uint nextFloor;
+        private Color countdownBaseColor = Color.white;
+        private float lastClearSeconds = -1f;
 
         private const string ClearSuccessText = "\uD074\uB9AC\uC5B4 \uC131\uACF5";
         private const string ClearFailText = "\uD074\uB9AC\uC5B4 \uC2E4\uD328";
@@ -51,6 +54,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private const string ActionNextText = "\uB2E4\uC74C \uC2A4\uD14C\uC774\uC9C0 \uB3C4\uC804";
         private const string ActionRetryText = "\uD604\uC7AC \uC2A4\uD14C\uC774\uC9C0 \uC7AC\uB3C4\uC804";
         private const string CountdownFormat = "{0}\uCD08 \uB4A4 \uB2E4\uC74C \uC2A4\uD14C\uC774\uC9C0\uC5D0 \uB3C4\uC804\uD569\uB2C8\uB2E4";
+        private const string ClearTimeFormat = "\uD074\uB9AC\uC5B4 \uC2DC\uAC04 : {0:0.0}\uCD08";
 
         private void Awake()
         {
@@ -68,7 +72,7 @@ namespace InfinitePickaxe.Client.UI.Game
             simulationView = view;
         }
 
-        public void Show(InfiniteMineChallengeResult result)
+        public void Show(InfiniteMineChallengeResult result, float clearSeconds)
         {
             if (result == null) return;
             EnsureReferences();
@@ -77,6 +81,7 @@ namespace InfinitePickaxe.Client.UI.Game
             lastSuccess = result.Success;
             currentFloor = result.Floor;
             nextFloor = currentFloor < uint.MaxValue ? currentFloor + 1 : currentFloor;
+            lastClearSeconds = clearSeconds;
 
             ApplyResult(result);
             gameObject.SetActive(true);
@@ -84,6 +89,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (lastSuccess)
             {
+                CacheCountdownBaseColor();
                 StartAutoNext();
             }
             else
@@ -95,6 +101,7 @@ namespace InfinitePickaxe.Client.UI.Game
         public void Hide()
         {
             StopAutoNext();
+            lastClearSeconds = -1f;
             if (gameObject.activeSelf)
             {
                 gameObject.SetActive(false);
@@ -147,11 +154,17 @@ namespace InfinitePickaxe.Client.UI.Game
                 rewardCrystalText.text = lastSuccess ? result.RewardCrystal.ToString("N0") : string.Empty;
             }
 
-            string actionText = lastSuccess ? ActionNextText : ActionRetryText;
-            if (actionLabelText != null)
+            if (clearTimeText != null)
             {
-                actionLabelText.text = actionText;
+                bool showClearTime = lastSuccess && lastClearSeconds >= 0f;
+                clearTimeText.gameObject.SetActive(showClearTime);
+                if (showClearTime)
+                {
+                    clearTimeText.text = string.Format(ClearTimeFormat, lastClearSeconds);
+                }
             }
+
+            string actionText = lastSuccess ? ActionNextText : ActionRetryText;
             if (actionButtonText != null)
             {
                 actionButtonText.text = actionText;
@@ -233,22 +246,21 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 countdownText.gameObject.SetActive(false);
             }
+
+            RestoreCountdownColor();
         }
 
         private IEnumerator AutoNextRoutine()
         {
-            int totalSeconds = Mathf.Max(1, Mathf.RoundToInt(autoNextDelaySeconds));
-            bool visible = true;
+            float remainingSeconds = Mathf.Max(0.1f, autoNextDelaySeconds);
+            float blinkPeriod = Mathf.Max(0.1f, blinkIntervalSeconds);
 
-            for (int remaining = totalSeconds; remaining > 0; remaining--)
+            while (remainingSeconds > 0f)
             {
-                UpdateCountdownLabel(remaining);
-                if (countdownText != null)
-                {
-                    countdownText.gameObject.SetActive(visible);
-                }
-                visible = !visible;
-                yield return new WaitForSecondsRealtime(Mathf.Max(0.1f, blinkIntervalSeconds));
+                UpdateCountdownLabel(Mathf.CeilToInt(remainingSeconds));
+                UpdateCountdownColor(blinkPeriod);
+                remainingSeconds -= Time.unscaledDeltaTime;
+                yield return null;
             }
 
             if (!lastSuccess) yield break;
@@ -259,6 +271,36 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (countdownText == null) return;
             countdownText.text = string.Format(CountdownFormat, seconds);
+        }
+
+        private void CacheCountdownBaseColor()
+        {
+            if (countdownText != null)
+            {
+                countdownBaseColor = countdownText.color;
+            }
+        }
+
+        private void RestoreCountdownColor()
+        {
+            if (countdownText != null)
+            {
+                countdownText.color = countdownBaseColor;
+            }
+        }
+
+        private void UpdateCountdownColor(float blinkPeriod)
+        {
+            if (countdownText == null) return;
+
+            float t = Mathf.PingPong(Time.unscaledTime, blinkPeriod) / blinkPeriod;
+            float intensity = Mathf.Lerp(blinkMinIntensity, 1f, t);
+            var baseColor = countdownBaseColor;
+            countdownText.color = new Color(
+                baseColor.r * intensity,
+                baseColor.g * intensity,
+                baseColor.b * intensity,
+                baseColor.a);
         }
 
         private void EnsureReferences()
@@ -285,9 +327,13 @@ namespace InfinitePickaxe.Client.UI.Game
                 rewardTitleText = FindText("RewardTitleText", "RewardTitleText");
             }
 
-            if (actionLabelText == null)
+            if (clearTimeText == null)
             {
-                actionLabelText = FindText("ActionLabelText", "ActionLabelText");
+                clearTimeText = FindText("ClearTimeText", "ClearTimeText");
+                if (clearTimeText == null)
+                {
+                    clearTimeText = FindText("ActionLabelText", "ActionLabelText");
+                }
             }
 
             if (countdownText == null)

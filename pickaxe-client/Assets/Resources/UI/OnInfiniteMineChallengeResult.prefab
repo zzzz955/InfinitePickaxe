@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 5721760634897267252}
   - component: {fileID: 8577043117486727413}
   m_Layer: 5
-  m_Name: actionLabelText
+  m_Name: countdownText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1319,7 +1319,7 @@ GameObject:
   - component: {fileID: 323194643809748285}
   - component: {fileID: 3198430381428994833}
   m_Layer: 0
-  m_Name: countdownText
+  m_Name: ClearTimeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1943,8 +1943,8 @@ MonoBehaviour:
   currentFloorText: {fileID: 2137807177717950105}
   nextFloorText: {fileID: 4283620204506191973}
   rewardTitleText: {fileID: 5041260197145342842}
-  actionLabelText: {fileID: 8577043117486727413}
-  countdownText: {fileID: 3198430381428994833}
+  clearTimeText: {fileID: 3198430381428994833}
+  countdownText: {fileID: 8577043117486727413}
   rewardGoldContainer: {fileID: 2763757051657464177}
   rewardGoldText: {fileID: 4026573561973938515}
   rewardCrystalContainer: {fileID: 8597127018181744726}
@@ -1954,6 +1954,8 @@ MonoBehaviour:
   exitButton: {fileID: 8995842642832886883}
   autoNextDelaySeconds: 5
   blinkIntervalSeconds: 1
+  blinkMinIntensity: 0.4
+  raycastBlocker: {fileID: 0}
 --- !u!1 &8849239515068598777
 GameObject:
   m_ObjectHideFlags: 0
