@@ -1401,10 +1401,10 @@ RectTransform:
   - {fileID: 3452145012184839743}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: -875}
-  m_SizeDelta: {x: 1080, y: 1920}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6305087305329935914
 MonoBehaviour:
@@ -1491,6 +1491,7 @@ MonoBehaviour:
   exitModal: {fileID: 0}
   exitConfirmButton: {fileID: 0}
   exitCancelButton: {fileID: 0}
+  resultModal: {fileID: 0}
   pickaxeSlot1Button: {fileID: 6512336094895195774}
   pickaxeSlot2Button: {fileID: 9155802651984185105}
   pickaxeSlot3Button: {fileID: 7426622884635936839}
