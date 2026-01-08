@@ -144,6 +144,7 @@ namespace InfinitePickaxe.Client.UI.Game
             RegisterPickaxeAtlas();
             Subscribe();
             AutoBindResultModal();
+            ResetViewState();
             HideUiPanel();
             FixHpSliderLayout();
             SyncSlotsFromCache();
@@ -190,6 +191,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (!gameObject.activeSelf)
             {
                 gameObject.SetActive(true);
+                ResetViewState();
             }
             transform.SetAsLastSibling();
         }
@@ -216,6 +218,7 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateHPBar();
             UpdateMineralSprite();
             ClearDamageSprites();
+            CloseExitModal();
             if (resultModal != null)
             {
                 resultModal.Hide();
@@ -299,6 +302,7 @@ namespace InfinitePickaxe.Client.UI.Game
             remainingMsAtSync = 0;
             lastServerTimestampMs = 0;
             UpdateRemainingTimeText();
+            CloseExitModal();
             AutoBindResultModal();
             if (resultModal != null)
             {
@@ -1130,6 +1134,31 @@ namespace InfinitePickaxe.Client.UI.Game
             if (uiRootPanel != null && uiPanelWasActive)
             {
                 uiRootPanel.SetActive(true);
+            }
+        }
+
+        private void ResetViewState()
+        {
+            currentFloor = 0;
+            currentMineralName = string.Empty;
+            currentMineralSpriteKey = string.Empty;
+            currentHp = 0;
+            maxHp = 0;
+            hasActiveChallenge = false;
+            remainingMsAtSync = 0;
+            lastServerTimestampMs = 0;
+            targetFillNormalized = 1f;
+            displayedFillNormalized = 1f;
+            currentFillColor = highColor;
+            hpLayoutFixed = false;
+            ClearDamageSprites();
+            UpdateTopBar();
+            UpdateHPBar();
+            UpdateMineralSprite();
+            CloseExitModal();
+            if (resultModal != null)
+            {
+                resultModal.Hide();
             }
         }
 

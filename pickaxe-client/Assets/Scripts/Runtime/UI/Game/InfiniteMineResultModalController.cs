@@ -32,6 +32,9 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private float autoNextDelaySeconds = 5f;
         [SerializeField] private float blinkIntervalSeconds = 1f;
 
+        [Header("Raycast Blocker")]
+        [SerializeField] private Image raycastBlocker;
+
         private InfiniteMineSimulationViewController simulationView;
         private MessageHandler messageHandler;
         private Coroutine autoNextRoutine;
@@ -260,6 +263,8 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void EnsureReferences()
         {
+            EnsureRaycastBlocker();
+
             if (resultTitleText == null)
             {
                 resultTitleText = FindText("ResultTitleText", "TitleText");
@@ -326,6 +331,34 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 exitButton = FindButton("ExitButton", "ExitButton");
             }
+        }
+
+        private void EnsureRaycastBlocker()
+        {
+            if (raycastBlocker != null) return;
+
+            var blockerTf = transform.Find("RaycastBlocker");
+            if (blockerTf != null)
+            {
+                raycastBlocker = blockerTf.GetComponent<Image>();
+            }
+
+            if (raycastBlocker != null) return;
+
+            var go = new GameObject("RaycastBlocker", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            go.transform.SetParent(transform, false);
+            go.transform.SetAsFirstSibling();
+
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = Vector2.zero;
+            rect.sizeDelta = Vector2.zero;
+
+            raycastBlocker = go.GetComponent<Image>();
+            raycastBlocker.color = new Color(0f, 0f, 0f, 0f);
+            raycastBlocker.raycastTarget = true;
         }
 
         private TextMeshProUGUI FindText(string path, string fallbackName)
