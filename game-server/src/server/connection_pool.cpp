@@ -1,12 +1,25 @@
 #include "connection_pool.h"
 #include <spdlog/spdlog.h>
 
+namespace {
+void ApplyKstTimezone(pqxx::connection& conn) {
+    try {
+        pqxx::work tx(conn);
+        tx.exec("SET TIME ZONE 'Asia/Seoul'");
+        tx.commit();
+    } catch (const std::exception& ex) {
+        spdlog::warn("DB timezone set failed: {}", ex.what());
+    }
+}
+}
+
 ConnectionPool::ConnectionPool(const std::string& conn_str, std::size_t initial_size, std::size_t max_size)
     : conn_str_(conn_str), max_size_(max_size) {
     if (initial_size > max_size_) initial_size = max_size_;
     for (std::size_t i = 0; i < initial_size; ++i) {
         try {
             auto conn = std::make_unique<pqxx::connection>(conn_str_);
+            ApplyKstTimezone(*conn);
             idle_.push_back(std::move(conn));
             ++total_;
         } catch (const std::exception& ex) {
@@ -22,6 +35,7 @@ ConnectionPool::ConnPtr ConnectionPool::acquire() {
         if (total_ < max_size_) {
             try {
                 auto conn = std::make_unique<pqxx::connection>(conn_str_);
+                ApplyKstTimezone(*conn);
                 ++total_;
                 // release captured this
                 return ConnPtr(conn.release(), [this](pqxx::connection* c) { release(c); });
@@ -37,6 +51,7 @@ ConnectionPool::ConnPtr ConnectionPool::acquire() {
     }
     auto conn = std::move(idle_.back());
     idle_.pop_back();
+    ApplyKstTimezone(*conn);
     return ConnPtr(conn.release(), [this](pqxx::connection* c) { release(c); });
 }
 
