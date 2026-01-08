@@ -551,6 +551,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7860528031930453716, guid: 0048398cebdfb1244b90de50ab83d4cb, type: 3}
+      propertyPath: m_Name
+      value: EnterButton
+      objectReference: {fileID: 0}
     - target: {fileID: 8140941508751013176, guid: 0048398cebdfb1244b90de50ab83d4cb, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

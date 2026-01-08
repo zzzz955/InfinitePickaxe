@@ -14,7 +14,6 @@ namespace InfinitePickaxe.Client.UI.Game
     public sealed class InfiniteMineModalController : MonoBehaviour
     {
         [Header("Modal UI")]
-        [SerializeField] private Button backgroundButton;
         [SerializeField] private Button closeButton;
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI resetTimerText;
@@ -24,15 +23,31 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private GameObject floorCardPrefab;
         [SerializeField] private RewardStoveModalController rewardStoveModal;
 
+        [Header("Floor List Virtualization")]
+        [SerializeField] private float floorItemHeight = 0f;
+        [SerializeField] private float floorItemSpacing = 0f;
+        [SerializeField] private int floorItemPaddingTop = 0;
+        [SerializeField] private int floorItemPaddingBottom = 0;
+        [SerializeField] private int floorItemPoolExtra = 2;
+        [SerializeField] private bool disableLayoutComponents = true;
+
         private InfiniteMineMetaResolver metaResolver;
         private InfiniteMineStateCache stateCache;
         private MessageHandler messageHandler;
-        private readonly List<InfiniteMineStageCardView> floorViews = new List<InfiniteMineStageCardView>();
+        private readonly Queue<InfiniteMineStageCardView> floorViewPool = new Queue<InfiniteMineStageCardView>();
+        private readonly Dictionary<int, InfiniteMineStageCardView> activeFloorViews = new Dictionary<int, InfiniteMineStageCardView>();
+        private VerticalLayoutGroup cachedLayoutGroup;
+        private ContentSizeFitter cachedContentSizeFitter;
+        private bool layoutMetricsLoaded;
+        private bool listInitialized;
+        private int cachedMaxFloor;
+        private float cachedContentHeight;
         private bool subscribed;
         private bool stateRequested;
         private bool pendingFocus;
         private uint pendingFocusFloor;
         private Coroutine focusRoutine;
+        private Coroutine resetTimerRoutine;
 
         private void Awake()
         {
@@ -44,12 +59,29 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             Subscribe();
             RequestStateIfNeeded();
+            ResetVirtualListState();
             RefreshAll();
+            StartResetTimerTicker();
         }
 
         private void OnDisable()
         {
             Unsubscribe();
+            UnbindScrollListener();
+            if (focusRoutine != null)
+            {
+                StopCoroutine(focusRoutine);
+                focusRoutine = null;
+            }
+            StopResetTimerTicker();
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus) return;
+            if (!gameObject.activeInHierarchy) return;
+            ResetVirtualListState();
+            RefreshAll();
         }
 
         public void Show()
@@ -62,7 +94,9 @@ namespace InfinitePickaxe.Client.UI.Game
                 gameObject.SetActive(true);
             }
             transform.SetAsLastSibling();
+            ResetVirtualListState();
             RefreshAll();
+            StartResetTimerTicker();
         }
 
         public void Hide()
@@ -175,18 +209,14 @@ namespace InfinitePickaxe.Client.UI.Game
         private void UpdateHeader()
         {
             uint maxFloor = GetMaxFloor();
-            uint highest = stateCache != null && stateCache.HasState ? stateCache.HighestClearedFloor : 0;
+            uint highest = GetHighestClearedFloor(maxFloor);
 
             if (titleText != null)
             {
-                titleText.text = $"INFINITE MINE {highest:N0}/{maxFloor:N0}";
+                titleText.text = $"무한의 갱도 {highest:N0}/{maxFloor:N0}";
             }
 
-            if (resetTimerText != null)
-            {
-                ulong resetMs = stateCache != null && stateCache.HasState ? stateCache.ResetTimestampMs : 0;
-                resetTimerText.text = FormatResetTimer(resetMs);
-            }
+            UpdateResetTimerText();
         }
 
         private void UpdateAutoClaimAllButton()
@@ -212,87 +242,166 @@ namespace InfinitePickaxe.Client.UI.Game
         private void UpdateFloorCards()
         {
             uint maxFloor = GetMaxFloor();
-            EnsureFloorCards(maxFloor);
+            EnsureVirtualList(maxFloor);
+            UpdateVisibleItems();
+        }
 
-            uint highestCleared = stateCache != null && stateCache.HasState ? stateCache.HighestClearedFloor : 0;
-            uint currentChallengeFloor = highestCleared < maxFloor ? highestCleared + 1 : 0;
-            uint divisor = metaResolver != null && metaResolver.AutoRewardDivisor > 0 ? metaResolver.AutoRewardDivisor : 10;
+        private void ResetVirtualListState()
+        {
+            listInitialized = false;
+            layoutMetricsLoaded = false;
+            cachedMaxFloor = 0;
+            cachedContentHeight = 0f;
+            RecycleAllViews();
+        }
 
-            for (uint floor = 1; floor <= maxFloor; floor++)
+        private void EnsureVirtualList(uint maxFloor)
+        {
+            EnsureFloorContent();
+            EnsureLayoutMetrics();
+
+            if (floorContent == null || floorCardPrefab == null)
             {
-                var view = floorViews[(int)floor - 1];
-                if (view == null) continue;
+                return;
+            }
 
-                bool isCleared = floor <= highestCleared && highestCleared > 0;
-                bool isCurrent = currentChallengeFloor > 0 && floor == currentChallengeFloor;
-                bool isLocked = !isCleared && !isCurrent;
+            int maxCount = maxFloor > int.MaxValue ? int.MaxValue : (int)maxFloor;
+            cachedMaxFloor = maxCount;
+            UpdateContentHeight(maxCount);
+            EnsurePoolForViewport(maxCount);
+            listInitialized = true;
+        }
 
-                bool autoClaimable = stateCache != null && stateCache.IsAutoClaimable(floor);
-                bool autoClaimedToday = stateCache != null && stateCache.IsAutoClaimedToday(floor);
+        private void EnsureLayoutMetrics()
+        {
+            if (layoutMetricsLoaded) return;
+            if (floorContent == null) return;
 
-                InfiniteMineFloorMeta floorMeta = null;
-                if (metaResolver != null)
+            cachedLayoutGroup = floorContent.GetComponent<VerticalLayoutGroup>();
+            cachedContentSizeFitter = floorContent.GetComponent<ContentSizeFitter>();
+
+            if (cachedLayoutGroup != null)
+            {
+                if (floorItemSpacing <= 0f)
                 {
-                    metaResolver.TryGetFloor(floor, out floorMeta);
+                    floorItemSpacing = cachedLayoutGroup.spacing;
                 }
 
-                ulong baseGold = floorMeta != null ? floorMeta.RewardGold : 0;
-                uint baseCrystal = floorMeta != null ? (uint)Math.Min(floorMeta.RewardCrystal, uint.MaxValue) : 0;
-
-                bool useAutoReward = isCleared;
-                ulong rewardGold = useAutoReward ? baseGold / divisor : baseGold;
-                uint rewardCrystal = useAutoReward ? (uint)(baseCrystal / divisor) : baseCrystal;
-
-                var data = new InfiniteMineStageCardData
+                if (floorItemPaddingTop == 0 && floorItemPaddingBottom == 0)
                 {
-                    Floor = floor,
-                    IsCleared = isCleared,
-                    IsCurrent = isCurrent,
-                    IsLocked = isLocked,
-                    CanChallenge = isCurrent,
-                    CanAutoClaim = isCleared && autoClaimable,
-                    AutoClaimedToday = autoClaimedToday,
-                    RewardGold = rewardGold,
-                    RewardCrystal = rewardCrystal
-                };
+                    floorItemPaddingTop = cachedLayoutGroup.padding.top;
+                    floorItemPaddingBottom = cachedLayoutGroup.padding.bottom;
+                }
+            }
 
-                view.Apply(data, OnChallengeClicked, OnAutoClaimClicked);
+            if (floorItemHeight <= 0f && floorCardPrefab != null)
+            {
+                var rect = floorCardPrefab.GetComponent<RectTransform>();
+                if (rect != null)
+                {
+                    var height = rect.rect.height;
+                    if (height <= 0f)
+                    {
+                        height = rect.sizeDelta.y;
+                    }
+                    if (height > 0f)
+                    {
+                        floorItemHeight = height;
+                    }
+                }
+
+                if (floorItemHeight <= 0f)
+                {
+                    var layout = floorCardPrefab.GetComponent<LayoutElement>();
+                    if (layout != null)
+                    {
+                        if (layout.preferredHeight > 0f)
+                        {
+                            floorItemHeight = layout.preferredHeight;
+                        }
+                        else if (layout.minHeight > 0f)
+                        {
+                            floorItemHeight = layout.minHeight;
+                        }
+                    }
+                }
+            }
+
+            if (floorItemHeight <= 0f)
+            {
+                floorItemHeight = 200f;
+            }
+
+            if (disableLayoutComponents)
+            {
+                if (cachedLayoutGroup != null) cachedLayoutGroup.enabled = false;
+                if (cachedContentSizeFitter != null) cachedContentSizeFitter.enabled = false;
+            }
+
+            layoutMetricsLoaded = true;
+        }
+
+        private void UpdateContentHeight(int totalCount)
+        {
+            float height = 0f;
+            if (totalCount > 0)
+            {
+                height = floorItemPaddingTop
+                         + floorItemPaddingBottom
+                         + totalCount * floorItemHeight
+                         + (totalCount - 1) * floorItemSpacing;
+            }
+
+            cachedContentHeight = height;
+
+            if (floorContent != null)
+            {
+                var size = floorContent.sizeDelta;
+                size.y = height;
+                floorContent.sizeDelta = size;
             }
         }
 
-        private void EnsureFloorCards(uint maxFloor)
+        private void EnsurePoolForViewport(int totalCount)
         {
-            if (floorContent == null) return;
-            if (floorCardPrefab == null) return;
+            if (floorScrollRect == null || floorContent == null || floorCardPrefab == null) return;
 
-            int maxCount = maxFloor > int.MaxValue ? int.MaxValue : (int)maxFloor;
+            var viewport = floorScrollRect.viewport != null ? floorScrollRect.viewport : floorScrollRect.GetComponent<RectTransform>();
+            float viewportHeight = viewport != null ? viewport.rect.height : 0f;
+            float step = floorItemHeight + floorItemSpacing;
 
-            while (floorViews.Count < maxCount)
+            int visibleCount = 1;
+            if (viewportHeight > 0f && step > 0f)
             {
-                var instance = Instantiate(floorCardPrefab, floorContent, false);
-                instance.name = $"InfiniteMineFloor_{floorViews.Count + 1}";
-                instance.SetActive(true);
-                var view = instance.GetComponentInChildren<InfiniteMineStageCardView>(true);
-                if (view == null)
-                {
-                    view = instance.AddComponent<InfiniteMineStageCardView>();
-                }
-                floorViews.Add(view);
+                visibleCount = Mathf.CeilToInt(viewportHeight / step) + 1;
             }
 
-            for (int i = 0; i < floorViews.Count; i++)
+            int targetPoolSize = Mathf.Min(totalCount, visibleCount + Mathf.Max(0, floorItemPoolExtra));
+            int currentCount = activeFloorViews.Count + floorViewPool.Count;
+
+            while (currentCount < targetPoolSize)
             {
-                var view = floorViews[i];
-                if (view != null)
-                {
-                    view.gameObject.SetActive(i < maxCount);
-                }
+                var view = CreateFloorView();
+                view.gameObject.SetActive(false);
+                floorViewPool.Enqueue(view);
+                currentCount++;
+            }
+        }
+
+        private InfiniteMineStageCardView CreateFloorView()
+        {
+            var instance = Instantiate(floorCardPrefab, floorContent, false);
+            instance.name = "InfiniteMineFloorItem";
+            instance.SetActive(true);
+            var view = instance.GetComponentInChildren<InfiniteMineStageCardView>(true);
+            if (view == null)
+            {
+                view = instance.AddComponent<InfiniteMineStageCardView>();
             }
 
-            if (floorCardPrefab.scene.IsValid() && floorCardPrefab.activeSelf)
-            {
-                floorCardPrefab.SetActive(false);
-            }
+            var rect = view.GetComponent<RectTransform>();
+            PrepareItemRect(rect);
+            return view;
         }
 
         private void EnsureFloorContent()
@@ -314,6 +423,16 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (tf != null) floorContent = tf.GetComponent<RectTransform>();
             }
 
+            if (floorContent != null)
+            {
+                var scale = floorContent.localScale;
+                if (scale.y < 0f)
+                {
+                    scale.y = Mathf.Abs(scale.y);
+                    floorContent.localScale = scale;
+                }
+            }
+
             if (floorCardPrefab == null && floorContent != null)
             {
                 var tf = floorContent.Find("FloorCardPrefab");
@@ -323,6 +442,210 @@ namespace InfinitePickaxe.Client.UI.Game
                 }
                 if (tf != null) floorCardPrefab = tf.gameObject;
             }
+
+            if (floorCardPrefab != null && floorCardPrefab.scene.IsValid() && floorCardPrefab.activeSelf)
+            {
+                floorCardPrefab.SetActive(false);
+            }
+
+            BindScrollListener();
+        }
+
+        private void BindScrollListener()
+        {
+            if (floorScrollRect == null) return;
+            floorScrollRect.onValueChanged.RemoveListener(OnScrollValueChanged);
+            floorScrollRect.onValueChanged.AddListener(OnScrollValueChanged);
+        }
+
+        private void UnbindScrollListener()
+        {
+            if (floorScrollRect == null) return;
+            floorScrollRect.onValueChanged.RemoveListener(OnScrollValueChanged);
+        }
+
+        private void OnScrollValueChanged(Vector2 _)
+        {
+            UpdateVisibleItems();
+        }
+
+        private void UpdateVisibleItems()
+        {
+            if (!listInitialized || cachedMaxFloor <= 0)
+            {
+                RecycleAllViews();
+                return;
+            }
+
+            GetVisibleRange(out var startIndex, out var endIndex);
+            if (endIndex < startIndex)
+            {
+                RecycleAllViews();
+                return;
+            }
+
+            var activeKeys = new List<int>(activeFloorViews.Keys);
+            for (int i = 0; i < activeKeys.Count; i++)
+            {
+                int index = activeKeys[i];
+                if (index < startIndex || index > endIndex)
+                {
+                    RecycleView(index);
+                }
+            }
+
+            uint maxFloor = (uint)cachedMaxFloor;
+            uint highestCleared = GetHighestClearedFloor(maxFloor);
+            uint currentChallengeFloor = highestCleared < maxFloor ? highestCleared + 1 : 0;
+            uint divisor = metaResolver != null && metaResolver.AutoRewardDivisor > 0 ? metaResolver.AutoRewardDivisor : 10;
+
+            for (int index = startIndex; index <= endIndex; index++)
+            {
+                if (!activeFloorViews.TryGetValue(index, out var view) || view == null)
+                {
+                    view = AcquireView();
+                    activeFloorViews[index] = view;
+                }
+
+                PositionView(view, index);
+
+                var data = BuildStageCardData(index, maxFloor, highestCleared, currentChallengeFloor, divisor);
+                view.Apply(data, OnChallengeClicked, OnAutoClaimClicked);
+            }
+        }
+
+        private void GetVisibleRange(out int startIndex, out int endIndex)
+        {
+            startIndex = 0;
+            endIndex = cachedMaxFloor - 1;
+
+            if (floorScrollRect == null || cachedMaxFloor <= 0)
+            {
+                return;
+            }
+
+            var viewport = floorScrollRect.viewport != null ? floorScrollRect.viewport : floorScrollRect.GetComponent<RectTransform>();
+            if (viewport == null)
+            {
+                return;
+            }
+
+            float viewportHeight = viewport.rect.height;
+            float step = floorItemHeight + floorItemSpacing;
+            if (viewportHeight <= 0f || step <= 0f || cachedContentHeight <= viewportHeight)
+            {
+                return;
+            }
+
+            float maxScroll = Mathf.Max(0f, cachedContentHeight - viewportHeight);
+            float scrollY = maxScroll * (1f - floorScrollRect.verticalNormalizedPosition);
+            float startY = scrollY - floorItemPaddingTop;
+
+            int rawStart = Mathf.FloorToInt(startY / step);
+            int visibleCount = Mathf.CeilToInt(viewportHeight / step) + 1;
+            int buffer = Mathf.Max(0, floorItemPoolExtra);
+
+            startIndex = Mathf.Max(0, rawStart - buffer);
+            endIndex = Mathf.Min(cachedMaxFloor - 1, startIndex + visibleCount + buffer * 2);
+        }
+
+        private InfiniteMineStageCardView AcquireView()
+        {
+            InfiniteMineStageCardView view = null;
+            while (floorViewPool.Count > 0 && view == null)
+            {
+                view = floorViewPool.Dequeue();
+            }
+
+            if (view == null)
+            {
+                view = CreateFloorView();
+            }
+
+            view.gameObject.SetActive(true);
+            return view;
+        }
+
+        private void RecycleView(int index)
+        {
+            if (!activeFloorViews.TryGetValue(index, out var view) || view == null) return;
+            activeFloorViews.Remove(index);
+            view.gameObject.SetActive(false);
+            floorViewPool.Enqueue(view);
+        }
+
+        private void RecycleAllViews()
+        {
+            var keys = new List<int>(activeFloorViews.Keys);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                RecycleView(keys[i]);
+            }
+        }
+
+        private void PositionView(InfiniteMineStageCardView view, int index)
+        {
+            if (view == null) return;
+            var rect = view.GetComponent<RectTransform>();
+            if (rect == null) return;
+
+            PrepareItemRect(rect);
+
+            float y = floorItemPaddingTop + index * (floorItemHeight + floorItemSpacing);
+            rect.anchoredPosition = new Vector2(0f, -y);
+        }
+
+        private void PrepareItemRect(RectTransform rect)
+        {
+            if (rect == null) return;
+            rect.anchorMin = new Vector2(0f, 1f);
+            rect.anchorMax = new Vector2(1f, 1f);
+            rect.pivot = new Vector2(0.5f, 1f);
+
+            var size = rect.sizeDelta;
+            size.x = 0f;
+            size.y = floorItemHeight;
+            rect.sizeDelta = size;
+            rect.anchoredPosition = new Vector2(0f, rect.anchoredPosition.y);
+        }
+
+        private InfiniteMineStageCardData BuildStageCardData(int index, uint maxFloor, uint highestCleared, uint currentChallengeFloor, uint divisor)
+        {
+            uint floor = (uint)(index + 1);
+            if (floor > maxFloor) floor = maxFloor;
+
+            bool isCleared = floor <= highestCleared && highestCleared > 0;
+            bool isCurrent = currentChallengeFloor > 0 && floor == currentChallengeFloor;
+            bool isLocked = !isCleared && !isCurrent;
+
+            bool autoClaimable = stateCache != null && stateCache.IsAutoClaimable(floor);
+            bool autoClaimedToday = stateCache != null && stateCache.IsAutoClaimedToday(floor);
+
+            InfiniteMineFloorMeta floorMeta = null;
+            if (metaResolver != null)
+            {
+                metaResolver.TryGetFloor(floor, out floorMeta);
+            }
+
+            ulong baseGold = floorMeta != null ? floorMeta.RewardGold : 0;
+            uint baseCrystal = floorMeta != null ? (uint)Math.Min(floorMeta.RewardCrystal, uint.MaxValue) : 0;
+
+            bool useAutoReward = isCleared;
+            ulong rewardGold = useAutoReward ? baseGold / divisor : baseGold;
+            uint rewardCrystal = useAutoReward ? (uint)(baseCrystal / divisor) : baseCrystal;
+
+            return new InfiniteMineStageCardData
+            {
+                Floor = floor,
+                IsCleared = isCleared,
+                IsCurrent = isCurrent,
+                IsLocked = isLocked,
+                CanChallenge = isCurrent,
+                CanAutoClaim = isCleared && autoClaimable,
+                AutoClaimedToday = autoClaimedToday,
+                RewardGold = rewardGold,
+                RewardCrystal = rewardCrystal
+            };
         }
 
         private void TryFocusPendingFloor()
@@ -351,32 +674,31 @@ namespace InfinitePickaxe.Client.UI.Game
         private void FocusFloor(uint floor)
         {
             if (floorScrollRect == null || floorContent == null) return;
-            if (floor == 0 || floor > (uint)floorViews.Count) return;
+            if (floor == 0) return;
 
-            var target = floorViews[(int)floor - 1];
-            if (target == null) return;
-            var targetRect = target.GetComponent<RectTransform>();
-            if (targetRect == null) return;
+            EnsureLayoutMetrics();
+            EnsureVirtualList(GetMaxFloor());
 
             var viewport = floorScrollRect.viewport != null ? floorScrollRect.viewport : floorScrollRect.GetComponent<RectTransform>();
             if (viewport == null) return;
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(floorContent);
-            Canvas.ForceUpdateCanvases();
-
-            var contentBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(floorContent);
-            var targetBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(floorContent, targetRect);
-            float contentHeight = contentBounds.size.y;
             float viewportHeight = viewport.rect.height;
+            if (viewportHeight <= 0f) return;
+
+            float contentHeight = cachedContentHeight;
             if (contentHeight <= viewportHeight + 0.01f) return;
 
-            float normalized = (targetBounds.center.y - contentBounds.min.y) / contentHeight;
-            float viewportNormalizedHeight = viewportHeight / contentHeight;
-            float desired = Mathf.Clamp01(normalized - viewportNormalizedHeight * 0.5f);
+            uint totalCount = cachedMaxFloor > 0 ? (uint)cachedMaxFloor : GetMaxFloor();
+            uint clampedFloor = floor > totalCount ? totalCount : floor;
+            float step = floorItemHeight + floorItemSpacing;
 
-            var pos = floorScrollRect.normalizedPosition;
-            pos.y = 1f - desired;
-            floorScrollRect.normalizedPosition = pos;
+            float centerY = floorItemPaddingTop + (clampedFloor - 1) * step + floorItemHeight * 0.5f;
+            float maxScroll = Mathf.Max(0f, contentHeight - viewportHeight);
+            float targetScroll = Mathf.Clamp(centerY - viewportHeight * 0.5f, 0f, maxScroll);
+            float normalized = maxScroll > 0f ? 1f - (targetScroll / maxScroll) : 1f;
+
+            floorScrollRect.verticalNormalizedPosition = normalized;
+            UpdateVisibleItems();
         }
 
         private uint GetMaxFloor()
@@ -389,10 +711,31 @@ namespace InfinitePickaxe.Client.UI.Game
             return max == 0 ? 100u : max;
         }
 
+        private uint GetHighestClearedFloor(uint maxFloor)
+        {
+            if (stateCache == null || !stateCache.HasState) return 0;
+
+            uint highest = 0;
+            if (stateCache.FloorStates != null && stateCache.FloorStates.Count > 0)
+            {
+                foreach (var kvp in stateCache.FloorStates)
+                {
+                    if (kvp.Key > highest) highest = kvp.Key;
+                }
+            }
+            else
+            {
+                highest = stateCache.HighestClearedFloor;
+            }
+
+            if (maxFloor > 0 && highest > maxFloor) highest = maxFloor;
+            return highest;
+        }
+
         private uint GetTargetFocusFloor()
         {
             uint maxFloor = GetMaxFloor();
-            uint highest = stateCache != null && stateCache.HasState ? stateCache.HighestClearedFloor : 0;
+            uint highest = GetHighestClearedFloor(maxFloor);
             uint target = highest < maxFloor ? highest + 1 : maxFloor;
             if (maxFloor == 0) return 1;
             if (target < 1) return 1;
@@ -452,14 +795,41 @@ namespace InfinitePickaxe.Client.UI.Game
             return $"{hours:00}:{span.Minutes:00}:{span.Seconds:00}";
         }
 
+        private void UpdateResetTimerText()
+        {
+            if (resetTimerText == null) return;
+            ulong resetMs = stateCache != null && stateCache.HasState ? stateCache.ResetTimestampMs : 0;
+            resetTimerText.text = FormatResetTimer(resetMs);
+        }
+
+        private void StartResetTimerTicker()
+        {
+            if (!gameObject.activeInHierarchy) return;
+            if (resetTimerRoutine != null)
+            {
+                StopCoroutine(resetTimerRoutine);
+            }
+            resetTimerRoutine = StartCoroutine(ResetTimerRoutine());
+        }
+
+        private void StopResetTimerTicker()
+        {
+            if (resetTimerRoutine == null) return;
+            StopCoroutine(resetTimerRoutine);
+            resetTimerRoutine = null;
+        }
+
+        private IEnumerator ResetTimerRoutine()
+        {
+            while (true)
+            {
+                UpdateResetTimerText();
+                yield return new WaitForSecondsRealtime(1f);
+            }
+        }
+
         private void BindButtons()
         {
-            if (backgroundButton != null)
-            {
-                backgroundButton.onClick.RemoveAllListeners();
-                backgroundButton.onClick.AddListener(Hide);
-            }
-
             if (closeButton != null)
             {
                 closeButton.onClick.RemoveAllListeners();
@@ -475,13 +845,6 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void EnsureReferences()
         {
-            if (backgroundButton == null)
-            {
-                var tf = transform.Find("Background");
-                if (tf != null) backgroundButton = tf.GetComponent<Button>();
-                if (backgroundButton == null) backgroundButton = GetComponent<Button>();
-            }
-
             if (closeButton == null)
             {
                 var tf = transform.Find("ModalPanel/CloseButton");
