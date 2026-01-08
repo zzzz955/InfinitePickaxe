@@ -201,7 +201,6 @@ namespace InfinitePickaxe.Client.UI.Game
                 gameObject.SetActive(true);
                 ResetViewState();
             }
-            transform.SetAsLastSibling();
         }
 
         public void Hide()

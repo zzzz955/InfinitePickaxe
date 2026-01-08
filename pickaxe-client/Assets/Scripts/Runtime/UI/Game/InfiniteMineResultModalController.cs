@@ -85,7 +85,6 @@ namespace InfinitePickaxe.Client.UI.Game
 
             ApplyResult(result);
             gameObject.SetActive(true);
-            transform.SetAsLastSibling();
 
             if (lastSuccess)
             {
