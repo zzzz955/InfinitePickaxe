@@ -799,20 +799,21 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void AutoBindSimulationView()
         {
+            if (simulationView != null && simulationView.gameObject.scene.IsValid()) return;
+
+            var existing = FindSimulationViewInScene();
+            if (existing != null)
+            {
+                simulationView = existing;
+                return;
+            }
+
             if (simulationView != null)
             {
-                if (simulationView.gameObject.scene.IsValid()) return;
                 var instance = Instantiate(simulationView.gameObject, GetOverlayRoot());
                 instance.name = "InfiniteMineSimulationView";
                 instance.SetActive(false);
                 simulationView = instance.GetComponent<InfiniteMineSimulationViewController>();
-                return;
-            }
-
-            var modalObj = GameObject.Find("InfiniteMineSimulationView");
-            if (modalObj != null)
-            {
-                simulationView = modalObj.GetComponent<InfiniteMineSimulationViewController>();
                 return;
             }
 
@@ -822,6 +823,34 @@ namespace InfinitePickaxe.Client.UI.Game
             newInstance.name = "InfiniteMineSimulationView";
             newInstance.SetActive(false);
             simulationView = newInstance.GetComponent<InfiniteMineSimulationViewController>();
+        }
+
+        private InfiniteMineSimulationViewController FindSimulationViewInScene()
+        {
+            var views = Resources.FindObjectsOfTypeAll<InfiniteMineSimulationViewController>();
+            if (views == null || views.Length == 0) return null;
+
+            Transform overlay = null;
+            var overlayObj = GameObject.Find("InfiniteMineOverlayCanvas");
+            if (overlayObj != null) overlay = overlayObj.transform;
+
+            InfiniteMineSimulationViewController fallback = null;
+            for (int i = 0; i < views.Length; i++)
+            {
+                var view = views[i];
+                if (view == null) continue;
+                if (!view.gameObject.scene.IsValid()) continue;
+                if (overlay != null && view.transform.IsChildOf(overlay))
+                {
+                    return view;
+                }
+                if (fallback == null)
+                {
+                    fallback = view;
+                }
+            }
+
+            return fallback;
         }
 
         private Transform GetOverlayRoot()

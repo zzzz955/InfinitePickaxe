@@ -47,6 +47,12 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Image pickaxeSlot4Image;
         [SerializeField] private SpriteAtlas pickaxeSpriteAtlas;
 
+        [Header("Gem Slot Icons")]
+        [SerializeField] private GemSlotIconsView slot1GemIcons;
+        [SerializeField] private GemSlotIconsView slot2GemIcons;
+        [SerializeField] private GemSlotIconsView slot3GemIcons;
+        [SerializeField] private GemSlotIconsView slot4GemIcons;
+
         [Header("Mineral Area")]
         [SerializeField] private Image mineralImage;
         [SerializeField] private RectTransform damageSpriteRoot;
@@ -150,6 +156,7 @@ namespace InfinitePickaxe.Client.UI.Game
             SyncSlotsFromCache();
             UpdateSlotLevels();
             UpdatePickaxeSlotSprites();
+            UpdateAllGemIcons();
             UpdateTopBar();
             UpdateRemainingTimeText();
             if (exitModal != null)
@@ -316,6 +323,7 @@ namespace InfinitePickaxe.Client.UI.Game
             SyncSlotsFromCache();
             UpdateSlotLevels();
             UpdatePickaxeSlotSprites();
+            UpdateAllGemIcons();
         }
 
         private void UpdateTopBar()
@@ -627,6 +635,28 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdatePickaxeSlotSprite(pickaxeSlot2Image, 1);
             UpdatePickaxeSlotSprite(pickaxeSlot3Image, 2);
             UpdatePickaxeSlotSprite(pickaxeSlot4Image, 3);
+        }
+
+        private void UpdateAllGemIcons()
+        {
+            UpdateGemIcons(slot1GemIcons, 0);
+            UpdateGemIcons(slot2GemIcons, 1);
+            UpdateGemIcons(slot3GemIcons, 2);
+            UpdateGemIcons(slot4GemIcons, 3);
+        }
+
+        private void UpdateGemIcons(GemSlotIconsView view, uint slotIndex)
+        {
+            if (view == null) return;
+
+            if (slotInfos.TryGetValue(slotIndex, out var slotInfo))
+            {
+                view.UpdateGemSlots(slotInfo.GemSlots);
+            }
+            else
+            {
+                view.UpdateGemSlots(null);
+            }
         }
 
         private void UpdatePickaxeSlotSprite(Image targetImage, uint slotIndex)
@@ -1182,10 +1212,10 @@ namespace InfinitePickaxe.Client.UI.Game
                 return;
             }
 
-            var modalObj = GameObject.Find("InfiniteMineResultModal");
-            if (modalObj != null)
+            var existing = FindResultModalInScene();
+            if (existing != null)
             {
-                resultModal = modalObj.GetComponent<InfiniteMineResultModalController>();
+                resultModal = existing;
                 return;
             }
 
@@ -1195,6 +1225,34 @@ namespace InfinitePickaxe.Client.UI.Game
             newInstance.name = "InfiniteMineResultModal";
             newInstance.SetActive(false);
             resultModal = newInstance.GetComponent<InfiniteMineResultModalController>();
+        }
+
+        private InfiniteMineResultModalController FindResultModalInScene()
+        {
+            var modals = Resources.FindObjectsOfTypeAll<InfiniteMineResultModalController>();
+            if (modals == null || modals.Length == 0) return null;
+
+            Transform overlay = null;
+            var overlayObj = GameObject.Find("InfiniteMineOverlayCanvas");
+            if (overlayObj != null) overlay = overlayObj.transform;
+
+            InfiniteMineResultModalController fallback = null;
+            for (int i = 0; i < modals.Length; i++)
+            {
+                var modal = modals[i];
+                if (modal == null) continue;
+                if (!modal.gameObject.scene.IsValid()) continue;
+                if (overlay != null && modal.transform.IsChildOf(overlay))
+                {
+                    return modal;
+                }
+                if (fallback == null)
+                {
+                    fallback = modal;
+                }
+            }
+
+            return fallback;
         }
 
         private Transform GetOverlayRoot()
@@ -1314,6 +1372,15 @@ namespace InfinitePickaxe.Client.UI.Game
                 pickaxeSlot3Image = GetButtonImage(pickaxeSlot3Button);
             if (pickaxeSlot4Image == null)
                 pickaxeSlot4Image = GetButtonImage(pickaxeSlot4Button);
+
+            if (slot1GemIcons == null)
+                slot1GemIcons = FindGemIcons("PickaxeSlot1");
+            if (slot2GemIcons == null)
+                slot2GemIcons = FindGemIcons("PickaxeSlot2");
+            if (slot3GemIcons == null)
+                slot3GemIcons = FindGemIcons("PickaxeSlot3");
+            if (slot4GemIcons == null)
+                slot4GemIcons = FindGemIcons("PickaxeSlot4");
 
             if (mineralImage == null)
             {
@@ -1435,6 +1502,13 @@ namespace InfinitePickaxe.Client.UI.Game
                 return levelTf.GetComponent<TextMeshProUGUI>();
             }
             return null;
+        }
+
+        private GemSlotIconsView FindGemIcons(string slotName)
+        {
+            var slot = FindChildRecursive(transform, slotName);
+            if (slot == null) return null;
+            return slot.GetComponentInChildren<GemSlotIconsView>(true);
         }
 
         private Transform FindChildRecursive(Transform root, string name)
