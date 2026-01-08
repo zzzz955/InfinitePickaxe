@@ -99,6 +99,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private static Sprite runtimeDefaultSprite;
 
         private MessageHandler messageHandler;
+        private NetworkManager networkManager;
         private PickaxeStateCache pickaxeCache;
         private InfiniteMineMetaResolver infiniteMineMeta;
         private MineralInfoMetaResolver mineralInfoMeta;
@@ -247,6 +248,13 @@ namespace InfinitePickaxe.Client.UI.Game
                 messageHandler.OnInfiniteMineChallengeResult += HandleChallengeResult;
             }
 
+            networkManager ??= NetworkManager.Instance;
+            if (networkManager != null)
+            {
+                networkManager.OnDisconnected += HandleNetworkDisconnected;
+                networkManager.OnReconnecting += HandleNetworkReconnecting;
+            }
+
             if (pickaxeCache != null)
             {
                 pickaxeCache.OnChanged += HandlePickaxeCacheChanged;
@@ -264,6 +272,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 messageHandler.OnInfiniteMineChallengeStartResult -= HandleChallengeStartResult;
                 messageHandler.OnInfiniteMineChallengeUpdate -= HandleChallengeUpdate;
                 messageHandler.OnInfiniteMineChallengeResult -= HandleChallengeResult;
+            }
+
+            if (networkManager != null)
+            {
+                networkManager.OnDisconnected -= HandleNetworkDisconnected;
+                networkManager.OnReconnecting -= HandleNetworkReconnecting;
             }
 
             if (pickaxeCache != null)
@@ -326,6 +340,31 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateSlotLevels();
             UpdatePickaxeSlotSprites();
             UpdateAllGemIcons();
+        }
+
+        private void HandleNetworkDisconnected(string reason)
+        {
+            HandleNetworkInterrupted();
+        }
+
+        private void HandleNetworkReconnecting(string reason)
+        {
+            HandleNetworkInterrupted();
+        }
+
+        private void HandleNetworkInterrupted()
+        {
+            if (!gameObject.activeSelf) return;
+            hasActiveChallenge = false;
+            remainingMsAtSync = 0;
+            lastServerTimestampMs = 0;
+            UpdateRemainingTimeText();
+            CloseExitModal();
+            if (resultModal != null)
+            {
+                resultModal.Hide();
+            }
+            Hide();
         }
 
         private void UpdateTopBar()
