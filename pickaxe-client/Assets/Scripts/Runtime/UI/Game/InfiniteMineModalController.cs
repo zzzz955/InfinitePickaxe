@@ -176,6 +176,7 @@ namespace InfinitePickaxe.Client.UI.Game
             AutoBindSimulationView();
             if (simulationView == null) return;
             simulationView.Show();
+            simulationView.ApplyStartResult(result);
         }
 
         private void HandleChallengeResult(InfiniteMineChallengeResult result)

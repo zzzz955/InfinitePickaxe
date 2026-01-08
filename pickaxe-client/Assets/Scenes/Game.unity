@@ -15847,7 +15847,7 @@ MonoBehaviour:
   totalCount: 7
   freeRefreshCount: 2
   usedRefreshCount: 0
-  rewardStoveModal: {fileID: 0}
+  rewardStoveModal: {fileID: 969159695}
   subTabBar: {fileID: 1749177088}
   dailyTabButton: {fileID: 441693775}
   weeklyTabButton: {fileID: 436539659}
