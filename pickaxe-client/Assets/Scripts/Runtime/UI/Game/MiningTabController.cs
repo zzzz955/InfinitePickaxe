@@ -273,6 +273,7 @@ namespace InfinitePickaxe.Client.UI.Game
             SetupPickaxeSlotUnlockModalButtons();
 
             InitializeSubTabs();
+            InitializeChallengeTab();
 
             // 초기 UI 업데이트
             RefreshData();

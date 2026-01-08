@@ -124,6 +124,14 @@ namespace InfinitePickaxe.Client.Net
         public event Action<GemSlotUnlockResult> OnGemSlotUnlockResult;
         public event Action<GemInventoryExpandResult> OnGemInventoryExpandResult;
 
+        public event Action<InfiniteMineStateResponse> OnInfiniteMineStateResponse;
+        public event Action<InfiniteMineChallengeStartResult> OnInfiniteMineChallengeStartResult;
+        public event Action<InfiniteMineChallengeUpdate> OnInfiniteMineChallengeUpdate;
+        public event Action<InfiniteMineChallengeResult> OnInfiniteMineChallengeResult;
+        public event Action<InfiniteMineAutoClaimResult> OnInfiniteMineAutoClaimResult;
+        public event Action<InfiniteMineAutoClaimAllResult> OnInfiniteMineAutoClaimAllResult;
+        public event Action<InfiniteMineExitResult> OnInfiniteMineExitResult;
+
         #endregion
 
         #region Unity Lifecycle
@@ -335,6 +343,27 @@ namespace InfinitePickaxe.Client.Net
                     case MessageType.GemInventoryExpandResult:
                         HandleGemInventoryExpandResult(envelope.GemInventoryExpandResult);
                         break;
+                    case MessageType.InfiniteMineStateResponse:
+                        HandleInfiniteMineStateResponse(envelope.InfiniteMineStateResponse);
+                        break;
+                    case MessageType.InfiniteMineChallengeStartResult:
+                        HandleInfiniteMineChallengeStartResult(envelope.InfiniteMineChallengeStartResult);
+                        break;
+                    case MessageType.InfiniteMineChallengeUpdate:
+                        HandleInfiniteMineChallengeUpdate(envelope.InfiniteMineChallengeUpdate);
+                        break;
+                    case MessageType.InfiniteMineChallengeResult:
+                        HandleInfiniteMineChallengeResult(envelope.InfiniteMineChallengeResult);
+                        break;
+                    case MessageType.InfiniteMineAutoClaimResult:
+                        HandleInfiniteMineAutoClaimResult(envelope.InfiniteMineAutoClaimResult);
+                        break;
+                    case MessageType.InfiniteMineAutoClaimAllResult:
+                        HandleInfiniteMineAutoClaimAllResult(envelope.InfiniteMineAutoClaimAllResult);
+                        break;
+                    case MessageType.InfiniteMineExitResult:
+                        HandleInfiniteMineExitResult(envelope.InfiniteMineExitResult);
+                        break;
 
                     default:
                         Debug.LogWarning($"처리되지 않은 메시지 타입: {envelope.Type}");
@@ -369,6 +398,7 @@ namespace InfinitePickaxe.Client.Net
             {
                 QuestStateCache.Instance.ResetAll();
                 AchievementStateCache.Instance.ResetAll();
+                InfiniteMineStateCache.Instance.Reset();
             }
             OnHandshakeResult?.Invoke(result);
         }
@@ -1046,6 +1076,81 @@ namespace InfinitePickaxe.Client.Net
             OnGemInventoryExpandResult?.Invoke(result);
         }
 
+        private void HandleInfiniteMineStateResponse(InfiniteMineStateResponse response)
+        {
+            if (response == null) return;
+            InfiniteMineStateCache.Instance.UpdateFromState(response);
+            OnInfiniteMineStateResponse?.Invoke(response);
+        }
+
+        private void HandleInfiniteMineChallengeStartResult(InfiniteMineChallengeStartResult result)
+        {
+            if (result == null) return;
+            OnInfiniteMineChallengeStartResult?.Invoke(result);
+        }
+
+        private void HandleInfiniteMineChallengeUpdate(InfiniteMineChallengeUpdate update)
+        {
+            if (update == null) return;
+            OnInfiniteMineChallengeUpdate?.Invoke(update);
+        }
+
+        private void HandleInfiniteMineChallengeResult(InfiniteMineChallengeResult result)
+        {
+            if (result == null) return;
+            var currencyUpdate = new CurrencyUpdate
+            {
+                Gold = result.TotalGold,
+                Crystal = result.TotalCrystal,
+                Reason = "infinite_mine"
+            };
+            CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+            OnCurrencyUpdate?.Invoke(currencyUpdate);
+            OnInfiniteMineChallengeResult?.Invoke(result);
+        }
+
+        private void HandleInfiniteMineAutoClaimResult(InfiniteMineAutoClaimResult result)
+        {
+            if (result == null) return;
+            if (result.Success)
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = result.TotalGold,
+                    Crystal = result.TotalCrystal,
+                    Reason = "infinite_mine_auto_claim"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+                InfiniteMineStateCache.Instance.ApplyAutoClaimResult(result);
+            }
+            OnInfiniteMineAutoClaimResult?.Invoke(result);
+        }
+
+        private void HandleInfiniteMineAutoClaimAllResult(InfiniteMineAutoClaimAllResult result)
+        {
+            if (result == null) return;
+            if (result.Success)
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = result.TotalGold,
+                    Crystal = result.TotalCrystal,
+                    Reason = "infinite_mine_auto_claim_all"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+                InfiniteMineStateCache.Instance.ApplyAutoClaimAllResult(result);
+            }
+            OnInfiniteMineAutoClaimAllResult?.Invoke(result);
+        }
+
+        private void HandleInfiniteMineExitResult(InfiniteMineExitResult result)
+        {
+            if (result == null) return;
+            OnInfiniteMineExitResult?.Invoke(result);
+        }
+
         #endregion
 
         #region Public Helper Methods
@@ -1462,6 +1567,69 @@ namespace InfinitePickaxe.Client.Net
             {
                 Type = MessageType.GemInventoryExpandRequest,
                 GemInventoryExpandRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestInfiniteMineState()
+        {
+            var request = new InfiniteMineStateRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.InfiniteMineStateRequest,
+                InfiniteMineStateRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestInfiniteMineChallengeStart(uint floor)
+        {
+            if (floor == 0) return;
+            var request = new InfiniteMineChallengeStartRequest
+            {
+                Floor = floor
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.InfiniteMineChallengeStartRequest,
+                InfiniteMineChallengeStartRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestInfiniteMineAutoClaim(uint floor)
+        {
+            if (floor == 0) return;
+            var request = new InfiniteMineAutoClaimRequest
+            {
+                Floor = floor
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.InfiniteMineAutoClaimRequest,
+                InfiniteMineAutoClaimRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestInfiniteMineAutoClaimAll()
+        {
+            var request = new InfiniteMineAutoClaimAllRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.InfiniteMineAutoClaimAllRequest,
+                InfiniteMineAutoClaimAllRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestInfiniteMineExit()
+        {
+            var request = new InfiniteMineExitRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.InfiniteMineExitRequest,
+                InfiniteMineExitRequest = request
             };
             NetworkManager.Instance.SendMessage(envelope);
         }

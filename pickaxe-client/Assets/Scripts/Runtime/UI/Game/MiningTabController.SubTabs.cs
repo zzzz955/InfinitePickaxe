@@ -1,21 +1,24 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Serialization;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
     public partial class MiningTabController
     {
         private const int SubTabNormalIndex = 0;
-        private const int SubTabDailyBossIndex = 1;
+        private const int SubTabChallengeIndex = 1;
         private const int SubTabCompetitionIndex = 2;
 
         [Header("Mining Sub Tabs")]
         [SerializeField] private RectTransform subTabBar;
         [SerializeField] private Button normalTabButton;
-        [SerializeField] private Button dailyBossTabButton;
+        [FormerlySerializedAs("dailyBossTabButton")]
+        [SerializeField] private Button challengeTabButton;
         [SerializeField] private Button competitionTabButton;
         [SerializeField] private GameObject normalTabPanel;
-        [SerializeField] private GameObject dailyBossTabPanel;
+        [FormerlySerializedAs("dailyBossTabPanel")]
+        [SerializeField] private GameObject challengeTabPanel;
         [SerializeField] private GameObject competitionTabPanel;
         [SerializeField] private Color subTabSelectedColor = new Color(0.22f, 0.22f, 0.22f, 0.95f);
         [SerializeField] private Color subTabUnselectedColor = new Color(0.1f, 0.1f, 0.1f, 0.7f);
@@ -56,13 +59,20 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             if (normalTabButton == null) normalTabButton = FindButton("NormalTabButton");
-            if (dailyBossTabButton == null) dailyBossTabButton = FindButton("DailyBossTabButton");
+            if (challengeTabButton == null)
+            {
+                challengeTabButton = FindButton("ChallengeTabButton") ?? FindButton("DailyBossTabButton");
+            }
             if (competitionTabButton == null) competitionTabButton = FindButton("CompetitionTabButton");
 
-            if (dailyBossTabPanel == null)
+            if (challengeTabPanel == null)
             {
-                var dailyBoss = FindChildRecursive(root, "DailyBossPanel");
-                if (dailyBoss != null) dailyBossTabPanel = dailyBoss.gameObject;
+                var challenge = FindChildRecursive(root, "ChallengePanel");
+                if (challenge == null)
+                {
+                    challenge = FindChildRecursive(root, "DailyBossPanel");
+                }
+                if (challenge != null) challengeTabPanel = challenge.gameObject;
             }
 
             if (competitionTabPanel == null)
@@ -71,9 +81,9 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (competition != null) competitionTabPanel = competition.gameObject;
             }
 
-            if (dailyBossTabPanel == null)
+            if (challengeTabPanel == null)
             {
-                Debug.LogWarning("MiningTabController: DailyBossPanel을 찾을 수 없습니다. 스텁 패널을 하이어라키에 추가하세요.");
+                Debug.LogWarning("MiningTabController: ChallengePanel not found. Assign it in the inspector or add to the hierarchy.");
             }
 
             if (competitionTabPanel == null)
@@ -98,10 +108,10 @@ namespace InfinitePickaxe.Client.UI.Game
                 normalTabButton.onClick.AddListener(() => SetSubTab(SubTabNormalIndex));
             }
 
-            if (dailyBossTabButton != null)
+            if (challengeTabButton != null)
             {
-                dailyBossTabButton.onClick.RemoveAllListeners();
-                dailyBossTabButton.onClick.AddListener(() => SetSubTab(SubTabDailyBossIndex));
+                challengeTabButton.onClick.RemoveAllListeners();
+                challengeTabButton.onClick.AddListener(() => SetSubTab(SubTabChallengeIndex));
             }
 
             if (competitionTabButton != null)
@@ -116,18 +126,18 @@ namespace InfinitePickaxe.Client.UI.Game
             currentSubTabIndex = NormalizeSubTabIndex(index);
 
             if (normalTabPanel != null) normalTabPanel.SetActive(currentSubTabIndex == SubTabNormalIndex);
-            if (dailyBossTabPanel != null) dailyBossTabPanel.SetActive(currentSubTabIndex == SubTabDailyBossIndex);
+            if (challengeTabPanel != null) challengeTabPanel.SetActive(currentSubTabIndex == SubTabChallengeIndex);
             if (competitionTabPanel != null) competitionTabPanel.SetActive(currentSubTabIndex == SubTabCompetitionIndex);
 
             UpdateSubTabButton(normalTabButton, currentSubTabIndex == SubTabNormalIndex);
-            UpdateSubTabButton(dailyBossTabButton, currentSubTabIndex == SubTabDailyBossIndex);
+            UpdateSubTabButton(challengeTabButton, currentSubTabIndex == SubTabChallengeIndex);
             UpdateSubTabButton(competitionTabButton, currentSubTabIndex == SubTabCompetitionIndex);
         }
 
         private int NormalizeSubTabIndex(int index)
         {
             index = Mathf.Clamp(index, SubTabNormalIndex, SubTabCompetitionIndex);
-            if (index == SubTabDailyBossIndex && dailyBossTabPanel == null) return SubTabNormalIndex;
+            if (index == SubTabChallengeIndex && challengeTabPanel == null) return SubTabNormalIndex;
             if (index == SubTabCompetitionIndex && competitionTabPanel == null) return SubTabNormalIndex;
             return index;
         }
