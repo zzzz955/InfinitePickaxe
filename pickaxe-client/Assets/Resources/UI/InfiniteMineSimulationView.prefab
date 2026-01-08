@@ -1491,6 +1491,11 @@ MonoBehaviour:
   exitModal: {fileID: 0}
   exitConfirmButton: {fileID: 0}
   exitCancelButton: {fileID: 0}
+  disconnectModal: {fileID: 0}
+  disconnectMessageText: {fileID: 0}
+  disconnectConfirmButton: {fileID: 0}
+  disconnectMessageOverride: "\uC11C\uBC84\uC640 \uC5F0\uACB0\uC774 \uC885\uB8CC\uB418\uC5B4
+    \uC9C4\uD589\uC911\uC774\uB358 \uCF58\uD150\uCE20\uAC00 \uC885\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4"
   resultModal: {fileID: 0}
   pickaxeSlot1Button: {fileID: 6512336094895195774}
   pickaxeSlot2Button: {fileID: 9155802651984185105}
@@ -1512,14 +1517,37 @@ MonoBehaviour:
   mineralImage: {fileID: 2650503119343409814}
   damageSpriteRoot: {fileID: 3491921853584532254}
   damageSpriteLabelPrefab: {fileID: 100000, guid: b7f1c2d3e4f5067890abcdeffedcba12, type: 3}
-  damageSpriteLifetime: 0.9
-  damageSpriteRiseSpeed: 80
-  damageSpriteRandomOffset: {x: 60, y: 0}
+  mineralEffectShader: {fileID: 4800000, guid: 919a3c8db605968499657494103edbef, type: 3}
+  outlineWidthMin: 0.6
+  outlineWidthMax: 2.2
+  outlineColorStart: {r: 1, g: 1, b: 1, a: 1}
+  outlineColorEnd: {r: 0, g: 0, b: 0, a: 1}
+  outlineGradientColors:
+  - {r: 0.9427508, g: 1, b: 0, a: 0}
+  - {r: 0.55903924, g: 1, b: 0, a: 0}
+  - {r: 0, g: 1, b: 0.7615919, a: 0}
+  - {r: 0, g: 0.5316062, b: 1, a: 0}
+  - {r: 0.06951761, g: 0, b: 1, a: 0}
+  - {r: 0.4504962, g: 0, b: 1, a: 0}
+  - {r: 1, g: 0, b: 0.9957261, a: 0}
+  - {r: 1, g: 0, b: 0.361866, a: 0}
+  - {r: 1, g: 0.025686096, b: 0, a: 0}
+  - {r: 1, g: 0.47082895, b: 0, a: 0}
+  outlineColorAlpha: 1
+  outlineAlphaThreshold: 0.1
+  glowStartTier: 11
+  glowStrength: 1
+  glowColor: {r: 1, g: 0.55, b: 0.15, a: 1}
+  glowNoiseScale: 10
+  glowSpeed: 2
+  damageSpriteLifetime: 1
+  damageSpriteRiseSpeed: 90
+  damageSpriteRandomOffset: {x: 60, y: 10}
   damageDigitVerticalJitterRange: {x: -6, y: 6}
-  damageDigitSpacing: -6
+  damageDigitSpacing: -4
   damageDigitMinWidth: 0
-  damageDigitScale: 1
-  damageSpriteStackSpacing: 0
+  damageDigitScale: 0.7
+  damageSpriteStackSpacing: -16
   criticalScale: 1.2
   mineHPText: {fileID: 1398707407037064386}
   mineHPSlider: {fileID: 5699045450965003459}

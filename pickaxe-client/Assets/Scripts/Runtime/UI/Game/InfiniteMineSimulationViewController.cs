@@ -64,6 +64,21 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private RectTransform damageSpriteRoot;
         [SerializeField] private GameObject damageSpriteLabelPrefab;
 
+        [Header("Mineral Effects")]
+        [SerializeField] private Shader mineralEffectShader;
+        [SerializeField] private float outlineWidthMin = 0.6f;
+        [SerializeField] private float outlineWidthMax = 2.2f;
+        [SerializeField] private Color outlineColorStart = Color.white;
+        [SerializeField] private Color outlineColorEnd = Color.black;
+        [SerializeField] private Color[] outlineGradientColors = new Color[0];
+        [SerializeField, Range(0f, 1f)] private float outlineColorAlpha = 1f;
+        [SerializeField, Range(0f, 1f)] private float outlineAlphaThreshold = 0.1f;
+        [SerializeField] private int glowStartTier = 11;
+        [SerializeField] private float glowStrength = 0.7f;
+        [SerializeField] private Color glowColor = new Color(1f, 0.55f, 0.15f, 1f);
+        [SerializeField] private float glowNoiseScale = 10f;
+        [SerializeField] private float glowSpeed = 2f;
+
         [Header("Damage Sprite (Floating)")]
         [SerializeField] private float damageSpriteLifetime = 0.9f;
         [SerializeField] private float damageSpriteRiseSpeed = 80f;
@@ -103,6 +118,14 @@ namespace InfinitePickaxe.Client.UI.Game
         private const string MineralSpriteResourcePrefix = "Sprites/Mineral/";
 
         private static Sprite runtimeDefaultSprite;
+        private Material mineralMaterialInstance;
+        private static readonly int OutlineColorId = Shader.PropertyToID("_OutlineColor");
+        private static readonly int OutlineWidthId = Shader.PropertyToID("_OutlineWidth");
+        private static readonly int OutlineThresholdId = Shader.PropertyToID("_AlphaThreshold");
+        private static readonly int GlowColorId = Shader.PropertyToID("_GlowColor");
+        private static readonly int GlowStrengthId = Shader.PropertyToID("_GlowStrength");
+        private static readonly int GlowNoiseScaleId = Shader.PropertyToID("_GlowNoiseScale");
+        private static readonly int GlowSpeedId = Shader.PropertyToID("_GlowSpeed");
 
         private MessageHandler messageHandler;
         private NetworkManager networkManager;
@@ -189,6 +212,15 @@ namespace InfinitePickaxe.Client.UI.Game
             if (exitModal != null)
             {
                 exitModal.SetActive(false);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (mineralMaterialInstance != null)
+            {
+                Destroy(mineralMaterialInstance);
+                mineralMaterialInstance = null;
             }
         }
 
@@ -641,6 +673,7 @@ namespace InfinitePickaxe.Client.UI.Game
             mineralImage.preserveAspect = true;
             var scale = mineralImage.rectTransform.localScale;
             mineralImage.rectTransform.localScale = new Vector3(Mathf.Abs(scale.x), Mathf.Abs(scale.y), 1f);
+            ApplyMineralEffect();
         }
 
         private Sprite LoadMineralSprite(string spriteKey)
@@ -657,6 +690,101 @@ namespace InfinitePickaxe.Client.UI.Game
                 mineralSpriteCache[spriteKey] = sprite;
             }
             return sprite;
+        }
+
+        private void ApplyMineralEffect()
+        {
+            if (mineralImage == null || mineralImage.sprite == null) return;
+            EnsureMineralMaterial();
+            if (mineralMaterialInstance == null) return;
+
+            int tier = ResolveMineralTier(currentMineralSpriteKey);
+            float tierT = Mathf.Clamp01((tier - 1f) / 9f);
+            float floorStepT = currentFloor == 0 ? 0f : Mathf.Clamp01(((currentFloor - 1f) % 5f) / 4f);
+            float width = Mathf.Lerp(outlineWidthMin, outlineWidthMax, floorStepT);
+            var outlineColor = EvaluateOutlineColor(tierT);
+            outlineColor.a = outlineColorAlpha;
+
+            mineralMaterialInstance.SetColor(OutlineColorId, outlineColor);
+            mineralMaterialInstance.SetFloat(OutlineWidthId, width);
+            mineralMaterialInstance.SetFloat(OutlineThresholdId, outlineAlphaThreshold);
+
+            bool enableGlow = tier >= glowStartTier && glowStrength > 0f;
+            mineralMaterialInstance.SetColor(GlowColorId, glowColor);
+            mineralMaterialInstance.SetFloat(GlowStrengthId, enableGlow ? glowStrength : 0f);
+            mineralMaterialInstance.SetFloat(GlowNoiseScaleId, glowNoiseScale);
+            mineralMaterialInstance.SetFloat(GlowSpeedId, glowSpeed);
+        }
+
+        private Color EvaluateOutlineColor(float t)
+        {
+            EnsureOutlineGradientDefaults();
+            if (outlineGradientColors == null || outlineGradientColors.Length == 0)
+            {
+                return Color.Lerp(outlineColorStart, outlineColorEnd, t);
+            }
+            if (outlineGradientColors.Length == 1)
+            {
+                return outlineGradientColors[0];
+            }
+
+            float segment = 1f / (outlineGradientColors.Length - 1);
+            int index = Mathf.Min(outlineGradientColors.Length - 2, Mathf.FloorToInt(t / segment));
+            float localT = segment > 0f ? (t - segment * index) / segment : 0f;
+            return Color.Lerp(outlineGradientColors[index], outlineGradientColors[index + 1], localT);
+        }
+
+        private void EnsureOutlineGradientDefaults()
+        {
+            if (outlineGradientColors != null && outlineGradientColors.Length > 1) return;
+            outlineGradientColors = new[]
+            {
+                new Color(1f, 1f, 1f, 1f),
+                new Color(1f, 0.93f, 0.55f, 1f),
+                new Color(0.45f, 1f, 0.55f, 1f),
+                new Color(1f, 0.7f, 0.2f, 1f),
+                new Color(1f, 0.25f, 0.25f, 1f),
+                new Color(0f, 0f, 0f, 1f)
+            };
+        }
+
+        private void EnsureMineralMaterial()
+        {
+            if (mineralMaterialInstance != null)
+            {
+                mineralImage.material = mineralMaterialInstance;
+                return;
+            }
+
+            var shader = mineralEffectShader != null
+                ? mineralEffectShader
+                : Shader.Find("UI/InfiniteMineMineralEffect");
+            if (shader == null) return;
+
+            mineralMaterialInstance = new Material(shader)
+            {
+                name = "InfiniteMineMineralEffectInstance"
+            };
+            mineralImage.material = mineralMaterialInstance;
+        }
+
+        private int ResolveMineralTier(string spriteKey)
+        {
+            if (string.IsNullOrEmpty(spriteKey)) return 0;
+            int end = spriteKey.Length - 1;
+            int start = end;
+            while (start >= 0 && char.IsDigit(spriteKey[start]))
+            {
+                start--;
+            }
+            start++;
+            if (start > end) return 0;
+            var number = spriteKey.Substring(start, end - start + 1);
+            if (int.TryParse(number, out int tier))
+            {
+                return tier;
+            }
+            return 0;
         }
 
         private void SyncSlotsFromCache()
