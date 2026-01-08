@@ -35,6 +35,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private InfiniteMineMetaResolver metaResolver;
         private InfiniteMineStateCache stateCache;
         private MessageHandler messageHandler;
+        private NetworkManager networkManager;
         private readonly Queue<InfiniteMineStageCardView> floorViewPool = new Queue<InfiniteMineStageCardView>();
         private readonly Dictionary<int, InfiniteMineStageCardView> activeFloorViews = new Dictionary<int, InfiniteMineStageCardView>();
         private VerticalLayoutGroup cachedLayoutGroup;
@@ -47,6 +48,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private bool stateRequested;
         private bool pendingFocus;
         private uint pendingFocusFloor;
+        private bool pendingReconnectRefresh;
         private Coroutine focusRoutine;
         private Coroutine resetTimerRoutine;
 
@@ -125,6 +127,13 @@ namespace InfinitePickaxe.Client.UI.Game
                 messageHandler.OnInfiniteMineAutoClaimAllResult += HandleAutoClaimAllResult;
                 messageHandler.OnInfiniteMineChallengeStartResult += HandleChallengeStartResult;
                 messageHandler.OnInfiniteMineChallengeResult += HandleChallengeResult;
+                messageHandler.OnHandshakeResult += HandleHandshakeResult;
+            }
+
+            networkManager ??= NetworkManager.Instance;
+            if (networkManager != null)
+            {
+                networkManager.OnReconnecting += HandleNetworkReconnecting;
             }
 
             subscribed = true;
@@ -144,6 +153,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 messageHandler.OnInfiniteMineAutoClaimAllResult -= HandleAutoClaimAllResult;
                 messageHandler.OnInfiniteMineChallengeStartResult -= HandleChallengeStartResult;
                 messageHandler.OnInfiniteMineChallengeResult -= HandleChallengeResult;
+                messageHandler.OnHandshakeResult -= HandleHandshakeResult;
+            }
+
+            if (networkManager != null)
+            {
+                networkManager.OnReconnecting -= HandleNetworkReconnecting;
             }
 
             subscribed = false;
@@ -183,6 +198,29 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             if (result == null || !result.Success) return;
             ShowReward(result.RewardCrystal, result.RewardGold);
+        }
+
+        private void HandleNetworkReconnecting(string reason)
+        {
+            if (!gameObject.activeInHierarchy) return;
+            pendingReconnectRefresh = true;
+        }
+
+        private void HandleHandshakeResult(HandshakeResponse result)
+        {
+            if (result == null || !result.Success) return;
+            if (!gameObject.activeInHierarchy)
+            {
+                pendingReconnectRefresh = false;
+                return;
+            }
+
+            pendingReconnectRefresh = false;
+            stateRequested = false;
+            pendingFocus = true;
+            RequestStateIfNeeded();
+            ResetVirtualListState();
+            RefreshAll();
         }
 
         private void RequestStateIfNeeded()

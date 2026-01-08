@@ -29,6 +29,12 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button exitConfirmButton;
         [SerializeField] private Button exitCancelButton;
 
+        [Header("Disconnect Modal")]
+        [SerializeField] private GameObject disconnectModal;
+        [SerializeField] private TextMeshProUGUI disconnectMessageText;
+        [SerializeField] private Button disconnectConfirmButton;
+        [SerializeField] private string disconnectMessageOverride = "서버와 연결이 종료되어 진행중이던 콘텐츠가 종료되었습니다";
+
         [Header("Result Modal")]
         [SerializeField] private InfiniteMineResultModalController resultModal;
 
@@ -129,6 +135,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private ulong lastServerTimestampMs;
         private float lastLocalSyncTime;
         private long challengeStartTimestampMs = -1;
+        private bool disconnectModalVisible;
 
         private readonly List<DamageSpriteEntry> activeDamageSprites = new List<DamageSpriteEntry>();
         private readonly Queue<DamageSpriteLabel> damageSpritePool = new Queue<DamageSpriteLabel>();
@@ -137,6 +144,9 @@ namespace InfinitePickaxe.Client.UI.Game
         private readonly Sprite[] damageCriticalSprites = new Sprite[10];
         private bool damageFontLoaded;
         private readonly PickaxeSwingState[] swingStates = new PickaxeSwingState[4];
+
+        private const string DisconnectModalResourcePath = "UI/Modal";
+        private const string DefaultDisconnectMessage = "서버와 연결이 종료되어 진행중이던 콘텐츠가 종료되었습니다";
 
         private void Awake()
         {
@@ -165,6 +175,7 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 exitModal.SetActive(false);
             }
+            HideDisconnectModal();
         }
 
         private void OnDisable()
@@ -364,6 +375,7 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 resultModal.Hide();
             }
+            ShowDisconnectModal();
             Hide();
         }
 
@@ -1212,6 +1224,145 @@ namespace InfinitePickaxe.Client.UI.Game
             messageHandler ??= MessageHandler.Instance;
             messageHandler?.RequestInfiniteMineExit();
             Hide();
+        }
+
+        private void ShowDisconnectModal()
+        {
+            AutoBindDisconnectModal();
+            if (disconnectModal == null) return;
+            if (disconnectModalVisible)
+            {
+                return;
+            }
+
+            if (disconnectMessageText != null)
+            {
+                var message = string.IsNullOrEmpty(disconnectMessageOverride)
+                    ? DefaultDisconnectMessage
+                    : disconnectMessageOverride;
+                disconnectMessageText.text = message;
+            }
+
+            disconnectModal.SetActive(true);
+            disconnectModalVisible = true;
+        }
+
+        private void HideDisconnectModal()
+        {
+            if (disconnectModal != null)
+            {
+                disconnectModal.SetActive(false);
+            }
+            disconnectModalVisible = false;
+        }
+
+        private void AutoBindDisconnectModal()
+        {
+            if (disconnectModal == null)
+            {
+                var root = GetOverlayRoot();
+                var child = FindChildRecursive(root, "InfiniteMineDisconnectModal");
+                if (child != null)
+                {
+                    disconnectModal = child.gameObject;
+                }
+            }
+
+            if (disconnectModal == null)
+            {
+                var existing = FindDisconnectModalInScene();
+                if (existing != null)
+                {
+                    disconnectModal = existing;
+                }
+            }
+
+            if (disconnectModal == null)
+            {
+                var prefab = Resources.Load<GameObject>(DisconnectModalResourcePath);
+                if (prefab != null)
+                {
+                    var instance = Instantiate(prefab, GetOverlayRoot());
+                    instance.name = "InfiniteMineDisconnectModal";
+                    instance.SetActive(false);
+                    disconnectModal = instance;
+                }
+            }
+
+            if (disconnectModal == null) return;
+
+            if (disconnectMessageText == null)
+            {
+                var panel = disconnectModal.transform.Find("ModalPanel");
+                if (panel != null)
+                {
+                    var messageTf = FindChildRecursive(panel, "MessageText");
+                    if (messageTf != null)
+                    {
+                        disconnectMessageText = messageTf.GetComponent<TextMeshProUGUI>();
+                    }
+                }
+            }
+
+            if (disconnectConfirmButton == null)
+            {
+                var panel = disconnectModal.transform.Find("ModalPanel");
+                if (panel != null)
+                {
+                    var confirmTf = FindChildRecursive(panel, "ConfirmButton");
+                    if (confirmTf != null)
+                    {
+                        disconnectConfirmButton = confirmTf.GetComponent<Button>();
+                    }
+                }
+            }
+
+            if (disconnectConfirmButton == null)
+            {
+                var panel = disconnectModal.transform.Find("ModalPanel");
+                if (panel != null)
+                {
+                    var closeTf = FindChildRecursive(panel, "CloseButton") ?? FindChildRecursive(panel, "OkButton");
+                    if (closeTf != null)
+                    {
+                        disconnectConfirmButton = closeTf.GetComponent<Button>();
+                    }
+                }
+            }
+
+            if (disconnectConfirmButton == null)
+            {
+                var buttons = disconnectModal.GetComponentsInChildren<Button>(true);
+                if (buttons != null && buttons.Length > 0)
+                {
+                    disconnectConfirmButton = buttons[0];
+                }
+            }
+
+            if (disconnectConfirmButton != null)
+            {
+                disconnectConfirmButton.onClick.RemoveAllListeners();
+                disconnectConfirmButton.onClick.AddListener(HideDisconnectModal);
+            }
+        }
+
+        private GameObject FindDisconnectModalInScene()
+        {
+            var roots = Resources.FindObjectsOfTypeAll<Transform>();
+            if (roots == null || roots.Length == 0) return null;
+
+            for (int i = 0; i < roots.Length; i++)
+            {
+                var tf = roots[i];
+                if (tf == null) continue;
+                if (!tf.gameObject.scene.IsValid()) continue;
+                if (tf.name == "InfiniteMineDisconnectModal")
+                {
+                    return tf.gameObject;
+                }
+            }
+
+            return null;
         }
 
         private void HideUiPanel()
