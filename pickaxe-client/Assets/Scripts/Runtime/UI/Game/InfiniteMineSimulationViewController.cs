@@ -29,6 +29,9 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button exitConfirmButton;
         [SerializeField] private Button exitCancelButton;
 
+        [Header("Result Modal")]
+        [SerializeField] private InfiniteMineResultModalController resultModal;
+
         [Header("Pickaxe Slots")]
         [SerializeField] private Button pickaxeSlot1Button;
         [SerializeField] private Button pickaxeSlot2Button;
@@ -140,6 +143,7 @@ namespace InfinitePickaxe.Client.UI.Game
             BindButtons();
             RegisterPickaxeAtlas();
             Subscribe();
+            AutoBindResultModal();
             HideUiPanel();
             FixHpSliderLayout();
             SyncSlotsFromCache();
@@ -157,6 +161,10 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             Unsubscribe();
             RestoreUiPanel();
+            if (resultModal != null)
+            {
+                resultModal.Hide();
+            }
             if (exitModal != null)
             {
                 exitModal.SetActive(false);
@@ -208,6 +216,10 @@ namespace InfinitePickaxe.Client.UI.Game
             UpdateHPBar();
             UpdateMineralSprite();
             ClearDamageSprites();
+            if (resultModal != null)
+            {
+                resultModal.Hide();
+            }
         }
 
         private void Subscribe()
@@ -287,6 +299,12 @@ namespace InfinitePickaxe.Client.UI.Game
             remainingMsAtSync = 0;
             lastServerTimestampMs = 0;
             UpdateRemainingTimeText();
+            AutoBindResultModal();
+            if (resultModal != null)
+            {
+                resultModal.SetSimulationView(this);
+                resultModal.Show(result);
+            }
         }
 
         private void HandlePickaxeCacheChanged()
@@ -1121,6 +1139,40 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 SpriteAtlasCache.RegisterPickaxeAtlas(pickaxeSpriteAtlas);
             }
+        }
+
+        private void AutoBindResultModal()
+        {
+            if (resultModal != null)
+            {
+                if (resultModal.gameObject.scene.IsValid()) return;
+                var instance = Instantiate(resultModal.gameObject, GetOverlayRoot());
+                instance.name = "InfiniteMineResultModal";
+                instance.SetActive(false);
+                resultModal = instance.GetComponent<InfiniteMineResultModalController>();
+                return;
+            }
+
+            var modalObj = GameObject.Find("InfiniteMineResultModal");
+            if (modalObj != null)
+            {
+                resultModal = modalObj.GetComponent<InfiniteMineResultModalController>();
+                return;
+            }
+
+            var prefab = Resources.Load<GameObject>("UI/InfiniteMineResultModal");
+            if (prefab == null) return;
+            var newInstance = Instantiate(prefab, GetOverlayRoot());
+            newInstance.name = "InfiniteMineResultModal";
+            newInstance.SetActive(false);
+            resultModal = newInstance.GetComponent<InfiniteMineResultModalController>();
+        }
+
+        private Transform GetOverlayRoot()
+        {
+            var overlayObj = GameObject.Find("InfiniteMineOverlayCanvas");
+            if (overlayObj != null) return overlayObj.transform;
+            return transform.root;
         }
 
         private void EnsureMeta()
