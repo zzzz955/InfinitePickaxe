@@ -96,7 +96,7 @@
 | 컬럼 | 타입 | 제약/기본값 | 비고 |
 | --- | --- | --- | --- |
 | user_id | UUID | PK | auth.users 논리 참조 |
-| current_capacity | INTEGER | DEFAULT 48, CHECK 48-128 | 현재 인벤토리 용량 |
+| current_capacity | INTEGER | DEFAULT 48, CHECK >= 0 | 현재 인벤토리 용량 |
 | created_at | TIMESTAMP | DEFAULT now | 생성 |
 | updated_at | TIMESTAMP | DEFAULT now | 업데이트 |
 

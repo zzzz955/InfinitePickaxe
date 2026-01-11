@@ -6,6 +6,7 @@ using System.Linq;
 using Infinitepickaxe;
 using InfinitePickaxe.Client.Net;
 using InfinitePickaxe.Client.Core;
+using InfinitePickaxe.Client.Metadata;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -80,7 +81,9 @@ namespace InfinitePickaxe.Client.UI.Game
         // 보석 인벤토리 데이터 (서버로부터 수신)
         private List<GemInfo> gemInventory = new List<GemInfo>();
         private uint gemInventoryCapacity = 48;
-        private uint maxGemCapacity = 128;
+        private uint maxGemCapacity = 0;
+        private uint gemInventoryExpandCost = 0;
+        private uint gemInventoryExpandStep = 0;
         private bool gemEquipModalRequested;
         private bool isGemDiscardRequested;
 
@@ -727,6 +730,7 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         public void OnGemListResponse(GemListResponse response)
         {
+            EnsureGemInventoryMeta();
             gemInventory = response.Gems.ToList();
             gemInventoryCapacity = response.InventoryCapacity;
 
@@ -886,6 +890,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void UpdateGemGrid()
         {
             if (gemGridContent == null || gemInventoryItemTemplate == null) return;
+            EnsureGemInventoryMeta();
 
             // 기존 아이템 비활성화
             foreach (var item in gemInventoryItemPool)
@@ -919,7 +924,7 @@ namespace InfinitePickaxe.Client.UI.Game
             // 확장 버튼 표시/숨김 (max_capacity 미달 시 표시)
             if (gemEquipExpandButton != null)
             {
-                gemEquipExpandButton.gameObject.SetActive(gemInventoryCapacity < maxGemCapacity);
+                gemEquipExpandButton.gameObject.SetActive(IsGemInventoryExpandable());
             }
         }
 
@@ -963,15 +968,13 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OpenGemInventoryExpandConfirmModal()
         {
             if (gemInventoryExpandConfirmModal == null) return;
+            EnsureGemInventoryMeta();
 
             // 현재 보유 크리스탈 (MessageHandler에서 가져오기)
             uint currentCrystal = UserResourceCache.Instance.Crystal ?? 0;
 
-            // 확장 비용 (메타데이터 또는 하드코딩)
-            uint expandCost = 200;
-
-            // 확장 크기
-            uint expandSize = 8;
+            // 확장 비용 (메타데이터 기준)
+            uint expandCost = gemInventoryExpandCost;
 
             // UI 업데이트
             if (expandConfirmCapacityText != null)
@@ -981,7 +984,9 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (expandConfirmCostText != null)
             {
-                expandConfirmCostText.text = $"필요 크리스탈: {expandCost}";
+                expandConfirmCostText.text = expandCost > 0
+                    ? $"필요 크리스탈: {expandCost}"
+                    : "필요 크리스탈: -";
             }
 
             if (expandConfirmCurrentCrystalText != null)
@@ -992,7 +997,9 @@ namespace InfinitePickaxe.Client.UI.Game
             // 확인 버튼 활성화/비활성화
             if (expandConfirmButton != null)
             {
-                expandConfirmButton.interactable = (currentCrystal >= expandCost && gemInventoryCapacity < maxGemCapacity);
+                expandConfirmButton.interactable = expandCost > 0
+                                                   && currentCrystal >= expandCost
+                                                   && IsGemInventoryExpandable();
             }
 
             gemInventoryExpandConfirmModal.SetActive(true);
@@ -1063,6 +1070,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OpenGemInventoryExpandResultModal(bool success, string errorCode, uint newCapacity)
         {
             if (gemInventoryExpandResultModal == null) return;
+            EnsureGemInventoryMeta();
 
             if (success)
             {
@@ -1075,7 +1083,9 @@ namespace InfinitePickaxe.Client.UI.Game
 
                 if (expandResultMessageText != null)
                 {
-                    uint oldCapacity = gemInventoryCapacity - 8; // 확장 크기 8
+                    uint oldCapacity = gemInventoryExpandStep > 0 && newCapacity >= gemInventoryExpandStep
+                        ? newCapacity - gemInventoryExpandStep
+                        : newCapacity;
                     expandResultMessageText.text = $"보석 가방이 {oldCapacity}에서 {newCapacity}로 확장되었습니다!";
                     expandResultMessageText.color = new Color(0.9f, 0.9f, 0.9f, 1f);
                 }
@@ -1094,7 +1104,9 @@ namespace InfinitePickaxe.Client.UI.Game
                     string message = errorCode switch
                     {
                         "MAX_CAPACITY" => $"최대 용량에 도달했습니다. ({maxGemCapacity}/{maxGemCapacity})",
-                        "INSUFFICIENT_CRYSTAL" => "크리스탈이 부족합니다. (필요: 200)",
+                        "INSUFFICIENT_CRYSTAL" => gemInventoryExpandCost > 0
+                            ? $"크리스탈이 부족합니다. (필요: {gemInventoryExpandCost})"
+                            : "크리스탈이 부족합니다.",
                         _ => $"확장 실패: {errorCode}"
                     };
                     expandResultMessageText.text = message;
@@ -1114,6 +1126,34 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 gemInventoryExpandResultModal.SetActive(false);
             }
+        }
+
+        private void EnsureGemInventoryMeta()
+        {
+            if (MetaRepository.Loaded && gemMetaResolver.MaxCapacity == 0)
+            {
+                gemMetaResolver.Reload();
+            }
+
+            if (gemMetaResolver.MaxCapacity > 0)
+            {
+                maxGemCapacity = gemMetaResolver.MaxCapacity;
+            }
+
+            if (gemMetaResolver.ExpandCost > 0)
+            {
+                gemInventoryExpandCost = gemMetaResolver.ExpandCost;
+            }
+
+            if (gemMetaResolver.ExpandStep > 0)
+            {
+                gemInventoryExpandStep = gemMetaResolver.ExpandStep;
+            }
+        }
+
+        private bool IsGemInventoryExpandable()
+        {
+            return maxGemCapacity == 0 || gemInventoryCapacity < maxGemCapacity;
         }
 
         /// <summary>

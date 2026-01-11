@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS game_schema.user_milestones (
 -- 유저 보석 인벤토리 용량
 CREATE TABLE IF NOT EXISTS game_schema.user_gem_inventory (
     user_id           UUID PRIMARY KEY,
-    current_capacity  INTEGER NOT NULL DEFAULT 48 CHECK (current_capacity BETWEEN 48 AND 128),
+    current_capacity  INTEGER NOT NULL DEFAULT 48 CHECK (current_capacity >= 0),
     created_at        TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at        TIMESTAMP NOT NULL DEFAULT NOW()
 );

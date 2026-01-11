@@ -120,7 +120,8 @@ public:
                                 uint32_t crystal_reward);
     GemSlotUnlockResult unlock_gem_slot(const std::string& pickaxe_slot_id,
                                          uint32_t gem_slot_index, uint32_t crystal_cost);
-    InventoryExpandResult expand_inventory(const std::string& user_id, uint32_t crystal_cost);
+    InventoryExpandResult expand_inventory(const std::string& user_id, uint32_t crystal_cost,
+                                           uint32_t max_capacity, uint32_t expand_step);
 
 private:
     ConnectionPool& pool_;

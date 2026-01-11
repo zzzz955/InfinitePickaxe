@@ -82,7 +82,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Transform gridContent;
         [SerializeField] private GemGridItemView gemItemTemplate;
         [SerializeField] private int initialCapacity = 48;
-        [SerializeField] private int maxCapacity = 128;
+        [SerializeField] private int maxCapacity = 0;
         [SerializeField] private int capacityStep = 8;
         [SerializeField] private Button expandRowButton;
         [SerializeField] private TextMeshProUGUI expandCostText;
@@ -181,7 +181,8 @@ namespace InfinitePickaxe.Client.UI.Game
         private void Awake()
         {
             ApplyMetaInventoryConfig();
-            currentCapacity = Mathf.Clamp(initialCapacity, capacityStep, maxCapacity);
+            int clampMax = maxCapacity > 0 ? maxCapacity : int.MaxValue;
+            currentCapacity = Mathf.Clamp(initialCapacity, capacityStep, clampMax);
             BindFilterButtons();
             BindModeButtons();
             BindActionButtons();
@@ -210,6 +211,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             SubscribeMessageHandler();
             SubscribeCache();
+            EnsureMetaInventoryConfig();
             if (!useStubData)
             {
                 RequestGemListIfNeeded();
@@ -1433,6 +1435,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         private void UpdateExpandButtonState()
         {
+            EnsureMetaInventoryConfig();
             if (expandRowButton != null)
             {
                 bool canExpand = maxCapacity == 0 || currentCapacity < maxCapacity;
@@ -1463,6 +1466,23 @@ namespace InfinitePickaxe.Client.UI.Game
             }
         }
 
+        private void EnsureMetaInventoryConfig()
+        {
+            if (!MetaRepository.Loaded) return;
+
+            if (metaResolver.MaxCapacity == 0 && metaResolver.BaseCapacity == 0 && metaResolver.ExpandStep == 0 && metaResolver.ExpandCost == 0)
+            {
+                metaResolver.Reload();
+            }
+
+            ApplyMetaInventoryConfig();
+
+            if (maxCapacity > 0 && currentCapacity > maxCapacity)
+            {
+                currentCapacity = maxCapacity;
+            }
+        }
+
         private void ApplyMetaInventoryConfig()
         {
             if (metaResolver.BaseCapacity > 0) initialCapacity = (int)metaResolver.BaseCapacity;
@@ -1473,6 +1493,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void LoadGemsFromCache()
         {
             if (gemCache == null) return;
+            EnsureMetaInventoryConfig();
 
             allGems.Clear();
             gemByInstanceId.Clear();

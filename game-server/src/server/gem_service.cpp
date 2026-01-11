@@ -985,7 +985,8 @@ infinitepickaxe::GemInventoryExpandResult GemService::handle_inventory_expand(co
     const auto& inv_config = meta_.gem_inventory_config();
 
     // Repository 호출
-    auto expand_result = gem_repo_.expand_inventory(user_id, inv_config.expand_cost);
+    auto expand_result = gem_repo_.expand_inventory(user_id, inv_config.expand_cost, inv_config.max_capacity,
+                                                    inv_config.expand_step);
 
     if (!expand_result.success) {
         result.set_success(false);

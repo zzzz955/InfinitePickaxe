@@ -643,7 +643,8 @@ GemSlotUnlockResult GemRepository::unlock_gem_slot(const std::string& pickaxe_sl
     return result;
 }
 
-InventoryExpandResult GemRepository::expand_inventory(const std::string& user_id, uint32_t crystal_cost) {
+InventoryExpandResult GemRepository::expand_inventory(const std::string& user_id, uint32_t crystal_cost,
+                                                      uint32_t max_capacity, uint32_t expand_step) {
     InventoryExpandResult result;
     try {
         auto conn = pool_.acquire();
@@ -656,8 +657,8 @@ InventoryExpandResult GemRepository::expand_inventory(const std::string& user_id
 
         uint32_t current_capacity = inv_row[0].as<uint32_t>();
 
-        // 최대 용량 확인 (128)
-        if (current_capacity >= 128) {
+        // 최대 용량 확인
+        if (current_capacity >= max_capacity) {
             result.max_capacity_reached = true;
             return result;
         }
@@ -677,8 +678,8 @@ InventoryExpandResult GemRepository::expand_inventory(const std::string& user_id
 
         result.remaining_crystal = crystal_row[0][0].as<uint32_t>();
 
-        // 용량 확장 (8칸씩)
-        uint32_t new_capacity = std::min(current_capacity + 8, 128u);
+        // 용량 확장
+        uint32_t new_capacity = std::min(current_capacity + expand_step, max_capacity);
 
         tx.exec_params(
             "UPDATE game_schema.user_gem_inventory "
