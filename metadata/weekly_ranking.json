@@ -1,0 +1,102 @@
+{
+  "reset_weekday_kst": "MON",
+  "reset_time_kst": "00:00",
+  "rewards": [
+    {
+      "rank_min": 1,
+      "rank_max": 1,
+      "reward_index": 1,
+      "reward_type": "crystal",
+      "amount": 1000,
+      "template_id": 1
+    },
+    {
+      "rank_min": 1,
+      "rank_max": 1,
+      "reward_index": 2,
+      "reward_type": "gold",
+      "amount": 1000000,
+      "template_id": 1
+    },
+    {
+      "rank_min": 2,
+      "rank_max": 10,
+      "reward_index": 1,
+      "reward_type": "crystal",
+      "amount": 500,
+      "template_id": 1
+    },
+    {
+      "rank_min": 2,
+      "rank_max": 10,
+      "reward_index": 2,
+      "reward_type": "gold",
+      "amount": 500000,
+      "template_id": 1
+    },
+    {
+      "rank_min": 11,
+      "rank_max": 50,
+      "reward_index": 1,
+      "reward_type": "crystal",
+      "amount": 200,
+      "template_id": 1
+    },
+    {
+      "rank_min": 11,
+      "rank_max": 50,
+      "reward_index": 2,
+      "reward_type": "gold",
+      "amount": 200000,
+      "template_id": 1
+    },
+    {
+      "rank_min": 51,
+      "rank_max": 100,
+      "reward_index": 1,
+      "reward_type": "crystal",
+      "amount": 100,
+      "template_id": 1
+    },
+    {
+      "rank_min": 51,
+      "rank_max": 100,
+      "reward_index": 2,
+      "reward_type": "gold",
+      "amount": 100000,
+      "template_id": 1
+    },
+    {
+      "rank_min": 51,
+      "rank_max": 100,
+      "reward_index": 1,
+      "reward_type": "crystal",
+      "amount": 100,
+      "template_id": 1
+    },
+    {
+      "rank_min": 51,
+      "rank_max": 100,
+      "reward_index": 2,
+      "reward_type": "gold",
+      "amount": 100000,
+      "template_id": 1
+    },
+    {
+      "rank_min": 101,
+      "rank_max": 1000,
+      "reward_index": 1,
+      "reward_type": "crystal",
+      "amount": 50,
+      "template_id": 1
+    },
+    {
+      "rank_min": 101,
+      "rank_max": 1000,
+      "reward_index": 2,
+      "reward_type": "gold",
+      "amount": 50000,
+      "template_id": 1
+    }
+  ]
+}

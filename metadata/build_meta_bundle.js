@@ -439,6 +439,73 @@ function buildOfflineDefaults() {
   };
 }
 
+function buildMail() {
+  const config = readKeyValueConfig('mail_config.csv');
+
+  const templates = readCsv('mail_templates.csv').map((row, idx) => {
+    const context = `mail_templates.csv row ${idx + 2}`;
+    const entry = {
+      template_id: toNumber(requireField(row.template_id, 'template_id', context), `${context} template_id`),
+      mail_type: requireField(row.mail_type, 'mail_type', context),
+      title: requireField(row.title, 'title', context),
+      body: requireField(row.body, 'body', context),
+      sender: row.sender !== undefined ? row.sender : ''
+    };
+
+    if (row.default_expire_days !== undefined && String(row.default_expire_days).trim() !== '') {
+      entry.default_expire_days = toNumber(row.default_expire_days, `${context} default_expire_days`);
+    }
+
+    return entry;
+  });
+
+  return {
+    key: 'mail',
+    file: 'mail.json',
+    data: {
+      max_mail_count: toNumber(config.max_mail_count, 'mail_config.csv max_mail_count'),
+      expire_days: toNumber(config.expire_days, 'mail_config.csv expire_days'),
+      claim_all_limit: toNumber(config.claim_all_limit, 'mail_config.csv claim_all_limit'),
+      default_list_limit: toNumber(config.default_list_limit, 'mail_config.csv default_list_limit'),
+      templates
+    }
+  };
+}
+
+function buildWeeklyRanking() {
+  const config = readKeyValueConfig('weekly_ranking_config.csv');
+
+  const rewards = readCsv('weekly_ranking_rewards.csv').map((row, idx) => {
+    const context = `weekly_ranking_rewards.csv row ${idx + 2}`;
+    const rewardKey = row.reward_key !== undefined ? String(row.reward_key).trim() : '';
+
+    const entry = {
+      rank_min: toNumber(requireField(row.rank_min, 'rank_min', context), `${context} rank_min`),
+      rank_max: toNumber(requireField(row.rank_max, 'rank_max', context), `${context} rank_max`),
+      reward_index: toNumber(requireField(row.reward_index, 'reward_index', context), `${context} reward_index`),
+      reward_type: requireField(row.reward_type, 'reward_type', context),
+      amount: toNumber(requireField(row.amount, 'amount', context), `${context} amount`),
+      template_id: toNumber(requireField(row.template_id, 'template_id', context), `${context} template_id`)
+    };
+
+    if (rewardKey !== '') {
+      entry.reward_key = rewardKey;
+    }
+
+    return entry;
+  });
+
+  return {
+    key: 'weekly_ranking',
+    file: 'weekly_ranking.json',
+    data: {
+      reset_weekday_kst: requireField(config.reset_weekday_kst, 'reset_weekday_kst', 'weekly_ranking_config.csv'),
+      reset_time_kst: requireField(config.reset_time_kst, 'reset_time_kst', 'weekly_ranking_config.csv'),
+      rewards
+    }
+  };
+}
+
 function buildNewUserDefaults() {
   const row = readKeyValueConfig('new_user_defaults.csv');
   const pickaxeSlots =
@@ -702,6 +769,8 @@ const builders = [
   buildInfiniteMine,
   buildMissionReroll,
   buildOfflineDefaults,
+  buildMail,
+  buildWeeklyRanking,
   buildNewUserDefaults,
   buildPickaxeLevels,
   buildPickaxeSlotUnlockCosts,

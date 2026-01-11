@@ -1,0 +1,5 @@
+key,value
+max_mail_count,100
+expire_days,365
+claim_all_limit,50
+default_list_limit,50

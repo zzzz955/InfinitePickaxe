@@ -19,6 +19,14 @@
 - `ads_config.csv`: 광고 시스템 설정
 - `ads.csv`: 광고 타입 정의 (강화 할인, 미션 리롤, 크리스탈 보상)
 
+### 우편함
+- `mail_config.csv`: 우편함 설정 (보관 한도, 만료 기간 등)
+- `mail_templates.csv`: 우편 템플릿 정의
+
+### 주간 랭킹
+- `weekly_ranking_config.csv`: 주간 랭킹 리셋 설정
+- `weekly_ranking_rewards.csv`: 주간 랭킹 보상 테이블
+
 ### 기타 설정
 - `mission_reroll.csv`: 미션 리롤 규칙
 - `offline_defaults.csv`: 오프라인 보상 기본값

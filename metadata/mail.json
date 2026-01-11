@@ -1,0 +1,56 @@
+{
+  "max_mail_count": 100,
+  "expire_days": 365,
+  "claim_all_limit": 50,
+  "default_list_limit": 50,
+  "templates": [
+    {
+      "template_id": 1,
+      "mail_type": "ranking",
+      "title": "최강의 채굴자 주간 랭킹 보상",
+      "body": "용사님의 최강의 채굴자 주간 순위는 {rank}위입니다. 기간 내에 보상을 수령해 주세요.",
+      "sender": "시스템",
+      "default_expire_days": 7
+    },
+    {
+      "template_id": 2,
+      "mail_type": "system",
+      "title": "이슈 보상",
+      "body": "이슈 발생에 따른 보상입니다. 기간 내에 보상을 수령해 주세요.",
+      "sender": "시스템",
+      "default_expire_days": 30
+    },
+    {
+      "template_id": 3,
+      "mail_type": "system",
+      "title": "시스템 보상",
+      "body": "요청에 따른 보상을 지급해 드렸습니다. 기간 내에 보상을 수령해 주세요.",
+      "sender": "시스템",
+      "default_expire_days": 30
+    },
+    {
+      "template_id": 4,
+      "mail_type": "system",
+      "title": "아이템 구매",
+      "body": "아이템 구매에 따른 보상이 지급되었습니다. 기간 내에 보상을 수령해 주세요.",
+      "sender": "시스템",
+      "default_expire_days": 14
+    },
+    {
+      "template_id": 5,
+      "mail_type": "system",
+      "title": "인앱 결제 구매",
+      "body": "상품 구매에 따른 보상이 지급되었습니다. 기간 내에 보상을 수령해 주세요.",
+      "sender": "시스템",
+      "default_expire_days": 365
+    },
+    {
+      "template_id": 6,
+      "mail_type": "system",
+      "title": "접속 보상",
+      "body": "접속 보상을 지급해드렸습니다. 기간 내에 보상을 수령해 주세요.",
+      "sender": "시스템",
+      "default_expire_days": 3
+    }
+  ]
+}
