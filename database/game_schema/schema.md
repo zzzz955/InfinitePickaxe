@@ -92,6 +92,49 @@
 | created_at | TIMESTAMP | DEFAULT now |  |
 | updated_at | TIMESTAMP | DEFAULT now |  |
 
+## user_mail
+| 컬럼 | 타입 | 제약/기본값 | 비고 |
+| --- | --- | --- | --- |
+| mail_id | UUID | PK | 우편 ID |
+| user_id | UUID | NOT NULL | 수신자 |
+| mail_type | VARCHAR(32) | DEFAULT 'system' | 우편 타입 |
+| template_id | VARCHAR(64) | NOT NULL | 템플릿 ID |
+| template_args | JSONB |  | 템플릿 파라미터(JSON) |
+| title | VARCHAR(100) |  | 제목(옵션) |
+| body | TEXT |  | 본문(옵션) |
+| sender | VARCHAR(64) |  | 발신자(옵션) |
+| source_type | VARCHAR(32) |  | 발송 소스 타입 |
+| source_key | VARCHAR(64) |  | 발송 소스 키 |
+| created_at | TIMESTAMP | DEFAULT now | 생성 |
+| updated_at | TIMESTAMP | DEFAULT now | 업데이트 |
+| read_at | TIMESTAMP |  | 읽음 시각 |
+| claimed_at | TIMESTAMP |  | 수령 시각 |
+| deleted_at | TIMESTAMP |  | 삭제 시각 |
+| expires_at | TIMESTAMP |  | 만료 시각 |
+
+**제약**:
+- UNIQUE: (user_id, source_type, source_key)
+- CHECK: source_type/source_key는 둘 다 NULL이거나 둘 다 NOT NULL
+
+**인덱스**:
+- idx_user_mail_user_created: user_id, created_at DESC
+- idx_user_mail_user_claimed: user_id, claimed_at
+- idx_user_mail_expires: expires_at
+
+## user_mail_rewards
+| 컬럼 | 타입 | 제약/기본값 | 비고 |
+| --- | --- | --- | --- |
+| mail_id | UUID | PK part, FK to user_mail | 우편 ID |
+| reward_index | INTEGER | PK part, CHECK >=0 | 보상 순번 |
+| reward_type | VARCHAR(16) | CHECK IN (gold, crystal, item) | 보상 타입 |
+| reward_key | VARCHAR(64) |  | 아이템 ID(재화는 NULL) |
+| amount | BIGINT | CHECK >=0 | 수량 |
+| created_at | TIMESTAMP | DEFAULT now | 생성 |
+
+**제약**:
+- PK: (mail_id, reward_index)
+- FK: mail_id REFERENCES user_mail(mail_id) ON DELETE CASCADE
+
 ## user_gem_inventory
 | 컬럼 | 타입 | 제약/기본값 | 비고 |
 | --- | --- | --- | --- |
@@ -152,4 +195,4 @@
 - idx_equipped_gems_instance: gem_instance_id
 
 ## 트리거
-- updated_at 자동 갱신: user_game_data, pickaxe_slots, user_ad_counters, user_mission_daily, user_mission_slots, user_achievement_counters, user_achievement_chains, user_gem_inventory, user_gems, pickaxe_gem_slots, pickaxe_equipped_gems 테이블에 BEFORE UPDATE 트리거 적용.
+- updated_at 자동 갱신: user_game_data, pickaxe_slots, user_ad_counters, user_mission_daily, user_mission_slots, user_achievement_counters, user_achievement_chains, user_mail, user_gem_inventory, user_gems, pickaxe_gem_slots, pickaxe_equipped_gems 테이블에 BEFORE UPDATE 트리거 적용.
