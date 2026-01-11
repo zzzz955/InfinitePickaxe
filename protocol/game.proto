@@ -22,6 +22,14 @@ enum GemGrade {
   LEGENDARY = 5;
 }
 
+// 보상 타입 Enum
+enum RewardType {
+  REWARD_TYPE_UNKNOWN = 0;
+  GOLD = 1;
+  CRYSTAL = 2;
+  ITEM = 3;
+}
+
 // 메시지 타입 Enum
 enum MessageType {
   UNKNOWN = 0;
@@ -122,6 +130,16 @@ enum MessageType {
   GEM_INVENTORY_EXPAND_RESULT = 127;
   GEM_AUTO_SYNTHESIS_REQUEST = 128;
   GEM_AUTO_SYNTHESIS_RESULT = 129;
+
+  // 우편함
+  MAIL_LIST_REQUEST = 220;
+  MAIL_LIST_RESPONSE = 221;
+  MAIL_DETAIL_REQUEST = 222;
+  MAIL_DETAIL_RESPONSE = 223;
+  MAIL_CLAIM_REQUEST = 224;
+  MAIL_CLAIM_RESULT = 225;
+  MAIL_CLAIM_ALL_REQUEST = 226;
+  MAIL_CLAIM_ALL_RESULT = 227;
 
   // 무한의 갱도
   INFINITE_MINE_STATE_REQUEST = 200;
@@ -234,6 +252,16 @@ message Envelope {
     GemInventoryExpandResult gem_inventory_expand_result = 137;
     GemAutoSynthesisRequest gem_auto_synthesis_request = 138;
     GemAutoSynthesisResult gem_auto_synthesis_result = 139;
+
+    // 우편함
+    MailListRequest mail_list_request = 220;
+    MailListResponse mail_list_response = 221;
+    MailDetailRequest mail_detail_request = 222;
+    MailDetailResponse mail_detail_response = 223;
+    MailClaimRequest mail_claim_request = 224;
+    MailClaimResult mail_claim_result = 225;
+    MailClaimAllRequest mail_claim_all_request = 226;
+    MailClaimAllResult mail_claim_all_result = 227;
 
     InfiniteMineStateRequest infinite_mine_state_request = 200;
     InfiniteMineStateResponse infinite_mine_state_response = 201;
@@ -840,6 +868,94 @@ message GemInventoryExpandResult {
   uint32 crystal_spent = 3;
   uint32 remaining_crystal = 4;
   string error_code = 5;          // "MAX_CAPACITY", "INSUFFICIENT_CRYSTAL" 등
+}
+
+// -------------- 우편함 --------------
+
+message MailReward {
+  RewardType reward_type = 1;
+  string reward_key = 2;
+  uint64 amount = 3;
+}
+
+message MailSummary {
+  string mail_id = 1;
+  string mail_type = 2;
+  string title = 3;
+  uint64 created_at_ms = 4;
+  uint64 expires_at_ms = 5;
+  bool is_read = 6;
+  bool is_claimed = 7;
+  bool has_reward = 8;
+}
+
+message MailDetail {
+  string mail_id = 1;
+  string mail_type = 2;
+  string template_id = 3;
+  string template_args_json = 4; // JSON 문자열
+  string title = 5;
+  string body = 6;
+  string sender = 7;
+  uint64 created_at_ms = 8;
+  uint64 expires_at_ms = 9;
+  bool is_read = 10;
+  bool is_claimed = 11;
+  repeated MailReward rewards = 12;
+}
+
+message MailListRequest {
+  uint32 limit = 1;
+  uint64 cursor_created_at_ms = 2;
+  string cursor_mail_id = 3;
+  bool include_claimed = 4;
+  bool include_expired = 5;
+}
+
+message MailListResponse {
+  repeated MailSummary mails = 1;
+  uint64 next_cursor_created_at_ms = 2;
+  string next_cursor_mail_id = 3;
+  bool has_next = 4;
+  uint32 unread_count = 5;
+  uint32 unclaimed_count = 6;
+}
+
+message MailDetailRequest {
+  string mail_id = 1;
+  bool mark_read = 2;
+}
+
+message MailDetailResponse {
+  bool success = 1;
+  MailDetail mail = 2;
+  string error_code = 3;
+}
+
+message MailClaimRequest {
+  string mail_id = 1;
+}
+
+message MailClaimResult {
+  bool success = 1;
+  string mail_id = 2;
+  repeated MailReward rewards = 3;
+  uint64 total_gold = 4;
+  uint32 total_crystal = 5;
+  string error_code = 6;
+}
+
+message MailClaimAllRequest {
+  // 빈 요청
+}
+
+message MailClaimAllResult {
+  bool success = 1;
+  uint32 claimed_count = 2;
+  repeated MailReward rewards = 3; // 합산된 보상 목록
+  uint64 total_gold = 4;
+  uint32 total_crystal = 5;
+  string error_code = 6;
 }
 
 // -------------- 무한의 갱도 --------------

@@ -25,7 +25,7 @@ namespace Infinitepickaxe {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgpnYW1lLnByb3RvEg9pbmZpbml0ZXBpY2theGUaHmdvb2dsZS9wcm90b2J1",
-            "Zi93cmFwcGVycy5wcm90byKTLgoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
+            "Zi93cmFwcGVycy5wcm90byKxMgoIRW52ZWxvcGUSKgoEdHlwZRgBIAEoDjIc",
             "LmluZmluaXRlcGlja2F4ZS5NZXNzYWdlVHlwZRI2CgloYW5kc2hha2UYCiAB",
             "KAsyIS5pbmZpbml0ZXBpY2theGUuSGFuZHNoYWtlUmVxdWVzdEgAEj4KEGhh",
             "bmRzaGFrZV9yZXN1bHQYCyABKAsyIi5pbmZpbml0ZXBpY2theGUuSGFuZHNo",
@@ -132,328 +132,378 @@ namespace Infinitepickaxe {
             "b19zeW50aGVzaXNfcmVxdWVzdBiKASABKAsyKC5pbmZpbml0ZXBpY2theGUu",
             "R2VtQXV0b1N5bnRoZXNpc1JlcXVlc3RIABJNChlnZW1fYXV0b19zeW50aGVz",
             "aXNfcmVzdWx0GIsBIAEoCzInLmluZmluaXRlcGlja2F4ZS5HZW1BdXRvU3lu",
-            "dGhlc2lzUmVzdWx0SAASUQobaW5maW5pdGVfbWluZV9zdGF0ZV9yZXF1ZXN0",
-            "GMgBIAEoCzIpLmluZmluaXRlcGlja2F4ZS5JbmZpbml0ZU1pbmVTdGF0ZVJl",
-            "cXVlc3RIABJTChxpbmZpbml0ZV9taW5lX3N0YXRlX3Jlc3BvbnNlGMkBIAEo",
-            "CzIqLmluZmluaXRlcGlja2F4ZS5JbmZpbml0ZU1pbmVTdGF0ZVJlc3BvbnNl",
-            "SAASZAolaW5maW5pdGVfbWluZV9jaGFsbGVuZ2Vfc3RhcnRfcmVxdWVzdBjK",
-            "ASABKAsyMi5pbmZpbml0ZXBpY2theGUuSW5maW5pdGVNaW5lQ2hhbGxlbmdl",
-            "U3RhcnRSZXF1ZXN0SAASYgokaW5maW5pdGVfbWluZV9jaGFsbGVuZ2Vfc3Rh",
-            "cnRfcmVzdWx0GMsBIAEoCzIxLmluZmluaXRlcGlja2F4ZS5JbmZpbml0ZU1p",
-            "bmVDaGFsbGVuZ2VTdGFydFJlc3VsdEgAElcKHmluZmluaXRlX21pbmVfY2hh",
-            "bGxlbmdlX3VwZGF0ZRjMASABKAsyLC5pbmZpbml0ZXBpY2theGUuSW5maW5p",
-            "dGVNaW5lQ2hhbGxlbmdlVXBkYXRlSAASVwoeaW5maW5pdGVfbWluZV9jaGFs",
-            "bGVuZ2VfcmVzdWx0GM0BIAEoCzIsLmluZmluaXRlcGlja2F4ZS5JbmZpbml0",
-            "ZU1pbmVDaGFsbGVuZ2VSZXN1bHRIABJaCiBpbmZpbml0ZV9taW5lX2F1dG9f",
-            "Y2xhaW1fcmVxdWVzdBjOASABKAsyLS5pbmZpbml0ZXBpY2theGUuSW5maW5p",
-            "dGVNaW5lQXV0b0NsYWltUmVxdWVzdEgAElgKH2luZmluaXRlX21pbmVfYXV0",
-            "b19jbGFpbV9yZXN1bHQYzwEgASgLMiwuaW5maW5pdGVwaWNrYXhlLkluZmlu",
-            "aXRlTWluZUF1dG9DbGFpbVJlc3VsdEgAEmEKJGluZmluaXRlX21pbmVfYXV0",
-            "b19jbGFpbV9hbGxfcmVxdWVzdBjQASABKAsyMC5pbmZpbml0ZXBpY2theGUu",
-            "SW5maW5pdGVNaW5lQXV0b0NsYWltQWxsUmVxdWVzdEgAEl8KI2luZmluaXRl",
-            "X21pbmVfYXV0b19jbGFpbV9hbGxfcmVzdWx0GNEBIAEoCzIvLmluZmluaXRl",
-            "cGlja2F4ZS5JbmZpbml0ZU1pbmVBdXRvQ2xhaW1BbGxSZXN1bHRIABJPChpp",
-            "bmZpbml0ZV9taW5lX2V4aXRfcmVxdWVzdBjSASABKAsyKC5pbmZpbml0ZXBp",
-            "Y2theGUuSW5maW5pdGVNaW5lRXhpdFJlcXVlc3RIABJNChlpbmZpbml0ZV9t",
-            "aW5lX2V4aXRfcmVzdWx0GNMBIAEoCzInLmluZmluaXRlcGlja2F4ZS5JbmZp",
-            "bml0ZU1pbmVFeGl0UmVzdWx0SABCCQoHbWVzc2FnZSJKChBIYW5kc2hha2VS",
-            "ZXF1ZXN0EgsKA2p3dBgBIAEoCRIWCg5jbGllbnRfdmVyc2lvbhgCIAEoCRIR",
-            "CglkZXZpY2VfaWQYAyABKAkijAIKD1BpY2theGVTbG90SW5mbxISCgpzbG90",
-            "X2luZGV4GAEgASgNEg0KBWxldmVsGAIgASgNEgwKBHRpZXIYAyABKA0SFAoM",
-            "YXR0YWNrX3Bvd2VyGAQgASgEEhQKDGF0dGFja19zcGVlZBgFIAEoDRIcChRj",
-            "cml0aWNhbF9oaXRfcGVyY2VudBgGIAEoDRIXCg9jcml0aWNhbF9kYW1hZ2UY",
-            "ByABKA0SCwoDZHBzGAggASgEEhIKCnBpdHlfYm9udXMYCSABKA0SEwoLaXNf",
-            "dW5sb2NrZWQYCiABKAgSLwoJZ2VtX3Nsb3RzGAsgAygLMhwuaW5maW5pdGVw",
-            "aWNrYXhlLkdlbVNsb3RJbmZvIkMKCUFkQ291bnRlchIPCgdhZF90eXBlGAEg",
-            "ASgJEhAKCGFkX2NvdW50GAIgASgNEhMKC2RhaWx5X2xpbWl0GAMgASgNIqwE",
-            "ChBVc2VyRGF0YVNuYXBzaG90EioKBGdvbGQYASABKAsyHC5nb29nbGUucHJv",
-            "dG9idWYuVUludDY0VmFsdWUSLQoHY3J5c3RhbBgCIAEoCzIcLmdvb2dsZS5w",
-            "cm90b2J1Zi5VSW50MzJWYWx1ZRIWCg51bmxvY2tlZF9zbG90cxgDIAMoCBI4",
-            "ChJjdXJyZW50X21pbmVyYWxfaWQYBCABKAsyHC5nb29nbGUucHJvdG9idWYu",
-            "VUludDMyVmFsdWUSMAoKbWluZXJhbF9ocBgFIAEoCzIcLmdvb2dsZS5wcm90",
-            "b2J1Zi5VSW50NjRWYWx1ZRI0Cg5taW5lcmFsX21heF9ocBgGIAEoCzIcLmdv",
-            "b2dsZS5wcm90b2J1Zi5VSW50NjRWYWx1ZRI3Cg1waWNrYXhlX3Nsb3RzGAcg",
-            "AygLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2theGVTbG90SW5mbxIRCgl0b3Rh",
-            "bF9kcHMYCCABKAQSMQoLc2VydmVyX3RpbWUYCSABKAsyHC5nb29nbGUucHJv",
-            "dG9idWYuVUludDY0VmFsdWUSLwoLYWRfY291bnRlcnMYCiADKAsyGi5pbmZp",
-            "bml0ZXBpY2theGUuQWRDb3VudGVyEh8KF2N1cnJlbnRfb2ZmbGluZV9zZWNv",
-            "bmRzGAsgASgNEh4KFmdlbV9pbnZlbnRvcnlfY2FwYWNpdHkYDCABKA0SEgoK",
-            "dG90YWxfZ2VtcxgNIAEoDSJqChFIYW5kc2hha2VSZXNwb25zZRIPCgdzdWNj",
-            "ZXNzGAEgASgIEg8KB21lc3NhZ2UYAiABKAkSMwoIc25hcHNob3QYAyABKAsy",
-            "IS5pbmZpbml0ZXBpY2theGUuVXNlckRhdGFTbmFwc2hvdCIjCglIZWFydGJl",
-            "YXQSFgoOY2xpZW50X3RpbWVfbXMYASABKAQiJgoMSGVhcnRiZWF0QWNrEhYK",
-            "DnNlcnZlcl90aW1lX21zGAEgASgEIhQKEk1pbmVyYWxMaXN0UmVxdWVzdCJn",
-            "CgtNaW5lcmFsSW5mbxISCgptaW5lcmFsX2lkGAEgASgNEgwKBG5hbWUYAiAB",
-            "KAkSDgoGbWF4X2hwGAMgASgEEhMKC2dvbGRfcmV3YXJkGAQgASgEEhEKCWlj",
-            "b25fbmFtZRgFIAEoCSJFChNNaW5lcmFsTGlzdFJlc3BvbnNlEi4KCG1pbmVy",
-            "YWxzGAEgAygLMhwuaW5maW5pdGVwaWNrYXhlLk1pbmVyYWxJbmZvIioKFENo",
-            "YW5nZU1pbmVyYWxSZXF1ZXN0EhIKCm1pbmVyYWxfaWQYASABKA0ifAoVQ2hh",
-            "bmdlTWluZXJhbFJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgSEgoKbWluZXJh",
-            "bF9pZBgCIAEoDRISCgptaW5lcmFsX2hwGAMgASgEEhYKDm1pbmVyYWxfbWF4",
-            "X2hwGAQgASgEEhIKCmVycm9yX2NvZGUYBSABKAkiSAoNUGlja2F4ZUF0dGFj",
-            "axISCgpzbG90X2luZGV4GAEgASgNEg4KBmRhbWFnZRgCIAEoBBITCgtpc19j",
-            "cml0aWNhbBgDIAEoCCKRAQoMTWluaW5nVXBkYXRlEhIKCm1pbmVyYWxfaWQY",
-            "ASABKA0SEgoKY3VycmVudF9ocBgCIAEoBBIOCgZtYXhfaHAYAyABKAQSLwoH",
-            "YXR0YWNrcxgEIAMoCzIeLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlQXR0YWNr",
-            "EhgKEHNlcnZlcl90aW1lc3RhbXAYBSABKAQikwEKDk1pbmluZ0NvbXBsZXRl",
-            "EhIKCm1pbmVyYWxfaWQYASABKA0SEwoLZ29sZF9lYXJuZWQYAiABKAQSEgoK",
-            "dG90YWxfZ29sZBgDIAEoBBIUCgxtaW5pbmdfY291bnQYBCABKAQSFAoMcmVz",
-            "cGF3bl90aW1lGAUgASgNEhgKEHNlcnZlcl90aW1lc3RhbXAYBiABKAQiEQoP",
-            "QWxsU2xvdHNSZXF1ZXN0IlYKEEFsbFNsb3RzUmVzcG9uc2USLwoFc2xvdHMY",
-            "ASADKAsyIC5pbmZpbml0ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhEKCXRv",
-            "dGFsX2RwcxgCIAEoBCIkCg5VcGdyYWRlUmVxdWVzdBISCgpzbG90X2luZGV4",
-            "GAEgASgNIowDCg1VcGdyYWRlUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSEgoK",
-            "c2xvdF9pbmRleBgCIAEoDRIRCgluZXdfbGV2ZWwYAyABKA0SEAoIbmV3X3Rp",
-            "ZXIYBCABKA0SGAoQbmV3X2F0dGFja19wb3dlchgFIAEoBBIYChBuZXdfYXR0",
-            "YWNrX3NwZWVkGAYgASgNEiAKGG5ld19jcml0aWNhbF9oaXRfcGVyY2VudBgH",
-            "IAEoDRIbChNuZXdfY3JpdGljYWxfZGFtYWdlGAggASgNEg8KB25ld19kcHMY",
-            "CSABKAQSFQoNbmV3X3RvdGFsX2RwcxgKIAEoBBISCgpnb2xkX3NwZW50GAsg",
-            "ASgEEhYKDnJlbWFpbmluZ19nb2xkGAwgASgEEhIKCmVycm9yX2NvZGUYDSAB",
-            "KAkSFAoMYmFzZV9yYXRlX2JwGA4gASgNEhUKDWJvbnVzX3JhdGVfYnAYDyAB",
-            "KA0SFQoNZmluYWxfcmF0ZV9icBgQIAEoDRISCgpwaXR5X2JvbnVzGBEgASgN",
-            "IhYKFERhaWx5TWlzc2lvbnNSZXF1ZXN0IqICCgxNaXNzaW9uRW50cnkSDwoH",
-            "c2xvdF9ubxgBIAEoDRISCgptaXNzaW9uX2lkGAIgASgNEhQKDG1pc3Npb25f",
-            "dHlwZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIUCgx0YXJnZXRfdmFs",
-            "dWUYBSABKA0SFQoNY3VycmVudF92YWx1ZRgGIAEoDRIWCg5yZXdhcmRfY3J5",
-            "c3RhbBgHIAEoDRIOCgZzdGF0dXMYCCABKAkSEwoLYXNzaWduZWRfYXQYCSAB",
-            "KAQSEgoKZXhwaXJlc19hdBgKIAEoBBISCgpkaWZmaWN1bHR5GAsgASgJEjAK",
-            "Cm1pbmVyYWxfaWQYDCABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDMyVmFs",
-            "dWUi9wEKFURhaWx5TWlzc2lvbnNSZXNwb25zZRIvCghtaXNzaW9ucxgBIAMo",
-            "CzIdLmluZmluaXRlcGlja2F4ZS5NaXNzaW9uRW50cnkSFwoPY29tcGxldGVk",
-            "X2NvdW50GAIgASgNEhQKDHJlcm9sbF9jb3VudBgDIAEoDRIvCgthZF9jb3Vu",
-            "dGVycxgEIAMoCzIaLmluZmluaXRlcGlja2F4ZS5BZENvdW50ZXISFAoMcmVy",
-            "b2xsc19mcmVlGAUgASgNEhsKE3Jlcm9sbHNfdG90YWxfbGltaXQYBiABKA0S",
-            "GgoScmVzZXRfdGltZXN0YW1wX21zGAcgASgEInkKFU1pc3Npb25Qcm9ncmVz",
-            "c1VwZGF0ZRIPCgdzbG90X25vGAEgASgNEhIKCm1pc3Npb25faWQYAiABKA0S",
-            "FQoNY3VycmVudF92YWx1ZRgDIAEoDRIUCgx0YXJnZXRfdmFsdWUYBCABKA0S",
-            "DgoGc3RhdHVzGAUgASgJIiIKD01pc3Npb25Db21wbGV0ZRIPCgdzbG90X25v",
-            "GAEgASgNIpABChVNaXNzaW9uQ29tcGxldGVSZXN1bHQSDwoHc3VjY2VzcxgB",
-            "IAEoCBIPCgdzbG90X25vGAIgASgNEhIKCm1pc3Npb25faWQYAyABKA0SFgoO",
-            "cmV3YXJkX2NyeXN0YWwYBCABKA0SFQoNdG90YWxfY3J5c3RhbBgFIAEoDRIS",
-            "CgplcnJvcl9jb2RlGAYgASgJIg8KDU1pc3Npb25SZXJvbGwiigEKE01pc3Np",
-            "b25SZXJvbGxSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBI4ChFyZXJvbGxlZF9t",
-            "aXNzaW9ucxgCIAMoCzIdLmluZmluaXRlcGlja2F4ZS5NaXNzaW9uRW50cnkS",
-            "FAoMcmVyb2xsc191c2VkGAMgASgNEhIKCmVycm9yX2NvZGUYBCABKAkiKQoO",
-            "TWlsZXN0b25lQ2xhaW0SFwoPbWlsZXN0b25lX2NvdW50GAEgASgNIsIBChRN",
-            "aWxlc3RvbmVDbGFpbVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhcKD21pbGVz",
-            "dG9uZV9jb3VudBgCIAEoDRIeChZvZmZsaW5lX3NlY29uZHNfZ2FpbmVkGAMg",
-            "ASgNEh0KFXRvdGFsX29mZmxpbmVfc2Vjb25kcxgEIAEoDRIWCg5yZXdhcmRf",
-            "Y3J5c3RhbBgFIAEoDRIVCg10b3RhbF9jcnlzdGFsGAYgASgNEhIKCmVycm9y",
-            "X2NvZGUYByABKAkiYQoOTWlsZXN0b25lU3RhdGUSFwoPY29tcGxldGVkX2Nv",
-            "dW50GAEgASgNEhoKEmNsYWltZWRfbWlsZXN0b25lcxgCIAMoDRIaChJyZXNl",
-            "dF90aW1lc3RhbXBfbXMYAyABKAQiFwoVV2Vla2x5TWlzc2lvbnNSZXF1ZXN0",
-            "IswBChJXZWVrbHlNaXNzaW9uRW50cnkSEgoKbWlzc2lvbl9pZBgBIAEoDRIU",
-            "CgxtaXNzaW9uX3R5cGUYAiABKAkSDQoFdGl0bGUYAyABKAkSEwoLZGVzY3Jp",
-            "cHRpb24YBCABKAkSFAoMdGFyZ2V0X3ZhbHVlGAUgASgNEhUKDWN1cnJlbnRf",
-            "dmFsdWUYBiABKA0SFgoOcmV3YXJkX2NyeXN0YWwYByABKA0SEwoLcmV3YXJk",
-            "X2dvbGQYCCABKAQSDgoGc3RhdHVzGAkgASgJIoIBChZXZWVrbHlNaXNzaW9u",
-            "c1Jlc3BvbnNlEjUKCG1pc3Npb25zGAEgAygLMiMuaW5maW5pdGVwaWNrYXhl",
-            "LldlZWtseU1pc3Npb25FbnRyeRIVCg1jbGFpbWVkX2NvdW50GAIgASgNEhoK",
-            "EnJlc2V0X3RpbWVzdGFtcF9tcxgDIAEoBCJuChtXZWVrbHlNaXNzaW9uUHJv",
-            "Z3Jlc3NVcGRhdGUSEgoKbWlzc2lvbl9pZBgBIAEoDRIVCg1jdXJyZW50X3Zh",
-            "bHVlGAIgASgNEhQKDHRhcmdldF92YWx1ZRgDIAEoDRIOCgZzdGF0dXMYBCAB",
-            "KAkiKAoSV2Vla2x5TWlzc2lvbkNsYWltEhIKCm1pc3Npb25faWQYASABKA0i",
-            "qwEKGFdlZWtseU1pc3Npb25DbGFpbVJlc3VsdBIPCgdzdWNjZXNzGAEgASgI",
-            "EhIKCm1pc3Npb25faWQYAiABKA0SFgoOcmV3YXJkX2NyeXN0YWwYAyABKA0S",
-            "EwoLcmV3YXJkX2dvbGQYBCABKAQSFQoNdG90YWxfY3J5c3RhbBgFIAEoDRIS",
-            "Cgp0b3RhbF9nb2xkGAYgASgEEhIKCmVycm9yX2NvZGUYByABKAkiLwoUV2Vl",
-            "a2x5TWlsZXN0b25lQ2xhaW0SFwoPbWlsZXN0b25lX2NvdW50GAEgASgNIrIB",
-            "ChpXZWVrbHlNaWxlc3RvbmVDbGFpbVJlc3VsdBIPCgdzdWNjZXNzGAEgASgI",
-            "EhcKD21pbGVzdG9uZV9jb3VudBgCIAEoDRIWCg5yZXdhcmRfY3J5c3RhbBgD",
-            "IAEoDRITCgtyZXdhcmRfZ29sZBgEIAEoBBIVCg10b3RhbF9jcnlzdGFsGAUg",
-            "ASgNEhIKCnRvdGFsX2dvbGQYBiABKAQSEgoKZXJyb3JfY29kZRgHIAEoCSJl",
-            "ChRXZWVrbHlNaWxlc3RvbmVTdGF0ZRIVCg1jbGFpbWVkX2NvdW50GAEgASgN",
-            "EhoKEmNsYWltZWRfbWlsZXN0b25lcxgCIAMoDRIaChJyZXNldF90aW1lc3Rh",
-            "bXBfbXMYAyABKAQiFQoTQWNoaWV2ZW1lbnRzUmVxdWVzdCJGChNBY2hpZXZl",
-            "bWVudFByb2dyZXNzEhgKEGFjaGlldmVtZW50X3R5cGUYASABKAkSFQoNY3Vy",
-            "cmVudF92YWx1ZRgCIAEoBCJEChVBY2hpZXZlbWVudENoYWluU3RhdGUSEAoI",
-            "Y2hhaW5faWQYASABKA0SGQoRbGFzdF9jbGFpbWVkX3N0ZXAYAiABKA0iiAEK",
-            "FEFjaGlldmVtZW50c1Jlc3BvbnNlEjgKCnByb2dyZXNzZXMYASADKAsyJC5p",
-            "bmZpbml0ZXBpY2theGUuQWNoaWV2ZW1lbnRQcm9ncmVzcxI2CgZjaGFpbnMY",
-            "AiADKAsyJi5pbmZpbml0ZXBpY2theGUuQWNoaWV2ZW1lbnRDaGFpblN0YXRl",
-            "IkwKGUFjaGlldmVtZW50UHJvZ3Jlc3NVcGRhdGUSGAoQYWNoaWV2ZW1lbnRf",
-            "dHlwZRgBIAEoCRIVCg1jdXJyZW50X3ZhbHVlGAIgASgEIioKEEFjaGlldmVt",
-            "ZW50Q2xhaW0SFgoOYWNoaWV2ZW1lbnRfaWQYASABKA0i1QEKFkFjaGlldmVt",
-            "ZW50Q2xhaW1SZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIWCg5hY2hpZXZlbWVu",
-            "dF9pZBgCIAEoDRIQCghjaGFpbl9pZBgDIAEoDRIUCgxjbGFpbWVkX3N0ZXAY",
-            "BCABKA0SFgoOcmV3YXJkX2NyeXN0YWwYBSABKA0SEwoLcmV3YXJkX2dvbGQY",
-            "BiABKAQSFQoNdG90YWxfY3J5c3RhbBgHIAEoDRISCgp0b3RhbF9nb2xkGAgg",
-            "ASgEEhIKCmVycm9yX2NvZGUYCSABKAkiIAoKU2xvdFVubG9jaxISCgpzbG90",
-            "X2luZGV4GAEgASgNIsQBChBTbG90VW5sb2NrUmVzdWx0Eg8KB3N1Y2Nlc3MY",
-            "ASABKAgSEgoKc2xvdF9pbmRleBgCIAEoDRIVCg1jcnlzdGFsX3NwZW50GAMg",
-            "ASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAQgASgNEhIKCmVycm9yX2NvZGUY",
-            "BSABKAkSMgoIbmV3X3Nsb3QYBiABKAsyIC5pbmZpbml0ZXBpY2theGUuUGlj",
-            "a2F4ZVNsb3RJbmZvEhEKCXRvdGFsX2RwcxgHIAEoBCIiCg9BZFdhdGNoQ29t",
-            "cGxldGUSDwoHYWRfdHlwZRgBIAEoCSKlAQoNQWRXYXRjaFJlc3VsdBIPCgdz",
-            "dWNjZXNzGAEgASgIEg8KB2FkX3R5cGUYAiABKAkSFgoOY3J5c3RhbF9lYXJu",
-            "ZWQYAyABKA0SFQoNdG90YWxfY3J5c3RhbBgEIAEoDRIvCgthZF9jb3VudGVy",
-            "cxgFIAMoCzIaLmluZmluaXRlcGlja2F4ZS5BZENvdW50ZXISEgoKZXJyb3Jf",
-            "Y29kZRgGIAEoCSJeCg9BZENvdW50ZXJzU3RhdGUSLwoLYWRfY291bnRlcnMY",
-            "ASADKAsyGi5pbmZpbml0ZXBpY2theGUuQWRDb3VudGVyEhoKEnJlc2V0X3Rp",
-            "bWVzdGFtcF9tcxgCIAEoBCJ7Cg5DdXJyZW5jeVVwZGF0ZRIqCgRnb2xkGAEg",
-            "ASgLMhwuZ29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZhbHVlEi0KB2NyeXN0YWwY",
-            "AiABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDMyVmFsdWUSDgoGcmVhc29u",
-            "GAMgASgJIhYKFE9mZmxpbmVSZXdhcmRSZXF1ZXN0Im0KE09mZmxpbmVSZXdh",
-            "cmRSZXN1bHQSFwoPZWxhcHNlZF9zZWNvbmRzGAEgASgEEhMKC2dvbGRfZWFy",
-            "bmVkGAIgASgEEhQKDG1pbmluZ19jb3VudBgDIAEoDRISCgp0b3RhbF9nb2xk",
-            "GAQgASgEIhkKF09mZmxpbmVNb2RlU3RhcnRSZXF1ZXN0Il4KFk9mZmxpbmVN",
-            "b2RlU3RhcnRSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIfChdjdXJyZW50X29m",
-            "ZmxpbmVfc2Vjb25kcxgCIAEoDRISCgplcnJvcl9jb2RlGAMgASgJIjgKEUVy",
-            "cm9yTm90aWZpY2F0aW9uEhIKCmVycm9yX2NvZGUYASABKAkSDwoHbWVzc2Fn",
-            "ZRgCIAEoCSLOAQoHR2VtSW5mbxIXCg9nZW1faW5zdGFuY2VfaWQYASABKAkS",
-            "DgoGZ2VtX2lkGAIgASgNEigKBWdyYWRlGAMgASgOMhkuaW5maW5pdGVwaWNr",
-            "YXhlLkdlbUdyYWRlEiYKBHR5cGUYBCABKA4yGC5pbmZpbml0ZXBpY2theGUu",
-            "R2VtVHlwZRIMCgRuYW1lGAUgASgJEgwKBGljb24YBiABKAkSFwoPc3RhdF9t",
-            "dWx0aXBsaWVyGAcgASgNEhMKC2FjcXVpcmVkX2F0GAggASgEImoKC0dlbVNs",
-            "b3RJbmZvEhYKDmdlbV9zbG90X2luZGV4GAEgASgNEhMKC2lzX3VubG9ja2Vk",
-            "GAIgASgIEi4KDGVxdWlwcGVkX2dlbRgDIAEoCzIYLmluZmluaXRlcGlja2F4",
-            "ZS5HZW1JbmZvIhAKDkdlbUxpc3RSZXF1ZXN0ImkKD0dlbUxpc3RSZXNwb25z",
-            "ZRImCgRnZW1zGAEgAygLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SEgoK",
-            "dG90YWxfZ2VtcxgCIAEoDRIaChJpbnZlbnRvcnlfY2FwYWNpdHkYAyABKA0i",
-            "JQoPR2VtR2FjaGFSZXF1ZXN0EhIKCnB1bGxfY291bnQYASABKA0ivwEKDkdl",
-            "bUdhY2hhUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSJgoEZ2VtcxgCIAMoCzIY",
-            "LmluZmluaXRlcGlja2F4ZS5HZW1JbmZvEhUKDWNyeXN0YWxfc3BlbnQYAyAB",
-            "KA0SGQoRcmVtYWluaW5nX2NyeXN0YWwYBCABKA0SEgoKdG90YWxfZ2VtcxgF",
-            "IAEoDRIaChJpbnZlbnRvcnlfY2FwYWNpdHkYBiABKA0SEgoKZXJyb3JfY29k",
-            "ZRgHIAEoCSIvChNHZW1TeW50aGVzaXNSZXF1ZXN0EhgKEGdlbV9pbnN0YW5j",
-            "ZV9pZHMYASADKAkixgEKEkdlbVN5bnRoZXNpc1Jlc3VsdBIPCgdzdWNjZXNz",
-            "GAEgASgIEhkKEXN5bnRoZXNpc19zdWNjZXNzGAIgASgIEiwKCnJlc3VsdF9n",
-            "ZW0YAyABKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbxISCgp0b3RhbF9n",
-            "ZW1zGAQgASgNEhIKCmVycm9yX2NvZGUYBSABKAkSLgoMcmV0YWluZWRfZ2Vt",
-            "GAYgASgLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8iXgoXR2VtQXV0b1N5",
-            "bnRoZXNpc1JlcXVlc3QSLQoKZnJvbV9ncmFkZRgBIAEoDjIZLmluZmluaXRl",
-            "cGlja2F4ZS5HZW1HcmFkZRIUCgxtYXhfYXR0ZW1wdHMYAiABKA0iqgEKFkdl",
-            "bUF1dG9TeW50aGVzaXNSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIRCglhdHRl",
-            "bXB0ZWQYAiABKA0SFQoNc3VjY2Vzc19jb3VudBgDIAEoDRItCgtyZXN1bHRf",
-            "Z2VtcxgEIAMoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1JbmZvEhIKCnRvdGFs",
-            "X2dlbXMYBSABKA0SEgoKZXJyb3JfY29kZRgGIAEoCSJ2ChRHZW1Db252ZXJz",
-            "aW9uUmVxdWVzdBIXCg9nZW1faW5zdGFuY2VfaWQYASABKAkSLQoLdGFyZ2V0",
-            "X3R5cGUYAiABKA4yGC5pbmZpbml0ZXBpY2theGUuR2VtVHlwZRIWCg51c2Vf",
-            "Zml4ZWRfY29zdBgDIAEoCCKdAQoTR2VtQ29udmVyc2lvblJlc3VsdBIPCgdz",
-            "dWNjZXNzGAEgASgIEi8KDWNvbnZlcnRlZF9nZW0YAiABKAsyGC5pbmZpbml0",
-            "ZXBpY2theGUuR2VtSW5mbxIVCg1jcnlzdGFsX3NwZW50GAMgASgNEhkKEXJl",
-            "bWFpbmluZ19jcnlzdGFsGAQgASgNEhIKCmVycm9yX2NvZGUYBSABKAkiLQoR",
-            "R2VtRGlzY2FyZFJlcXVlc3QSGAoQZ2VtX2luc3RhbmNlX2lkcxgBIAMoCSJ6",
-            "ChBHZW1EaXNjYXJkUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSFgoOY3J5c3Rh",
-            "bF9lYXJuZWQYAiABKA0SFQoNdG90YWxfY3J5c3RhbBgDIAEoDRISCgp0b3Rh",
-            "bF9nZW1zGAQgASgNEhIKCmVycm9yX2NvZGUYBSABKAkiXgoPR2VtRXF1aXBS",
-            "ZXF1ZXN0EhoKEnBpY2theGVfc2xvdF9pbmRleBgBIAEoDRIWCg5nZW1fc2xv",
-            "dF9pbmRleBgCIAEoDRIXCg9nZW1faW5zdGFuY2VfaWQYAyABKAki6wEKDkdl",
-            "bUVxdWlwUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSGgoScGlja2F4ZV9zbG90",
-            "X2luZGV4GAIgASgNEhYKDmdlbV9zbG90X2luZGV4GAMgASgNEi4KDGVxdWlw",
-            "cGVkX2dlbRgEIAEoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1JbmZvEjkKD3Vw",
-            "ZGF0ZWRfcGlja2F4ZRgFIAEoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhl",
-            "U2xvdEluZm8SFQoNbmV3X3RvdGFsX2RwcxgGIAEoBBISCgplcnJvcl9jb2Rl",
-            "GAcgASgJIkcKEUdlbVVuZXF1aXBSZXF1ZXN0EhoKEnBpY2theGVfc2xvdF9p",
-            "bmRleBgBIAEoDRIWCg5nZW1fc2xvdF9pbmRleBgCIAEoDSLvAQoQR2VtVW5l",
-            "cXVpcFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhoKEnBpY2theGVfc2xvdF9p",
-            "bmRleBgCIAEoDRIWCg5nZW1fc2xvdF9pbmRleBgDIAEoDRIwCg51bmVxdWlw",
-            "cGVkX2dlbRgEIAEoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1JbmZvEjkKD3Vw",
-            "ZGF0ZWRfcGlja2F4ZRgFIAEoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhl",
-            "U2xvdEluZm8SFQoNbmV3X3RvdGFsX2RwcxgGIAEoBBISCgplcnJvcl9jb2Rl",
-            "GAcgASgJIkoKFEdlbVNsb3RVbmxvY2tSZXF1ZXN0EhoKEnBpY2theGVfc2xv",
-            "dF9pbmRleBgBIAEoDRIWCg5nZW1fc2xvdF9pbmRleBgCIAEoDSKgAQoTR2Vt",
-            "U2xvdFVubG9ja1Jlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhoKEnBpY2theGVf",
-            "c2xvdF9pbmRleBgCIAEoDRIWCg5nZW1fc2xvdF9pbmRleBgDIAEoDRIVCg1j",
-            "cnlzdGFsX3NwZW50GAQgASgNEhkKEXJlbWFpbmluZ19jcnlzdGFsGAUgASgN",
-            "EhIKCmVycm9yX2NvZGUYBiABKAkiGwoZR2VtSW52ZW50b3J5RXhwYW5kUmVx",
-            "dWVzdCKHAQoYR2VtSW52ZW50b3J5RXhwYW5kUmVzdWx0Eg8KB3N1Y2Nlc3MY",
-            "ASABKAgSFAoMbmV3X2NhcGFjaXR5GAIgASgNEhUKDWNyeXN0YWxfc3BlbnQY",
+            "dGhlc2lzUmVzdWx0SAASPgoRbWFpbF9saXN0X3JlcXVlc3QY3AEgASgLMiAu",
+            "aW5maW5pdGVwaWNrYXhlLk1haWxMaXN0UmVxdWVzdEgAEkAKEm1haWxfbGlz",
+            "dF9yZXNwb25zZRjdASABKAsyIS5pbmZpbml0ZXBpY2theGUuTWFpbExpc3RS",
+            "ZXNwb25zZUgAEkIKE21haWxfZGV0YWlsX3JlcXVlc3QY3gEgASgLMiIuaW5m",
+            "aW5pdGVwaWNrYXhlLk1haWxEZXRhaWxSZXF1ZXN0SAASRAoUbWFpbF9kZXRh",
+            "aWxfcmVzcG9uc2UY3wEgASgLMiMuaW5maW5pdGVwaWNrYXhlLk1haWxEZXRh",
+            "aWxSZXNwb25zZUgAEkAKEm1haWxfY2xhaW1fcmVxdWVzdBjgASABKAsyIS5p",
+            "bmZpbml0ZXBpY2theGUuTWFpbENsYWltUmVxdWVzdEgAEj4KEW1haWxfY2xh",
+            "aW1fcmVzdWx0GOEBIAEoCzIgLmluZmluaXRlcGlja2F4ZS5NYWlsQ2xhaW1S",
+            "ZXN1bHRIABJHChZtYWlsX2NsYWltX2FsbF9yZXF1ZXN0GOIBIAEoCzIkLmlu",
+            "ZmluaXRlcGlja2F4ZS5NYWlsQ2xhaW1BbGxSZXF1ZXN0SAASRQoVbWFpbF9j",
+            "bGFpbV9hbGxfcmVzdWx0GOMBIAEoCzIjLmluZmluaXRlcGlja2F4ZS5NYWls",
+            "Q2xhaW1BbGxSZXN1bHRIABJRChtpbmZpbml0ZV9taW5lX3N0YXRlX3JlcXVl",
+            "c3QYyAEgASgLMikuaW5maW5pdGVwaWNrYXhlLkluZmluaXRlTWluZVN0YXRl",
+            "UmVxdWVzdEgAElMKHGluZmluaXRlX21pbmVfc3RhdGVfcmVzcG9uc2UYyQEg",
+            "ASgLMiouaW5maW5pdGVwaWNrYXhlLkluZmluaXRlTWluZVN0YXRlUmVzcG9u",
+            "c2VIABJkCiVpbmZpbml0ZV9taW5lX2NoYWxsZW5nZV9zdGFydF9yZXF1ZXN0",
+            "GMoBIAEoCzIyLmluZmluaXRlcGlja2F4ZS5JbmZpbml0ZU1pbmVDaGFsbGVu",
+            "Z2VTdGFydFJlcXVlc3RIABJiCiRpbmZpbml0ZV9taW5lX2NoYWxsZW5nZV9z",
+            "dGFydF9yZXN1bHQYywEgASgLMjEuaW5maW5pdGVwaWNrYXhlLkluZmluaXRl",
+            "TWluZUNoYWxsZW5nZVN0YXJ0UmVzdWx0SAASVwoeaW5maW5pdGVfbWluZV9j",
+            "aGFsbGVuZ2VfdXBkYXRlGMwBIAEoCzIsLmluZmluaXRlcGlja2F4ZS5JbmZp",
+            "bml0ZU1pbmVDaGFsbGVuZ2VVcGRhdGVIABJXCh5pbmZpbml0ZV9taW5lX2No",
+            "YWxsZW5nZV9yZXN1bHQYzQEgASgLMiwuaW5maW5pdGVwaWNrYXhlLkluZmlu",
+            "aXRlTWluZUNoYWxsZW5nZVJlc3VsdEgAEloKIGluZmluaXRlX21pbmVfYXV0",
+            "b19jbGFpbV9yZXF1ZXN0GM4BIAEoCzItLmluZmluaXRlcGlja2F4ZS5JbmZp",
+            "bml0ZU1pbmVBdXRvQ2xhaW1SZXF1ZXN0SAASWAofaW5maW5pdGVfbWluZV9h",
+            "dXRvX2NsYWltX3Jlc3VsdBjPASABKAsyLC5pbmZpbml0ZXBpY2theGUuSW5m",
+            "aW5pdGVNaW5lQXV0b0NsYWltUmVzdWx0SAASYQokaW5maW5pdGVfbWluZV9h",
+            "dXRvX2NsYWltX2FsbF9yZXF1ZXN0GNABIAEoCzIwLmluZmluaXRlcGlja2F4",
+            "ZS5JbmZpbml0ZU1pbmVBdXRvQ2xhaW1BbGxSZXF1ZXN0SAASXwojaW5maW5p",
+            "dGVfbWluZV9hdXRvX2NsYWltX2FsbF9yZXN1bHQY0QEgASgLMi8uaW5maW5p",
+            "dGVwaWNrYXhlLkluZmluaXRlTWluZUF1dG9DbGFpbUFsbFJlc3VsdEgAEk8K",
+            "GmluZmluaXRlX21pbmVfZXhpdF9yZXF1ZXN0GNIBIAEoCzIoLmluZmluaXRl",
+            "cGlja2F4ZS5JbmZpbml0ZU1pbmVFeGl0UmVxdWVzdEgAEk0KGWluZmluaXRl",
+            "X21pbmVfZXhpdF9yZXN1bHQY0wEgASgLMicuaW5maW5pdGVwaWNrYXhlLklu",
+            "ZmluaXRlTWluZUV4aXRSZXN1bHRIAEIJCgdtZXNzYWdlIkoKEEhhbmRzaGFr",
+            "ZVJlcXVlc3QSCwoDand0GAEgASgJEhYKDmNsaWVudF92ZXJzaW9uGAIgASgJ",
+            "EhEKCWRldmljZV9pZBgDIAEoCSKMAgoPUGlja2F4ZVNsb3RJbmZvEhIKCnNs",
+            "b3RfaW5kZXgYASABKA0SDQoFbGV2ZWwYAiABKA0SDAoEdGllchgDIAEoDRIU",
+            "CgxhdHRhY2tfcG93ZXIYBCABKAQSFAoMYXR0YWNrX3NwZWVkGAUgASgNEhwK",
+            "FGNyaXRpY2FsX2hpdF9wZXJjZW50GAYgASgNEhcKD2NyaXRpY2FsX2RhbWFn",
+            "ZRgHIAEoDRILCgNkcHMYCCABKAQSEgoKcGl0eV9ib251cxgJIAEoDRITCgtp",
+            "c191bmxvY2tlZBgKIAEoCBIvCglnZW1fc2xvdHMYCyADKAsyHC5pbmZpbml0",
+            "ZXBpY2theGUuR2VtU2xvdEluZm8iQwoJQWRDb3VudGVyEg8KB2FkX3R5cGUY",
+            "ASABKAkSEAoIYWRfY291bnQYAiABKA0SEwoLZGFpbHlfbGltaXQYAyABKA0i",
+            "rAQKEFVzZXJEYXRhU25hcHNob3QSKgoEZ29sZBgBIAEoCzIcLmdvb2dsZS5w",
+            "cm90b2J1Zi5VSW50NjRWYWx1ZRItCgdjcnlzdGFsGAIgASgLMhwuZ29vZ2xl",
+            "LnByb3RvYnVmLlVJbnQzMlZhbHVlEhYKDnVubG9ja2VkX3Nsb3RzGAMgAygI",
+            "EjgKEmN1cnJlbnRfbWluZXJhbF9pZBgEIAEoCzIcLmdvb2dsZS5wcm90b2J1",
+            "Zi5VSW50MzJWYWx1ZRIwCgptaW5lcmFsX2hwGAUgASgLMhwuZ29vZ2xlLnBy",
+            "b3RvYnVmLlVJbnQ2NFZhbHVlEjQKDm1pbmVyYWxfbWF4X2hwGAYgASgLMhwu",
+            "Z29vZ2xlLnByb3RvYnVmLlVJbnQ2NFZhbHVlEjcKDXBpY2theGVfc2xvdHMY",
+            "ByADKAsyIC5pbmZpbml0ZXBpY2theGUuUGlja2F4ZVNsb3RJbmZvEhEKCXRv",
+            "dGFsX2RwcxgIIAEoBBIxCgtzZXJ2ZXJfdGltZRgJIAEoCzIcLmdvb2dsZS5w",
+            "cm90b2J1Zi5VSW50NjRWYWx1ZRIvCgthZF9jb3VudGVycxgKIAMoCzIaLmlu",
+            "ZmluaXRlcGlja2F4ZS5BZENvdW50ZXISHwoXY3VycmVudF9vZmZsaW5lX3Nl",
+            "Y29uZHMYCyABKA0SHgoWZ2VtX2ludmVudG9yeV9jYXBhY2l0eRgMIAEoDRIS",
+            "Cgp0b3RhbF9nZW1zGA0gASgNImoKEUhhbmRzaGFrZVJlc3BvbnNlEg8KB3N1",
+            "Y2Nlc3MYASABKAgSDwoHbWVzc2FnZRgCIAEoCRIzCghzbmFwc2hvdBgDIAEo",
+            "CzIhLmluZmluaXRlcGlja2F4ZS5Vc2VyRGF0YVNuYXBzaG90IiMKCUhlYXJ0",
+            "YmVhdBIWCg5jbGllbnRfdGltZV9tcxgBIAEoBCImCgxIZWFydGJlYXRBY2sS",
+            "FgoOc2VydmVyX3RpbWVfbXMYASABKAQiFAoSTWluZXJhbExpc3RSZXF1ZXN0",
+            "ImcKC01pbmVyYWxJbmZvEhIKCm1pbmVyYWxfaWQYASABKA0SDAoEbmFtZRgC",
+            "IAEoCRIOCgZtYXhfaHAYAyABKAQSEwoLZ29sZF9yZXdhcmQYBCABKAQSEQoJ",
+            "aWNvbl9uYW1lGAUgASgJIkUKE01pbmVyYWxMaXN0UmVzcG9uc2USLgoIbWlu",
+            "ZXJhbHMYASADKAsyHC5pbmZpbml0ZXBpY2theGUuTWluZXJhbEluZm8iKgoU",
+            "Q2hhbmdlTWluZXJhbFJlcXVlc3QSEgoKbWluZXJhbF9pZBgBIAEoDSJ8ChVD",
+            "aGFuZ2VNaW5lcmFsUmVzcG9uc2USDwoHc3VjY2VzcxgBIAEoCBISCgptaW5l",
+            "cmFsX2lkGAIgASgNEhIKCm1pbmVyYWxfaHAYAyABKAQSFgoObWluZXJhbF9t",
+            "YXhfaHAYBCABKAQSEgoKZXJyb3JfY29kZRgFIAEoCSJICg1QaWNrYXhlQXR0",
+            "YWNrEhIKCnNsb3RfaW5kZXgYASABKA0SDgoGZGFtYWdlGAIgASgEEhMKC2lz",
+            "X2NyaXRpY2FsGAMgASgIIpEBCgxNaW5pbmdVcGRhdGUSEgoKbWluZXJhbF9p",
+            "ZBgBIAEoDRISCgpjdXJyZW50X2hwGAIgASgEEg4KBm1heF9ocBgDIAEoBBIv",
+            "CgdhdHRhY2tzGAQgAygLMh4uaW5maW5pdGVwaWNrYXhlLlBpY2theGVBdHRh",
+            "Y2sSGAoQc2VydmVyX3RpbWVzdGFtcBgFIAEoBCKTAQoOTWluaW5nQ29tcGxl",
+            "dGUSEgoKbWluZXJhbF9pZBgBIAEoDRITCgtnb2xkX2Vhcm5lZBgCIAEoBBIS",
+            "Cgp0b3RhbF9nb2xkGAMgASgEEhQKDG1pbmluZ19jb3VudBgEIAEoBBIUCgxy",
+            "ZXNwYXduX3RpbWUYBSABKA0SGAoQc2VydmVyX3RpbWVzdGFtcBgGIAEoBCIR",
+            "Cg9BbGxTbG90c1JlcXVlc3QiVgoQQWxsU2xvdHNSZXNwb25zZRIvCgVzbG90",
+            "cxgBIAMoCzIgLmluZmluaXRlcGlja2F4ZS5QaWNrYXhlU2xvdEluZm8SEQoJ",
+            "dG90YWxfZHBzGAIgASgEIiQKDlVwZ3JhZGVSZXF1ZXN0EhIKCnNsb3RfaW5k",
+            "ZXgYASABKA0ijAMKDVVwZ3JhZGVSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIS",
+            "CgpzbG90X2luZGV4GAIgASgNEhEKCW5ld19sZXZlbBgDIAEoDRIQCghuZXdf",
+            "dGllchgEIAEoDRIYChBuZXdfYXR0YWNrX3Bvd2VyGAUgASgEEhgKEG5ld19h",
+            "dHRhY2tfc3BlZWQYBiABKA0SIAoYbmV3X2NyaXRpY2FsX2hpdF9wZXJjZW50",
+            "GAcgASgNEhsKE25ld19jcml0aWNhbF9kYW1hZ2UYCCABKA0SDwoHbmV3X2Rw",
+            "cxgJIAEoBBIVCg1uZXdfdG90YWxfZHBzGAogASgEEhIKCmdvbGRfc3BlbnQY",
+            "CyABKAQSFgoOcmVtYWluaW5nX2dvbGQYDCABKAQSEgoKZXJyb3JfY29kZRgN",
+            "IAEoCRIUCgxiYXNlX3JhdGVfYnAYDiABKA0SFQoNYm9udXNfcmF0ZV9icBgP",
+            "IAEoDRIVCg1maW5hbF9yYXRlX2JwGBAgASgNEhIKCnBpdHlfYm9udXMYESAB",
+            "KA0iFgoURGFpbHlNaXNzaW9uc1JlcXVlc3QiogIKDE1pc3Npb25FbnRyeRIP",
+            "CgdzbG90X25vGAEgASgNEhIKCm1pc3Npb25faWQYAiABKA0SFAoMbWlzc2lv",
+            "bl90eXBlGAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEhQKDHRhcmdldF92",
+            "YWx1ZRgFIAEoDRIVCg1jdXJyZW50X3ZhbHVlGAYgASgNEhYKDnJld2FyZF9j",
+            "cnlzdGFsGAcgASgNEg4KBnN0YXR1cxgIIAEoCRITCgthc3NpZ25lZF9hdBgJ",
+            "IAEoBBISCgpleHBpcmVzX2F0GAogASgEEhIKCmRpZmZpY3VsdHkYCyABKAkS",
+            "MAoKbWluZXJhbF9pZBgMIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJW",
+            "YWx1ZSL3AQoVRGFpbHlNaXNzaW9uc1Jlc3BvbnNlEi8KCG1pc3Npb25zGAEg",
+            "AygLMh0uaW5maW5pdGVwaWNrYXhlLk1pc3Npb25FbnRyeRIXCg9jb21wbGV0",
+            "ZWRfY291bnQYAiABKA0SFAoMcmVyb2xsX2NvdW50GAMgASgNEi8KC2FkX2Nv",
+            "dW50ZXJzGAQgAygLMhouaW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchIUCgxy",
+            "ZXJvbGxzX2ZyZWUYBSABKA0SGwoTcmVyb2xsc190b3RhbF9saW1pdBgGIAEo",
+            "DRIaChJyZXNldF90aW1lc3RhbXBfbXMYByABKAQieQoVTWlzc2lvblByb2dy",
+            "ZXNzVXBkYXRlEg8KB3Nsb3Rfbm8YASABKA0SEgoKbWlzc2lvbl9pZBgCIAEo",
+            "DRIVCg1jdXJyZW50X3ZhbHVlGAMgASgNEhQKDHRhcmdldF92YWx1ZRgEIAEo",
+            "DRIOCgZzdGF0dXMYBSABKAkiIgoPTWlzc2lvbkNvbXBsZXRlEg8KB3Nsb3Rf",
+            "bm8YASABKA0ikAEKFU1pc3Npb25Db21wbGV0ZVJlc3VsdBIPCgdzdWNjZXNz",
+            "GAEgASgIEg8KB3Nsb3Rfbm8YAiABKA0SEgoKbWlzc2lvbl9pZBgDIAEoDRIW",
+            "Cg5yZXdhcmRfY3J5c3RhbBgEIAEoDRIVCg10b3RhbF9jcnlzdGFsGAUgASgN",
+            "EhIKCmVycm9yX2NvZGUYBiABKAkiDwoNTWlzc2lvblJlcm9sbCKKAQoTTWlz",
+            "c2lvblJlcm9sbFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEjgKEXJlcm9sbGVk",
+            "X21pc3Npb25zGAIgAygLMh0uaW5maW5pdGVwaWNrYXhlLk1pc3Npb25FbnRy",
+            "eRIUCgxyZXJvbGxzX3VzZWQYAyABKA0SEgoKZXJyb3JfY29kZRgEIAEoCSIp",
+            "Cg5NaWxlc3RvbmVDbGFpbRIXCg9taWxlc3RvbmVfY291bnQYASABKA0iwgEK",
+            "FE1pbGVzdG9uZUNsYWltUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSFwoPbWls",
+            "ZXN0b25lX2NvdW50GAIgASgNEh4KFm9mZmxpbmVfc2Vjb25kc19nYWluZWQY",
+            "AyABKA0SHQoVdG90YWxfb2ZmbGluZV9zZWNvbmRzGAQgASgNEhYKDnJld2Fy",
+            "ZF9jcnlzdGFsGAUgASgNEhUKDXRvdGFsX2NyeXN0YWwYBiABKA0SEgoKZXJy",
+            "b3JfY29kZRgHIAEoCSJhCg5NaWxlc3RvbmVTdGF0ZRIXCg9jb21wbGV0ZWRf",
+            "Y291bnQYASABKA0SGgoSY2xhaW1lZF9taWxlc3RvbmVzGAIgAygNEhoKEnJl",
+            "c2V0X3RpbWVzdGFtcF9tcxgDIAEoBCIXChVXZWVrbHlNaXNzaW9uc1JlcXVl",
+            "c3QizAEKEldlZWtseU1pc3Npb25FbnRyeRISCgptaXNzaW9uX2lkGAEgASgN",
+            "EhQKDG1pc3Npb25fdHlwZRgCIAEoCRINCgV0aXRsZRgDIAEoCRITCgtkZXNj",
+            "cmlwdGlvbhgEIAEoCRIUCgx0YXJnZXRfdmFsdWUYBSABKA0SFQoNY3VycmVu",
+            "dF92YWx1ZRgGIAEoDRIWCg5yZXdhcmRfY3J5c3RhbBgHIAEoDRITCgtyZXdh",
+            "cmRfZ29sZBgIIAEoBBIOCgZzdGF0dXMYCSABKAkiggEKFldlZWtseU1pc3Np",
+            "b25zUmVzcG9uc2USNQoIbWlzc2lvbnMYASADKAsyIy5pbmZpbml0ZXBpY2th",
+            "eGUuV2Vla2x5TWlzc2lvbkVudHJ5EhUKDWNsYWltZWRfY291bnQYAiABKA0S",
+            "GgoScmVzZXRfdGltZXN0YW1wX21zGAMgASgEIm4KG1dlZWtseU1pc3Npb25Q",
+            "cm9ncmVzc1VwZGF0ZRISCgptaXNzaW9uX2lkGAEgASgNEhUKDWN1cnJlbnRf",
+            "dmFsdWUYAiABKA0SFAoMdGFyZ2V0X3ZhbHVlGAMgASgNEg4KBnN0YXR1cxgE",
+            "IAEoCSIoChJXZWVrbHlNaXNzaW9uQ2xhaW0SEgoKbWlzc2lvbl9pZBgBIAEo",
+            "DSKrAQoYV2Vla2x5TWlzc2lvbkNsYWltUmVzdWx0Eg8KB3N1Y2Nlc3MYASAB",
+            "KAgSEgoKbWlzc2lvbl9pZBgCIAEoDRIWCg5yZXdhcmRfY3J5c3RhbBgDIAEo",
+            "DRITCgtyZXdhcmRfZ29sZBgEIAEoBBIVCg10b3RhbF9jcnlzdGFsGAUgASgN",
+            "EhIKCnRvdGFsX2dvbGQYBiABKAQSEgoKZXJyb3JfY29kZRgHIAEoCSIvChRX",
+            "ZWVrbHlNaWxlc3RvbmVDbGFpbRIXCg9taWxlc3RvbmVfY291bnQYASABKA0i",
+            "sgEKGldlZWtseU1pbGVzdG9uZUNsYWltUmVzdWx0Eg8KB3N1Y2Nlc3MYASAB",
+            "KAgSFwoPbWlsZXN0b25lX2NvdW50GAIgASgNEhYKDnJld2FyZF9jcnlzdGFs",
+            "GAMgASgNEhMKC3Jld2FyZF9nb2xkGAQgASgEEhUKDXRvdGFsX2NyeXN0YWwY",
+            "BSABKA0SEgoKdG90YWxfZ29sZBgGIAEoBBISCgplcnJvcl9jb2RlGAcgASgJ",
+            "ImUKFFdlZWtseU1pbGVzdG9uZVN0YXRlEhUKDWNsYWltZWRfY291bnQYASAB",
+            "KA0SGgoSY2xhaW1lZF9taWxlc3RvbmVzGAIgAygNEhoKEnJlc2V0X3RpbWVz",
+            "dGFtcF9tcxgDIAEoBCIVChNBY2hpZXZlbWVudHNSZXF1ZXN0IkYKE0FjaGll",
+            "dmVtZW50UHJvZ3Jlc3MSGAoQYWNoaWV2ZW1lbnRfdHlwZRgBIAEoCRIVCg1j",
+            "dXJyZW50X3ZhbHVlGAIgASgEIkQKFUFjaGlldmVtZW50Q2hhaW5TdGF0ZRIQ",
+            "CghjaGFpbl9pZBgBIAEoDRIZChFsYXN0X2NsYWltZWRfc3RlcBgCIAEoDSKI",
+            "AQoUQWNoaWV2ZW1lbnRzUmVzcG9uc2USOAoKcHJvZ3Jlc3NlcxgBIAMoCzIk",
+            "LmluZmluaXRlcGlja2F4ZS5BY2hpZXZlbWVudFByb2dyZXNzEjYKBmNoYWlu",
+            "cxgCIAMoCzImLmluZmluaXRlcGlja2F4ZS5BY2hpZXZlbWVudENoYWluU3Rh",
+            "dGUiTAoZQWNoaWV2ZW1lbnRQcm9ncmVzc1VwZGF0ZRIYChBhY2hpZXZlbWVu",
+            "dF90eXBlGAEgASgJEhUKDWN1cnJlbnRfdmFsdWUYAiABKAQiKgoQQWNoaWV2",
+            "ZW1lbnRDbGFpbRIWCg5hY2hpZXZlbWVudF9pZBgBIAEoDSLVAQoWQWNoaWV2",
+            "ZW1lbnRDbGFpbVJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhYKDmFjaGlldmVt",
+            "ZW50X2lkGAIgASgNEhAKCGNoYWluX2lkGAMgASgNEhQKDGNsYWltZWRfc3Rl",
+            "cBgEIAEoDRIWCg5yZXdhcmRfY3J5c3RhbBgFIAEoDRITCgtyZXdhcmRfZ29s",
+            "ZBgGIAEoBBIVCg10b3RhbF9jcnlzdGFsGAcgASgNEhIKCnRvdGFsX2dvbGQY",
+            "CCABKAQSEgoKZXJyb3JfY29kZRgJIAEoCSIgCgpTbG90VW5sb2NrEhIKCnNs",
+            "b3RfaW5kZXgYASABKA0ixAEKEFNsb3RVbmxvY2tSZXN1bHQSDwoHc3VjY2Vz",
+            "cxgBIAEoCBISCgpzbG90X2luZGV4GAIgASgNEhUKDWNyeXN0YWxfc3BlbnQY",
             "AyABKA0SGQoRcmVtYWluaW5nX2NyeXN0YWwYBCABKA0SEgoKZXJyb3JfY29k",
-            "ZRgFIAEoCSIaChhJbmZpbml0ZU1pbmVTdGF0ZVJlcXVlc3QiWwoWSW5maW5p",
-            "dGVNaW5lRmxvb3JTdGF0ZRINCgVmbG9vchgBIAEoDRIWCg5hdXRvX2NsYWlt",
-            "YWJsZRgCIAEoCBIaChJhdXRvX2NsYWltZWRfdG9kYXkYAyABKAgiwAEKGUlu",
-            "ZmluaXRlTWluZVN0YXRlUmVzcG9uc2USGgoScmVzZXRfdGltZXN0YW1wX21z",
-            "GAEgASgEEhYKDnRpbWVfbGltaXRfc2VjGAIgASgNEhEKCW1heF9mbG9vchgD",
-            "IAEoDRIdChVoaWdoZXN0X2NsZWFyZWRfZmxvb3IYBCABKA0SPQoMZmxvb3Jf",
-            "c3RhdGVzGAUgAygLMicuaW5maW5pdGVwaWNrYXhlLkluZmluaXRlTWluZUZs",
-            "b29yU3RhdGUiMgohSW5maW5pdGVNaW5lQ2hhbGxlbmdlU3RhcnRSZXF1ZXN0",
-            "Eg0KBWZsb29yGAEgASgNIqgBCiBJbmZpbml0ZU1pbmVDaGFsbGVuZ2VTdGFy",
-            "dFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEg0KBWZsb29yGAIgASgNEhIKCmN1",
-            "cnJlbnRfaHAYAyABKAQSDgoGbWF4X2hwGAQgASgEEhYKDnRpbWVfbGltaXRf",
-            "c2VjGAUgASgNEhQKDHJlbWFpbmluZ19tcxgGIAEoBBISCgplcnJvcl9jb2Rl",
-            "GAcgASgJIrEBChtJbmZpbml0ZU1pbmVDaGFsbGVuZ2VVcGRhdGUSDQoFZmxv",
-            "b3IYASABKA0SEgoKY3VycmVudF9ocBgCIAEoBBIOCgZtYXhfaHAYAyABKAQS",
-            "FAoMcmVtYWluaW5nX21zGAQgASgEEi8KB2F0dGFja3MYBSADKAsyHi5pbmZp",
-            "bml0ZXBpY2theGUuUGlja2F4ZUF0dGFjaxIYChBzZXJ2ZXJfdGltZXN0YW1w",
-            "GAYgASgEItkBChtJbmZpbml0ZU1pbmVDaGFsbGVuZ2VSZXN1bHQSDwoHc3Vj",
-            "Y2VzcxgBIAEoCBINCgVmbG9vchgCIAEoDRJCCgZyZWFzb24YAyABKA4yMi5p",
-            "bmZpbml0ZXBpY2theGUuSW5maW5pdGVNaW5lQ2hhbGxlbmdlUmVzdWx0UmVh",
-            "c29uEhMKC3Jld2FyZF9nb2xkGAQgASgEEhYKDnJld2FyZF9jcnlzdGFsGAUg",
-            "ASgNEhIKCnRvdGFsX2dvbGQYBiABKAQSFQoNdG90YWxfY3J5c3RhbBgHIAEo",
-            "DSItChxJbmZpbml0ZU1pbmVBdXRvQ2xhaW1SZXF1ZXN0Eg0KBWZsb29yGAEg",
-            "ASgNIqkBChtJbmZpbml0ZU1pbmVBdXRvQ2xhaW1SZXN1bHQSDwoHc3VjY2Vz",
-            "cxgBIAEoCBINCgVmbG9vchgCIAEoDRITCgtyZXdhcmRfZ29sZBgDIAEoBBIW",
-            "Cg5yZXdhcmRfY3J5c3RhbBgEIAEoDRISCgp0b3RhbF9nb2xkGAUgASgEEhUK",
-            "DXRvdGFsX2NyeXN0YWwYBiABKA0SEgoKZXJyb3JfY29kZRgHIAEoCSIhCh9J",
-            "bmZpbml0ZU1pbmVBdXRvQ2xhaW1BbGxSZXF1ZXN0IqkBCh5JbmZpbml0ZU1p",
-            "bmVBdXRvQ2xhaW1BbGxSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIZChF0b3Rh",
-            "bF9yZXdhcmRfZ29sZBgCIAEoBBIcChR0b3RhbF9yZXdhcmRfY3J5c3RhbBgD",
-            "IAEoDRISCgp0b3RhbF9nb2xkGAQgASgEEhUKDXRvdGFsX2NyeXN0YWwYBSAB",
-            "KA0SEgoKZXJyb3JfY29kZRgGIAEoCSIZChdJbmZpbml0ZU1pbmVFeGl0UmVx",
-            "dWVzdCI9ChZJbmZpbml0ZU1pbmVFeGl0UmVzdWx0Eg8KB3N1Y2Nlc3MYASAB",
-            "KAgSEgoKZXJyb3JfY29kZRgCIAEoCSpOCgdHZW1UeXBlEhQKEEdFTV9UWVBF",
-            "X1VOS05PV04QABIQCgxBVFRBQ0tfU1BFRUQQARINCglDUklUX1JBVEUQAhIM",
-            "CghDUklUX0RNRxADKloKCEdlbUdyYWRlEhUKEUdFTV9HUkFERV9VTktOT1dO",
-            "EAASCgoGQ09NTU9OEAESCAoEUkFSRRACEggKBEVQSUMQAxIICgRIRVJPEAQS",
-            "DQoJTEVHRU5EQVJZEAUq3BEKC01lc3NhZ2VUeXBlEgsKB1VOS05PV04QABIN",
-            "CglIQU5EU0hBS0UQARIUChBIQU5EU0hBS0VfUkVTVUxUEAISDQoJSEVBUlRC",
-            "RUFUEAMSEQoNSEVBUlRCRUFUX0FDSxAEEhYKElVTRVJfREFUQV9TTkFQU0hP",
-            "VBAKEhgKFE1JTkVSQUxfTElTVF9SRVFVRVNUEBQSGQoVTUlORVJBTF9MSVNU",
-            "X1JFU1BPTlNFEBUSGgoWQ0hBTkdFX01JTkVSQUxfUkVRVUVTVBAWEhsKF0NI",
-            "QU5HRV9NSU5FUkFMX1JFU1BPTlNFEBcSEQoNTUlOSU5HX1VQREFURRAgEhMK",
-            "D01JTklOR19DT01QTEVURRAhEhUKEUFMTF9TTE9UU19SRVFVRVNUECgSFgoS",
-            "QUxMX1NMT1RTX1JFU1BPTlNFECkSDwoLU0xPVF9VTkxPQ0sQKhIWChJTTE9U",
-            "X1VOTE9DS19SRVNVTFQQKxITCg9VUEdSQURFX1JFUVVFU1QQMhISCg5VUEdS",
-            "QURFX1JFU1VMVBAzEhoKFkRBSUxZX01JU1NJT05TX1JFUVVFU1QQPBIbChdE",
-            "QUlMWV9NSVNTSU9OU19SRVNQT05TRRA9EhsKF01JU1NJT05fUFJPR1JFU1Nf",
-            "VVBEQVRFED4SFAoQTUlTU0lPTl9DT01QTEVURRA/EhsKF01JU1NJT05fQ09N",
-            "UExFVEVfUkVTVUxUEEASEgoOTUlTU0lPTl9SRVJPTEwQQRIZChVNSVNTSU9O",
-            "X1JFUk9MTF9SRVNVTFQQQhITCg9NSUxFU1RPTkVfQ0xBSU0QQxIaChZNSUxF",
-            "U1RPTkVfQ0xBSU1fUkVTVUxUEEQSEwoPTUlMRVNUT05FX1NUQVRFEEUSHAoX",
-            "V0VFS0xZX01JU1NJT05TX1JFUVVFU1QQoAESHQoYV0VFS0xZX01JU1NJT05T",
-            "X1JFU1BPTlNFEKEBEiMKHldFRUtMWV9NSVNTSU9OX1BST0dSRVNTX1VQREFU",
-            "RRCiARIZChRXRUVLTFlfTUlTU0lPTl9DTEFJTRCjARIgChtXRUVLTFlfTUlT",
-            "U0lPTl9DTEFJTV9SRVNVTFQQpAESGwoWV0VFS0xZX01JTEVTVE9ORV9DTEFJ",
-            "TRClARIiCh1XRUVLTFlfTUlMRVNUT05FX0NMQUlNX1JFU1VMVBCmARIbChZX",
-            "RUVLTFlfTUlMRVNUT05FX1NUQVRFEKcBEhkKFEFDSElFVkVNRU5UU19SRVFV",
-            "RVNUEIwBEhoKFUFDSElFVkVNRU5UU19SRVNQT05TRRCNARIgChtBQ0hJRVZF",
-            "TUVOVF9QUk9HUkVTU19VUERBVEUQjgESFgoRQUNISUVWRU1FTlRfQ0xBSU0Q",
-            "jwESHQoYQUNISUVWRU1FTlRfQ0xBSU1fUkVTVUxUEJABEhUKEUFEX1dBVENI",
-            "X0NPTVBMRVRFEEYSEwoPQURfV0FUQ0hfUkVTVUxUEEcSFQoRQURfQ09VTlRF",
-            "UlNfU1RBVEUQSBITCg9DVVJSRU5DWV9VUERBVEUQUBIaChZPRkZMSU5FX1JF",
-            "V0FSRF9SRVFVRVNUEFoSGQoVT0ZGTElORV9SRVdBUkRfUkVTVUxUEFsSHgoa",
-            "T0ZGTElORV9NT0RFX1NUQVJUX1JFUVVFU1QQXBIdChlPRkZMSU5FX01PREVf",
-            "U1RBUlRfUkVTVUxUEF0SFgoSRVJST1JfTk9USUZJQ0FUSU9OEGQSFAoQR0VN",
-            "X0xJU1RfUkVRVUVTVBBuEhUKEUdFTV9MSVNUX1JFU1BPTlNFEG8SFQoRR0VN",
-            "X0dBQ0hBX1JFUVVFU1QQcBIUChBHRU1fR0FDSEFfUkVTVUxUEHESGQoVR0VN",
-            "X1NZTlRIRVNJU19SRVFVRVNUEHISGAoUR0VNX1NZTlRIRVNJU19SRVNVTFQQ",
-            "cxIaChZHRU1fQ09OVkVSU0lPTl9SRVFVRVNUEHQSGQoVR0VNX0NPTlZFUlNJ",
-            "T05fUkVTVUxUEHUSFwoTR0VNX0RJU0NBUkRfUkVRVUVTVBB2EhYKEkdFTV9E",
-            "SVNDQVJEX1JFU1VMVBB3EhUKEUdFTV9FUVVJUF9SRVFVRVNUEHgSFAoQR0VN",
-            "X0VRVUlQX1JFU1VMVBB5EhcKE0dFTV9VTkVRVUlQX1JFUVVFU1QQehIWChJH",
-            "RU1fVU5FUVVJUF9SRVNVTFQQexIbChdHRU1fU0xPVF9VTkxPQ0tfUkVRVUVT",
-            "VBB8EhoKFkdFTV9TTE9UX1VOTE9DS19SRVNVTFQQfRIgChxHRU1fSU5WRU5U",
-            "T1JZX0VYUEFORF9SRVFVRVNUEH4SHwobR0VNX0lOVkVOVE9SWV9FWFBBTkRf",
-            "UkVTVUxUEH8SHwoaR0VNX0FVVE9fU1lOVEhFU0lTX1JFUVVFU1QQgAESHgoZ",
-            "R0VNX0FVVE9fU1lOVEhFU0lTX1JFU1VMVBCBARIgChtJTkZJTklURV9NSU5F",
-            "X1NUQVRFX1JFUVVFU1QQyAESIQocSU5GSU5JVEVfTUlORV9TVEFURV9SRVNQ",
-            "T05TRRDJARIqCiVJTkZJTklURV9NSU5FX0NIQUxMRU5HRV9TVEFSVF9SRVFV",
-            "RVNUEMoBEikKJElORklOSVRFX01JTkVfQ0hBTExFTkdFX1NUQVJUX1JFU1VM",
-            "VBDLARIjCh5JTkZJTklURV9NSU5FX0NIQUxMRU5HRV9VUERBVEUQzAESIwoe",
-            "SU5GSU5JVEVfTUlORV9DSEFMTEVOR0VfUkVTVUxUEM0BEiUKIElORklOSVRF",
-            "X01JTkVfQVVUT19DTEFJTV9SRVFVRVNUEM4BEiQKH0lORklOSVRFX01JTkVf",
-            "QVVUT19DTEFJTV9SRVNVTFQQzwESKQokSU5GSU5JVEVfTUlORV9BVVRPX0NM",
-            "QUlNX0FMTF9SRVFVRVNUENABEigKI0lORklOSVRFX01JTkVfQVVUT19DTEFJ",
-            "TV9BTExfUkVTVUxUENEBEh8KGklORklOSVRFX01JTkVfRVhJVF9SRVFVRVNU",
-            "ENIBEh4KGUlORklOSVRFX01JTkVfRVhJVF9SRVNVTFQQ0wEqbQohSW5maW5p",
-            "dGVNaW5lQ2hhbGxlbmdlUmVzdWx0UmVhc29uEiAKHElORklOSVRFX01JTkVf",
-            "UkVTVUxUX1VOS05PV04QABILCgdDTEVBUkVEEAESCwoHVElNRU9VVBACEgwK",
-            "CENBTkNFTEVEEANiBnByb3RvMw=="));
+            "ZRgFIAEoCRIyCghuZXdfc2xvdBgGIAEoCzIgLmluZmluaXRlcGlja2F4ZS5Q",
+            "aWNrYXhlU2xvdEluZm8SEQoJdG90YWxfZHBzGAcgASgEIiIKD0FkV2F0Y2hD",
+            "b21wbGV0ZRIPCgdhZF90eXBlGAEgASgJIqUBCg1BZFdhdGNoUmVzdWx0Eg8K",
+            "B3N1Y2Nlc3MYASABKAgSDwoHYWRfdHlwZRgCIAEoCRIWCg5jcnlzdGFsX2Vh",
+            "cm5lZBgDIAEoDRIVCg10b3RhbF9jcnlzdGFsGAQgASgNEi8KC2FkX2NvdW50",
+            "ZXJzGAUgAygLMhouaW5maW5pdGVwaWNrYXhlLkFkQ291bnRlchISCgplcnJv",
+            "cl9jb2RlGAYgASgJIl4KD0FkQ291bnRlcnNTdGF0ZRIvCgthZF9jb3VudGVy",
+            "cxgBIAMoCzIaLmluZmluaXRlcGlja2F4ZS5BZENvdW50ZXISGgoScmVzZXRf",
+            "dGltZXN0YW1wX21zGAIgASgEInsKDkN1cnJlbmN5VXBkYXRlEioKBGdvbGQY",
+            "ASABKAsyHC5nb29nbGUucHJvdG9idWYuVUludDY0VmFsdWUSLQoHY3J5c3Rh",
+            "bBgCIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5VSW50MzJWYWx1ZRIOCgZyZWFz",
+            "b24YAyABKAkiFgoUT2ZmbGluZVJld2FyZFJlcXVlc3QibQoTT2ZmbGluZVJl",
+            "d2FyZFJlc3VsdBIXCg9lbGFwc2VkX3NlY29uZHMYASABKAQSEwoLZ29sZF9l",
+            "YXJuZWQYAiABKAQSFAoMbWluaW5nX2NvdW50GAMgASgNEhIKCnRvdGFsX2dv",
+            "bGQYBCABKAQiGQoXT2ZmbGluZU1vZGVTdGFydFJlcXVlc3QiXgoWT2ZmbGlu",
+            "ZU1vZGVTdGFydFJlc3VsdBIPCgdzdWNjZXNzGAEgASgIEh8KF2N1cnJlbnRf",
+            "b2ZmbGluZV9zZWNvbmRzGAIgASgNEhIKCmVycm9yX2NvZGUYAyABKAkiOAoR",
+            "RXJyb3JOb3RpZmljYXRpb24SEgoKZXJyb3JfY29kZRgBIAEoCRIPCgdtZXNz",
+            "YWdlGAIgASgJIs4BCgdHZW1JbmZvEhcKD2dlbV9pbnN0YW5jZV9pZBgBIAEo",
+            "CRIOCgZnZW1faWQYAiABKA0SKAoFZ3JhZGUYAyABKA4yGS5pbmZpbml0ZXBp",
+            "Y2theGUuR2VtR3JhZGUSJgoEdHlwZRgEIAEoDjIYLmluZmluaXRlcGlja2F4",
+            "ZS5HZW1UeXBlEgwKBG5hbWUYBSABKAkSDAoEaWNvbhgGIAEoCRIXCg9zdGF0",
+            "X211bHRpcGxpZXIYByABKA0SEwoLYWNxdWlyZWRfYXQYCCABKAQiagoLR2Vt",
+            "U2xvdEluZm8SFgoOZ2VtX3Nsb3RfaW5kZXgYASABKA0SEwoLaXNfdW5sb2Nr",
+            "ZWQYAiABKAgSLgoMZXF1aXBwZWRfZ2VtGAMgASgLMhguaW5maW5pdGVwaWNr",
+            "YXhlLkdlbUluZm8iEAoOR2VtTGlzdFJlcXVlc3QiaQoPR2VtTGlzdFJlc3Bv",
+            "bnNlEiYKBGdlbXMYASADKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbxIS",
+            "Cgp0b3RhbF9nZW1zGAIgASgNEhoKEmludmVudG9yeV9jYXBhY2l0eRgDIAEo",
+            "DSIlCg9HZW1HYWNoYVJlcXVlc3QSEgoKcHVsbF9jb3VudBgBIAEoDSK/AQoO",
+            "R2VtR2FjaGFSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBImCgRnZW1zGAIgAygL",
+            "MhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SFQoNY3J5c3RhbF9zcGVudBgD",
+            "IAEoDRIZChFyZW1haW5pbmdfY3J5c3RhbBgEIAEoDRISCgp0b3RhbF9nZW1z",
+            "GAUgASgNEhoKEmludmVudG9yeV9jYXBhY2l0eRgGIAEoDRISCgplcnJvcl9j",
+            "b2RlGAcgASgJIi8KE0dlbVN5bnRoZXNpc1JlcXVlc3QSGAoQZ2VtX2luc3Rh",
+            "bmNlX2lkcxgBIAMoCSLGAQoSR2VtU3ludGhlc2lzUmVzdWx0Eg8KB3N1Y2Nl",
+            "c3MYASABKAgSGQoRc3ludGhlc2lzX3N1Y2Nlc3MYAiABKAgSLAoKcmVzdWx0",
+            "X2dlbRgDIAEoCzIYLmluZmluaXRlcGlja2F4ZS5HZW1JbmZvEhIKCnRvdGFs",
+            "X2dlbXMYBCABKA0SEgoKZXJyb3JfY29kZRgFIAEoCRIuCgxyZXRhaW5lZF9n",
+            "ZW0YBiABKAsyGC5pbmZpbml0ZXBpY2theGUuR2VtSW5mbyJeChdHZW1BdXRv",
+            "U3ludGhlc2lzUmVxdWVzdBItCgpmcm9tX2dyYWRlGAEgASgOMhkuaW5maW5p",
+            "dGVwaWNrYXhlLkdlbUdyYWRlEhQKDG1heF9hdHRlbXB0cxgCIAEoDSKqAQoW",
+            "R2VtQXV0b1N5bnRoZXNpc1Jlc3VsdBIPCgdzdWNjZXNzGAEgASgIEhEKCWF0",
+            "dGVtcHRlZBgCIAEoDRIVCg1zdWNjZXNzX2NvdW50GAMgASgNEi0KC3Jlc3Vs",
+            "dF9nZW1zGAQgAygLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SEgoKdG90",
+            "YWxfZ2VtcxgFIAEoDRISCgplcnJvcl9jb2RlGAYgASgJInYKFEdlbUNvbnZl",
+            "cnNpb25SZXF1ZXN0EhcKD2dlbV9pbnN0YW5jZV9pZBgBIAEoCRItCgt0YXJn",
+            "ZXRfdHlwZRgCIAEoDjIYLmluZmluaXRlcGlja2F4ZS5HZW1UeXBlEhYKDnVz",
+            "ZV9maXhlZF9jb3N0GAMgASgIIp0BChNHZW1Db252ZXJzaW9uUmVzdWx0Eg8K",
+            "B3N1Y2Nlc3MYASABKAgSLwoNY29udmVydGVkX2dlbRgCIAEoCzIYLmluZmlu",
+            "aXRlcGlja2F4ZS5HZW1JbmZvEhUKDWNyeXN0YWxfc3BlbnQYAyABKA0SGQoR",
+            "cmVtYWluaW5nX2NyeXN0YWwYBCABKA0SEgoKZXJyb3JfY29kZRgFIAEoCSIt",
+            "ChFHZW1EaXNjYXJkUmVxdWVzdBIYChBnZW1faW5zdGFuY2VfaWRzGAEgAygJ",
+            "InoKEEdlbURpc2NhcmRSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIWCg5jcnlz",
+            "dGFsX2Vhcm5lZBgCIAEoDRIVCg10b3RhbF9jcnlzdGFsGAMgASgNEhIKCnRv",
+            "dGFsX2dlbXMYBCABKA0SEgoKZXJyb3JfY29kZRgFIAEoCSJeCg9HZW1FcXVp",
+            "cFJlcXVlc3QSGgoScGlja2F4ZV9zbG90X2luZGV4GAEgASgNEhYKDmdlbV9z",
+            "bG90X2luZGV4GAIgASgNEhcKD2dlbV9pbnN0YW5jZV9pZBgDIAEoCSLrAQoO",
+            "R2VtRXF1aXBSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIaChJwaWNrYXhlX3Ns",
+            "b3RfaW5kZXgYAiABKA0SFgoOZ2VtX3Nsb3RfaW5kZXgYAyABKA0SLgoMZXF1",
+            "aXBwZWRfZ2VtGAQgASgLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SOQoP",
+            "dXBkYXRlZF9waWNrYXhlGAUgASgLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2th",
+            "eGVTbG90SW5mbxIVCg1uZXdfdG90YWxfZHBzGAYgASgEEhIKCmVycm9yX2Nv",
+            "ZGUYByABKAkiRwoRR2VtVW5lcXVpcFJlcXVlc3QSGgoScGlja2F4ZV9zbG90",
+            "X2luZGV4GAEgASgNEhYKDmdlbV9zbG90X2luZGV4GAIgASgNIu8BChBHZW1V",
+            "bmVxdWlwUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSGgoScGlja2F4ZV9zbG90",
+            "X2luZGV4GAIgASgNEhYKDmdlbV9zbG90X2luZGV4GAMgASgNEjAKDnVuZXF1",
+            "aXBwZWRfZ2VtGAQgASgLMhguaW5maW5pdGVwaWNrYXhlLkdlbUluZm8SOQoP",
+            "dXBkYXRlZF9waWNrYXhlGAUgASgLMiAuaW5maW5pdGVwaWNrYXhlLlBpY2th",
+            "eGVTbG90SW5mbxIVCg1uZXdfdG90YWxfZHBzGAYgASgEEhIKCmVycm9yX2Nv",
+            "ZGUYByABKAkiSgoUR2VtU2xvdFVubG9ja1JlcXVlc3QSGgoScGlja2F4ZV9z",
+            "bG90X2luZGV4GAEgASgNEhYKDmdlbV9zbG90X2luZGV4GAIgASgNIqABChNH",
+            "ZW1TbG90VW5sb2NrUmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSGgoScGlja2F4",
+            "ZV9zbG90X2luZGV4GAIgASgNEhYKDmdlbV9zbG90X2luZGV4GAMgASgNEhUK",
+            "DWNyeXN0YWxfc3BlbnQYBCABKA0SGQoRcmVtYWluaW5nX2NyeXN0YWwYBSAB",
+            "KA0SEgoKZXJyb3JfY29kZRgGIAEoCSIbChlHZW1JbnZlbnRvcnlFeHBhbmRS",
+            "ZXF1ZXN0IocBChhHZW1JbnZlbnRvcnlFeHBhbmRSZXN1bHQSDwoHc3VjY2Vz",
+            "cxgBIAEoCBIUCgxuZXdfY2FwYWNpdHkYAiABKA0SFQoNY3J5c3RhbF9zcGVu",
+            "dBgDIAEoDRIZChFyZW1haW5pbmdfY3J5c3RhbBgEIAEoDRISCgplcnJvcl9j",
+            "b2RlGAUgASgJImIKCk1haWxSZXdhcmQSMAoLcmV3YXJkX3R5cGUYASABKA4y",
+            "Gy5pbmZpbml0ZXBpY2theGUuUmV3YXJkVHlwZRISCgpyZXdhcmRfa2V5GAIg",
+            "ASgJEg4KBmFtb3VudBgDIAEoBCKnAQoLTWFpbFN1bW1hcnkSDwoHbWFpbF9p",
+            "ZBgBIAEoCRIRCgltYWlsX3R5cGUYAiABKAkSDQoFdGl0bGUYAyABKAkSFQoN",
+            "Y3JlYXRlZF9hdF9tcxgEIAEoBBIVCg1leHBpcmVzX2F0X21zGAUgASgEEg8K",
+            "B2lzX3JlYWQYBiABKAgSEgoKaXNfY2xhaW1lZBgHIAEoCBISCgpoYXNfcmV3",
+            "YXJkGAggASgIIo8CCgpNYWlsRGV0YWlsEg8KB21haWxfaWQYASABKAkSEQoJ",
+            "bWFpbF90eXBlGAIgASgJEhMKC3RlbXBsYXRlX2lkGAMgASgJEhoKEnRlbXBs",
+            "YXRlX2FyZ3NfanNvbhgEIAEoCRINCgV0aXRsZRgFIAEoCRIMCgRib2R5GAYg",
+            "ASgJEg4KBnNlbmRlchgHIAEoCRIVCg1jcmVhdGVkX2F0X21zGAggASgEEhUK",
+            "DWV4cGlyZXNfYXRfbXMYCSABKAQSDwoHaXNfcmVhZBgKIAEoCBISCgppc19j",
+            "bGFpbWVkGAsgASgIEiwKB3Jld2FyZHMYDCADKAsyGy5pbmZpbml0ZXBpY2th",
+            "eGUuTWFpbFJld2FyZCKIAQoPTWFpbExpc3RSZXF1ZXN0Eg0KBWxpbWl0GAEg",
+            "ASgNEhwKFGN1cnNvcl9jcmVhdGVkX2F0X21zGAIgASgEEhYKDmN1cnNvcl9t",
+            "YWlsX2lkGAMgASgJEhcKD2luY2x1ZGVfY2xhaW1lZBgEIAEoCBIXCg9pbmNs",
+            "dWRlX2V4cGlyZWQYBSABKAgiwAEKEE1haWxMaXN0UmVzcG9uc2USKwoFbWFp",
+            "bHMYASADKAsyHC5pbmZpbml0ZXBpY2theGUuTWFpbFN1bW1hcnkSIQoZbmV4",
+            "dF9jdXJzb3JfY3JlYXRlZF9hdF9tcxgCIAEoBBIbChNuZXh0X2N1cnNvcl9t",
+            "YWlsX2lkGAMgASgJEhAKCGhhc19uZXh0GAQgASgIEhQKDHVucmVhZF9jb3Vu",
+            "dBgFIAEoDRIXCg91bmNsYWltZWRfY291bnQYBiABKA0iNwoRTWFpbERldGFp",
+            "bFJlcXVlc3QSDwoHbWFpbF9pZBgBIAEoCRIRCgltYXJrX3JlYWQYAiABKAgi",
+            "ZAoSTWFpbERldGFpbFJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgSKQoEbWFp",
+            "bBgCIAEoCzIbLmluZmluaXRlcGlja2F4ZS5NYWlsRGV0YWlsEhIKCmVycm9y",
+            "X2NvZGUYAyABKAkiIwoQTWFpbENsYWltUmVxdWVzdBIPCgdtYWlsX2lkGAEg",
+            "ASgJIqABCg9NYWlsQ2xhaW1SZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIPCgdt",
+            "YWlsX2lkGAIgASgJEiwKB3Jld2FyZHMYAyADKAsyGy5pbmZpbml0ZXBpY2th",
+            "eGUuTWFpbFJld2FyZBISCgp0b3RhbF9nb2xkGAQgASgEEhUKDXRvdGFsX2Ny",
+            "eXN0YWwYBSABKA0SEgoKZXJyb3JfY29kZRgGIAEoCSIVChNNYWlsQ2xhaW1B",
+            "bGxSZXF1ZXN0IqkBChJNYWlsQ2xhaW1BbGxSZXN1bHQSDwoHc3VjY2VzcxgB",
+            "IAEoCBIVCg1jbGFpbWVkX2NvdW50GAIgASgNEiwKB3Jld2FyZHMYAyADKAsy",
+            "Gy5pbmZpbml0ZXBpY2theGUuTWFpbFJld2FyZBISCgp0b3RhbF9nb2xkGAQg",
+            "ASgEEhUKDXRvdGFsX2NyeXN0YWwYBSABKA0SEgoKZXJyb3JfY29kZRgGIAEo",
+            "CSIaChhJbmZpbml0ZU1pbmVTdGF0ZVJlcXVlc3QiWwoWSW5maW5pdGVNaW5l",
+            "Rmxvb3JTdGF0ZRINCgVmbG9vchgBIAEoDRIWCg5hdXRvX2NsYWltYWJsZRgC",
+            "IAEoCBIaChJhdXRvX2NsYWltZWRfdG9kYXkYAyABKAgiwAEKGUluZmluaXRl",
+            "TWluZVN0YXRlUmVzcG9uc2USGgoScmVzZXRfdGltZXN0YW1wX21zGAEgASgE",
+            "EhYKDnRpbWVfbGltaXRfc2VjGAIgASgNEhEKCW1heF9mbG9vchgDIAEoDRId",
+            "ChVoaWdoZXN0X2NsZWFyZWRfZmxvb3IYBCABKA0SPQoMZmxvb3Jfc3RhdGVz",
+            "GAUgAygLMicuaW5maW5pdGVwaWNrYXhlLkluZmluaXRlTWluZUZsb29yU3Rh",
+            "dGUiMgohSW5maW5pdGVNaW5lQ2hhbGxlbmdlU3RhcnRSZXF1ZXN0Eg0KBWZs",
+            "b29yGAEgASgNIqgBCiBJbmZpbml0ZU1pbmVDaGFsbGVuZ2VTdGFydFJlc3Vs",
+            "dBIPCgdzdWNjZXNzGAEgASgIEg0KBWZsb29yGAIgASgNEhIKCmN1cnJlbnRf",
+            "aHAYAyABKAQSDgoGbWF4X2hwGAQgASgEEhYKDnRpbWVfbGltaXRfc2VjGAUg",
+            "ASgNEhQKDHJlbWFpbmluZ19tcxgGIAEoBBISCgplcnJvcl9jb2RlGAcgASgJ",
+            "IrEBChtJbmZpbml0ZU1pbmVDaGFsbGVuZ2VVcGRhdGUSDQoFZmxvb3IYASAB",
+            "KA0SEgoKY3VycmVudF9ocBgCIAEoBBIOCgZtYXhfaHAYAyABKAQSFAoMcmVt",
+            "YWluaW5nX21zGAQgASgEEi8KB2F0dGFja3MYBSADKAsyHi5pbmZpbml0ZXBp",
+            "Y2theGUuUGlja2F4ZUF0dGFjaxIYChBzZXJ2ZXJfdGltZXN0YW1wGAYgASgE",
+            "ItkBChtJbmZpbml0ZU1pbmVDaGFsbGVuZ2VSZXN1bHQSDwoHc3VjY2VzcxgB",
+            "IAEoCBINCgVmbG9vchgCIAEoDRJCCgZyZWFzb24YAyABKA4yMi5pbmZpbml0",
+            "ZXBpY2theGUuSW5maW5pdGVNaW5lQ2hhbGxlbmdlUmVzdWx0UmVhc29uEhMK",
+            "C3Jld2FyZF9nb2xkGAQgASgEEhYKDnJld2FyZF9jcnlzdGFsGAUgASgNEhIK",
+            "CnRvdGFsX2dvbGQYBiABKAQSFQoNdG90YWxfY3J5c3RhbBgHIAEoDSItChxJ",
+            "bmZpbml0ZU1pbmVBdXRvQ2xhaW1SZXF1ZXN0Eg0KBWZsb29yGAEgASgNIqkB",
+            "ChtJbmZpbml0ZU1pbmVBdXRvQ2xhaW1SZXN1bHQSDwoHc3VjY2VzcxgBIAEo",
+            "CBINCgVmbG9vchgCIAEoDRITCgtyZXdhcmRfZ29sZBgDIAEoBBIWCg5yZXdh",
+            "cmRfY3J5c3RhbBgEIAEoDRISCgp0b3RhbF9nb2xkGAUgASgEEhUKDXRvdGFs",
+            "X2NyeXN0YWwYBiABKA0SEgoKZXJyb3JfY29kZRgHIAEoCSIhCh9JbmZpbml0",
+            "ZU1pbmVBdXRvQ2xhaW1BbGxSZXF1ZXN0IqkBCh5JbmZpbml0ZU1pbmVBdXRv",
+            "Q2xhaW1BbGxSZXN1bHQSDwoHc3VjY2VzcxgBIAEoCBIZChF0b3RhbF9yZXdh",
+            "cmRfZ29sZBgCIAEoBBIcChR0b3RhbF9yZXdhcmRfY3J5c3RhbBgDIAEoDRIS",
+            "Cgp0b3RhbF9nb2xkGAQgASgEEhUKDXRvdGFsX2NyeXN0YWwYBSABKA0SEgoK",
+            "ZXJyb3JfY29kZRgGIAEoCSIZChdJbmZpbml0ZU1pbmVFeGl0UmVxdWVzdCI9",
+            "ChZJbmZpbml0ZU1pbmVFeGl0UmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSEgoK",
+            "ZXJyb3JfY29kZRgCIAEoCSpOCgdHZW1UeXBlEhQKEEdFTV9UWVBFX1VOS05P",
+            "V04QABIQCgxBVFRBQ0tfU1BFRUQQARINCglDUklUX1JBVEUQAhIMCghDUklU",
+            "X0RNRxADKloKCEdlbUdyYWRlEhUKEUdFTV9HUkFERV9VTktOT1dOEAASCgoG",
+            "Q09NTU9OEAESCAoEUkFSRRACEggKBEVQSUMQAxIICgRIRVJPEAQSDQoJTEVH",
+            "RU5EQVJZEAUqRgoKUmV3YXJkVHlwZRIXChNSRVdBUkRfVFlQRV9VTktOT1dO",
+            "EAASCAoER09MRBABEgsKB0NSWVNUQUwQAhIICgRJVEVNEAMqrBMKC01lc3Nh",
+            "Z2VUeXBlEgsKB1VOS05PV04QABINCglIQU5EU0hBS0UQARIUChBIQU5EU0hB",
+            "S0VfUkVTVUxUEAISDQoJSEVBUlRCRUFUEAMSEQoNSEVBUlRCRUFUX0FDSxAE",
+            "EhYKElVTRVJfREFUQV9TTkFQU0hPVBAKEhgKFE1JTkVSQUxfTElTVF9SRVFV",
+            "RVNUEBQSGQoVTUlORVJBTF9MSVNUX1JFU1BPTlNFEBUSGgoWQ0hBTkdFX01J",
+            "TkVSQUxfUkVRVUVTVBAWEhsKF0NIQU5HRV9NSU5FUkFMX1JFU1BPTlNFEBcS",
+            "EQoNTUlOSU5HX1VQREFURRAgEhMKD01JTklOR19DT01QTEVURRAhEhUKEUFM",
+            "TF9TTE9UU19SRVFVRVNUECgSFgoSQUxMX1NMT1RTX1JFU1BPTlNFECkSDwoL",
+            "U0xPVF9VTkxPQ0sQKhIWChJTTE9UX1VOTE9DS19SRVNVTFQQKxITCg9VUEdS",
+            "QURFX1JFUVVFU1QQMhISCg5VUEdSQURFX1JFU1VMVBAzEhoKFkRBSUxZX01J",
+            "U1NJT05TX1JFUVVFU1QQPBIbChdEQUlMWV9NSVNTSU9OU19SRVNQT05TRRA9",
+            "EhsKF01JU1NJT05fUFJPR1JFU1NfVVBEQVRFED4SFAoQTUlTU0lPTl9DT01Q",
+            "TEVURRA/EhsKF01JU1NJT05fQ09NUExFVEVfUkVTVUxUEEASEgoOTUlTU0lP",
+            "Tl9SRVJPTEwQQRIZChVNSVNTSU9OX1JFUk9MTF9SRVNVTFQQQhITCg9NSUxF",
+            "U1RPTkVfQ0xBSU0QQxIaChZNSUxFU1RPTkVfQ0xBSU1fUkVTVUxUEEQSEwoP",
+            "TUlMRVNUT05FX1NUQVRFEEUSHAoXV0VFS0xZX01JU1NJT05TX1JFUVVFU1QQ",
+            "oAESHQoYV0VFS0xZX01JU1NJT05TX1JFU1BPTlNFEKEBEiMKHldFRUtMWV9N",
+            "SVNTSU9OX1BST0dSRVNTX1VQREFURRCiARIZChRXRUVLTFlfTUlTU0lPTl9D",
+            "TEFJTRCjARIgChtXRUVLTFlfTUlTU0lPTl9DTEFJTV9SRVNVTFQQpAESGwoW",
+            "V0VFS0xZX01JTEVTVE9ORV9DTEFJTRClARIiCh1XRUVLTFlfTUlMRVNUT05F",
+            "X0NMQUlNX1JFU1VMVBCmARIbChZXRUVLTFlfTUlMRVNUT05FX1NUQVRFEKcB",
+            "EhkKFEFDSElFVkVNRU5UU19SRVFVRVNUEIwBEhoKFUFDSElFVkVNRU5UU19S",
+            "RVNQT05TRRCNARIgChtBQ0hJRVZFTUVOVF9QUk9HUkVTU19VUERBVEUQjgES",
+            "FgoRQUNISUVWRU1FTlRfQ0xBSU0QjwESHQoYQUNISUVWRU1FTlRfQ0xBSU1f",
+            "UkVTVUxUEJABEhUKEUFEX1dBVENIX0NPTVBMRVRFEEYSEwoPQURfV0FUQ0hf",
+            "UkVTVUxUEEcSFQoRQURfQ09VTlRFUlNfU1RBVEUQSBITCg9DVVJSRU5DWV9V",
+            "UERBVEUQUBIaChZPRkZMSU5FX1JFV0FSRF9SRVFVRVNUEFoSGQoVT0ZGTElO",
+            "RV9SRVdBUkRfUkVTVUxUEFsSHgoaT0ZGTElORV9NT0RFX1NUQVJUX1JFUVVF",
+            "U1QQXBIdChlPRkZMSU5FX01PREVfU1RBUlRfUkVTVUxUEF0SFgoSRVJST1Jf",
+            "Tk9USUZJQ0FUSU9OEGQSFAoQR0VNX0xJU1RfUkVRVUVTVBBuEhUKEUdFTV9M",
+            "SVNUX1JFU1BPTlNFEG8SFQoRR0VNX0dBQ0hBX1JFUVVFU1QQcBIUChBHRU1f",
+            "R0FDSEFfUkVTVUxUEHESGQoVR0VNX1NZTlRIRVNJU19SRVFVRVNUEHISGAoU",
+            "R0VNX1NZTlRIRVNJU19SRVNVTFQQcxIaChZHRU1fQ09OVkVSU0lPTl9SRVFV",
+            "RVNUEHQSGQoVR0VNX0NPTlZFUlNJT05fUkVTVUxUEHUSFwoTR0VNX0RJU0NB",
+            "UkRfUkVRVUVTVBB2EhYKEkdFTV9ESVNDQVJEX1JFU1VMVBB3EhUKEUdFTV9F",
+            "UVVJUF9SRVFVRVNUEHgSFAoQR0VNX0VRVUlQX1JFU1VMVBB5EhcKE0dFTV9V",
+            "TkVRVUlQX1JFUVVFU1QQehIWChJHRU1fVU5FUVVJUF9SRVNVTFQQexIbChdH",
+            "RU1fU0xPVF9VTkxPQ0tfUkVRVUVTVBB8EhoKFkdFTV9TTE9UX1VOTE9DS19S",
+            "RVNVTFQQfRIgChxHRU1fSU5WRU5UT1JZX0VYUEFORF9SRVFVRVNUEH4SHwob",
+            "R0VNX0lOVkVOVE9SWV9FWFBBTkRfUkVTVUxUEH8SHwoaR0VNX0FVVE9fU1lO",
+            "VEhFU0lTX1JFUVVFU1QQgAESHgoZR0VNX0FVVE9fU1lOVEhFU0lTX1JFU1VM",
+            "VBCBARIWChFNQUlMX0xJU1RfUkVRVUVTVBDcARIXChJNQUlMX0xJU1RfUkVT",
+            "UE9OU0UQ3QESGAoTTUFJTF9ERVRBSUxfUkVRVUVTVBDeARIZChRNQUlMX0RF",
+            "VEFJTF9SRVNQT05TRRDfARIXChJNQUlMX0NMQUlNX1JFUVVFU1QQ4AESFgoR",
+            "TUFJTF9DTEFJTV9SRVNVTFQQ4QESGwoWTUFJTF9DTEFJTV9BTExfUkVRVUVT",
+            "VBDiARIaChVNQUlMX0NMQUlNX0FMTF9SRVNVTFQQ4wESIAobSU5GSU5JVEVf",
+            "TUlORV9TVEFURV9SRVFVRVNUEMgBEiEKHElORklOSVRFX01JTkVfU1RBVEVf",
+            "UkVTUE9OU0UQyQESKgolSU5GSU5JVEVfTUlORV9DSEFMTEVOR0VfU1RBUlRf",
+            "UkVRVUVTVBDKARIpCiRJTkZJTklURV9NSU5FX0NIQUxMRU5HRV9TVEFSVF9S",
+            "RVNVTFQQywESIwoeSU5GSU5JVEVfTUlORV9DSEFMTEVOR0VfVVBEQVRFEMwB",
+            "EiMKHklORklOSVRFX01JTkVfQ0hBTExFTkdFX1JFU1VMVBDNARIlCiBJTkZJ",
+            "TklURV9NSU5FX0FVVE9fQ0xBSU1fUkVRVUVTVBDOARIkCh9JTkZJTklURV9N",
+            "SU5FX0FVVE9fQ0xBSU1fUkVTVUxUEM8BEikKJElORklOSVRFX01JTkVfQVVU",
+            "T19DTEFJTV9BTExfUkVRVUVTVBDQARIoCiNJTkZJTklURV9NSU5FX0FVVE9f",
+            "Q0xBSU1fQUxMX1JFU1VMVBDRARIfChpJTkZJTklURV9NSU5FX0VYSVRfUkVR",
+            "VUVTVBDSARIeChlJTkZJTklURV9NSU5FX0VYSVRfUkVTVUxUENMBKm0KIUlu",
+            "ZmluaXRlTWluZUNoYWxsZW5nZVJlc3VsdFJlYXNvbhIgChxJTkZJTklURV9N",
+            "SU5FX1JFU1VMVF9VTktOT1dOEAASCwoHQ0xFQVJFRBABEgsKB1RJTUVPVVQQ",
+            "AhIMCghDQU5DRUxFRBADYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.GemType), typeof(global::Infinitepickaxe.GemGrade), typeof(global::Infinitepickaxe.MessageType), typeof(global::Infinitepickaxe.InfiniteMineChallengeResultReason), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "MilestoneState", "WeeklyMissionsRequest", "WeeklyMissionsResponse", "WeeklyMissionProgressUpdate", "WeeklyMissionClaim", "WeeklyMissionClaimResult", "WeeklyMilestoneClaim", "WeeklyMilestoneClaimResult", "WeeklyMilestoneState", "AchievementsRequest", "AchievementsResponse", "AchievementProgressUpdate", "AchievementClaim", "AchievementClaimResult", "AdWatchComplete", "AdWatchResult", "AdCountersState", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "OfflineModeStartRequest", "OfflineModeStartResult", "ErrorNotification", "GemListRequest", "GemListResponse", "GemGachaRequest", "GemGachaResult", "GemSynthesisRequest", "GemSynthesisResult", "GemConversionRequest", "GemConversionResult", "GemDiscardRequest", "GemDiscardResult", "GemEquipRequest", "GemEquipResult", "GemUnequipRequest", "GemUnequipResult", "GemSlotUnlockRequest", "GemSlotUnlockResult", "GemInventoryExpandRequest", "GemInventoryExpandResult", "GemAutoSynthesisRequest", "GemAutoSynthesisResult", "InfiniteMineStateRequest", "InfiniteMineStateResponse", "InfiniteMineChallengeStartRequest", "InfiniteMineChallengeStartResult", "InfiniteMineChallengeUpdate", "InfiniteMineChallengeResult", "InfiniteMineAutoClaimRequest", "InfiniteMineAutoClaimResult", "InfiniteMineAutoClaimAllRequest", "InfiniteMineAutoClaimAllResult", "InfiniteMineExitRequest", "InfiniteMineExitResult" }, new[]{ "Message" }, null, null, null),
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Infinitepickaxe.GemType), typeof(global::Infinitepickaxe.GemGrade), typeof(global::Infinitepickaxe.RewardType), typeof(global::Infinitepickaxe.MessageType), typeof(global::Infinitepickaxe.InfiniteMineChallengeResultReason), }, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.Envelope), global::Infinitepickaxe.Envelope.Parser, new[]{ "Type", "Handshake", "HandshakeResult", "Heartbeat", "HeartbeatAck", "UserDataSnapshot", "MineralListRequest", "MineralListResponse", "ChangeMineralRequest", "ChangeMineralResponse", "MiningUpdate", "MiningComplete", "AllSlotsRequest", "AllSlotsResponse", "SlotUnlock", "SlotUnlockResult", "UpgradeRequest", "UpgradeResult", "DailyMissionsRequest", "DailyMissionsResponse", "MissionProgressUpdate", "MissionComplete", "MissionCompleteResult", "MissionReroll", "MissionRerollResult", "MilestoneClaim", "MilestoneClaimResult", "MilestoneState", "WeeklyMissionsRequest", "WeeklyMissionsResponse", "WeeklyMissionProgressUpdate", "WeeklyMissionClaim", "WeeklyMissionClaimResult", "WeeklyMilestoneClaim", "WeeklyMilestoneClaimResult", "WeeklyMilestoneState", "AchievementsRequest", "AchievementsResponse", "AchievementProgressUpdate", "AchievementClaim", "AchievementClaimResult", "AdWatchComplete", "AdWatchResult", "AdCountersState", "CurrencyUpdate", "OfflineRewardRequest", "OfflineRewardResult", "OfflineModeStartRequest", "OfflineModeStartResult", "ErrorNotification", "GemListRequest", "GemListResponse", "GemGachaRequest", "GemGachaResult", "GemSynthesisRequest", "GemSynthesisResult", "GemConversionRequest", "GemConversionResult", "GemDiscardRequest", "GemDiscardResult", "GemEquipRequest", "GemEquipResult", "GemUnequipRequest", "GemUnequipResult", "GemSlotUnlockRequest", "GemSlotUnlockResult", "GemInventoryExpandRequest", "GemInventoryExpandResult", "GemAutoSynthesisRequest", "GemAutoSynthesisResult", "MailListRequest", "MailListResponse", "MailDetailRequest", "MailDetailResponse", "MailClaimRequest", "MailClaimResult", "MailClaimAllRequest", "MailClaimAllResult", "InfiniteMineStateRequest", "InfiniteMineStateResponse", "InfiniteMineChallengeStartRequest", "InfiniteMineChallengeStartResult", "InfiniteMineChallengeUpdate", "InfiniteMineChallengeResult", "InfiniteMineAutoClaimRequest", "InfiniteMineAutoClaimResult", "InfiniteMineAutoClaimAllRequest", "InfiniteMineAutoClaimAllResult", "InfiniteMineExitRequest", "InfiniteMineExitResult" }, new[]{ "Message" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.HandshakeRequest), global::Infinitepickaxe.HandshakeRequest.Parser, new[]{ "Jwt", "ClientVersion", "DeviceId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.PickaxeSlotInfo), global::Infinitepickaxe.PickaxeSlotInfo.Parser, new[]{ "SlotIndex", "Level", "Tier", "AttackPower", "AttackSpeed", "CriticalHitPercent", "CriticalDamage", "Dps", "PityBonus", "IsUnlocked", "GemSlots" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.AdCounter), global::Infinitepickaxe.AdCounter.Parser, new[]{ "AdType", "AdCount", "DailyLimit" }, null, null, null, null),
@@ -533,6 +583,17 @@ namespace Infinitepickaxe {
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemSlotUnlockResult), global::Infinitepickaxe.GemSlotUnlockResult.Parser, new[]{ "Success", "PickaxeSlotIndex", "GemSlotIndex", "CrystalSpent", "RemainingCrystal", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemInventoryExpandRequest), global::Infinitepickaxe.GemInventoryExpandRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.GemInventoryExpandResult), global::Infinitepickaxe.GemInventoryExpandResult.Parser, new[]{ "Success", "NewCapacity", "CrystalSpent", "RemainingCrystal", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailReward), global::Infinitepickaxe.MailReward.Parser, new[]{ "RewardType", "RewardKey", "Amount" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailSummary), global::Infinitepickaxe.MailSummary.Parser, new[]{ "MailId", "MailType", "Title", "CreatedAtMs", "ExpiresAtMs", "IsRead", "IsClaimed", "HasReward" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailDetail), global::Infinitepickaxe.MailDetail.Parser, new[]{ "MailId", "MailType", "TemplateId", "TemplateArgsJson", "Title", "Body", "Sender", "CreatedAtMs", "ExpiresAtMs", "IsRead", "IsClaimed", "Rewards" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailListRequest), global::Infinitepickaxe.MailListRequest.Parser, new[]{ "Limit", "CursorCreatedAtMs", "CursorMailId", "IncludeClaimed", "IncludeExpired" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailListResponse), global::Infinitepickaxe.MailListResponse.Parser, new[]{ "Mails", "NextCursorCreatedAtMs", "NextCursorMailId", "HasNext", "UnreadCount", "UnclaimedCount" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailDetailRequest), global::Infinitepickaxe.MailDetailRequest.Parser, new[]{ "MailId", "MarkRead" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailDetailResponse), global::Infinitepickaxe.MailDetailResponse.Parser, new[]{ "Success", "Mail", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailClaimRequest), global::Infinitepickaxe.MailClaimRequest.Parser, new[]{ "MailId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailClaimResult), global::Infinitepickaxe.MailClaimResult.Parser, new[]{ "Success", "MailId", "Rewards", "TotalGold", "TotalCrystal", "ErrorCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailClaimAllRequest), global::Infinitepickaxe.MailClaimAllRequest.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.MailClaimAllResult), global::Infinitepickaxe.MailClaimAllResult.Parser, new[]{ "Success", "ClaimedCount", "Rewards", "TotalGold", "TotalCrystal", "ErrorCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.InfiniteMineStateRequest), global::Infinitepickaxe.InfiniteMineStateRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.InfiniteMineFloorState), global::Infinitepickaxe.InfiniteMineFloorState.Parser, new[]{ "Floor", "AutoClaimable", "AutoClaimedToday" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Infinitepickaxe.InfiniteMineStateResponse), global::Infinitepickaxe.InfiniteMineStateResponse.Parser, new[]{ "ResetTimestampMs", "TimeLimitSec", "MaxFloor", "HighestClearedFloor", "FloorStates" }, null, null, null, null),
@@ -572,6 +633,16 @@ namespace Infinitepickaxe {
     [pbr::OriginalName("EPIC")] Epic = 3,
     [pbr::OriginalName("HERO")] Hero = 4,
     [pbr::OriginalName("LEGENDARY")] Legendary = 5,
+  }
+
+  /// <summary>
+  /// 보상 타입 Enum
+  /// </summary>
+  public enum RewardType {
+    [pbr::OriginalName("REWARD_TYPE_UNKNOWN")] Unknown = 0,
+    [pbr::OriginalName("GOLD")] Gold = 1,
+    [pbr::OriginalName("CRYSTAL")] Crystal = 2,
+    [pbr::OriginalName("ITEM")] Item = 3,
   }
 
   /// <summary>
@@ -692,6 +763,17 @@ namespace Infinitepickaxe {
     [pbr::OriginalName("GEM_INVENTORY_EXPAND_RESULT")] GemInventoryExpandResult = 127,
     [pbr::OriginalName("GEM_AUTO_SYNTHESIS_REQUEST")] GemAutoSynthesisRequest = 128,
     [pbr::OriginalName("GEM_AUTO_SYNTHESIS_RESULT")] GemAutoSynthesisResult = 129,
+    /// <summary>
+    /// 우편함
+    /// </summary>
+    [pbr::OriginalName("MAIL_LIST_REQUEST")] MailListRequest = 220,
+    [pbr::OriginalName("MAIL_LIST_RESPONSE")] MailListResponse = 221,
+    [pbr::OriginalName("MAIL_DETAIL_REQUEST")] MailDetailRequest = 222,
+    [pbr::OriginalName("MAIL_DETAIL_RESPONSE")] MailDetailResponse = 223,
+    [pbr::OriginalName("MAIL_CLAIM_REQUEST")] MailClaimRequest = 224,
+    [pbr::OriginalName("MAIL_CLAIM_RESULT")] MailClaimResult = 225,
+    [pbr::OriginalName("MAIL_CLAIM_ALL_REQUEST")] MailClaimAllRequest = 226,
+    [pbr::OriginalName("MAIL_CLAIM_ALL_RESULT")] MailClaimAllResult = 227,
     /// <summary>
     /// 무한의 갱도
     /// </summary>
@@ -965,6 +1047,30 @@ namespace Infinitepickaxe {
           break;
         case MessageOneofCase.GemAutoSynthesisResult:
           GemAutoSynthesisResult = other.GemAutoSynthesisResult.Clone();
+          break;
+        case MessageOneofCase.MailListRequest:
+          MailListRequest = other.MailListRequest.Clone();
+          break;
+        case MessageOneofCase.MailListResponse:
+          MailListResponse = other.MailListResponse.Clone();
+          break;
+        case MessageOneofCase.MailDetailRequest:
+          MailDetailRequest = other.MailDetailRequest.Clone();
+          break;
+        case MessageOneofCase.MailDetailResponse:
+          MailDetailResponse = other.MailDetailResponse.Clone();
+          break;
+        case MessageOneofCase.MailClaimRequest:
+          MailClaimRequest = other.MailClaimRequest.Clone();
+          break;
+        case MessageOneofCase.MailClaimResult:
+          MailClaimResult = other.MailClaimResult.Clone();
+          break;
+        case MessageOneofCase.MailClaimAllRequest:
+          MailClaimAllRequest = other.MailClaimAllRequest.Clone();
+          break;
+        case MessageOneofCase.MailClaimAllResult:
+          MailClaimAllResult = other.MailClaimAllResult.Clone();
           break;
         case MessageOneofCase.InfiniteMineStateRequest:
           InfiniteMineStateRequest = other.InfiniteMineStateRequest.Clone();
@@ -1857,6 +1963,105 @@ namespace Infinitepickaxe {
       }
     }
 
+    /// <summary>Field number for the "mail_list_request" field.</summary>
+    public const int MailListRequestFieldNumber = 220;
+    /// <summary>
+    /// 우편함
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MailListRequest MailListRequest {
+      get { return messageCase_ == MessageOneofCase.MailListRequest ? (global::Infinitepickaxe.MailListRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MailListRequest;
+      }
+    }
+
+    /// <summary>Field number for the "mail_list_response" field.</summary>
+    public const int MailListResponseFieldNumber = 221;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MailListResponse MailListResponse {
+      get { return messageCase_ == MessageOneofCase.MailListResponse ? (global::Infinitepickaxe.MailListResponse) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MailListResponse;
+      }
+    }
+
+    /// <summary>Field number for the "mail_detail_request" field.</summary>
+    public const int MailDetailRequestFieldNumber = 222;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MailDetailRequest MailDetailRequest {
+      get { return messageCase_ == MessageOneofCase.MailDetailRequest ? (global::Infinitepickaxe.MailDetailRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MailDetailRequest;
+      }
+    }
+
+    /// <summary>Field number for the "mail_detail_response" field.</summary>
+    public const int MailDetailResponseFieldNumber = 223;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MailDetailResponse MailDetailResponse {
+      get { return messageCase_ == MessageOneofCase.MailDetailResponse ? (global::Infinitepickaxe.MailDetailResponse) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MailDetailResponse;
+      }
+    }
+
+    /// <summary>Field number for the "mail_claim_request" field.</summary>
+    public const int MailClaimRequestFieldNumber = 224;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MailClaimRequest MailClaimRequest {
+      get { return messageCase_ == MessageOneofCase.MailClaimRequest ? (global::Infinitepickaxe.MailClaimRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MailClaimRequest;
+      }
+    }
+
+    /// <summary>Field number for the "mail_claim_result" field.</summary>
+    public const int MailClaimResultFieldNumber = 225;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MailClaimResult MailClaimResult {
+      get { return messageCase_ == MessageOneofCase.MailClaimResult ? (global::Infinitepickaxe.MailClaimResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MailClaimResult;
+      }
+    }
+
+    /// <summary>Field number for the "mail_claim_all_request" field.</summary>
+    public const int MailClaimAllRequestFieldNumber = 226;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MailClaimAllRequest MailClaimAllRequest {
+      get { return messageCase_ == MessageOneofCase.MailClaimAllRequest ? (global::Infinitepickaxe.MailClaimAllRequest) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MailClaimAllRequest;
+      }
+    }
+
+    /// <summary>Field number for the "mail_claim_all_result" field.</summary>
+    public const int MailClaimAllResultFieldNumber = 227;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MailClaimAllResult MailClaimAllResult {
+      get { return messageCase_ == MessageOneofCase.MailClaimAllResult ? (global::Infinitepickaxe.MailClaimAllResult) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.MailClaimAllResult;
+      }
+    }
+
     /// <summary>Field number for the "infinite_mine_state_request" field.</summary>
     public const int InfiniteMineStateRequestFieldNumber = 200;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2074,6 +2279,14 @@ namespace Infinitepickaxe {
       GemInventoryExpandResult = 137,
       GemAutoSynthesisRequest = 138,
       GemAutoSynthesisResult = 139,
+      MailListRequest = 220,
+      MailListResponse = 221,
+      MailDetailRequest = 222,
+      MailDetailResponse = 223,
+      MailClaimRequest = 224,
+      MailClaimResult = 225,
+      MailClaimAllRequest = 226,
+      MailClaimAllResult = 227,
       InfiniteMineStateRequest = 200,
       InfiniteMineStateResponse = 201,
       InfiniteMineChallengeStartRequest = 202,
@@ -2186,6 +2399,14 @@ namespace Infinitepickaxe {
       if (!object.Equals(GemInventoryExpandResult, other.GemInventoryExpandResult)) return false;
       if (!object.Equals(GemAutoSynthesisRequest, other.GemAutoSynthesisRequest)) return false;
       if (!object.Equals(GemAutoSynthesisResult, other.GemAutoSynthesisResult)) return false;
+      if (!object.Equals(MailListRequest, other.MailListRequest)) return false;
+      if (!object.Equals(MailListResponse, other.MailListResponse)) return false;
+      if (!object.Equals(MailDetailRequest, other.MailDetailRequest)) return false;
+      if (!object.Equals(MailDetailResponse, other.MailDetailResponse)) return false;
+      if (!object.Equals(MailClaimRequest, other.MailClaimRequest)) return false;
+      if (!object.Equals(MailClaimResult, other.MailClaimResult)) return false;
+      if (!object.Equals(MailClaimAllRequest, other.MailClaimAllRequest)) return false;
+      if (!object.Equals(MailClaimAllResult, other.MailClaimAllResult)) return false;
       if (!object.Equals(InfiniteMineStateRequest, other.InfiniteMineStateRequest)) return false;
       if (!object.Equals(InfiniteMineStateResponse, other.InfiniteMineStateResponse)) return false;
       if (!object.Equals(InfiniteMineChallengeStartRequest, other.InfiniteMineChallengeStartRequest)) return false;
@@ -2276,6 +2497,14 @@ namespace Infinitepickaxe {
       if (messageCase_ == MessageOneofCase.GemInventoryExpandResult) hash ^= GemInventoryExpandResult.GetHashCode();
       if (messageCase_ == MessageOneofCase.GemAutoSynthesisRequest) hash ^= GemAutoSynthesisRequest.GetHashCode();
       if (messageCase_ == MessageOneofCase.GemAutoSynthesisResult) hash ^= GemAutoSynthesisResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.MailListRequest) hash ^= MailListRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.MailListResponse) hash ^= MailListResponse.GetHashCode();
+      if (messageCase_ == MessageOneofCase.MailDetailRequest) hash ^= MailDetailRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.MailDetailResponse) hash ^= MailDetailResponse.GetHashCode();
+      if (messageCase_ == MessageOneofCase.MailClaimRequest) hash ^= MailClaimRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.MailClaimResult) hash ^= MailClaimResult.GetHashCode();
+      if (messageCase_ == MessageOneofCase.MailClaimAllRequest) hash ^= MailClaimAllRequest.GetHashCode();
+      if (messageCase_ == MessageOneofCase.MailClaimAllResult) hash ^= MailClaimAllResult.GetHashCode();
       if (messageCase_ == MessageOneofCase.InfiniteMineStateRequest) hash ^= InfiniteMineStateRequest.GetHashCode();
       if (messageCase_ == MessageOneofCase.InfiniteMineStateResponse) hash ^= InfiniteMineStateResponse.GetHashCode();
       if (messageCase_ == MessageOneofCase.InfiniteMineChallengeStartRequest) hash ^= InfiniteMineChallengeStartRequest.GetHashCode();
@@ -2635,6 +2864,38 @@ namespace Infinitepickaxe {
         output.WriteRawTag(154, 13);
         output.WriteMessage(InfiniteMineExitResult);
       }
+      if (messageCase_ == MessageOneofCase.MailListRequest) {
+        output.WriteRawTag(226, 13);
+        output.WriteMessage(MailListRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailListResponse) {
+        output.WriteRawTag(234, 13);
+        output.WriteMessage(MailListResponse);
+      }
+      if (messageCase_ == MessageOneofCase.MailDetailRequest) {
+        output.WriteRawTag(242, 13);
+        output.WriteMessage(MailDetailRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailDetailResponse) {
+        output.WriteRawTag(250, 13);
+        output.WriteMessage(MailDetailResponse);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimRequest) {
+        output.WriteRawTag(130, 14);
+        output.WriteMessage(MailClaimRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimResult) {
+        output.WriteRawTag(138, 14);
+        output.WriteMessage(MailClaimResult);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimAllRequest) {
+        output.WriteRawTag(146, 14);
+        output.WriteMessage(MailClaimAllRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimAllResult) {
+        output.WriteRawTag(154, 14);
+        output.WriteMessage(MailClaimAllResult);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2973,6 +3234,38 @@ namespace Infinitepickaxe {
         output.WriteRawTag(154, 13);
         output.WriteMessage(InfiniteMineExitResult);
       }
+      if (messageCase_ == MessageOneofCase.MailListRequest) {
+        output.WriteRawTag(226, 13);
+        output.WriteMessage(MailListRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailListResponse) {
+        output.WriteRawTag(234, 13);
+        output.WriteMessage(MailListResponse);
+      }
+      if (messageCase_ == MessageOneofCase.MailDetailRequest) {
+        output.WriteRawTag(242, 13);
+        output.WriteMessage(MailDetailRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailDetailResponse) {
+        output.WriteRawTag(250, 13);
+        output.WriteMessage(MailDetailResponse);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimRequest) {
+        output.WriteRawTag(130, 14);
+        output.WriteMessage(MailClaimRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimResult) {
+        output.WriteRawTag(138, 14);
+        output.WriteMessage(MailClaimResult);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimAllRequest) {
+        output.WriteRawTag(146, 14);
+        output.WriteMessage(MailClaimAllRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimAllResult) {
+        output.WriteRawTag(154, 14);
+        output.WriteMessage(MailClaimAllResult);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3192,6 +3485,30 @@ namespace Infinitepickaxe {
       }
       if (messageCase_ == MessageOneofCase.GemAutoSynthesisResult) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(GemAutoSynthesisResult);
+      }
+      if (messageCase_ == MessageOneofCase.MailListRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MailListRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailListResponse) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MailListResponse);
+      }
+      if (messageCase_ == MessageOneofCase.MailDetailRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MailDetailRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailDetailResponse) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MailDetailResponse);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MailClaimRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MailClaimResult);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimAllRequest) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MailClaimAllRequest);
+      }
+      if (messageCase_ == MessageOneofCase.MailClaimAllResult) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(MailClaimAllResult);
       }
       if (messageCase_ == MessageOneofCase.InfiniteMineStateRequest) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(InfiniteMineStateRequest);
@@ -3658,6 +3975,54 @@ namespace Infinitepickaxe {
             GemAutoSynthesisResult = new global::Infinitepickaxe.GemAutoSynthesisResult();
           }
           GemAutoSynthesisResult.MergeFrom(other.GemAutoSynthesisResult);
+          break;
+        case MessageOneofCase.MailListRequest:
+          if (MailListRequest == null) {
+            MailListRequest = new global::Infinitepickaxe.MailListRequest();
+          }
+          MailListRequest.MergeFrom(other.MailListRequest);
+          break;
+        case MessageOneofCase.MailListResponse:
+          if (MailListResponse == null) {
+            MailListResponse = new global::Infinitepickaxe.MailListResponse();
+          }
+          MailListResponse.MergeFrom(other.MailListResponse);
+          break;
+        case MessageOneofCase.MailDetailRequest:
+          if (MailDetailRequest == null) {
+            MailDetailRequest = new global::Infinitepickaxe.MailDetailRequest();
+          }
+          MailDetailRequest.MergeFrom(other.MailDetailRequest);
+          break;
+        case MessageOneofCase.MailDetailResponse:
+          if (MailDetailResponse == null) {
+            MailDetailResponse = new global::Infinitepickaxe.MailDetailResponse();
+          }
+          MailDetailResponse.MergeFrom(other.MailDetailResponse);
+          break;
+        case MessageOneofCase.MailClaimRequest:
+          if (MailClaimRequest == null) {
+            MailClaimRequest = new global::Infinitepickaxe.MailClaimRequest();
+          }
+          MailClaimRequest.MergeFrom(other.MailClaimRequest);
+          break;
+        case MessageOneofCase.MailClaimResult:
+          if (MailClaimResult == null) {
+            MailClaimResult = new global::Infinitepickaxe.MailClaimResult();
+          }
+          MailClaimResult.MergeFrom(other.MailClaimResult);
+          break;
+        case MessageOneofCase.MailClaimAllRequest:
+          if (MailClaimAllRequest == null) {
+            MailClaimAllRequest = new global::Infinitepickaxe.MailClaimAllRequest();
+          }
+          MailClaimAllRequest.MergeFrom(other.MailClaimAllRequest);
+          break;
+        case MessageOneofCase.MailClaimAllResult:
+          if (MailClaimAllResult == null) {
+            MailClaimAllResult = new global::Infinitepickaxe.MailClaimAllResult();
+          }
+          MailClaimAllResult.MergeFrom(other.MailClaimAllResult);
           break;
         case MessageOneofCase.InfiniteMineStateRequest:
           if (InfiniteMineStateRequest == null) {
@@ -4485,6 +4850,78 @@ namespace Infinitepickaxe {
             InfiniteMineExitResult = subBuilder;
             break;
           }
+          case 1762: {
+            global::Infinitepickaxe.MailListRequest subBuilder = new global::Infinitepickaxe.MailListRequest();
+            if (messageCase_ == MessageOneofCase.MailListRequest) {
+              subBuilder.MergeFrom(MailListRequest);
+            }
+            input.ReadMessage(subBuilder);
+            MailListRequest = subBuilder;
+            break;
+          }
+          case 1770: {
+            global::Infinitepickaxe.MailListResponse subBuilder = new global::Infinitepickaxe.MailListResponse();
+            if (messageCase_ == MessageOneofCase.MailListResponse) {
+              subBuilder.MergeFrom(MailListResponse);
+            }
+            input.ReadMessage(subBuilder);
+            MailListResponse = subBuilder;
+            break;
+          }
+          case 1778: {
+            global::Infinitepickaxe.MailDetailRequest subBuilder = new global::Infinitepickaxe.MailDetailRequest();
+            if (messageCase_ == MessageOneofCase.MailDetailRequest) {
+              subBuilder.MergeFrom(MailDetailRequest);
+            }
+            input.ReadMessage(subBuilder);
+            MailDetailRequest = subBuilder;
+            break;
+          }
+          case 1786: {
+            global::Infinitepickaxe.MailDetailResponse subBuilder = new global::Infinitepickaxe.MailDetailResponse();
+            if (messageCase_ == MessageOneofCase.MailDetailResponse) {
+              subBuilder.MergeFrom(MailDetailResponse);
+            }
+            input.ReadMessage(subBuilder);
+            MailDetailResponse = subBuilder;
+            break;
+          }
+          case 1794: {
+            global::Infinitepickaxe.MailClaimRequest subBuilder = new global::Infinitepickaxe.MailClaimRequest();
+            if (messageCase_ == MessageOneofCase.MailClaimRequest) {
+              subBuilder.MergeFrom(MailClaimRequest);
+            }
+            input.ReadMessage(subBuilder);
+            MailClaimRequest = subBuilder;
+            break;
+          }
+          case 1802: {
+            global::Infinitepickaxe.MailClaimResult subBuilder = new global::Infinitepickaxe.MailClaimResult();
+            if (messageCase_ == MessageOneofCase.MailClaimResult) {
+              subBuilder.MergeFrom(MailClaimResult);
+            }
+            input.ReadMessage(subBuilder);
+            MailClaimResult = subBuilder;
+            break;
+          }
+          case 1810: {
+            global::Infinitepickaxe.MailClaimAllRequest subBuilder = new global::Infinitepickaxe.MailClaimAllRequest();
+            if (messageCase_ == MessageOneofCase.MailClaimAllRequest) {
+              subBuilder.MergeFrom(MailClaimAllRequest);
+            }
+            input.ReadMessage(subBuilder);
+            MailClaimAllRequest = subBuilder;
+            break;
+          }
+          case 1818: {
+            global::Infinitepickaxe.MailClaimAllResult subBuilder = new global::Infinitepickaxe.MailClaimAllResult();
+            if (messageCase_ == MessageOneofCase.MailClaimAllResult) {
+              subBuilder.MergeFrom(MailClaimAllResult);
+            }
+            input.ReadMessage(subBuilder);
+            MailClaimAllResult = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -5235,6 +5672,78 @@ namespace Infinitepickaxe {
             }
             input.ReadMessage(subBuilder);
             InfiniteMineExitResult = subBuilder;
+            break;
+          }
+          case 1762: {
+            global::Infinitepickaxe.MailListRequest subBuilder = new global::Infinitepickaxe.MailListRequest();
+            if (messageCase_ == MessageOneofCase.MailListRequest) {
+              subBuilder.MergeFrom(MailListRequest);
+            }
+            input.ReadMessage(subBuilder);
+            MailListRequest = subBuilder;
+            break;
+          }
+          case 1770: {
+            global::Infinitepickaxe.MailListResponse subBuilder = new global::Infinitepickaxe.MailListResponse();
+            if (messageCase_ == MessageOneofCase.MailListResponse) {
+              subBuilder.MergeFrom(MailListResponse);
+            }
+            input.ReadMessage(subBuilder);
+            MailListResponse = subBuilder;
+            break;
+          }
+          case 1778: {
+            global::Infinitepickaxe.MailDetailRequest subBuilder = new global::Infinitepickaxe.MailDetailRequest();
+            if (messageCase_ == MessageOneofCase.MailDetailRequest) {
+              subBuilder.MergeFrom(MailDetailRequest);
+            }
+            input.ReadMessage(subBuilder);
+            MailDetailRequest = subBuilder;
+            break;
+          }
+          case 1786: {
+            global::Infinitepickaxe.MailDetailResponse subBuilder = new global::Infinitepickaxe.MailDetailResponse();
+            if (messageCase_ == MessageOneofCase.MailDetailResponse) {
+              subBuilder.MergeFrom(MailDetailResponse);
+            }
+            input.ReadMessage(subBuilder);
+            MailDetailResponse = subBuilder;
+            break;
+          }
+          case 1794: {
+            global::Infinitepickaxe.MailClaimRequest subBuilder = new global::Infinitepickaxe.MailClaimRequest();
+            if (messageCase_ == MessageOneofCase.MailClaimRequest) {
+              subBuilder.MergeFrom(MailClaimRequest);
+            }
+            input.ReadMessage(subBuilder);
+            MailClaimRequest = subBuilder;
+            break;
+          }
+          case 1802: {
+            global::Infinitepickaxe.MailClaimResult subBuilder = new global::Infinitepickaxe.MailClaimResult();
+            if (messageCase_ == MessageOneofCase.MailClaimResult) {
+              subBuilder.MergeFrom(MailClaimResult);
+            }
+            input.ReadMessage(subBuilder);
+            MailClaimResult = subBuilder;
+            break;
+          }
+          case 1810: {
+            global::Infinitepickaxe.MailClaimAllRequest subBuilder = new global::Infinitepickaxe.MailClaimAllRequest();
+            if (messageCase_ == MessageOneofCase.MailClaimAllRequest) {
+              subBuilder.MergeFrom(MailClaimAllRequest);
+            }
+            input.ReadMessage(subBuilder);
+            MailClaimAllRequest = subBuilder;
+            break;
+          }
+          case 1818: {
+            global::Infinitepickaxe.MailClaimAllResult subBuilder = new global::Infinitepickaxe.MailClaimAllResult();
+            if (messageCase_ == MessageOneofCase.MailClaimAllResult) {
+              subBuilder.MergeFrom(MailClaimAllResult);
+            }
+            input.ReadMessage(subBuilder);
+            MailClaimAllResult = subBuilder;
             break;
           }
         }
@@ -29086,6 +29595,3675 @@ namespace Infinitepickaxe {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailReward : pb::IMessage<MailReward>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailReward> _parser = new pb::MessageParser<MailReward>(() => new MailReward());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailReward> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[80]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailReward() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailReward(MailReward other) : this() {
+      rewardType_ = other.rewardType_;
+      rewardKey_ = other.rewardKey_;
+      amount_ = other.amount_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailReward Clone() {
+      return new MailReward(this);
+    }
+
+    /// <summary>Field number for the "reward_type" field.</summary>
+    public const int RewardTypeFieldNumber = 1;
+    private global::Infinitepickaxe.RewardType rewardType_ = global::Infinitepickaxe.RewardType.Unknown;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.RewardType RewardType {
+      get { return rewardType_; }
+      set {
+        rewardType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "reward_key" field.</summary>
+    public const int RewardKeyFieldNumber = 2;
+    private string rewardKey_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RewardKey {
+      get { return rewardKey_; }
+      set {
+        rewardKey_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "amount" field.</summary>
+    public const int AmountFieldNumber = 3;
+    private ulong amount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong Amount {
+      get { return amount_; }
+      set {
+        amount_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailReward);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailReward other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RewardType != other.RewardType) return false;
+      if (RewardKey != other.RewardKey) return false;
+      if (Amount != other.Amount) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RewardType != global::Infinitepickaxe.RewardType.Unknown) hash ^= RewardType.GetHashCode();
+      if (RewardKey.Length != 0) hash ^= RewardKey.GetHashCode();
+      if (Amount != 0UL) hash ^= Amount.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RewardType != global::Infinitepickaxe.RewardType.Unknown) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) RewardType);
+      }
+      if (RewardKey.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(RewardKey);
+      }
+      if (Amount != 0UL) {
+        output.WriteRawTag(24);
+        output.WriteUInt64(Amount);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RewardType != global::Infinitepickaxe.RewardType.Unknown) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) RewardType);
+      }
+      if (RewardKey.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(RewardKey);
+      }
+      if (Amount != 0UL) {
+        output.WriteRawTag(24);
+        output.WriteUInt64(Amount);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (RewardType != global::Infinitepickaxe.RewardType.Unknown) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) RewardType);
+      }
+      if (RewardKey.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RewardKey);
+      }
+      if (Amount != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Amount);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailReward other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RewardType != global::Infinitepickaxe.RewardType.Unknown) {
+        RewardType = other.RewardType;
+      }
+      if (other.RewardKey.Length != 0) {
+        RewardKey = other.RewardKey;
+      }
+      if (other.Amount != 0UL) {
+        Amount = other.Amount;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RewardType = (global::Infinitepickaxe.RewardType) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            RewardKey = input.ReadString();
+            break;
+          }
+          case 24: {
+            Amount = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RewardType = (global::Infinitepickaxe.RewardType) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            RewardKey = input.ReadString();
+            break;
+          }
+          case 24: {
+            Amount = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailSummary : pb::IMessage<MailSummary>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailSummary> _parser = new pb::MessageParser<MailSummary>(() => new MailSummary());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailSummary> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[81]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailSummary() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailSummary(MailSummary other) : this() {
+      mailId_ = other.mailId_;
+      mailType_ = other.mailType_;
+      title_ = other.title_;
+      createdAtMs_ = other.createdAtMs_;
+      expiresAtMs_ = other.expiresAtMs_;
+      isRead_ = other.isRead_;
+      isClaimed_ = other.isClaimed_;
+      hasReward_ = other.hasReward_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailSummary Clone() {
+      return new MailSummary(this);
+    }
+
+    /// <summary>Field number for the "mail_id" field.</summary>
+    public const int MailIdFieldNumber = 1;
+    private string mailId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MailId {
+      get { return mailId_; }
+      set {
+        mailId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "mail_type" field.</summary>
+    public const int MailTypeFieldNumber = 2;
+    private string mailType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MailType {
+      get { return mailType_; }
+      set {
+        mailType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "title" field.</summary>
+    public const int TitleFieldNumber = 3;
+    private string title_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Title {
+      get { return title_; }
+      set {
+        title_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "created_at_ms" field.</summary>
+    public const int CreatedAtMsFieldNumber = 4;
+    private ulong createdAtMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong CreatedAtMs {
+      get { return createdAtMs_; }
+      set {
+        createdAtMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "expires_at_ms" field.</summary>
+    public const int ExpiresAtMsFieldNumber = 5;
+    private ulong expiresAtMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong ExpiresAtMs {
+      get { return expiresAtMs_; }
+      set {
+        expiresAtMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_read" field.</summary>
+    public const int IsReadFieldNumber = 6;
+    private bool isRead_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsRead {
+      get { return isRead_; }
+      set {
+        isRead_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_claimed" field.</summary>
+    public const int IsClaimedFieldNumber = 7;
+    private bool isClaimed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsClaimed {
+      get { return isClaimed_; }
+      set {
+        isClaimed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "has_reward" field.</summary>
+    public const int HasRewardFieldNumber = 8;
+    private bool hasReward_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasReward {
+      get { return hasReward_; }
+      set {
+        hasReward_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailSummary);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailSummary other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (MailId != other.MailId) return false;
+      if (MailType != other.MailType) return false;
+      if (Title != other.Title) return false;
+      if (CreatedAtMs != other.CreatedAtMs) return false;
+      if (ExpiresAtMs != other.ExpiresAtMs) return false;
+      if (IsRead != other.IsRead) return false;
+      if (IsClaimed != other.IsClaimed) return false;
+      if (HasReward != other.HasReward) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (MailId.Length != 0) hash ^= MailId.GetHashCode();
+      if (MailType.Length != 0) hash ^= MailType.GetHashCode();
+      if (Title.Length != 0) hash ^= Title.GetHashCode();
+      if (CreatedAtMs != 0UL) hash ^= CreatedAtMs.GetHashCode();
+      if (ExpiresAtMs != 0UL) hash ^= ExpiresAtMs.GetHashCode();
+      if (IsRead != false) hash ^= IsRead.GetHashCode();
+      if (IsClaimed != false) hash ^= IsClaimed.GetHashCode();
+      if (HasReward != false) hash ^= HasReward.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (MailId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(MailId);
+      }
+      if (MailType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(MailType);
+      }
+      if (Title.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Title);
+      }
+      if (CreatedAtMs != 0UL) {
+        output.WriteRawTag(32);
+        output.WriteUInt64(CreatedAtMs);
+      }
+      if (ExpiresAtMs != 0UL) {
+        output.WriteRawTag(40);
+        output.WriteUInt64(ExpiresAtMs);
+      }
+      if (IsRead != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(IsRead);
+      }
+      if (IsClaimed != false) {
+        output.WriteRawTag(56);
+        output.WriteBool(IsClaimed);
+      }
+      if (HasReward != false) {
+        output.WriteRawTag(64);
+        output.WriteBool(HasReward);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (MailId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(MailId);
+      }
+      if (MailType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(MailType);
+      }
+      if (Title.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Title);
+      }
+      if (CreatedAtMs != 0UL) {
+        output.WriteRawTag(32);
+        output.WriteUInt64(CreatedAtMs);
+      }
+      if (ExpiresAtMs != 0UL) {
+        output.WriteRawTag(40);
+        output.WriteUInt64(ExpiresAtMs);
+      }
+      if (IsRead != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(IsRead);
+      }
+      if (IsClaimed != false) {
+        output.WriteRawTag(56);
+        output.WriteBool(IsClaimed);
+      }
+      if (HasReward != false) {
+        output.WriteRawTag(64);
+        output.WriteBool(HasReward);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (MailId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MailId);
+      }
+      if (MailType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MailType);
+      }
+      if (Title.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Title);
+      }
+      if (CreatedAtMs != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(CreatedAtMs);
+      }
+      if (ExpiresAtMs != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ExpiresAtMs);
+      }
+      if (IsRead != false) {
+        size += 1 + 1;
+      }
+      if (IsClaimed != false) {
+        size += 1 + 1;
+      }
+      if (HasReward != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailSummary other) {
+      if (other == null) {
+        return;
+      }
+      if (other.MailId.Length != 0) {
+        MailId = other.MailId;
+      }
+      if (other.MailType.Length != 0) {
+        MailType = other.MailType;
+      }
+      if (other.Title.Length != 0) {
+        Title = other.Title;
+      }
+      if (other.CreatedAtMs != 0UL) {
+        CreatedAtMs = other.CreatedAtMs;
+      }
+      if (other.ExpiresAtMs != 0UL) {
+        ExpiresAtMs = other.ExpiresAtMs;
+      }
+      if (other.IsRead != false) {
+        IsRead = other.IsRead;
+      }
+      if (other.IsClaimed != false) {
+        IsClaimed = other.IsClaimed;
+      }
+      if (other.HasReward != false) {
+        HasReward = other.HasReward;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            MailId = input.ReadString();
+            break;
+          }
+          case 18: {
+            MailType = input.ReadString();
+            break;
+          }
+          case 26: {
+            Title = input.ReadString();
+            break;
+          }
+          case 32: {
+            CreatedAtMs = input.ReadUInt64();
+            break;
+          }
+          case 40: {
+            ExpiresAtMs = input.ReadUInt64();
+            break;
+          }
+          case 48: {
+            IsRead = input.ReadBool();
+            break;
+          }
+          case 56: {
+            IsClaimed = input.ReadBool();
+            break;
+          }
+          case 64: {
+            HasReward = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            MailId = input.ReadString();
+            break;
+          }
+          case 18: {
+            MailType = input.ReadString();
+            break;
+          }
+          case 26: {
+            Title = input.ReadString();
+            break;
+          }
+          case 32: {
+            CreatedAtMs = input.ReadUInt64();
+            break;
+          }
+          case 40: {
+            ExpiresAtMs = input.ReadUInt64();
+            break;
+          }
+          case 48: {
+            IsRead = input.ReadBool();
+            break;
+          }
+          case 56: {
+            IsClaimed = input.ReadBool();
+            break;
+          }
+          case 64: {
+            HasReward = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailDetail : pb::IMessage<MailDetail>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailDetail> _parser = new pb::MessageParser<MailDetail>(() => new MailDetail());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailDetail> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[82]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailDetail() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailDetail(MailDetail other) : this() {
+      mailId_ = other.mailId_;
+      mailType_ = other.mailType_;
+      templateId_ = other.templateId_;
+      templateArgsJson_ = other.templateArgsJson_;
+      title_ = other.title_;
+      body_ = other.body_;
+      sender_ = other.sender_;
+      createdAtMs_ = other.createdAtMs_;
+      expiresAtMs_ = other.expiresAtMs_;
+      isRead_ = other.isRead_;
+      isClaimed_ = other.isClaimed_;
+      rewards_ = other.rewards_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailDetail Clone() {
+      return new MailDetail(this);
+    }
+
+    /// <summary>Field number for the "mail_id" field.</summary>
+    public const int MailIdFieldNumber = 1;
+    private string mailId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MailId {
+      get { return mailId_; }
+      set {
+        mailId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "mail_type" field.</summary>
+    public const int MailTypeFieldNumber = 2;
+    private string mailType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MailType {
+      get { return mailType_; }
+      set {
+        mailType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "template_id" field.</summary>
+    public const int TemplateIdFieldNumber = 3;
+    private string templateId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string TemplateId {
+      get { return templateId_; }
+      set {
+        templateId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "template_args_json" field.</summary>
+    public const int TemplateArgsJsonFieldNumber = 4;
+    private string templateArgsJson_ = "";
+    /// <summary>
+    /// JSON 문자열
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string TemplateArgsJson {
+      get { return templateArgsJson_; }
+      set {
+        templateArgsJson_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "title" field.</summary>
+    public const int TitleFieldNumber = 5;
+    private string title_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Title {
+      get { return title_; }
+      set {
+        title_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "body" field.</summary>
+    public const int BodyFieldNumber = 6;
+    private string body_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Body {
+      get { return body_; }
+      set {
+        body_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "sender" field.</summary>
+    public const int SenderFieldNumber = 7;
+    private string sender_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Sender {
+      get { return sender_; }
+      set {
+        sender_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "created_at_ms" field.</summary>
+    public const int CreatedAtMsFieldNumber = 8;
+    private ulong createdAtMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong CreatedAtMs {
+      get { return createdAtMs_; }
+      set {
+        createdAtMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "expires_at_ms" field.</summary>
+    public const int ExpiresAtMsFieldNumber = 9;
+    private ulong expiresAtMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong ExpiresAtMs {
+      get { return expiresAtMs_; }
+      set {
+        expiresAtMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_read" field.</summary>
+    public const int IsReadFieldNumber = 10;
+    private bool isRead_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsRead {
+      get { return isRead_; }
+      set {
+        isRead_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_claimed" field.</summary>
+    public const int IsClaimedFieldNumber = 11;
+    private bool isClaimed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsClaimed {
+      get { return isClaimed_; }
+      set {
+        isClaimed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rewards" field.</summary>
+    public const int RewardsFieldNumber = 12;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.MailReward> _repeated_rewards_codec
+        = pb::FieldCodec.ForMessage(98, global::Infinitepickaxe.MailReward.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.MailReward> rewards_ = new pbc::RepeatedField<global::Infinitepickaxe.MailReward>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.MailReward> Rewards {
+      get { return rewards_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailDetail);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailDetail other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (MailId != other.MailId) return false;
+      if (MailType != other.MailType) return false;
+      if (TemplateId != other.TemplateId) return false;
+      if (TemplateArgsJson != other.TemplateArgsJson) return false;
+      if (Title != other.Title) return false;
+      if (Body != other.Body) return false;
+      if (Sender != other.Sender) return false;
+      if (CreatedAtMs != other.CreatedAtMs) return false;
+      if (ExpiresAtMs != other.ExpiresAtMs) return false;
+      if (IsRead != other.IsRead) return false;
+      if (IsClaimed != other.IsClaimed) return false;
+      if(!rewards_.Equals(other.rewards_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (MailId.Length != 0) hash ^= MailId.GetHashCode();
+      if (MailType.Length != 0) hash ^= MailType.GetHashCode();
+      if (TemplateId.Length != 0) hash ^= TemplateId.GetHashCode();
+      if (TemplateArgsJson.Length != 0) hash ^= TemplateArgsJson.GetHashCode();
+      if (Title.Length != 0) hash ^= Title.GetHashCode();
+      if (Body.Length != 0) hash ^= Body.GetHashCode();
+      if (Sender.Length != 0) hash ^= Sender.GetHashCode();
+      if (CreatedAtMs != 0UL) hash ^= CreatedAtMs.GetHashCode();
+      if (ExpiresAtMs != 0UL) hash ^= ExpiresAtMs.GetHashCode();
+      if (IsRead != false) hash ^= IsRead.GetHashCode();
+      if (IsClaimed != false) hash ^= IsClaimed.GetHashCode();
+      hash ^= rewards_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (MailId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(MailId);
+      }
+      if (MailType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(MailType);
+      }
+      if (TemplateId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(TemplateId);
+      }
+      if (TemplateArgsJson.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(TemplateArgsJson);
+      }
+      if (Title.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Title);
+      }
+      if (Body.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Body);
+      }
+      if (Sender.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Sender);
+      }
+      if (CreatedAtMs != 0UL) {
+        output.WriteRawTag(64);
+        output.WriteUInt64(CreatedAtMs);
+      }
+      if (ExpiresAtMs != 0UL) {
+        output.WriteRawTag(72);
+        output.WriteUInt64(ExpiresAtMs);
+      }
+      if (IsRead != false) {
+        output.WriteRawTag(80);
+        output.WriteBool(IsRead);
+      }
+      if (IsClaimed != false) {
+        output.WriteRawTag(88);
+        output.WriteBool(IsClaimed);
+      }
+      rewards_.WriteTo(output, _repeated_rewards_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (MailId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(MailId);
+      }
+      if (MailType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(MailType);
+      }
+      if (TemplateId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(TemplateId);
+      }
+      if (TemplateArgsJson.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(TemplateArgsJson);
+      }
+      if (Title.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Title);
+      }
+      if (Body.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Body);
+      }
+      if (Sender.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Sender);
+      }
+      if (CreatedAtMs != 0UL) {
+        output.WriteRawTag(64);
+        output.WriteUInt64(CreatedAtMs);
+      }
+      if (ExpiresAtMs != 0UL) {
+        output.WriteRawTag(72);
+        output.WriteUInt64(ExpiresAtMs);
+      }
+      if (IsRead != false) {
+        output.WriteRawTag(80);
+        output.WriteBool(IsRead);
+      }
+      if (IsClaimed != false) {
+        output.WriteRawTag(88);
+        output.WriteBool(IsClaimed);
+      }
+      rewards_.WriteTo(ref output, _repeated_rewards_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (MailId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MailId);
+      }
+      if (MailType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MailType);
+      }
+      if (TemplateId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TemplateId);
+      }
+      if (TemplateArgsJson.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TemplateArgsJson);
+      }
+      if (Title.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Title);
+      }
+      if (Body.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Body);
+      }
+      if (Sender.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Sender);
+      }
+      if (CreatedAtMs != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(CreatedAtMs);
+      }
+      if (ExpiresAtMs != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ExpiresAtMs);
+      }
+      if (IsRead != false) {
+        size += 1 + 1;
+      }
+      if (IsClaimed != false) {
+        size += 1 + 1;
+      }
+      size += rewards_.CalculateSize(_repeated_rewards_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailDetail other) {
+      if (other == null) {
+        return;
+      }
+      if (other.MailId.Length != 0) {
+        MailId = other.MailId;
+      }
+      if (other.MailType.Length != 0) {
+        MailType = other.MailType;
+      }
+      if (other.TemplateId.Length != 0) {
+        TemplateId = other.TemplateId;
+      }
+      if (other.TemplateArgsJson.Length != 0) {
+        TemplateArgsJson = other.TemplateArgsJson;
+      }
+      if (other.Title.Length != 0) {
+        Title = other.Title;
+      }
+      if (other.Body.Length != 0) {
+        Body = other.Body;
+      }
+      if (other.Sender.Length != 0) {
+        Sender = other.Sender;
+      }
+      if (other.CreatedAtMs != 0UL) {
+        CreatedAtMs = other.CreatedAtMs;
+      }
+      if (other.ExpiresAtMs != 0UL) {
+        ExpiresAtMs = other.ExpiresAtMs;
+      }
+      if (other.IsRead != false) {
+        IsRead = other.IsRead;
+      }
+      if (other.IsClaimed != false) {
+        IsClaimed = other.IsClaimed;
+      }
+      rewards_.Add(other.rewards_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            MailId = input.ReadString();
+            break;
+          }
+          case 18: {
+            MailType = input.ReadString();
+            break;
+          }
+          case 26: {
+            TemplateId = input.ReadString();
+            break;
+          }
+          case 34: {
+            TemplateArgsJson = input.ReadString();
+            break;
+          }
+          case 42: {
+            Title = input.ReadString();
+            break;
+          }
+          case 50: {
+            Body = input.ReadString();
+            break;
+          }
+          case 58: {
+            Sender = input.ReadString();
+            break;
+          }
+          case 64: {
+            CreatedAtMs = input.ReadUInt64();
+            break;
+          }
+          case 72: {
+            ExpiresAtMs = input.ReadUInt64();
+            break;
+          }
+          case 80: {
+            IsRead = input.ReadBool();
+            break;
+          }
+          case 88: {
+            IsClaimed = input.ReadBool();
+            break;
+          }
+          case 98: {
+            rewards_.AddEntriesFrom(input, _repeated_rewards_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            MailId = input.ReadString();
+            break;
+          }
+          case 18: {
+            MailType = input.ReadString();
+            break;
+          }
+          case 26: {
+            TemplateId = input.ReadString();
+            break;
+          }
+          case 34: {
+            TemplateArgsJson = input.ReadString();
+            break;
+          }
+          case 42: {
+            Title = input.ReadString();
+            break;
+          }
+          case 50: {
+            Body = input.ReadString();
+            break;
+          }
+          case 58: {
+            Sender = input.ReadString();
+            break;
+          }
+          case 64: {
+            CreatedAtMs = input.ReadUInt64();
+            break;
+          }
+          case 72: {
+            ExpiresAtMs = input.ReadUInt64();
+            break;
+          }
+          case 80: {
+            IsRead = input.ReadBool();
+            break;
+          }
+          case 88: {
+            IsClaimed = input.ReadBool();
+            break;
+          }
+          case 98: {
+            rewards_.AddEntriesFrom(ref input, _repeated_rewards_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailListRequest : pb::IMessage<MailListRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailListRequest> _parser = new pb::MessageParser<MailListRequest>(() => new MailListRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailListRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[83]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailListRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailListRequest(MailListRequest other) : this() {
+      limit_ = other.limit_;
+      cursorCreatedAtMs_ = other.cursorCreatedAtMs_;
+      cursorMailId_ = other.cursorMailId_;
+      includeClaimed_ = other.includeClaimed_;
+      includeExpired_ = other.includeExpired_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailListRequest Clone() {
+      return new MailListRequest(this);
+    }
+
+    /// <summary>Field number for the "limit" field.</summary>
+    public const int LimitFieldNumber = 1;
+    private uint limit_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint Limit {
+      get { return limit_; }
+      set {
+        limit_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cursor_created_at_ms" field.</summary>
+    public const int CursorCreatedAtMsFieldNumber = 2;
+    private ulong cursorCreatedAtMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong CursorCreatedAtMs {
+      get { return cursorCreatedAtMs_; }
+      set {
+        cursorCreatedAtMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cursor_mail_id" field.</summary>
+    public const int CursorMailIdFieldNumber = 3;
+    private string cursorMailId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string CursorMailId {
+      get { return cursorMailId_; }
+      set {
+        cursorMailId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "include_claimed" field.</summary>
+    public const int IncludeClaimedFieldNumber = 4;
+    private bool includeClaimed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IncludeClaimed {
+      get { return includeClaimed_; }
+      set {
+        includeClaimed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "include_expired" field.</summary>
+    public const int IncludeExpiredFieldNumber = 5;
+    private bool includeExpired_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IncludeExpired {
+      get { return includeExpired_; }
+      set {
+        includeExpired_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailListRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailListRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Limit != other.Limit) return false;
+      if (CursorCreatedAtMs != other.CursorCreatedAtMs) return false;
+      if (CursorMailId != other.CursorMailId) return false;
+      if (IncludeClaimed != other.IncludeClaimed) return false;
+      if (IncludeExpired != other.IncludeExpired) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Limit != 0) hash ^= Limit.GetHashCode();
+      if (CursorCreatedAtMs != 0UL) hash ^= CursorCreatedAtMs.GetHashCode();
+      if (CursorMailId.Length != 0) hash ^= CursorMailId.GetHashCode();
+      if (IncludeClaimed != false) hash ^= IncludeClaimed.GetHashCode();
+      if (IncludeExpired != false) hash ^= IncludeExpired.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Limit != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Limit);
+      }
+      if (CursorCreatedAtMs != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(CursorCreatedAtMs);
+      }
+      if (CursorMailId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(CursorMailId);
+      }
+      if (IncludeClaimed != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(IncludeClaimed);
+      }
+      if (IncludeExpired != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(IncludeExpired);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Limit != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Limit);
+      }
+      if (CursorCreatedAtMs != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(CursorCreatedAtMs);
+      }
+      if (CursorMailId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(CursorMailId);
+      }
+      if (IncludeClaimed != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(IncludeClaimed);
+      }
+      if (IncludeExpired != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(IncludeExpired);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Limit != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Limit);
+      }
+      if (CursorCreatedAtMs != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(CursorCreatedAtMs);
+      }
+      if (CursorMailId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(CursorMailId);
+      }
+      if (IncludeClaimed != false) {
+        size += 1 + 1;
+      }
+      if (IncludeExpired != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailListRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Limit != 0) {
+        Limit = other.Limit;
+      }
+      if (other.CursorCreatedAtMs != 0UL) {
+        CursorCreatedAtMs = other.CursorCreatedAtMs;
+      }
+      if (other.CursorMailId.Length != 0) {
+        CursorMailId = other.CursorMailId;
+      }
+      if (other.IncludeClaimed != false) {
+        IncludeClaimed = other.IncludeClaimed;
+      }
+      if (other.IncludeExpired != false) {
+        IncludeExpired = other.IncludeExpired;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Limit = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            CursorCreatedAtMs = input.ReadUInt64();
+            break;
+          }
+          case 26: {
+            CursorMailId = input.ReadString();
+            break;
+          }
+          case 32: {
+            IncludeClaimed = input.ReadBool();
+            break;
+          }
+          case 40: {
+            IncludeExpired = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Limit = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            CursorCreatedAtMs = input.ReadUInt64();
+            break;
+          }
+          case 26: {
+            CursorMailId = input.ReadString();
+            break;
+          }
+          case 32: {
+            IncludeClaimed = input.ReadBool();
+            break;
+          }
+          case 40: {
+            IncludeExpired = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailListResponse : pb::IMessage<MailListResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailListResponse> _parser = new pb::MessageParser<MailListResponse>(() => new MailListResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailListResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[84]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailListResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailListResponse(MailListResponse other) : this() {
+      mails_ = other.mails_.Clone();
+      nextCursorCreatedAtMs_ = other.nextCursorCreatedAtMs_;
+      nextCursorMailId_ = other.nextCursorMailId_;
+      hasNext_ = other.hasNext_;
+      unreadCount_ = other.unreadCount_;
+      unclaimedCount_ = other.unclaimedCount_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailListResponse Clone() {
+      return new MailListResponse(this);
+    }
+
+    /// <summary>Field number for the "mails" field.</summary>
+    public const int MailsFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.MailSummary> _repeated_mails_codec
+        = pb::FieldCodec.ForMessage(10, global::Infinitepickaxe.MailSummary.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.MailSummary> mails_ = new pbc::RepeatedField<global::Infinitepickaxe.MailSummary>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.MailSummary> Mails {
+      get { return mails_; }
+    }
+
+    /// <summary>Field number for the "next_cursor_created_at_ms" field.</summary>
+    public const int NextCursorCreatedAtMsFieldNumber = 2;
+    private ulong nextCursorCreatedAtMs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong NextCursorCreatedAtMs {
+      get { return nextCursorCreatedAtMs_; }
+      set {
+        nextCursorCreatedAtMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "next_cursor_mail_id" field.</summary>
+    public const int NextCursorMailIdFieldNumber = 3;
+    private string nextCursorMailId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string NextCursorMailId {
+      get { return nextCursorMailId_; }
+      set {
+        nextCursorMailId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "has_next" field.</summary>
+    public const int HasNextFieldNumber = 4;
+    private bool hasNext_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasNext {
+      get { return hasNext_; }
+      set {
+        hasNext_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "unread_count" field.</summary>
+    public const int UnreadCountFieldNumber = 5;
+    private uint unreadCount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint UnreadCount {
+      get { return unreadCount_; }
+      set {
+        unreadCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "unclaimed_count" field.</summary>
+    public const int UnclaimedCountFieldNumber = 6;
+    private uint unclaimedCount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint UnclaimedCount {
+      get { return unclaimedCount_; }
+      set {
+        unclaimedCount_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailListResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailListResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!mails_.Equals(other.mails_)) return false;
+      if (NextCursorCreatedAtMs != other.NextCursorCreatedAtMs) return false;
+      if (NextCursorMailId != other.NextCursorMailId) return false;
+      if (HasNext != other.HasNext) return false;
+      if (UnreadCount != other.UnreadCount) return false;
+      if (UnclaimedCount != other.UnclaimedCount) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= mails_.GetHashCode();
+      if (NextCursorCreatedAtMs != 0UL) hash ^= NextCursorCreatedAtMs.GetHashCode();
+      if (NextCursorMailId.Length != 0) hash ^= NextCursorMailId.GetHashCode();
+      if (HasNext != false) hash ^= HasNext.GetHashCode();
+      if (UnreadCount != 0) hash ^= UnreadCount.GetHashCode();
+      if (UnclaimedCount != 0) hash ^= UnclaimedCount.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      mails_.WriteTo(output, _repeated_mails_codec);
+      if (NextCursorCreatedAtMs != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(NextCursorCreatedAtMs);
+      }
+      if (NextCursorMailId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(NextCursorMailId);
+      }
+      if (HasNext != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(HasNext);
+      }
+      if (UnreadCount != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(UnreadCount);
+      }
+      if (UnclaimedCount != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(UnclaimedCount);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      mails_.WriteTo(ref output, _repeated_mails_codec);
+      if (NextCursorCreatedAtMs != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(NextCursorCreatedAtMs);
+      }
+      if (NextCursorMailId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(NextCursorMailId);
+      }
+      if (HasNext != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(HasNext);
+      }
+      if (UnreadCount != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(UnreadCount);
+      }
+      if (UnclaimedCount != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(UnclaimedCount);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += mails_.CalculateSize(_repeated_mails_codec);
+      if (NextCursorCreatedAtMs != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(NextCursorCreatedAtMs);
+      }
+      if (NextCursorMailId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(NextCursorMailId);
+      }
+      if (HasNext != false) {
+        size += 1 + 1;
+      }
+      if (UnreadCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(UnreadCount);
+      }
+      if (UnclaimedCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(UnclaimedCount);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailListResponse other) {
+      if (other == null) {
+        return;
+      }
+      mails_.Add(other.mails_);
+      if (other.NextCursorCreatedAtMs != 0UL) {
+        NextCursorCreatedAtMs = other.NextCursorCreatedAtMs;
+      }
+      if (other.NextCursorMailId.Length != 0) {
+        NextCursorMailId = other.NextCursorMailId;
+      }
+      if (other.HasNext != false) {
+        HasNext = other.HasNext;
+      }
+      if (other.UnreadCount != 0) {
+        UnreadCount = other.UnreadCount;
+      }
+      if (other.UnclaimedCount != 0) {
+        UnclaimedCount = other.UnclaimedCount;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            mails_.AddEntriesFrom(input, _repeated_mails_codec);
+            break;
+          }
+          case 16: {
+            NextCursorCreatedAtMs = input.ReadUInt64();
+            break;
+          }
+          case 26: {
+            NextCursorMailId = input.ReadString();
+            break;
+          }
+          case 32: {
+            HasNext = input.ReadBool();
+            break;
+          }
+          case 40: {
+            UnreadCount = input.ReadUInt32();
+            break;
+          }
+          case 48: {
+            UnclaimedCount = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            mails_.AddEntriesFrom(ref input, _repeated_mails_codec);
+            break;
+          }
+          case 16: {
+            NextCursorCreatedAtMs = input.ReadUInt64();
+            break;
+          }
+          case 26: {
+            NextCursorMailId = input.ReadString();
+            break;
+          }
+          case 32: {
+            HasNext = input.ReadBool();
+            break;
+          }
+          case 40: {
+            UnreadCount = input.ReadUInt32();
+            break;
+          }
+          case 48: {
+            UnclaimedCount = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailDetailRequest : pb::IMessage<MailDetailRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailDetailRequest> _parser = new pb::MessageParser<MailDetailRequest>(() => new MailDetailRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailDetailRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[85]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailDetailRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailDetailRequest(MailDetailRequest other) : this() {
+      mailId_ = other.mailId_;
+      markRead_ = other.markRead_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailDetailRequest Clone() {
+      return new MailDetailRequest(this);
+    }
+
+    /// <summary>Field number for the "mail_id" field.</summary>
+    public const int MailIdFieldNumber = 1;
+    private string mailId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MailId {
+      get { return mailId_; }
+      set {
+        mailId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "mark_read" field.</summary>
+    public const int MarkReadFieldNumber = 2;
+    private bool markRead_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool MarkRead {
+      get { return markRead_; }
+      set {
+        markRead_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailDetailRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailDetailRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (MailId != other.MailId) return false;
+      if (MarkRead != other.MarkRead) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (MailId.Length != 0) hash ^= MailId.GetHashCode();
+      if (MarkRead != false) hash ^= MarkRead.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (MailId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(MailId);
+      }
+      if (MarkRead != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(MarkRead);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (MailId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(MailId);
+      }
+      if (MarkRead != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(MarkRead);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (MailId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MailId);
+      }
+      if (MarkRead != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailDetailRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.MailId.Length != 0) {
+        MailId = other.MailId;
+      }
+      if (other.MarkRead != false) {
+        MarkRead = other.MarkRead;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            MailId = input.ReadString();
+            break;
+          }
+          case 16: {
+            MarkRead = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            MailId = input.ReadString();
+            break;
+          }
+          case 16: {
+            MarkRead = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailDetailResponse : pb::IMessage<MailDetailResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailDetailResponse> _parser = new pb::MessageParser<MailDetailResponse>(() => new MailDetailResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailDetailResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[86]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailDetailResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailDetailResponse(MailDetailResponse other) : this() {
+      success_ = other.success_;
+      mail_ = other.mail_ != null ? other.mail_.Clone() : null;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailDetailResponse Clone() {
+      return new MailDetailResponse(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mail" field.</summary>
+    public const int MailFieldNumber = 2;
+    private global::Infinitepickaxe.MailDetail mail_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Infinitepickaxe.MailDetail Mail {
+      get { return mail_; }
+      set {
+        mail_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 3;
+    private string errorCode_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailDetailResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailDetailResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (!object.Equals(Mail, other.Mail)) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (mail_ != null) hash ^= Mail.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (mail_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Mail);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (mail_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Mail);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (mail_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Mail);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailDetailResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.mail_ != null) {
+        if (mail_ == null) {
+          Mail = new global::Infinitepickaxe.MailDetail();
+        }
+        Mail.MergeFrom(other.Mail);
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            if (mail_ == null) {
+              Mail = new global::Infinitepickaxe.MailDetail();
+            }
+            input.ReadMessage(Mail);
+            break;
+          }
+          case 26: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            if (mail_ == null) {
+              Mail = new global::Infinitepickaxe.MailDetail();
+            }
+            input.ReadMessage(Mail);
+            break;
+          }
+          case 26: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailClaimRequest : pb::IMessage<MailClaimRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailClaimRequest> _parser = new pb::MessageParser<MailClaimRequest>(() => new MailClaimRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailClaimRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[87]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimRequest(MailClaimRequest other) : this() {
+      mailId_ = other.mailId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimRequest Clone() {
+      return new MailClaimRequest(this);
+    }
+
+    /// <summary>Field number for the "mail_id" field.</summary>
+    public const int MailIdFieldNumber = 1;
+    private string mailId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MailId {
+      get { return mailId_; }
+      set {
+        mailId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailClaimRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailClaimRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (MailId != other.MailId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (MailId.Length != 0) hash ^= MailId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (MailId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(MailId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (MailId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(MailId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (MailId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MailId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailClaimRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.MailId.Length != 0) {
+        MailId = other.MailId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            MailId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            MailId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailClaimResult : pb::IMessage<MailClaimResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailClaimResult> _parser = new pb::MessageParser<MailClaimResult>(() => new MailClaimResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailClaimResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[88]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimResult(MailClaimResult other) : this() {
+      success_ = other.success_;
+      mailId_ = other.mailId_;
+      rewards_ = other.rewards_.Clone();
+      totalGold_ = other.totalGold_;
+      totalCrystal_ = other.totalCrystal_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimResult Clone() {
+      return new MailClaimResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mail_id" field.</summary>
+    public const int MailIdFieldNumber = 2;
+    private string mailId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MailId {
+      get { return mailId_; }
+      set {
+        mailId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "rewards" field.</summary>
+    public const int RewardsFieldNumber = 3;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.MailReward> _repeated_rewards_codec
+        = pb::FieldCodec.ForMessage(26, global::Infinitepickaxe.MailReward.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.MailReward> rewards_ = new pbc::RepeatedField<global::Infinitepickaxe.MailReward>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.MailReward> Rewards {
+      get { return rewards_; }
+    }
+
+    /// <summary>Field number for the "total_gold" field.</summary>
+    public const int TotalGoldFieldNumber = 4;
+    private ulong totalGold_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong TotalGold {
+      get { return totalGold_; }
+      set {
+        totalGold_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_crystal" field.</summary>
+    public const int TotalCrystalFieldNumber = 5;
+    private uint totalCrystal_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalCrystal {
+      get { return totalCrystal_; }
+      set {
+        totalCrystal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 6;
+    private string errorCode_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailClaimResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailClaimResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (MailId != other.MailId) return false;
+      if(!rewards_.Equals(other.rewards_)) return false;
+      if (TotalGold != other.TotalGold) return false;
+      if (TotalCrystal != other.TotalCrystal) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (MailId.Length != 0) hash ^= MailId.GetHashCode();
+      hash ^= rewards_.GetHashCode();
+      if (TotalGold != 0UL) hash ^= TotalGold.GetHashCode();
+      if (TotalCrystal != 0) hash ^= TotalCrystal.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (MailId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(MailId);
+      }
+      rewards_.WriteTo(output, _repeated_rewards_codec);
+      if (TotalGold != 0UL) {
+        output.WriteRawTag(32);
+        output.WriteUInt64(TotalGold);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (MailId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(MailId);
+      }
+      rewards_.WriteTo(ref output, _repeated_rewards_codec);
+      if (TotalGold != 0UL) {
+        output.WriteRawTag(32);
+        output.WriteUInt64(TotalGold);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (MailId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MailId);
+      }
+      size += rewards_.CalculateSize(_repeated_rewards_codec);
+      if (TotalGold != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(TotalGold);
+      }
+      if (TotalCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailClaimResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.MailId.Length != 0) {
+        MailId = other.MailId;
+      }
+      rewards_.Add(other.rewards_);
+      if (other.TotalGold != 0UL) {
+        TotalGold = other.TotalGold;
+      }
+      if (other.TotalCrystal != 0) {
+        TotalCrystal = other.TotalCrystal;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            MailId = input.ReadString();
+            break;
+          }
+          case 26: {
+            rewards_.AddEntriesFrom(input, _repeated_rewards_codec);
+            break;
+          }
+          case 32: {
+            TotalGold = input.ReadUInt64();
+            break;
+          }
+          case 40: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 50: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            MailId = input.ReadString();
+            break;
+          }
+          case 26: {
+            rewards_.AddEntriesFrom(ref input, _repeated_rewards_codec);
+            break;
+          }
+          case 32: {
+            TotalGold = input.ReadUInt64();
+            break;
+          }
+          case 40: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 50: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 빈 요청
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailClaimAllRequest : pb::IMessage<MailClaimAllRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailClaimAllRequest> _parser = new pb::MessageParser<MailClaimAllRequest>(() => new MailClaimAllRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailClaimAllRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[89]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimAllRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimAllRequest(MailClaimAllRequest other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimAllRequest Clone() {
+      return new MailClaimAllRequest(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailClaimAllRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailClaimAllRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailClaimAllRequest other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class MailClaimAllResult : pb::IMessage<MailClaimAllResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MailClaimAllResult> _parser = new pb::MessageParser<MailClaimAllResult>(() => new MailClaimAllResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<MailClaimAllResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[90]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimAllResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimAllResult(MailClaimAllResult other) : this() {
+      success_ = other.success_;
+      claimedCount_ = other.claimedCount_;
+      rewards_ = other.rewards_.Clone();
+      totalGold_ = other.totalGold_;
+      totalCrystal_ = other.totalCrystal_;
+      errorCode_ = other.errorCode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public MailClaimAllResult Clone() {
+      return new MailClaimAllResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "claimed_count" field.</summary>
+    public const int ClaimedCountFieldNumber = 2;
+    private uint claimedCount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint ClaimedCount {
+      get { return claimedCount_; }
+      set {
+        claimedCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rewards" field.</summary>
+    public const int RewardsFieldNumber = 3;
+    private static readonly pb::FieldCodec<global::Infinitepickaxe.MailReward> _repeated_rewards_codec
+        = pb::FieldCodec.ForMessage(26, global::Infinitepickaxe.MailReward.Parser);
+    private readonly pbc::RepeatedField<global::Infinitepickaxe.MailReward> rewards_ = new pbc::RepeatedField<global::Infinitepickaxe.MailReward>();
+    /// <summary>
+    /// 합산된 보상 목록
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Infinitepickaxe.MailReward> Rewards {
+      get { return rewards_; }
+    }
+
+    /// <summary>Field number for the "total_gold" field.</summary>
+    public const int TotalGoldFieldNumber = 4;
+    private ulong totalGold_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong TotalGold {
+      get { return totalGold_; }
+      set {
+        totalGold_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "total_crystal" field.</summary>
+    public const int TotalCrystalFieldNumber = 5;
+    private uint totalCrystal_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint TotalCrystal {
+      get { return totalCrystal_; }
+      set {
+        totalCrystal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_code" field.</summary>
+    public const int ErrorCodeFieldNumber = 6;
+    private string errorCode_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorCode {
+      get { return errorCode_; }
+      set {
+        errorCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as MailClaimAllResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(MailClaimAllResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (ClaimedCount != other.ClaimedCount) return false;
+      if(!rewards_.Equals(other.rewards_)) return false;
+      if (TotalGold != other.TotalGold) return false;
+      if (TotalCrystal != other.TotalCrystal) return false;
+      if (ErrorCode != other.ErrorCode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (ClaimedCount != 0) hash ^= ClaimedCount.GetHashCode();
+      hash ^= rewards_.GetHashCode();
+      if (TotalGold != 0UL) hash ^= TotalGold.GetHashCode();
+      if (TotalCrystal != 0) hash ^= TotalCrystal.GetHashCode();
+      if (ErrorCode.Length != 0) hash ^= ErrorCode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (ClaimedCount != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(ClaimedCount);
+      }
+      rewards_.WriteTo(output, _repeated_rewards_codec);
+      if (TotalGold != 0UL) {
+        output.WriteRawTag(32);
+        output.WriteUInt64(TotalGold);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (ClaimedCount != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(ClaimedCount);
+      }
+      rewards_.WriteTo(ref output, _repeated_rewards_codec);
+      if (TotalGold != 0UL) {
+        output.WriteRawTag(32);
+        output.WriteUInt64(TotalGold);
+      }
+      if (TotalCrystal != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(TotalCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (ClaimedCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ClaimedCount);
+      }
+      size += rewards_.CalculateSize(_repeated_rewards_codec);
+      if (TotalGold != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(TotalGold);
+      }
+      if (TotalCrystal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TotalCrystal);
+      }
+      if (ErrorCode.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorCode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(MailClaimAllResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.ClaimedCount != 0) {
+        ClaimedCount = other.ClaimedCount;
+      }
+      rewards_.Add(other.rewards_);
+      if (other.TotalGold != 0UL) {
+        TotalGold = other.TotalGold;
+      }
+      if (other.TotalCrystal != 0) {
+        TotalCrystal = other.TotalCrystal;
+      }
+      if (other.ErrorCode.Length != 0) {
+        ErrorCode = other.ErrorCode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            ClaimedCount = input.ReadUInt32();
+            break;
+          }
+          case 26: {
+            rewards_.AddEntriesFrom(input, _repeated_rewards_codec);
+            break;
+          }
+          case 32: {
+            TotalGold = input.ReadUInt64();
+            break;
+          }
+          case 40: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 50: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 16: {
+            ClaimedCount = input.ReadUInt32();
+            break;
+          }
+          case 26: {
+            rewards_.AddEntriesFrom(ref input, _repeated_rewards_codec);
+            break;
+          }
+          case 32: {
+            TotalGold = input.ReadUInt64();
+            break;
+          }
+          case 40: {
+            TotalCrystal = input.ReadUInt32();
+            break;
+          }
+          case 50: {
+            ErrorCode = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   /// <summary>
   /// 빈 요청
   /// </summary>
@@ -29104,7 +33282,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[80]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[91]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -29265,7 +33443,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[81]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[92]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -29537,7 +33715,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[82]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[93]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -29875,7 +34053,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[83]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[94]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -30073,7 +34251,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[84]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[95]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -30493,7 +34671,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[85]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[96]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -30865,7 +35043,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[86]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[97]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -31285,7 +35463,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[87]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[98]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -31483,7 +35661,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[88]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[99]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -31906,7 +36084,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[89]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[100]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -32067,7 +36245,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[90]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[101]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -32453,7 +36631,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[91]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[102]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -32614,7 +36792,7 @@ namespace Infinitepickaxe {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[92]; }
+      get { return global::Infinitepickaxe.GameReflection.Descriptor.MessageTypes[103]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
