@@ -7,6 +7,8 @@
 #include "server/achievement_service.h"
 #include "server/infinite_mine_repository.h"
 #include "server/infinite_mine_service.h"
+#include "server/mail_repository.h"
+#include "server/mail_service.h"
 #include "server/redis_client.h"
 #include "metadata/metadata_loader.h"
 #include "server/connection_pool.h"
@@ -42,6 +44,7 @@ int main() {
         MissionRepository mission_repo(db_pool);
         AchievementRepository achievement_repo(db_pool);
         InfiniteMineRepository infinite_mine_repo(db_pool);
+        MailRepository mail_repo(db_pool);
         SlotRepository slot_repo(db_pool);
         OfflineRepository offline_repo(db_pool);
         GemRepository gem_repo(db_pool);
@@ -52,6 +55,7 @@ int main() {
         MissionService mission_service(mission_repo, game_repo, offline_repo, ad_service, metadata, redis_client);
         AchievementService achievement_service(achievement_repo, game_repo, metadata);
         InfiniteMineService infinite_mine_service(infinite_mine_repo, game_repo, metadata);
+        MailService mail_service(mail_repo, game_repo, metadata);
         SlotService slot_service(slot_repo, game_repo, gem_repo, metadata);
         GemService gem_service(gem_repo, slot_repo, metadata);
         OfflineService offline_service(offline_repo, metadata);
@@ -59,7 +63,7 @@ int main() {
 
         TcpServer server(io, cfg.listen_port, auth_service, game_repo,
                          mining_service, upgrade_service, mission_service, achievement_service,
-                         infinite_mine_service, slot_service, offline_service, ad_service, gem_service,
+                         infinite_mine_service, mail_service, slot_service, offline_service, ad_service, gem_service,
                          redis_client, metadata);
         server.start();
 

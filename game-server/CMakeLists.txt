@@ -36,6 +36,8 @@ add_executable(game-server
     src/metadata/metadata_loader.cpp
     src/server/gem_repository.cpp
     src/server/gem_service.cpp
+    src/server/mail_repository.cpp
+    src/server/mail_service.cpp
 )
 
 # Force module mode to avoid missing Boost config packages on distro builds

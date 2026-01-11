@@ -274,6 +274,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  MissionService &mission_service,
                  AchievementService &achievement_service,
                  InfiniteMineService &infinite_mine_service,
+                 MailService &mail_service,
                  SlotService &slot_service,
                  OfflineService &offline_service,
                  AdService &ad_service,
@@ -291,6 +292,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       mission_service_(mission_service),
       achievement_service_(achievement_service),
       infinite_mine_service_(infinite_mine_service),
+      mail_service_(mail_service),
       slot_service_(slot_service),
       offline_service_(offline_service),
       ad_service_(ad_service),
@@ -1116,6 +1118,73 @@ void Session::handle_milestone_claim(const infinitepickaxe::Envelope &env)
     send_milestone_state();
 }
 
+void Session::handle_mail_list(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_mail_list_request())
+    {
+        send_error("2004", "mail_list_request message missing");
+        return;
+    }
+
+    const auto &req = env.mail_list_request();
+    auto res = mail_service_.handle_mail_list(user_id_, req);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::MAIL_LIST_RESPONSE);
+    *response_env.mutable_mail_list_response() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_mail_detail(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_mail_detail_request())
+    {
+        send_error("2004", "mail_detail_request message missing");
+        return;
+    }
+
+    const auto &req = env.mail_detail_request();
+    auto res = mail_service_.handle_mail_detail(user_id_, req.mail_id(), req.mark_read());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::MAIL_DETAIL_RESPONSE);
+    *response_env.mutable_mail_detail_response() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_mail_claim(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_mail_claim_request())
+    {
+        send_error("2004", "mail_claim_request message missing");
+        return;
+    }
+
+    const auto &req = env.mail_claim_request();
+    auto res = mail_service_.handle_mail_claim(user_id_, req.mail_id());
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::MAIL_CLAIM_RESULT);
+    *response_env.mutable_mail_claim_result() = res;
+    send_envelope(response_env);
+}
+
+void Session::handle_mail_claim_all(const infinitepickaxe::Envelope &env)
+{
+    if (!env.has_mail_claim_all_request())
+    {
+        send_error("2004", "mail_claim_all_request message missing");
+        return;
+    }
+
+    auto res = mail_service_.handle_mail_claim_all(user_id_);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::MAIL_CLAIM_ALL_RESULT);
+    *response_env.mutable_mail_claim_all_result() = res;
+    send_envelope(response_env);
+}
+
 void Session::handle_slot_unlock(const infinitepickaxe::Envelope &env)
 {
     if (!env.has_slot_unlock())
@@ -1303,6 +1372,14 @@ void Session::init_router()
                              { handle_ad_watch(e); });
     router_.register_handler(infinitepickaxe::MILESTONE_CLAIM, [this](const infinitepickaxe::Envelope &e)
                              { handle_milestone_claim(e); });
+    router_.register_handler(infinitepickaxe::MAIL_LIST_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_mail_list(e); });
+    router_.register_handler(infinitepickaxe::MAIL_DETAIL_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_mail_detail(e); });
+    router_.register_handler(infinitepickaxe::MAIL_CLAIM_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_mail_claim(e); });
+    router_.register_handler(infinitepickaxe::MAIL_CLAIM_ALL_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_mail_claim_all(e); });
     router_.register_handler(infinitepickaxe::SLOT_UNLOCK, [this](const infinitepickaxe::Envelope &e)
                              { handle_slot_unlock(e); });
     router_.register_handler(infinitepickaxe::ALL_SLOTS_REQUEST, [this](const infinitepickaxe::Envelope &e)

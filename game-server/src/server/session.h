@@ -19,6 +19,7 @@
 #include "slot_service.h"
 #include "offline_service.h"
 #include "gem_service.h"
+#include "mail_service.h"
 #include "session_registry.h"
 
 class AdService;
@@ -76,6 +77,7 @@ public:
             MissionService& mission_service,
             AchievementService& achievement_service,
             InfiniteMineService& infinite_mine_service,
+            MailService& mail_service,
             SlotService& slot_service,
             OfflineService& offline_service,
             AdService& ad_service,
@@ -117,6 +119,10 @@ private:
     void handle_infinite_mine_exit(const infinitepickaxe::Envelope& env);
     void handle_ad_watch(const infinitepickaxe::Envelope& env);
     void handle_milestone_claim(const infinitepickaxe::Envelope& env);
+    void handle_mail_list(const infinitepickaxe::Envelope& env);
+    void handle_mail_detail(const infinitepickaxe::Envelope& env);
+    void handle_mail_claim(const infinitepickaxe::Envelope& env);
+    void handle_mail_claim_all(const infinitepickaxe::Envelope& env);
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
     void handle_all_slots(const infinitepickaxe::Envelope& env);
     void handle_offline_reward(const infinitepickaxe::Envelope& env);
@@ -176,6 +182,7 @@ private:
     MissionService& mission_service_;
     AchievementService& achievement_service_;
     InfiniteMineService& infinite_mine_service_;
+    MailService& mail_service_;
     SlotService& slot_service_;
     OfflineService& offline_service_;
     AdService& ad_service_;
