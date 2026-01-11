@@ -7037,23 +7037,23 @@
   "gem_discard": [
     {
       "grade_id": 0,
-      "crystal_reward": 25
+      "crystal_reward": 15
     },
     {
       "grade_id": 1,
-      "crystal_reward": 75
+      "crystal_reward": 45
     },
     {
       "grade_id": 2,
-      "crystal_reward": 225
+      "crystal_reward": 135
     },
     {
       "grade_id": 3,
-      "crystal_reward": 675
+      "crystal_reward": 405
     },
     {
       "grade_id": 4,
-      "crystal_reward": 2025
+      "crystal_reward": 1215
     }
   ],
   "gem_inventory": {
