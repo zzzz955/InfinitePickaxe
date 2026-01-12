@@ -5656,7 +5656,7 @@
         "template_id": 1,
         "mail_type": "ranking",
         "title": "최강의 채굴자 주간 랭킹 보상",
-        "body": "용사님의 최강의 채굴자 주간 순위는 {rank}위입니다. 기간 내에 보상을 수령해 주세요.",
+        "body": "용사님의 최강의 채굴자 주간 순위는 {{rank}}위입니다. 기간 내에 보상을 수령해 주세요.",
         "sender": "시스템",
         "default_expire_days": 7
       },
