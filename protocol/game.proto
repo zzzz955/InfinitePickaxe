@@ -141,6 +141,10 @@ enum MessageType {
   MAIL_CLAIM_ALL_REQUEST = 226;
   MAIL_CLAIM_ALL_RESULT = 227;
 
+  // 아이템 사용
+  USE_ITEM_REQUEST = 230;
+  USE_ITEM_RESULT = 231;
+
   // 무한의 갱도
   INFINITE_MINE_STATE_REQUEST = 200;
   INFINITE_MINE_STATE_RESPONSE = 201;
@@ -262,6 +266,9 @@ message Envelope {
     MailClaimResult mail_claim_result = 225;
     MailClaimAllRequest mail_claim_all_request = 226;
     MailClaimAllResult mail_claim_all_result = 227;
+
+    UseItemRequest use_item_request = 230;
+    UseItemResult use_item_result = 231;
 
     InfiniteMineStateRequest infinite_mine_state_request = 200;
     InfiniteMineStateResponse infinite_mine_state_response = 201;
@@ -956,6 +963,29 @@ message MailClaimAllResult {
   uint64 total_gold = 4;
   uint32 total_crystal = 5;
   string error_code = 6;
+}
+
+// -------------- 아이템 사용 --------------
+
+message Reward {
+  RewardType reward_type = 1;
+  string reward_key = 2;
+  uint64 amount = 3;
+}
+
+message UseItemRequest {
+  uint32 item_id = 1;            // item_info의 item_id
+  uint32 count = 2;              // 사용 개수
+  string client_request_id = 3;  // 멱등 처리용
+  uint32 choice_index = 4;       // GEM_SELECT일 때 gem_id
+}
+
+message UseItemResult {
+  bool success = 1;
+  uint32 item_id = 2;
+  uint32 count_used = 3;
+  repeated Reward rewards = 4;
+  string error_code = 5;
 }
 
 // -------------- 무한의 갱도 --------------
