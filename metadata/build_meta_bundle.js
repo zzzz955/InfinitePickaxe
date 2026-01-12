@@ -730,6 +730,49 @@ function buildGemGacha() {
   };
 }
 
+function buildGemSelectGroups() {
+  const groups = readCsv('gem_select_groups.csv').map((row, idx) => {
+    const context = `gem_select_groups.csv row ${idx + 2}`;
+
+    const entry = {
+      group_id: toNumber(requireField(row.group_id, 'group_id', context), `${context} group_id`),
+      group_name: requireField(row.group_name, 'group_name', context),
+      max_select: toNumber(requireField(row.max_select, 'max_select', context), `${context} max_select`),
+    };
+
+    if (row.description !== undefined && row.description !== '') {
+      entry.description = row.description;
+    }
+
+    return entry;
+  });
+
+  return {
+    key: 'gem_select_groups',
+    file: 'gem_select_groups.json',
+    data: groups,
+  };
+}
+
+function buildGemSelectOptions() {
+  const options = readCsv('gem_select_options.csv').map((row, idx) => {
+    const context = `gem_select_options.csv row ${idx + 2}`;
+
+    return {
+      group_id: toNumber(requireField(row.group_id, 'group_id', context), `${context} group_id`),
+      choice_index: toNumber(requireField(row.choice_index, 'choice_index', context), `${context} choice_index`),
+      gem_id: toNumber(requireField(row.gem_id, 'gem_id', context), `${context} gem_id`),
+      amount: toNumber(requireField(row.amount, 'amount', context), `${context} amount`),
+    };
+  });
+
+  return {
+    key: 'gem_select_options',
+    file: 'gem_select_options.json',
+    data: options,
+  };
+}
+
 function buildGemConversion() {
   const conversion = readCsv('gem_conversion_costs.csv').map((row, idx) => {
     const context = `gem_conversion_costs.csv row ${idx + 2}`;
@@ -855,6 +898,8 @@ const builders = [
   buildGemGrades,
   buildGemDefinitions,
   buildGemGacha,
+  buildGemSelectGroups,
+  buildGemSelectOptions,
   buildGemConversion,
   buildGemDiscard,
   buildGemInventory,

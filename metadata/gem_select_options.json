@@ -1,0 +1,20 @@
+[
+  {
+    "group_id": 1,
+    "choice_index": 200,
+    "gem_id": 200,
+    "amount": 1
+  },
+  {
+    "group_id": 1,
+    "choice_index": 201,
+    "gem_id": 201,
+    "amount": 1
+  },
+  {
+    "group_id": 1,
+    "choice_index": 202,
+    "gem_id": 202,
+    "amount": 1
+  }
+]

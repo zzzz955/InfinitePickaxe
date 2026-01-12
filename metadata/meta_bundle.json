@@ -5712,24 +5712,31 @@
     },
     {
       "rarity_id": 2,
-      "rarity_name": "희귀",
+      "rarity_name": "고급",
       "bg_color": "#2D8A52E6",
-      "text_color": "#FFFFFF",
+      "text_color": "#2D8A52E6",
       "sort_order": 2
     },
     {
       "rarity_id": 3,
-      "rarity_name": "영웅",
+      "rarity_name": "희귀",
       "bg_color": "#3A5ACFE6",
-      "text_color": "#FFFFFF",
+      "text_color": "#3A5ACFE6",
       "sort_order": 3
     },
     {
       "rarity_id": 4,
+      "rarity_name": "영웅",
+      "bg_color": "#8736D3FF",
+      "text_color": "#8736D3FF",
+      "sort_order": 4
+    },
+    {
+      "rarity_id": 5,
       "rarity_name": "전설",
       "bg_color": "#D4AF37E6",
-      "text_color": "#FFFFFF",
-      "sort_order": 4
+      "text_color": "#D4AF37E6",
+      "sort_order": 5
     }
   ],
   "currency_info": [
@@ -5744,7 +5751,7 @@
       "currency_id": 2,
       "currency_type": "CRYSTAL",
       "sprite_key": "crystal",
-      "rarity_id": 2,
+      "rarity_id": 1,
       "display_name": "크리스탈"
     }
   ],
@@ -5786,8 +5793,8 @@
       "item_id": 11002,
       "item_type": "loot_box",
       "sprite_key": "gem_select_box_t1",
-      "rarity_id": 3,
-      "display_name": "보석 선택 상자(T1)",
+      "rarity_id": 2,
+      "display_name": "희귀 보석 선택 상자",
       "stackable": true,
       "max_stack": 99,
       "use_action_type": "GEM_SELECT",
@@ -7257,6 +7264,33 @@
       }
     ]
   },
+  "gem_select_groups": [
+    {
+      "group_id": 1,
+      "group_name": "희귀 보석 선택 상자",
+      "max_select": 1
+    }
+  ],
+  "gem_select_options": [
+    {
+      "group_id": 1,
+      "choice_index": 200,
+      "gem_id": 200,
+      "amount": 1
+    },
+    {
+      "group_id": 1,
+      "choice_index": 201,
+      "gem_id": 201,
+      "amount": 1
+    },
+    {
+      "group_id": 1,
+      "choice_index": 202,
+      "gem_id": 202,
+      "amount": 1
+    }
+  ],
   "gem_conversion": [
     {
       "grade_id": 0,

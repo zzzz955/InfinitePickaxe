@@ -1,5 +1,5 @@
 ﻿item_id,item_type,sprite_key,rarity_id,display_name,stackable,max_stack,use_action_type,use_action_ref_id
-10001,consumable,gold_bundle_t1,1,골드 꾸러미,TRUE,99,ADD_CURRENCY,1
-10002,consumable,crystal_bundle_t1,1,크리스탈 꾸러미,TRUE,99,ADD_CURRENCY,2
-11001,loot_box,gem_summon_box_t1,2,보석 소환 상자(T1),TRUE,99,GEM_GACHA,1
-11002,loot_box,gem_select_box_t1,2,보석 선택 상자(T1),TRUE,99,GEM_SELECT,1
+10001,consumable,gold_bundle_t1,1,골드 꾸러미,true,99,ADD_CURRENCY,1
+10002,consumable,crystal_bundle_t1,2,크리스탈 꾸러미,true,99,ADD_CURRENCY,2
+11001,loot_box,gem_summon_box_t1,2,보석 소환 상자(T1),true,99,GEM_GACHA,1
+11002,loot_box,gem_select_box_t1,2,희귀 보석 선택 상자,true,99,GEM_SELECT,1
