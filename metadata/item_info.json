@@ -1,0 +1,46 @@
+[
+  {
+    "item_id": 10001,
+    "item_type": "consumable",
+    "sprite_key": "gold_bundle_t1",
+    "rarity_id": 1,
+    "display_name": "골드 꾸러미",
+    "stackable": true,
+    "max_stack": 99,
+    "use_action_type": "ADD_CURRENCY",
+    "use_action_ref_id": 1
+  },
+  {
+    "item_id": 10002,
+    "item_type": "consumable",
+    "sprite_key": "crystal_bundle_t1",
+    "rarity_id": 2,
+    "display_name": "크리스탈 꾸러미",
+    "stackable": true,
+    "max_stack": 99,
+    "use_action_type": "ADD_CURRENCY",
+    "use_action_ref_id": 2
+  },
+  {
+    "item_id": 11001,
+    "item_type": "loot_box",
+    "sprite_key": "gem_summon_box_t1",
+    "rarity_id": 2,
+    "display_name": "보석 소환 상자(T1)",
+    "stackable": true,
+    "max_stack": 99,
+    "use_action_type": "GEM_GACHA",
+    "use_action_ref_id": 1
+  },
+  {
+    "item_id": 11002,
+    "item_type": "loot_box",
+    "sprite_key": "gem_select_box_t1",
+    "rarity_id": 3,
+    "display_name": "보석 선택 상자(T1)",
+    "stackable": true,
+    "max_stack": 99,
+    "use_action_type": "GEM_SELECT",
+    "use_action_ref_id": 1
+  }
+]

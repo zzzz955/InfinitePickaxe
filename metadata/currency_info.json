@@ -1,0 +1,16 @@
+[
+  {
+    "currency_id": 1,
+    "currency_type": "GOLD",
+    "sprite_key": "gold",
+    "rarity_id": 1,
+    "display_name": "골드"
+  },
+  {
+    "currency_id": 2,
+    "currency_type": "CRYSTAL",
+    "sprite_key": "crystal",
+    "rarity_id": 2,
+    "display_name": "크리스탈"
+  }
+]

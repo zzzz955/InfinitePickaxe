@@ -472,6 +472,79 @@ function buildMail() {
   };
 }
 
+function buildRarityInfo() {
+  const rarities = readCsv('rarity_info.csv').map((row, idx) => {
+    const context = `rarity_info.csv row ${idx + 2}`;
+
+    return {
+      rarity_id: toNumber(requireField(row.rarity_id, 'rarity_id', context), `${context} rarity_id`),
+      rarity_name: requireField(row.rarity_name, 'rarity_name', context),
+      bg_color: requireField(row.bg_color, 'bg_color', context),
+      text_color: requireField(row.text_color, 'text_color', context),
+      sort_order: toNumber(requireField(row.sort_order, 'sort_order', context), `${context} sort_order`),
+    };
+  });
+
+  return {
+    key: 'rarity_info',
+    file: 'rarity_info.json',
+    data: rarities,
+  };
+}
+
+function buildCurrencyInfo() {
+  const currencies = readCsv('currency_info.csv').map((row, idx) => {
+    const context = `currency_info.csv row ${idx + 2}`;
+
+    return {
+      currency_id: toNumber(requireField(row.currency_id, 'currency_id', context), `${context} currency_id`),
+      currency_type: requireField(row.currency_type, 'currency_type', context),
+      sprite_key: requireField(row.sprite_key, 'sprite_key', context),
+      rarity_id: toNumber(requireField(row.rarity_id, 'rarity_id', context), `${context} rarity_id`),
+      display_name: requireField(row.display_name, 'display_name', context),
+    };
+  });
+
+  return {
+    key: 'currency_info',
+    file: 'currency_info.json',
+    data: currencies,
+  };
+}
+
+function buildItemInfo() {
+  const items = readCsv('item_info.csv').map((row, idx) => {
+    const context = `item_info.csv row ${idx + 2}`;
+    const entry = {
+      item_id: toNumber(requireField(row.item_id, 'item_id', context), `${context} item_id`),
+      item_type: requireField(row.item_type, 'item_type', context),
+      sprite_key: requireField(row.sprite_key, 'sprite_key', context),
+      rarity_id: toNumber(requireField(row.rarity_id, 'rarity_id', context), `${context} rarity_id`),
+      display_name: requireField(row.display_name, 'display_name', context),
+      stackable: toBoolean(requireField(row.stackable, 'stackable', context), `${context} stackable`),
+      max_stack: toNumber(requireField(row.max_stack, 'max_stack', context), `${context} max_stack`),
+      use_action_type: requireField(row.use_action_type, 'use_action_type', context),
+    };
+
+    const useActionRefId = toOptionalNumber(row.use_action_ref_id, `${context} use_action_ref_id`);
+    if (useActionRefId !== null) {
+      entry.use_action_ref_id = useActionRefId;
+    }
+
+    if (row.description !== undefined && row.description !== '') {
+      entry.description = row.description;
+    }
+
+    return entry;
+  });
+
+  return {
+    key: 'item_info',
+    file: 'item_info.json',
+    data: items,
+  };
+}
+
 function buildWeeklyRanking() {
   const config = readKeyValueConfig('weekly_ranking_config.csv');
 
@@ -770,6 +843,9 @@ const builders = [
   buildMissionReroll,
   buildOfflineDefaults,
   buildMail,
+  buildRarityInfo,
+  buildCurrencyInfo,
+  buildItemInfo,
   buildWeeklyRanking,
   buildNewUserDefaults,
   buildPickaxeLevels,

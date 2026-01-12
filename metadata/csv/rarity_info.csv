@@ -1,0 +1,6 @@
+﻿rarity_id,rarity_name,bg_color,text_color,sort_order
+1,일반,#2F2F2FE6,#FFFFFF,1
+2,고급,#2D8A52E6,#2D8A52E6,2
+3,희귀,#3A5ACFE6,#3A5ACFE6,3
+4,영웅,#8736D3FF,#8736D3FF,4
+5,전설,#D4AF37E6,#D4AF37E6,5

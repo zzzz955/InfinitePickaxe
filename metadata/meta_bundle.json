@@ -5702,6 +5702,98 @@
       }
     ]
   },
+  "rarity_info": [
+    {
+      "rarity_id": 1,
+      "rarity_name": "일반",
+      "bg_color": "#2F2F2FE6",
+      "text_color": "#FFFFFF",
+      "sort_order": 1
+    },
+    {
+      "rarity_id": 2,
+      "rarity_name": "희귀",
+      "bg_color": "#2D8A52E6",
+      "text_color": "#FFFFFF",
+      "sort_order": 2
+    },
+    {
+      "rarity_id": 3,
+      "rarity_name": "영웅",
+      "bg_color": "#3A5ACFE6",
+      "text_color": "#FFFFFF",
+      "sort_order": 3
+    },
+    {
+      "rarity_id": 4,
+      "rarity_name": "전설",
+      "bg_color": "#D4AF37E6",
+      "text_color": "#FFFFFF",
+      "sort_order": 4
+    }
+  ],
+  "currency_info": [
+    {
+      "currency_id": 1,
+      "currency_type": "GOLD",
+      "sprite_key": "gold",
+      "rarity_id": 1,
+      "display_name": "골드"
+    },
+    {
+      "currency_id": 2,
+      "currency_type": "CRYSTAL",
+      "sprite_key": "crystal",
+      "rarity_id": 2,
+      "display_name": "크리스탈"
+    }
+  ],
+  "item_info": [
+    {
+      "item_id": 10001,
+      "item_type": "consumable",
+      "sprite_key": "gold_bundle_t1",
+      "rarity_id": 1,
+      "display_name": "골드 꾸러미",
+      "stackable": true,
+      "max_stack": 99,
+      "use_action_type": "ADD_CURRENCY",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 10002,
+      "item_type": "consumable",
+      "sprite_key": "crystal_bundle_t1",
+      "rarity_id": 2,
+      "display_name": "크리스탈 꾸러미",
+      "stackable": true,
+      "max_stack": 99,
+      "use_action_type": "ADD_CURRENCY",
+      "use_action_ref_id": 2
+    },
+    {
+      "item_id": 11001,
+      "item_type": "loot_box",
+      "sprite_key": "gem_summon_box_t1",
+      "rarity_id": 2,
+      "display_name": "보석 소환 상자(T1)",
+      "stackable": true,
+      "max_stack": 99,
+      "use_action_type": "GEM_GACHA",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 11002,
+      "item_type": "loot_box",
+      "sprite_key": "gem_select_box_t1",
+      "rarity_id": 3,
+      "display_name": "보석 선택 상자(T1)",
+      "stackable": true,
+      "max_stack": 99,
+      "use_action_type": "GEM_SELECT",
+      "use_action_ref_id": 1
+    }
+  ],
   "weekly_ranking": {
     "reset_weekday_kst": "MON",
     "reset_time_kst": "00:00",

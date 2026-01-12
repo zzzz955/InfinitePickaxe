@@ -17899,6 +17899,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 22400000, guid: 7f92b54009ab4fccb64563eabc971eae, type: 3}
   m_PrefabInstance: {fileID: 2078466732}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2078466734 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 7f92b54009ab4fccb64563eabc971eae, type: 3}
+  m_PrefabInstance: {fileID: 2078466732}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2088228662 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 620598773341082191, guid: 6db48876737c79548930b1863ce49f99, type: 3}
@@ -21523,6 +21528,10 @@ PrefabInstance:
       propertyPath: menuButton
       value: 
       objectReference: {fileID: 5783616384419675028}
+    - target: {fileID: 7421977159248449764, guid: fd6782add5eea4a44bd2df71dec7392c, type: 3}
+      propertyPath: mailboxModal
+      value: 
+      objectReference: {fileID: 2078466734}
     - target: {fileID: 7421977159248449764, guid: fd6782add5eea4a44bd2df71dec7392c, type: 3}
       propertyPath: menuDropdown
       value: 

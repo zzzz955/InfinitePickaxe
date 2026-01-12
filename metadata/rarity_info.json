@@ -1,0 +1,30 @@
+[
+  {
+    "rarity_id": 1,
+    "rarity_name": "일반",
+    "bg_color": "#2F2F2FE6",
+    "text_color": "#FFFFFF",
+    "sort_order": 1
+  },
+  {
+    "rarity_id": 2,
+    "rarity_name": "희귀",
+    "bg_color": "#2D8A52E6",
+    "text_color": "#FFFFFF",
+    "sort_order": 2
+  },
+  {
+    "rarity_id": 3,
+    "rarity_name": "영웅",
+    "bg_color": "#3A5ACFE6",
+    "text_color": "#FFFFFF",
+    "sort_order": 3
+  },
+  {
+    "rarity_id": 4,
+    "rarity_name": "전설",
+    "bg_color": "#D4AF37E6",
+    "text_color": "#FFFFFF",
+    "sort_order": 4
+  }
+]
