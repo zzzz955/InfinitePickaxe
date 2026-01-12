@@ -17,6 +17,8 @@ namespace InfinitePickaxe.Client.Metadata
         private readonly Dictionary<uint, GemDiscardRewardMeta> discardRewardsByGrade = new Dictionary<uint, GemDiscardRewardMeta>();
         private readonly Dictionary<string, GemSynthesisRuleMeta> synthesisRules = new Dictionary<string, GemSynthesisRuleMeta>();
         private readonly Dictionary<uint, uint> slotUnlockCostsBySlot = new Dictionary<uint, uint>();
+        private readonly Dictionary<uint, GemSelectGroupMeta> selectGroupsById = new Dictionary<uint, GemSelectGroupMeta>();
+        private readonly Dictionary<uint, List<GemSelectOptionMeta>> selectOptionsByGroup = new Dictionary<uint, List<GemSelectOptionMeta>>();
 
         private bool initialized;
 
@@ -47,6 +49,19 @@ namespace InfinitePickaxe.Client.Metadata
         public bool TryGetConversionCost(uint gradeId, out GemConversionCostMeta meta) => conversionCostsByGrade.TryGetValue(gradeId, out meta);
         public bool TryGetDiscardReward(uint gradeId, out GemDiscardRewardMeta meta) => discardRewardsByGrade.TryGetValue(gradeId, out meta);
         public bool TryGetSlotUnlockCost(uint slotIndex, out uint cost) => slotUnlockCostsBySlot.TryGetValue(slotIndex, out cost);
+        public bool TryGetSelectGroup(uint groupId, out GemSelectGroupMeta meta) => selectGroupsById.TryGetValue(groupId, out meta);
+
+        public bool TryGetSelectOptions(uint groupId, out IReadOnlyList<GemSelectOptionMeta> options)
+        {
+            if (selectOptionsByGroup.TryGetValue(groupId, out var list))
+            {
+                options = list;
+                return true;
+            }
+
+            options = Array.Empty<GemSelectOptionMeta>();
+            return false;
+        }
 
         public bool TryGetSynthesisRule(string fromGrade, out GemSynthesisRuleMeta meta)
         {
@@ -64,6 +79,8 @@ namespace InfinitePickaxe.Client.Metadata
             discardRewardsByGrade.Clear();
             synthesisRules.Clear();
             slotUnlockCostsBySlot.Clear();
+            selectGroupsById.Clear();
+            selectOptionsByGroup.Clear();
             SinglePullCost = 0;
             MultiPullCost = 0;
             MultiPullCount = 0;
@@ -87,6 +104,8 @@ namespace InfinitePickaxe.Client.Metadata
             LoadGemGrades();
             LoadGemDefinitions();
             LoadGemGacha();
+            LoadGemSelectGroups();
+            LoadGemSelectOptions();
             LoadGemConversion();
             LoadGemDiscard();
             LoadGemInventory();
@@ -200,6 +219,72 @@ namespace InfinitePickaxe.Client.Metadata
 
                     gachaRatesByGrade[gradeId] = rateMeta;
                 }
+            }
+        }
+
+        private void LoadGemSelectGroups()
+        {
+            if (!MetaRepository.Data.TryGetValue("gem_select_groups", out var obj) || obj is not List<object> list)
+            {
+                return;
+            }
+
+            foreach (var entry in list)
+            {
+                if (entry is not Dictionary<string, object> dict) continue;
+
+                if (!TryGetUInt(dict, out var groupId, "group_id")) continue;
+                if (groupId == 0) continue;
+
+                var meta = new GemSelectGroupMeta
+                {
+                    GroupId = groupId,
+                    GroupName = TryGetString(dict, out var name, "group_name") ? name : string.Empty,
+                    MaxSelect = TryGetUInt(dict, out var maxSelect, "max_select") ? maxSelect : 1
+                };
+
+                if (TryGetString(dict, out var description, "description"))
+                {
+                    meta.Description = description;
+                }
+
+                selectGroupsById[groupId] = meta;
+            }
+        }
+
+        private void LoadGemSelectOptions()
+        {
+            if (!MetaRepository.Data.TryGetValue("gem_select_options", out var obj) || obj is not List<object> list)
+            {
+                return;
+            }
+
+            foreach (var entry in list)
+            {
+                if (entry is not Dictionary<string, object> dict) continue;
+
+                if (!TryGetUInt(dict, out var groupId, "group_id")) continue;
+                if (groupId == 0) continue;
+                if (!TryGetUInt(dict, out var choiceIndex, "choice_index")) continue;
+                if (!TryGetUInt(dict, out var gemId, "gem_id")) continue;
+                if (!TryGetUInt(dict, out var amount, "amount")) continue;
+                if (amount == 0) continue;
+
+                var meta = new GemSelectOptionMeta
+                {
+                    GroupId = groupId,
+                    ChoiceIndex = choiceIndex,
+                    GemId = gemId,
+                    Amount = amount
+                };
+
+                if (!selectOptionsByGroup.TryGetValue(groupId, out var options))
+                {
+                    options = new List<GemSelectOptionMeta>();
+                    selectOptionsByGroup[groupId] = options;
+                }
+
+                options.Add(meta);
             }
         }
 
@@ -447,6 +532,22 @@ namespace InfinitePickaxe.Client.Metadata
     {
         public uint GradeId { get; set; }
         public float RatePercent { get; set; }
+    }
+
+    public sealed class GemSelectGroupMeta
+    {
+        public uint GroupId { get; set; }
+        public string GroupName { get; set; } = string.Empty;
+        public uint MaxSelect { get; set; }
+        public string Description { get; set; } = string.Empty;
+    }
+
+    public sealed class GemSelectOptionMeta
+    {
+        public uint GroupId { get; set; }
+        public uint ChoiceIndex { get; set; }
+        public uint GemId { get; set; }
+        public uint Amount { get; set; }
     }
 
     public sealed class GemConversionCostMeta
