@@ -135,6 +135,40 @@
 - PK: (mail_id, reward_index)
 - FK: mail_id REFERENCES user_mail(mail_id) ON DELETE CASCADE
 
+## user_item_inventory
+| 旎熂 | ?€??| ?滌暯/旮半掣臧?| 牍勱碃 |
+| --- | --- | --- | --- |
+| user_id | UUID | PK | auth.users ?茧Μ 彀胳“ |
+| current_capacity | INTEGER | DEFAULT 24, CHECK >= 0 | ?勳灛 ?鸽菠?犽Μ ?╇焿 |
+| created_at | TIMESTAMP | DEFAULT now | ?濎劚 |
+| updated_at | TIMESTAMP | DEFAULT now | ?呺嵃?错姼 |
+
+## user_items
+| 旎熂 | ?€??| ?滌暯/旮半掣臧?| 牍勱碃 |
+| --- | --- | --- | --- |
+| user_id | UUID | PK part | auth.users ?茧Μ 彀胳“ |
+| item_id | INTEGER | PK part, CHECK >=0 | item_info.item_id |
+| count | BIGINT | CHECK >=0 | ?¤íƒ ?˜ëŸ‰ |
+| created_at | TIMESTAMP | DEFAULT now | ?濎劚 |
+| updated_at | TIMESTAMP | DEFAULT now | ?呺嵃?错姼 |
+
+**?鸽嵄??*:
+- idx_user_items_user: user_id
+
+## user_item_instances
+| 旎熂 | ?€??| ?滌暯/旮半掣臧?| 牍勱碃 |
+| --- | --- | --- | --- |
+| item_instance_id | UUID | PK | ?胳姢?挫姢 ID |
+| user_id | UUID | NOT NULL | auth.users ?茧Μ 彀胳“ |
+| item_id | INTEGER | NOT NULL, CHECK >=0 | item_info.item_id |
+| acquired_at | TIMESTAMP | DEFAULT now | ?嶋摑 ?滉皝 |
+| created_at | TIMESTAMP | DEFAULT now | ?濎劚 |
+| updated_at | TIMESTAMP | DEFAULT now | ?呺嵃?错姼 |
+
+**?鸽嵄??*:
+- idx_user_item_instances_user: user_id
+- idx_user_item_instances_item: item_id
+
 ## user_gem_inventory
 | 컬럼 | 타입 | 제약/기본값 | 비고 |
 | --- | --- | --- | --- |

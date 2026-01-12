@@ -5801,6 +5801,12 @@
       "use_action_ref_id": 1
     }
   ],
+  "item_inventory": {
+    "base_capacity": 24,
+    "max_capacity": 60,
+    "expand_step": 4,
+    "expand_cost": 200
+  },
   "weekly_ranking": {
     "reset_weekday_kst": "MON",
     "reset_time_kst": "00:00",

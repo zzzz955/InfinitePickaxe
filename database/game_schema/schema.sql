@@ -12,6 +12,9 @@ DROP TRIGGER IF EXISTS trg_user_infinite_mine_progress_updated ON game_schema.us
 DROP TRIGGER IF EXISTS trg_user_achievement_counters_updated ON game_schema.user_achievement_counters;
 DROP TRIGGER IF EXISTS trg_user_achievement_chains_updated ON game_schema.user_achievement_chains;
 DROP TRIGGER IF EXISTS trg_user_mail_updated ON game_schema.user_mail;
+DROP TRIGGER IF EXISTS trg_user_item_inventory_updated ON game_schema.user_item_inventory;
+DROP TRIGGER IF EXISTS trg_user_items_updated ON game_schema.user_items;
+DROP TRIGGER IF EXISTS trg_user_item_instances_updated ON game_schema.user_item_instances;
 DROP TRIGGER IF EXISTS trg_user_gem_inventory_updated ON game_schema.user_gem_inventory;
 DROP TRIGGER IF EXISTS trg_user_gems_updated ON game_schema.user_gems;
 DROP TRIGGER IF EXISTS trg_pickaxe_gem_slots_updated ON game_schema.pickaxe_gem_slots;
@@ -22,6 +25,9 @@ DROP FUNCTION IF EXISTS game_schema.touch_updated_at;
 DROP TABLE IF EXISTS game_schema.pickaxe_equipped_gems;
 DROP TABLE IF EXISTS game_schema.pickaxe_gem_slots;
 DROP TABLE IF EXISTS game_schema.user_gems;
+DROP TABLE IF EXISTS game_schema.user_item_instances;
+DROP TABLE IF EXISTS game_schema.user_items;
+DROP TABLE IF EXISTS game_schema.user_item_inventory;
 DROP TABLE IF EXISTS game_schema.user_gem_inventory;
 DROP TABLE IF EXISTS game_schema.user_milestones;
 DROP TABLE IF EXISTS game_schema.user_mail_rewards;
@@ -248,6 +254,38 @@ CREATE TABLE IF NOT EXISTS game_schema.user_mail_rewards (
 );
 
 -- ========================================
+-- Item Inventory Tables
+-- ========================================
+
+CREATE TABLE IF NOT EXISTS game_schema.user_item_inventory (
+    user_id           UUID PRIMARY KEY,
+    current_capacity  INTEGER NOT NULL DEFAULT 24 CHECK (current_capacity >= 0),
+    created_at        TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at        TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS game_schema.user_items (
+    user_id     UUID NOT NULL,
+    item_id     INTEGER NOT NULL CHECK (item_id >= 0),
+    count       BIGINT NOT NULL CHECK (count >= 0),
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_user_items PRIMARY KEY (user_id, item_id)
+);
+CREATE INDEX IF NOT EXISTS idx_user_items_user ON game_schema.user_items(user_id);
+
+CREATE TABLE IF NOT EXISTS game_schema.user_item_instances (
+    item_instance_id  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id           UUID NOT NULL,
+    item_id           INTEGER NOT NULL CHECK (item_id >= 0),
+    acquired_at       TIMESTAMP NOT NULL DEFAULT NOW(),
+    created_at        TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at        TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_user_item_instances_user ON game_schema.user_item_instances(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_item_instances_item ON game_schema.user_item_instances(item_id);
+
+-- ========================================
 -- Gem System Tables
 -- ========================================
 
@@ -351,6 +389,18 @@ CREATE TRIGGER trg_user_achievement_chains_updated
 
 CREATE TRIGGER trg_user_mail_updated
     BEFORE UPDATE ON game_schema.user_mail
+    FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
+
+CREATE TRIGGER trg_user_item_inventory_updated
+    BEFORE UPDATE ON game_schema.user_item_inventory
+    FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
+
+CREATE TRIGGER trg_user_items_updated
+    BEFORE UPDATE ON game_schema.user_items
+    FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
+
+CREATE TRIGGER trg_user_item_instances_updated
+    BEFORE UPDATE ON game_schema.user_item_instances
     FOR EACH ROW EXECUTE FUNCTION game_schema.touch_updated_at();
 
 CREATE TRIGGER trg_user_gem_inventory_updated

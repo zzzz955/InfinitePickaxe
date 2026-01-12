@@ -545,6 +545,21 @@ function buildItemInfo() {
   };
 }
 
+function buildItemInventory() {
+  const config = readKeyValueConfig('item_inventory_config.csv');
+
+  return {
+    key: 'item_inventory',
+    file: 'item_inventory.json',
+    data: {
+      base_capacity: toNumber(config.base_capacity, 'item_inventory_config.csv base_capacity'),
+      max_capacity: toNumber(config.max_capacity, 'item_inventory_config.csv max_capacity'),
+      expand_step: toNumber(config.expand_step, 'item_inventory_config.csv expand_step'),
+      expand_cost: toNumber(config.expand_cost, 'item_inventory_config.csv expand_cost'),
+    },
+  };
+}
+
 function buildWeeklyRanking() {
   const config = readKeyValueConfig('weekly_ranking_config.csv');
 
@@ -889,6 +904,7 @@ const builders = [
   buildRarityInfo,
   buildCurrencyInfo,
   buildItemInfo,
+  buildItemInventory,
   buildWeeklyRanking,
   buildNewUserDefaults,
   buildPickaxeLevels,

@@ -214,6 +214,28 @@ struct MailConfig {
 
 };
 
+struct ItemInfoMeta {
+
+    uint32_t item_id{0};
+
+    std::string item_type;
+
+    std::string sprite_key;
+
+    uint32_t rarity_id{0};
+
+    std::string display_name;
+
+    bool stackable{true};
+
+    uint32_t max_stack{0};
+
+    std::string use_action_type;
+
+    std::optional<uint32_t> use_action_ref_id;
+
+};
+
 
 
 struct WeeklyRankingReward {
@@ -466,6 +488,18 @@ struct GemInventoryConfig {
 
 };
 
+struct ItemInventoryConfig {
+
+    uint32_t base_capacity{24};
+
+    uint32_t max_capacity{60};
+
+    uint32_t expand_step{4};
+
+    uint32_t expand_cost{200};
+
+};
+
 
 
 struct PickaxeSlotUnlockCost {
@@ -540,6 +574,10 @@ public:
 
     const MailTemplateMeta* mail_template(uint32_t template_id) const;
 
+    const std::vector<ItemInfoMeta>& item_infos() const { return item_infos_; }
+
+    const ItemInfoMeta* item_info(uint32_t item_id) const;
+
 
 
     // 보석 시스템 getter
@@ -563,6 +601,8 @@ public:
     const std::vector<GemDiscardReward>& gem_discard_rewards() const { return gem_discard_rewards_; }
 
     const GemInventoryConfig& gem_inventory_config() const { return gem_inventory_config_; }
+
+    const ItemInventoryConfig& item_inventory_config() const { return item_inventory_config_; }
 
     const std::vector<GemSlotUnlockCost>& gem_slot_unlock_costs() const { return gem_slot_unlock_costs_; }
 
@@ -632,6 +672,10 @@ private:
 
     WeeklyRankingConfig weekly_ranking_config_;
 
+    std::vector<ItemInfoMeta> item_infos_;
+
+    std::unordered_map<uint32_t, size_t> item_info_by_id_;
+
 
 
     // 보석 시스템 메타데이터
@@ -653,6 +697,8 @@ private:
     std::vector<GemDiscardReward> gem_discard_rewards_;
 
     GemInventoryConfig gem_inventory_config_;
+
+    ItemInventoryConfig item_inventory_config_;
 
     std::vector<GemSlotUnlockCost> gem_slot_unlock_costs_;
 

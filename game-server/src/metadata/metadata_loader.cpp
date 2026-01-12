@@ -52,6 +52,10 @@ bool MetadataLoader::load(const std::string &base_path)
 
         weekly_ranking_config_ = WeeklyRankingConfig{};
 
+        item_infos_.clear();
+
+        item_info_by_id_.clear();
+
         gem_types_.clear();
 
         gem_grades_.clear();
@@ -85,6 +89,8 @@ bool MetadataLoader::load(const std::string &base_path)
         gem_gacha_ = GemGachaMeta{};
 
         gem_inventory_config_ = GemInventoryConfig{};
+
+        item_inventory_config_ = ItemInventoryConfig{};
 
         infinite_mine_config_ = InfiniteMineConfig{};
 
@@ -492,6 +498,68 @@ bool MetadataLoader::load(const std::string &base_path)
                     }
                 }
             }
+        }
+
+        // item_info
+
+        if (bundle.contains("item_info") && bundle["item_info"].is_array())
+        {
+
+            const auto &j = bundle["item_info"];
+
+            item_infos_.reserve(j.size());
+
+            for (auto &e : j)
+            {
+
+                ItemInfoMeta item;
+
+                item.item_id = e.value("item_id", 0);
+
+                item.item_type = e.value("item_type", "");
+
+                item.sprite_key = e.value("sprite_key", "");
+
+                item.rarity_id = e.value("rarity_id", 0);
+
+                item.display_name = e.value("display_name", "");
+
+                item.stackable = e.value("stackable", true);
+
+                item.max_stack = e.value("max_stack", 0);
+
+                item.use_action_type = e.value("use_action_type", "");
+
+                if (e.contains("use_action_ref_id") && !e["use_action_ref_id"].is_null())
+                {
+
+                    item.use_action_ref_id = e.value("use_action_ref_id", 0);
+                }
+
+                if (item.item_id > 0)
+                {
+
+                    item_info_by_id_[item.item_id] = item_infos_.size();
+
+                    item_infos_.push_back(item);
+                }
+            }
+        }
+
+        // item_inventory
+
+        if (bundle.contains("item_inventory"))
+        {
+
+            nlohmann::json j = bundle["item_inventory"];
+
+            item_inventory_config_.base_capacity = j.value("base_capacity", item_inventory_config_.base_capacity);
+
+            item_inventory_config_.max_capacity = j.value("max_capacity", item_inventory_config_.max_capacity);
+
+            item_inventory_config_.expand_step = j.value("expand_step", item_inventory_config_.expand_step);
+
+            item_inventory_config_.expand_cost = j.value("expand_cost", item_inventory_config_.expand_cost);
         }
 
         // weekly_ranking
@@ -1243,6 +1311,17 @@ const MailTemplateMeta *MetadataLoader::mail_template(uint32_t template_id) cons
         return nullptr;
 
     return &mail_config_.templates[it->second];
+}
+
+const ItemInfoMeta *MetadataLoader::item_info(uint32_t item_id) const
+{
+
+    auto it = item_info_by_id_.find(item_id);
+
+    if (it == item_info_by_id_.end())
+        return nullptr;
+
+    return &item_infos_[it->second];
 }
 
 const GemTypeMeta *MetadataLoader::gem_type(uint32_t id) const

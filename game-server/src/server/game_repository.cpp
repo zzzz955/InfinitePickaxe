@@ -120,6 +120,12 @@ bool GameRepository::ensure_user_initialized(const std::string& user_id) {
                 "VALUES ($1, $2) ON CONFLICT (user_id) DO NOTHING",
                 user_id, static_cast<int32_t>(base_capacity));
 
+            uint32_t item_base_capacity = meta_.item_inventory_config().base_capacity;
+            tx.exec_params(
+                "INSERT INTO game_schema.user_item_inventory (user_id, current_capacity) "
+                "VALUES ($1, $2) ON CONFLICT (user_id) DO NOTHING",
+                user_id, static_cast<int32_t>(item_base_capacity));
+
             for (const auto& pickaxe_slot_id : inserted_slot_ids) {
                 for (uint32_t gem_slot_index : gem_slot_indices) {
                     tx.exec_params(
