@@ -1,6 +1,109 @@
 #include "mail_service.h"
 #include <cstdlib>
 #include <limits>
+#include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
+#include <sstream>
+#include <string_view>
+#include <unordered_set>
+#include <vector>
+
+namespace {
+    bool is_space_char(char c) {
+        return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+    }
+
+    std::string trim_copy(std::string_view text) {
+        size_t start = 0;
+        size_t end = text.size();
+        while (start < end && is_space_char(text[start])) {
+            ++start;
+        }
+        while (end > start && is_space_char(text[end - 1])) {
+            --end;
+        }
+        return std::string(text.substr(start, end - start));
+    }
+
+    bool json_value_to_string(const nlohmann::json& value, std::string& out) {
+        if (value.is_string()) {
+            out = value.get<std::string>();
+            return true;
+        }
+        if (value.is_number_integer()) {
+            out = std::to_string(value.get<long long>());
+            return true;
+        }
+        if (value.is_number_unsigned()) {
+            out = std::to_string(value.get<unsigned long long>());
+            return true;
+        }
+        if (value.is_number_float()) {
+            std::ostringstream oss;
+            oss << value.get<double>();
+            out = oss.str();
+            return true;
+        }
+        if (value.is_boolean()) {
+            out = value.get<bool>() ? "true" : "false";
+            return true;
+        }
+        if (value.is_null()) {
+            out.clear();
+            return true;
+        }
+        return false;
+    }
+
+    std::string apply_template_args(const std::string& text,
+                                    const nlohmann::json& args,
+                                    std::vector<std::string>* missing_keys) {
+        if (text.empty() || !args.is_object() || args.empty()) {
+            return text;
+        }
+
+        std::string output;
+        output.reserve(text.size());
+
+        size_t pos = 0;
+        while (pos < text.size()) {
+            auto open = text.find("{{", pos);
+            if (open == std::string::npos) {
+                output.append(text, pos, std::string::npos);
+                break;
+            }
+
+            output.append(text, pos, open - pos);
+            auto close = text.find("}}", open + 2);
+            if (close == std::string::npos) {
+                output.append(text, open, std::string::npos);
+                break;
+            }
+
+            std::string key = trim_copy(std::string_view(text).substr(open + 2, close - (open + 2)));
+            if (!key.empty() && args.contains(key)) {
+                std::string value;
+                if (json_value_to_string(args.at(key), value)) {
+                    output.append(value);
+                } else {
+                    output.append(text, open, close - open + 2);
+                    if (missing_keys) {
+                        missing_keys->push_back(key);
+                    }
+                }
+            } else {
+                output.append(text, open, close - open + 2);
+                if (missing_keys) {
+                    missing_keys->push_back(key);
+                }
+            }
+
+            pos = close + 2;
+        }
+
+        return output;
+    }
+}
 
 uint32_t MailService::resolve_list_limit(uint32_t requested) const {
     const auto& config = meta_.mail_config();
@@ -159,6 +262,40 @@ infinitepickaxe::MailDetailResponse MailService::handle_mail_detail(const std::s
             }
             if (sender.empty()) {
                 sender = tmpl->sender;
+            }
+        }
+    }
+
+    if (!detail.template_args_json.empty()) {
+        auto args = nlohmann::json::parse(detail.template_args_json, nullptr, false);
+        if (args.is_discarded()) {
+            spdlog::warn("mail template args parse failed: mail_id={}", mail_id);
+        } else if (!args.is_object()) {
+            spdlog::warn("mail template args not object: mail_id={}", mail_id);
+        } else if (!args.empty()) {
+            std::vector<std::string> missing_keys;
+            title = apply_template_args(title, args, &missing_keys);
+            body = apply_template_args(body, args, &missing_keys);
+            sender = apply_template_args(sender, args, &missing_keys);
+
+            if (!missing_keys.empty()) {
+                std::unordered_set<std::string> unique_keys;
+                std::string key_list;
+                for (const auto& key : missing_keys) {
+                    if (key.empty()) {
+                        continue;
+                    }
+                    if (!unique_keys.insert(key).second) {
+                        continue;
+                    }
+                    if (!key_list.empty()) {
+                        key_list.append(",");
+                    }
+                    key_list.append(key);
+                }
+                if (!key_list.empty()) {
+                    spdlog::warn("mail template args missing: mail_id={} keys={}", mail_id, key_list);
+                }
             }
         }
     }
