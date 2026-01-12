@@ -123,6 +123,10 @@ namespace InfinitePickaxe.Client.Net
         public event Action<GemUnequipResult> OnGemUnequipResult;
         public event Action<GemSlotUnlockResult> OnGemSlotUnlockResult;
         public event Action<GemInventoryExpandResult> OnGemInventoryExpandResult;
+        public event Action<MailListResponse> OnMailListResponse;
+        public event Action<MailDetailResponse> OnMailDetailResponse;
+        public event Action<MailClaimResult> OnMailClaimResult;
+        public event Action<MailClaimAllResult> OnMailClaimAllResult;
 
         public event Action<InfiniteMineStateResponse> OnInfiniteMineStateResponse;
         public event Action<InfiniteMineChallengeStartResult> OnInfiniteMineChallengeStartResult;
@@ -343,6 +347,18 @@ namespace InfinitePickaxe.Client.Net
                     case MessageType.GemInventoryExpandResult:
                         HandleGemInventoryExpandResult(envelope.GemInventoryExpandResult);
                         break;
+                    case MessageType.MailListResponse:
+                        HandleMailListResponse(envelope.MailListResponse);
+                        break;
+                    case MessageType.MailDetailResponse:
+                        HandleMailDetailResponse(envelope.MailDetailResponse);
+                        break;
+                    case MessageType.MailClaimResult:
+                        HandleMailClaimResult(envelope.MailClaimResult);
+                        break;
+                    case MessageType.MailClaimAllResult:
+                        HandleMailClaimAllResult(envelope.MailClaimAllResult);
+                        break;
                     case MessageType.InfiniteMineStateResponse:
                         HandleInfiniteMineStateResponse(envelope.InfiniteMineStateResponse);
                         break;
@@ -399,6 +415,7 @@ namespace InfinitePickaxe.Client.Net
                 QuestStateCache.Instance.ResetAll();
                 AchievementStateCache.Instance.ResetAll();
                 InfiniteMineStateCache.Instance.Reset();
+                MailStateCache.Instance.ResetAll();
             }
             OnHandshakeResult?.Invoke(result);
         }
@@ -1076,6 +1093,42 @@ namespace InfinitePickaxe.Client.Net
             OnGemInventoryExpandResult?.Invoke(result);
         }
 
+        private void HandleMailListResponse(MailListResponse response)
+        {
+            if (response == null) return;
+            MailStateCache.Instance.UpdateFromListResponse(response);
+            OnMailListResponse?.Invoke(response);
+        }
+
+        private void HandleMailDetailResponse(MailDetailResponse response)
+        {
+            if (response == null) return;
+            MailStateCache.Instance.UpdateFromDetailResponse(response);
+            OnMailDetailResponse?.Invoke(response);
+        }
+
+        private void HandleMailClaimResult(MailClaimResult result)
+        {
+            if (result == null) return;
+            if (result.Success)
+            {
+                CacheCurrency(result.TotalGold, result.TotalCrystal);
+                MailStateCache.Instance.ApplyClaimResult(result);
+            }
+            OnMailClaimResult?.Invoke(result);
+        }
+
+        private void HandleMailClaimAllResult(MailClaimAllResult result)
+        {
+            if (result == null) return;
+            if (result.Success)
+            {
+                CacheCurrency(result.TotalGold, result.TotalCrystal);
+                MailStateCache.Instance.ApplyClaimAllResult(result);
+            }
+            OnMailClaimAllResult?.Invoke(result);
+        }
+
         private void HandleInfiniteMineStateResponse(InfiniteMineStateResponse response)
         {
             if (response == null) return;
@@ -1567,6 +1620,66 @@ namespace InfinitePickaxe.Client.Net
             {
                 Type = MessageType.GemInventoryExpandRequest,
                 GemInventoryExpandRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestMailList(uint limit, ulong cursorCreatedAtMs = 0, string cursorMailId = "", bool includeClaimed = true, bool includeExpired = false)
+        {
+            var request = new MailListRequest
+            {
+                Limit = limit,
+                CursorCreatedAtMs = cursorCreatedAtMs,
+                CursorMailId = cursorMailId ?? string.Empty,
+                IncludeClaimed = includeClaimed,
+                IncludeExpired = includeExpired
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.MailListRequest,
+                MailListRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestMailDetail(string mailId, bool markRead)
+        {
+            if (string.IsNullOrEmpty(mailId)) return;
+            var request = new MailDetailRequest
+            {
+                MailId = mailId,
+                MarkRead = markRead
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.MailDetailRequest,
+                MailDetailRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestMailClaim(string mailId)
+        {
+            if (string.IsNullOrEmpty(mailId)) return;
+            var request = new MailClaimRequest
+            {
+                MailId = mailId
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.MailClaimRequest,
+                MailClaimRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestMailClaimAll()
+        {
+            var request = new MailClaimAllRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.MailClaimAllRequest,
+                MailClaimAllRequest = request
             };
             NetworkManager.Instance.SendMessage(envelope);
         }

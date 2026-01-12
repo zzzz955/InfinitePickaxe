@@ -30,6 +30,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private GameObject menuDropdown;
         [SerializeField] private Button menuBackgroundButton;
         [SerializeField] private Button menuSettingsButton;
+        [SerializeField] private Button menuMailButton;
         [SerializeField] private Button menuLogoutButton;
         [SerializeField] private Button menuExitButton;
         [SerializeField] private RectTransform menuPanel;
@@ -39,6 +40,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private GameObject settingsModal;
         [SerializeField] private Button settingsCloseButton;
         [SerializeField] private Button settingsBackgroundButton;
+        [SerializeField] private GameObject mailboxModal;
         [SerializeField] private GameObject logoutConfirmModal;
         [SerializeField] private Button logoutConfirmButton;
         [SerializeField] private Button logoutCancelButton;
@@ -244,6 +246,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void SetupMenuButtons()
         {
             CacheMenuPanel();
+            EnsureMenuMailButton();
 
             if (menuButton != null)
             {
@@ -263,6 +266,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 menuSettingsButton.onClick.AddListener(OpenSettingsModal);
             }
 
+            if (menuMailButton != null)
+            {
+                menuMailButton.onClick.RemoveAllListeners();
+                menuMailButton.onClick.AddListener(OpenMailboxModal);
+            }
+
             if (menuLogoutButton != null)
             {
                 menuLogoutButton.onClick.RemoveAllListeners();
@@ -276,6 +285,29 @@ namespace InfinitePickaxe.Client.UI.Game
             }
 
             CloseMenu();
+        }
+
+        private void EnsureMenuMailButton()
+        {
+            if (menuMailButton != null) return;
+            if (menuPanel != null)
+            {
+                var tf = menuPanel.Find("MenuButtons/MailButton");
+                if (tf != null)
+                {
+                    menuMailButton = tf.GetComponent<Button>();
+                    return;
+                }
+            }
+
+            if (menuDropdown != null)
+            {
+                var tf = menuDropdown.transform.Find("MenuButtons/MailButton");
+                if (tf != null)
+                {
+                    menuMailButton = tf.GetComponent<Button>();
+                }
+            }
         }
 
         private void ToggleMenu()
@@ -465,11 +497,51 @@ namespace InfinitePickaxe.Client.UI.Game
             controller?.RefreshData();
         }
 
+        private void OpenMailboxModal()
+        {
+            CloseMenu();
+            AutoBindMailboxModal();
+            if (mailboxModal == null)
+            {
+                return;
+            }
+
+            mailboxModal.SetActive(true);
+            mailboxModal.transform.SetAsLastSibling();
+
+            var controller = mailboxModal.GetComponentInChildren<MailboxModalController>(true);
+            controller?.Show();
+        }
+
         private void CloseSettingsModal()
         {
             if (settingsModal != null)
             {
                 settingsModal.SetActive(false);
+            }
+        }
+
+        private void AutoBindMailboxModal()
+        {
+            if (mailboxModal != null)
+            {
+                return;
+            }
+
+            var existing = GameObject.Find("MailboxModal");
+            if (existing == null)
+            {
+                var prefab = Resources.Load<GameObject>("UI/MailboxModal");
+                if (prefab != null)
+                {
+                    mailboxModal = Instantiate(prefab, transform.root);
+                    mailboxModal.name = "MailboxModal";
+                    mailboxModal.SetActive(false);
+                }
+            }
+            else
+            {
+                mailboxModal = existing;
             }
         }
 
