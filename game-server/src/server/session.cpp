@@ -275,6 +275,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
                  AchievementService &achievement_service,
                  InfiniteMineService &infinite_mine_service,
                  MailService &mail_service,
+                 ItemService &item_service,
                  SlotService &slot_service,
                  OfflineService &offline_service,
                  AdService &ad_service,
@@ -293,6 +294,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       achievement_service_(achievement_service),
       infinite_mine_service_(infinite_mine_service),
       mail_service_(mail_service),
+      item_service_(item_service),
       slot_service_(slot_service),
       offline_service_(offline_service),
       ad_service_(ad_service),
@@ -1185,6 +1187,103 @@ void Session::handle_mail_claim_all(const infinitepickaxe::Envelope &env)
     send_envelope(response_env);
 }
 
+void Session::handle_item_inventory(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_item_inventory_request()) {
+        send_error("INVALID_REQUEST", "missing item_inventory_request");
+        return;
+    }
+
+    auto snapshot = item_service_.handle_inventory(user_id_);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::ITEM_INVENTORY_RESPONSE);
+    auto* res = response_env.mutable_item_inventory_response();
+    res->set_current_capacity(snapshot.current_capacity);
+    res->set_used_slots(snapshot.used_slots);
+
+    for (const auto& stack : snapshot.stacks) {
+        auto* entry = res->add_stacks();
+        entry->set_item_id(stack.item_id);
+        entry->set_count(stack.count);
+    }
+
+    for (const auto& inst : snapshot.instances) {
+        auto* entry = res->add_instances();
+        entry->set_item_instance_id(inst.item_instance_id);
+        entry->set_item_id(inst.item_id);
+        entry->set_acquired_at_ms(inst.acquired_at);
+    }
+
+    send_envelope(response_env);
+}
+
+void Session::handle_item_inventory_expand(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_item_inventory_expand_request()) {
+        send_error("INVALID_REQUEST", "missing item_inventory_expand_request");
+        return;
+    }
+
+    auto expand = item_service_.handle_inventory_expand(user_id_);
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::ITEM_INVENTORY_EXPAND_RESULT);
+    auto* res = response_env.mutable_item_inventory_expand_result();
+    res->set_success(expand.success);
+    if (expand.success) {
+        res->set_new_capacity(expand.new_capacity);
+        res->set_crystal_spent(metadata_.item_inventory_config().expand_cost);
+        res->set_remaining_crystal(expand.remaining_crystal);
+        res->set_error_code("");
+    } else {
+        if (expand.max_capacity_reached) {
+            res->set_error_code("MAX_CAPACITY");
+        } else if (expand.insufficient_crystal) {
+            res->set_error_code("INSUFFICIENT_CRYSTAL");
+        } else {
+            res->set_error_code("DB_ERROR");
+        }
+    }
+
+    send_envelope(response_env);
+}
+
+void Session::handle_use_item(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_use_item_request()) {
+        send_error("INVALID_REQUEST", "missing use_item_request");
+        return;
+    }
+
+    const auto& req = env.use_item_request();
+    infinitepickaxe::UseItemResult res;
+    res.set_item_id(req.item_id());
+    res.set_count_used(0);
+    res.set_success(false);
+    res.set_error_code("NOT_IMPLEMENTED");
+
+    infinitepickaxe::Envelope response_env;
+    response_env.set_type(infinitepickaxe::USE_ITEM_RESULT);
+    *response_env.mutable_use_item_result() = res;
+    send_envelope(response_env);
+}
+
 void Session::handle_slot_unlock(const infinitepickaxe::Envelope &env)
 {
     if (!env.has_slot_unlock())
@@ -1380,6 +1479,12 @@ void Session::init_router()
                              { handle_mail_claim(e); });
     router_.register_handler(infinitepickaxe::MAIL_CLAIM_ALL_REQUEST, [this](const infinitepickaxe::Envelope &e)
                              { handle_mail_claim_all(e); });
+    router_.register_handler(infinitepickaxe::ITEM_INVENTORY_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_item_inventory(e); });
+    router_.register_handler(infinitepickaxe::ITEM_INVENTORY_EXPAND_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_item_inventory_expand(e); });
+    router_.register_handler(infinitepickaxe::USE_ITEM_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_use_item(e); });
     router_.register_handler(infinitepickaxe::SLOT_UNLOCK, [this](const infinitepickaxe::Envelope &e)
                              { handle_slot_unlock(e); });
     router_.register_handler(infinitepickaxe::ALL_SLOTS_REQUEST, [this](const infinitepickaxe::Envelope &e)

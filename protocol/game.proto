@@ -144,6 +144,10 @@ enum MessageType {
   // 아이템 사용
   USE_ITEM_REQUEST = 230;
   USE_ITEM_RESULT = 231;
+  ITEM_INVENTORY_REQUEST = 232;
+  ITEM_INVENTORY_RESPONSE = 233;
+  ITEM_INVENTORY_EXPAND_REQUEST = 234;
+  ITEM_INVENTORY_EXPAND_RESULT = 235;
 
   // 무한의 갱도
   INFINITE_MINE_STATE_REQUEST = 200;
@@ -269,6 +273,10 @@ message Envelope {
 
     UseItemRequest use_item_request = 230;
     UseItemResult use_item_result = 231;
+    ItemInventoryRequest item_inventory_request = 232;
+    ItemInventoryResponse item_inventory_response = 233;
+    ItemInventoryExpandRequest item_inventory_expand_request = 234;
+    ItemInventoryExpandResult item_inventory_expand_result = 235;
 
     InfiniteMineStateRequest infinite_mine_state_request = 200;
     InfiniteMineStateResponse infinite_mine_state_response = 201;
@@ -985,6 +993,43 @@ message UseItemResult {
   uint32 item_id = 2;
   uint32 count_used = 3;
   repeated Reward rewards = 4;
+  string error_code = 5;
+}
+
+
+// -------------- ??? ???? --------------
+
+message ItemStackEntry {
+  uint32 item_id = 1;
+  uint64 count = 2;
+}
+
+message ItemInstanceEntry {
+  string item_instance_id = 1;
+  uint32 item_id = 2;
+  uint64 acquired_at_ms = 3;
+}
+
+message ItemInventoryRequest {
+  // ? ??
+}
+
+message ItemInventoryResponse {
+  uint32 current_capacity = 1;
+  uint32 used_slots = 2;
+  repeated ItemStackEntry stacks = 3;
+  repeated ItemInstanceEntry instances = 4;
+}
+
+message ItemInventoryExpandRequest {
+  // ? ?? (4?? ?? ??)
+}
+
+message ItemInventoryExpandResult {
+  bool success = 1;
+  uint32 new_capacity = 2;
+  uint32 crystal_spent = 3;
+  uint32 remaining_crystal = 4;
   string error_code = 5;
 }
 

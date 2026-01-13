@@ -20,6 +20,7 @@
 #include "offline_service.h"
 #include "gem_service.h"
 #include "mail_service.h"
+#include "item_service.h"
 #include "session_registry.h"
 
 class AdService;
@@ -78,6 +79,7 @@ public:
             AchievementService& achievement_service,
             InfiniteMineService& infinite_mine_service,
             MailService& mail_service,
+            ItemService& item_service,
             SlotService& slot_service,
             OfflineService& offline_service,
             AdService& ad_service,
@@ -123,6 +125,9 @@ private:
     void handle_mail_detail(const infinitepickaxe::Envelope& env);
     void handle_mail_claim(const infinitepickaxe::Envelope& env);
     void handle_mail_claim_all(const infinitepickaxe::Envelope& env);
+    void handle_item_inventory(const infinitepickaxe::Envelope& env);
+    void handle_item_inventory_expand(const infinitepickaxe::Envelope& env);
+    void handle_use_item(const infinitepickaxe::Envelope& env);
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
     void handle_all_slots(const infinitepickaxe::Envelope& env);
     void handle_offline_reward(const infinitepickaxe::Envelope& env);
@@ -183,6 +188,7 @@ private:
     AchievementService& achievement_service_;
     InfiniteMineService& infinite_mine_service_;
     MailService& mail_service_;
+    ItemService& item_service_;
     SlotService& slot_service_;
     OfflineService& offline_service_;
     AdService& ad_service_;
