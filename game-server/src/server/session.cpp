@@ -12,6 +12,8 @@
 #include <random>
 #include <limits>
 #include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace
 {
@@ -1276,12 +1278,423 @@ void Session::handle_use_item(const infinitepickaxe::Envelope &env)
     res.set_item_id(req.item_id());
     res.set_count_used(0);
     res.set_success(false);
-    res.set_error_code("NOT_IMPLEMENTED");
+    res.set_error_code("");
 
-    infinitepickaxe::Envelope response_env;
-    response_env.set_type(infinitepickaxe::USE_ITEM_RESULT);
-    *response_env.mutable_use_item_result() = res;
-    send_envelope(response_env);
+    auto send_result = [&]() {
+        infinitepickaxe::Envelope response_env;
+        response_env.set_type(infinitepickaxe::USE_ITEM_RESULT);
+        *response_env.mutable_use_item_result() = res;
+        send_envelope(response_env);
+    };
+
+    if (req.count() == 0) {
+        res.set_error_code("INVALID_COUNT");
+        send_result();
+        return;
+    }
+
+    const auto* item_meta = metadata_.item_info(req.item_id());
+    if (!item_meta) {
+        res.set_error_code("INVALID_ITEM");
+        send_result();
+        return;
+    }
+
+    const std::string action = item_meta->use_action_type;
+    const uint64_t request_count = req.count();
+
+    uint64_t total_gold = 0;
+    uint32_t total_crystal = 0;
+    std::unordered_map<uint32_t, uint64_t> item_rewards;
+    std::vector<uint32_t> gem_reward_ids;
+
+    auto apply_reward_entry = [&](const RewardPackageEntry& entry, uint64_t multiplier) -> bool {
+        if (multiplier == 0 || entry.amount == 0) {
+            return true;
+        }
+
+        uint64_t total_amount = entry.amount * multiplier;
+        if (entry.reward_type == "gold") {
+            total_gold += total_amount;
+            return true;
+        }
+        if (entry.reward_type == "crystal") {
+            uint64_t next = static_cast<uint64_t>(total_crystal) + total_amount;
+            if (next > std::numeric_limits<uint32_t>::max()) {
+                return false;
+            }
+            total_crystal = static_cast<uint32_t>(next);
+            return true;
+        }
+        if (entry.reward_type == "item") {
+            if (entry.reward_ref_id == 0) {
+                return false;
+            }
+            item_rewards[entry.reward_ref_id] += total_amount;
+            return true;
+        }
+        if (entry.reward_type == "gem") {
+            if (entry.reward_ref_id == 0) {
+                return false;
+            }
+            if (total_amount > std::numeric_limits<uint32_t>::max()) {
+                return false;
+            }
+            gem_reward_ids.reserve(gem_reward_ids.size() + static_cast<size_t>(total_amount));
+            for (uint32_t i = 0; i < total_amount; ++i) {
+                gem_reward_ids.push_back(entry.reward_ref_id);
+            }
+            return true;
+        }
+
+        return false;
+    };
+
+    bool use_gacha = (action == "GEM_GACHA");
+    uint64_t gacha_rolls = 0;
+
+    if (!use_gacha) {
+        const auto* pkg = metadata_.reward_package(req.item_id());
+        const auto* entries = metadata_.reward_package_entries(req.item_id());
+        if (!pkg || !entries || entries->empty()) {
+            res.set_error_code("REWARD_PACKAGE_NOT_FOUND");
+            send_result();
+            return;
+        }
+
+        uint32_t roll_count = pkg->roll_count > 0 ? pkg->roll_count : 1;
+        if (request_count > 0 && roll_count > 0 &&
+            request_count > std::numeric_limits<uint64_t>::max() / roll_count) {
+            res.set_error_code("INVALID_COUNT");
+            send_result();
+            return;
+        }
+        uint64_t total_rolls = request_count * roll_count;
+
+        if (pkg->mode == "FIXED") {
+            for (const auto& entry : *entries) {
+                if (!apply_reward_entry(entry, total_rolls)) {
+                    res.set_error_code("INVALID_REWARD");
+                    send_result();
+                    return;
+                }
+            }
+        } else if (pkg->mode == "SELECT") {
+            uint32_t entry_id = req.choice_reward_entry_id();
+            if (entry_id == 0) {
+                res.set_error_code("INVALID_CHOICE");
+                send_result();
+                return;
+            }
+            const auto* entry = metadata_.reward_package_entry(req.item_id(), entry_id);
+            if (!entry) {
+                res.set_error_code("INVALID_CHOICE");
+                send_result();
+                return;
+            }
+            if (!apply_reward_entry(*entry, total_rolls)) {
+                res.set_error_code("INVALID_REWARD");
+                send_result();
+                return;
+            }
+        } else if (pkg->mode == "RANDOM") {
+            std::unordered_map<uint32_t, std::vector<const RewardPackageEntry*>> grouped_entries;
+            grouped_entries.reserve(entries->size());
+            for (const auto& entry : *entries) {
+                uint32_t group_id = entry.group_id;
+                grouped_entries[group_id].push_back(&entry);
+            }
+
+            if (grouped_entries.empty()) {
+                res.set_error_code("REWARD_PACKAGE_EMPTY");
+                send_result();
+                return;
+            }
+
+            static thread_local std::mt19937 rng(std::random_device{}());
+            for (uint64_t roll = 0; roll < total_rolls; ++roll) {
+                for (const auto& group_pair : grouped_entries) {
+                    const auto& group_entries = group_pair.second;
+                    uint32_t total_weight = 0;
+                    for (const auto* entry : group_entries) {
+                        uint32_t weight = entry->weight > 0 ? entry->weight : 1;
+                        if (std::numeric_limits<uint32_t>::max() - total_weight < weight) {
+                            total_weight = std::numeric_limits<uint32_t>::max();
+                            break;
+                        }
+                        total_weight += weight;
+                    }
+
+                    if (total_weight == 0) {
+                        res.set_error_code("INVALID_REWARD");
+                        send_result();
+                        return;
+                    }
+
+                    std::uniform_int_distribution<uint32_t> dist(1, total_weight);
+                    uint32_t roll_value = dist(rng);
+                    uint32_t accum = 0;
+                    const RewardPackageEntry* chosen = group_entries.front();
+                    for (const auto* entry : group_entries) {
+                        uint32_t weight = entry->weight > 0 ? entry->weight : 1;
+                        if (std::numeric_limits<uint32_t>::max() - accum < weight) {
+                            chosen = entry;
+                            break;
+                        }
+                        accum += weight;
+                        if (roll_value <= accum) {
+                            chosen = entry;
+                            break;
+                        }
+                    }
+
+                    if (!apply_reward_entry(*chosen, 1)) {
+                        res.set_error_code("INVALID_REWARD");
+                        send_result();
+                        return;
+                    }
+                }
+            }
+        } else {
+            res.set_error_code("INVALID_PACKAGE_MODE");
+            send_result();
+            return;
+        }
+    } else {
+        gacha_rolls = request_count;
+    }
+
+    uint64_t gem_reward_count = use_gacha ? gacha_rolls : gem_reward_ids.size();
+    if (gem_reward_count > 0) {
+        auto gem_info = game_repo_.get_gem_inventory_info(user_id_);
+        if (gem_info.total_gems + gem_reward_count > gem_info.capacity) {
+            res.set_error_code("INVENTORY_FULL");
+            send_result();
+            return;
+        }
+    }
+
+    auto inventory_snapshot = item_service_.handle_inventory(user_id_);
+    uint32_t capacity = inventory_snapshot.current_capacity;
+    uint32_t current_used = inventory_snapshot.used_slots;
+    if (capacity == 0) {
+        res.set_error_code("DB_ERROR");
+        send_result();
+        return;
+    }
+
+    std::unordered_map<uint32_t, uint64_t> current_stack_counts;
+    current_stack_counts.reserve(inventory_snapshot.stacks.size());
+    for (const auto& stack : inventory_snapshot.stacks) {
+        current_stack_counts[stack.item_id] = stack.count;
+    }
+
+    std::unordered_map<uint32_t, uint32_t> current_instance_counts;
+    current_instance_counts.reserve(inventory_snapshot.instances.size());
+    for (const auto& inst : inventory_snapshot.instances) {
+        current_instance_counts[inst.item_id] += 1;
+    }
+
+    int64_t stack_slot_delta = 0;
+    int64_t instance_slot_delta = 0;
+    std::unordered_set<uint32_t> stack_item_ids;
+    stack_item_ids.reserve(item_rewards.size() + 1);
+
+    for (const auto& reward_pair : item_rewards) {
+        const auto* reward_meta = metadata_.item_info(reward_pair.first);
+        if (!reward_meta) {
+            res.set_error_code("INVALID_REWARD");
+            send_result();
+            return;
+        }
+        if (reward_meta->stackable) {
+            stack_item_ids.insert(reward_pair.first);
+        } else {
+            if (reward_pair.second > std::numeric_limits<uint32_t>::max()) {
+                res.set_error_code("INVALID_COUNT");
+                send_result();
+                return;
+            }
+            instance_slot_delta += static_cast<int64_t>(reward_pair.second);
+        }
+    }
+
+    if (item_meta->stackable) {
+        stack_item_ids.insert(req.item_id());
+    } else {
+        uint32_t current_instances = current_instance_counts[req.item_id()];
+        if (request_count > current_instances) {
+            res.set_error_code("INSUFFICIENT_ITEM");
+            send_result();
+            return;
+        }
+        instance_slot_delta -= static_cast<int64_t>(request_count);
+    }
+
+    for (uint32_t item_id : stack_item_ids) {
+        const auto* meta = metadata_.item_info(item_id);
+        if (!meta) {
+            res.set_error_code("INVALID_REWARD");
+            send_result();
+            return;
+        }
+        uint64_t current_count = 0;
+        if (auto it = current_stack_counts.find(item_id); it != current_stack_counts.end()) {
+            current_count = it->second;
+        }
+        uint64_t consume_count = 0;
+        if (item_meta->stackable && item_id == req.item_id()) {
+            if (request_count > current_count) {
+                res.set_error_code("INSUFFICIENT_ITEM");
+                send_result();
+                return;
+            }
+            consume_count = request_count;
+        }
+        uint64_t reward_count = 0;
+        if (auto it = item_rewards.find(item_id); it != item_rewards.end()) {
+            reward_count = it->second;
+        }
+
+        uint64_t new_count = current_count - consume_count + reward_count;
+        if (meta->max_stack > 0 && new_count > meta->max_stack) {
+            res.set_error_code("STACK_LIMIT");
+            send_result();
+            return;
+        }
+
+        bool had_slot = current_count > 0;
+        bool will_have_slot = new_count > 0;
+        if (had_slot && !will_have_slot) {
+            stack_slot_delta -= 1;
+        } else if (!had_slot && will_have_slot) {
+            stack_slot_delta += 1;
+        }
+    }
+
+    int64_t used_after = static_cast<int64_t>(current_used) + stack_slot_delta + instance_slot_delta;
+    if (used_after < 0) {
+        used_after = 0;
+    }
+    if (static_cast<uint64_t>(used_after) > capacity) {
+        res.set_error_code("INVENTORY_FULL");
+        send_result();
+        return;
+    }
+
+    auto consume_result = item_service_.consume_item(user_id_, req.item_id(), request_count);
+    if (!consume_result.success) {
+        if (consume_result.insufficient) {
+            res.set_error_code("INSUFFICIENT_ITEM");
+        } else {
+            res.set_error_code("DB_ERROR");
+        }
+        send_result();
+        return;
+    }
+
+    if (total_gold > 0) {
+        auto total = game_repo_.add_gold(user_id_, total_gold);
+        if (!total.has_value()) {
+            res.set_error_code("DB_ERROR");
+            send_result();
+            return;
+        }
+    }
+
+    if (total_crystal > 0) {
+        auto total = game_repo_.add_crystal(user_id_, total_crystal);
+        if (!total.has_value()) {
+            res.set_error_code("DB_ERROR");
+            send_result();
+            return;
+        }
+    }
+
+    std::vector<ItemInstanceData> created_instances;
+    for (const auto& reward_pair : item_rewards) {
+        auto add_result = item_service_.add_item(user_id_, reward_pair.first, reward_pair.second);
+        if (!add_result.success) {
+            if (add_result.inventory_full) {
+                res.set_error_code("INVENTORY_FULL");
+            } else if (add_result.stack_limit_reached) {
+                res.set_error_code("STACK_LIMIT");
+            } else {
+                res.set_error_code("DB_ERROR");
+            }
+            send_result();
+            return;
+        }
+        for (const auto& inst : add_result.created_instances) {
+            created_instances.push_back(inst);
+        }
+    }
+
+    std::vector<GemInstanceData> created_gems;
+    if (use_gacha && gacha_rolls > 0) {
+        if (gacha_rolls > std::numeric_limits<uint32_t>::max()) {
+            res.set_error_code("INVALID_COUNT");
+            send_result();
+            return;
+        }
+        auto gacha_result = gem_service_.handle_gacha_pull_free(user_id_, static_cast<uint32_t>(gacha_rolls));
+        if (!gacha_result.success) {
+            if (gacha_result.inventory_full) {
+                res.set_error_code("INVENTORY_FULL");
+            } else {
+                res.set_error_code("DB_ERROR");
+            }
+            send_result();
+            return;
+        }
+        created_gems = std::move(gacha_result.created_gems);
+    } else if (!gem_reward_ids.empty()) {
+        auto grant_result = gem_service_.grant_gems(user_id_, gem_reward_ids);
+        if (!grant_result.success) {
+            if (grant_result.inventory_full) {
+                res.set_error_code("INVENTORY_FULL");
+            } else {
+                res.set_error_code("DB_ERROR");
+            }
+            send_result();
+            return;
+        }
+        created_gems = std::move(grant_result.created_gems);
+    }
+
+    if (total_gold > 0) {
+        auto* entry = res.add_rewards();
+        entry->set_reward_type(infinitepickaxe::GOLD);
+        entry->set_amount(total_gold);
+    }
+    if (total_crystal > 0) {
+        auto* entry = res.add_rewards();
+        entry->set_reward_type(infinitepickaxe::CRYSTAL);
+        entry->set_amount(total_crystal);
+    }
+    for (const auto& reward_pair : item_rewards) {
+        auto* entry = res.add_rewards();
+        entry->set_reward_type(infinitepickaxe::ITEM);
+        entry->set_reward_key(std::to_string(reward_pair.first));
+        entry->set_amount(reward_pair.second);
+    }
+
+    for (const auto& gem : created_gems) {
+        auto* gem_info = res.add_gems();
+        gem_service_.populate_gem_info(gem, gem_info);
+    }
+
+    for (const auto& inst : created_instances) {
+        auto* entry = res.add_item_instances();
+        entry->set_item_instance_id(inst.item_instance_id);
+        entry->set_item_id(inst.item_id);
+        entry->set_acquired_at_ms(inst.acquired_at);
+    }
+
+    res.set_success(true);
+    res.set_count_used(req.count());
+    res.set_error_code("");
+    send_result();
 }
 
 void Session::handle_slot_unlock(const infinitepickaxe::Envelope &env)

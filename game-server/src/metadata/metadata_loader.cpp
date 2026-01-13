@@ -56,13 +56,17 @@ bool MetadataLoader::load(const std::string &base_path)
 
         item_info_by_id_.clear();
 
+        reward_packages_.clear();
+        reward_package_entries_.clear();
+        reward_packages_by_id_.clear();
+        reward_package_entries_by_package_.clear();
+        reward_package_entries_by_key_.clear();
+
         gem_types_.clear();
 
         gem_grades_.clear();
 
         gem_definitions_.clear();
-        gem_select_groups_.clear();
-        gem_select_options_.clear();
 
         gem_synthesis_rules_.clear();
 
@@ -79,8 +83,6 @@ bool MetadataLoader::load(const std::string &base_path)
         gem_grades_by_id_.clear();
 
         gem_definitions_by_id_.clear();
-        gem_select_groups_by_id_.clear();
-        gem_select_options_by_group_.clear();
 
         achievements_by_id_.clear();
 
@@ -542,6 +544,57 @@ bool MetadataLoader::load(const std::string &base_path)
                     item_info_by_id_[item.item_id] = item_infos_.size();
 
                     item_infos_.push_back(item);
+                }
+            }
+        }
+
+        // reward_packages
+
+        if (bundle.contains("reward_packages") && bundle["reward_packages"].is_array())
+        {
+            const auto& j = bundle["reward_packages"];
+            reward_packages_.reserve(j.size());
+
+            for (auto& e : j)
+            {
+                RewardPackageMeta pkg;
+                pkg.package_id = e.value("package_id", 0);
+                pkg.mode = e.value("mode", "");
+                pkg.roll_count = e.value("roll_count", 1);
+                pkg.description = e.value("description", "");
+
+                if (pkg.package_id > 0)
+                {
+                    reward_packages_by_id_[pkg.package_id] = reward_packages_.size();
+                    reward_packages_.push_back(pkg);
+                }
+            }
+        }
+
+        // reward_package_entries
+
+        if (bundle.contains("reward_package_entries") && bundle["reward_package_entries"].is_array())
+        {
+            const auto& j = bundle["reward_package_entries"];
+            reward_package_entries_.reserve(j.size());
+
+            for (auto& e : j)
+            {
+                RewardPackageEntry entry;
+                entry.package_id = e.value("package_id", 0);
+                entry.entry_id = e.value("entry_id", 0);
+                entry.reward_type = e.value("reward_type", "");
+                entry.reward_ref_id = e.value("reward_ref_id", 0);
+                entry.amount = e.value<uint64_t>("amount", 0);
+                entry.weight = e.value("weight", 0);
+                entry.group_id = e.value("group_id", 0);
+
+                if (entry.package_id > 0 && entry.entry_id > 0 && entry.amount > 0)
+                {
+                    reward_package_entries_by_package_[entry.package_id].push_back(entry);
+                    uint64_t key = (static_cast<uint64_t>(entry.package_id) << 32) | entry.entry_id;
+                    reward_package_entries_by_key_[key] = reward_package_entries_.size();
+                    reward_package_entries_.push_back(entry);
                 }
             }
         }
@@ -1022,72 +1075,6 @@ bool MetadataLoader::load(const std::string &base_path)
             }
         }
 
-        // gem_select_groups
-
-        {
-
-            if (bundle.contains("gem_select_groups") && bundle["gem_select_groups"].is_array())
-            {
-
-                nlohmann::json j = bundle["gem_select_groups"];
-
-                for (auto &e : j)
-                {
-
-                    GemSelectGroup group;
-
-                    group.group_id = e.value("group_id", 0);
-
-                    group.group_name = e.value("group_name", "");
-
-                    group.max_select = e.value("max_select", 0);
-
-                    group.description = e.value("description", "");
-
-                    if (group.group_id > 0)
-                    {
-
-                        gem_select_groups_by_id_[group.group_id] = gem_select_groups_.size();
-
-                        gem_select_groups_.push_back(group);
-                    }
-                }
-            }
-        }
-
-        // gem_select_options
-
-        {
-
-            if (bundle.contains("gem_select_options") && bundle["gem_select_options"].is_array())
-            {
-
-                nlohmann::json j = bundle["gem_select_options"];
-
-                for (auto &e : j)
-                {
-
-                    GemSelectOption option;
-
-                    option.group_id = e.value("group_id", 0);
-
-                    option.choice_index = e.value("choice_index", 0);
-
-                    option.gem_id = e.value("gem_id", 0);
-
-                    option.amount = e.value("amount", 0);
-
-                    if (option.group_id > 0 && option.amount > 0)
-                    {
-
-                        gem_select_options_.push_back(option);
-
-                        gem_select_options_by_group_[option.group_id].push_back(option);
-                    }
-                }
-            }
-        }
-
         // gem_synthesis_rules
 
         {
@@ -1324,6 +1311,40 @@ const ItemInfoMeta *MetadataLoader::item_info(uint32_t item_id) const
     return &item_infos_[it->second];
 }
 
+const RewardPackageMeta *MetadataLoader::reward_package(uint32_t package_id) const
+{
+
+    auto it = reward_packages_by_id_.find(package_id);
+
+    if (it == reward_packages_by_id_.end())
+        return nullptr;
+
+    return &reward_packages_[it->second];
+}
+
+const std::vector<RewardPackageEntry> *MetadataLoader::reward_package_entries(uint32_t package_id) const
+{
+
+    auto it = reward_package_entries_by_package_.find(package_id);
+
+    if (it == reward_package_entries_by_package_.end())
+        return nullptr;
+
+    return &it->second;
+}
+
+const RewardPackageEntry *MetadataLoader::reward_package_entry(uint32_t package_id, uint32_t entry_id) const
+{
+
+    uint64_t key = (static_cast<uint64_t>(package_id) << 32) | entry_id;
+    auto it = reward_package_entries_by_key_.find(key);
+
+    if (it == reward_package_entries_by_key_.end())
+        return nullptr;
+
+    return &reward_package_entries_[it->second];
+}
+
 const GemTypeMeta *MetadataLoader::gem_type(uint32_t id) const
 {
 
@@ -1352,28 +1373,6 @@ const GemDefinition *MetadataLoader::gem_definition(uint32_t gem_id) const
     auto it = gem_definitions_by_id_.find(gem_id);
 
     if (it == gem_definitions_by_id_.end())
-        return nullptr;
-
-    return &it->second;
-}
-
-const GemSelectGroup *MetadataLoader::gem_select_group(uint32_t group_id) const
-{
-
-    auto it = gem_select_groups_by_id_.find(group_id);
-
-    if (it == gem_select_groups_by_id_.end())
-        return nullptr;
-
-    return &gem_select_groups_[it->second];
-}
-
-const std::vector<GemSelectOption> *MetadataLoader::gem_select_options_by_group(uint32_t group_id) const
-{
-
-    auto it = gem_select_options_by_group_.find(group_id);
-
-    if (it == gem_select_options_by_group_.end())
         return nullptr;
 
     return &it->second;

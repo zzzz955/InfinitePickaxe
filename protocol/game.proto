@@ -985,7 +985,7 @@ message UseItemRequest {
   uint32 item_id = 1;            // item_info의 item_id
   uint32 count = 2;              // 사용 개수
   string client_request_id = 3;  // 멱등 처리용
-  uint32 choice_index = 4;       // GEM_SELECT일 때 gem_id
+  uint32 choice_reward_entry_id = 4; // SELECT 모드일 때 reward_entry_id
 }
 
 message UseItemResult {
@@ -994,6 +994,8 @@ message UseItemResult {
   uint32 count_used = 3;
   repeated Reward rewards = 4;
   string error_code = 5;
+  repeated GemInfo gems = 6;
+  repeated ItemInstanceEntry item_instances = 7;
 }
 
 

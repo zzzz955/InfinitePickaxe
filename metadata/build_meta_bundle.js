@@ -560,6 +560,64 @@ function buildItemInventory() {
   };
 }
 
+function buildRewardPackages() {
+  const packages = readCsv('reward_packages.csv').map((row, idx) => {
+    const context = `reward_packages.csv row ${idx + 2}`;
+    const entry = {
+      package_id: toNumber(requireField(row.package_id, 'package_id', context), `${context} package_id`),
+      mode: requireField(row.mode, 'mode', context),
+      roll_count: toNumber(requireField(row.roll_count, 'roll_count', context), `${context} roll_count`),
+    };
+
+    if (row.description !== undefined && row.description !== '') {
+      entry.description = row.description;
+    }
+
+    return entry;
+  });
+
+  return {
+    key: 'reward_packages',
+    file: 'reward_packages.json',
+    data: packages,
+  };
+}
+
+function buildRewardPackageEntries() {
+  const entries = readCsv('reward_package_entries.csv').map((row, idx) => {
+    const context = `reward_package_entries.csv row ${idx + 2}`;
+    const entry = {
+      package_id: toNumber(requireField(row.package_id, 'package_id', context), `${context} package_id`),
+      entry_id: toNumber(requireField(row.entry_id, 'entry_id', context), `${context} entry_id`),
+      reward_type: requireField(row.reward_type, 'reward_type', context),
+      amount: toNumber(requireField(row.amount, 'amount', context), `${context} amount`),
+    };
+
+    const rewardRefId = toOptionalNumber(row.reward_ref_id, `${context} reward_ref_id`);
+    if (rewardRefId !== null) {
+      entry.reward_ref_id = rewardRefId;
+    }
+
+    const weight = toOptionalNumber(row.weight, `${context} weight`);
+    if (weight !== null) {
+      entry.weight = weight;
+    }
+
+    const groupId = toOptionalNumber(row.group_id, `${context} group_id`);
+    if (groupId !== null) {
+      entry.group_id = groupId;
+    }
+
+    return entry;
+  });
+
+  return {
+    key: 'reward_package_entries',
+    file: 'reward_package_entries.json',
+    data: entries,
+  };
+}
+
 function buildWeeklyRanking() {
   const config = readKeyValueConfig('weekly_ranking_config.csv');
 
@@ -745,49 +803,6 @@ function buildGemGacha() {
   };
 }
 
-function buildGemSelectGroups() {
-  const groups = readCsv('gem_select_groups.csv').map((row, idx) => {
-    const context = `gem_select_groups.csv row ${idx + 2}`;
-
-    const entry = {
-      group_id: toNumber(requireField(row.group_id, 'group_id', context), `${context} group_id`),
-      group_name: requireField(row.group_name, 'group_name', context),
-      max_select: toNumber(requireField(row.max_select, 'max_select', context), `${context} max_select`),
-    };
-
-    if (row.description !== undefined && row.description !== '') {
-      entry.description = row.description;
-    }
-
-    return entry;
-  });
-
-  return {
-    key: 'gem_select_groups',
-    file: 'gem_select_groups.json',
-    data: groups,
-  };
-}
-
-function buildGemSelectOptions() {
-  const options = readCsv('gem_select_options.csv').map((row, idx) => {
-    const context = `gem_select_options.csv row ${idx + 2}`;
-
-    return {
-      group_id: toNumber(requireField(row.group_id, 'group_id', context), `${context} group_id`),
-      choice_index: toNumber(requireField(row.choice_index, 'choice_index', context), `${context} choice_index`),
-      gem_id: toNumber(requireField(row.gem_id, 'gem_id', context), `${context} gem_id`),
-      amount: toNumber(requireField(row.amount, 'amount', context), `${context} amount`),
-    };
-  });
-
-  return {
-    key: 'gem_select_options',
-    file: 'gem_select_options.json',
-    data: options,
-  };
-}
-
 function buildGemConversion() {
   const conversion = readCsv('gem_conversion_costs.csv').map((row, idx) => {
     const context = `gem_conversion_costs.csv row ${idx + 2}`;
@@ -905,6 +920,8 @@ const builders = [
   buildCurrencyInfo,
   buildItemInfo,
   buildItemInventory,
+  buildRewardPackages,
+  buildRewardPackageEntries,
   buildWeeklyRanking,
   buildNewUserDefaults,
   buildPickaxeLevels,
@@ -914,8 +931,6 @@ const builders = [
   buildGemGrades,
   buildGemDefinitions,
   buildGemGacha,
-  buildGemSelectGroups,
-  buildGemSelectOptions,
   buildGemConversion,
   buildGemDiscard,
   buildGemInventory,

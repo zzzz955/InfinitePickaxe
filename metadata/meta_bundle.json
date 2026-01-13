@@ -5807,6 +5807,61 @@
     "expand_step": 4,
     "expand_cost": 200
   },
+  "reward_packages": [
+    {
+      "package_id": 10001,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "?? ???"
+    },
+    {
+      "package_id": 10002,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "???? ???"
+    },
+    {
+      "package_id": 11002,
+      "mode": "SELECT",
+      "roll_count": 1,
+      "description": "?? ?? ?? ??"
+    }
+  ],
+  "reward_package_entries": [
+    {
+      "package_id": 10001,
+      "entry_id": 1,
+      "reward_type": "gold",
+      "amount": 1000
+    },
+    {
+      "package_id": 10002,
+      "entry_id": 1,
+      "reward_type": "crystal",
+      "amount": 30
+    },
+    {
+      "package_id": 11002,
+      "entry_id": 1,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 200
+    },
+    {
+      "package_id": 11002,
+      "entry_id": 2,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 201
+    },
+    {
+      "package_id": 11002,
+      "entry_id": 3,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 202
+    }
+  ],
   "weekly_ranking": {
     "reset_weekday_kst": "MON",
     "reset_time_kst": "00:00",
@@ -7270,33 +7325,6 @@
       }
     ]
   },
-  "gem_select_groups": [
-    {
-      "group_id": 1,
-      "group_name": "희귀 보석 선택 상자",
-      "max_select": 1
-    }
-  ],
-  "gem_select_options": [
-    {
-      "group_id": 1,
-      "choice_index": 200,
-      "gem_id": 200,
-      "amount": 1
-    },
-    {
-      "group_id": 1,
-      "choice_index": 201,
-      "gem_id": 201,
-      "amount": 1
-    },
-    {
-      "group_id": 1,
-      "choice_index": 202,
-      "gem_id": 202,
-      "amount": 1
-    }
-  ],
   "gem_conversion": [
     {
       "grade_id": 0,

@@ -236,6 +236,36 @@ struct ItemInfoMeta {
 
 };
 
+struct RewardPackageMeta {
+
+    uint32_t package_id{0};
+
+    std::string mode;
+
+    uint32_t roll_count{1};
+
+    std::string description;
+
+};
+
+struct RewardPackageEntry {
+
+    uint32_t package_id{0};
+
+    uint32_t entry_id{0};
+
+    std::string reward_type;
+
+    uint32_t reward_ref_id{0};
+
+    uint64_t amount{0};
+
+    uint32_t weight{0};
+
+    uint32_t group_id{0};
+
+};
+
 
 
 struct WeeklyRankingReward {
@@ -428,20 +458,6 @@ struct GemGachaMeta {
 
 };
 
-struct GemSelectGroup {
-    uint32_t group_id{0};
-    std::string group_name;
-    uint32_t max_select{1};
-    std::string description;
-};
-
-struct GemSelectOption {
-    uint32_t group_id{0};
-    uint32_t choice_index{0};
-    uint32_t gem_id{0};
-    uint32_t amount{0};
-};
-
 struct GemSynthesisRule {
 
     std::string from_grade;
@@ -580,6 +596,12 @@ public:
 
 
 
+    const RewardPackageMeta* reward_package(uint32_t package_id) const;
+
+    const std::vector<RewardPackageEntry>* reward_package_entries(uint32_t package_id) const;
+
+    const RewardPackageEntry* reward_package_entry(uint32_t package_id, uint32_t entry_id) const;
+
     // 보석 시스템 getter
 
     const std::vector<GemTypeMeta>& gem_types() const { return gem_types_; }
@@ -589,11 +611,6 @@ public:
     const std::vector<GemDefinition>& gem_definitions() const { return gem_definitions_; }
 
     const GemGachaMeta& gem_gacha() const { return gem_gacha_; }
-    const std::vector<GemSelectGroup>& gem_select_groups() const { return gem_select_groups_; }
-    const std::vector<GemSelectOption>& gem_select_options() const { return gem_select_options_; }
-    const GemSelectGroup* gem_select_group(uint32_t group_id) const;
-    const std::vector<GemSelectOption>* gem_select_options_by_group(uint32_t group_id) const;
-
     const std::vector<GemSynthesisRule>& gem_synthesis_rules() const { return gem_synthesis_rules_; }
 
     const std::vector<GemConversionCost>& gem_conversion_costs() const { return gem_conversion_costs_; }
@@ -678,6 +695,17 @@ private:
 
 
 
+    std::vector<RewardPackageMeta> reward_packages_;
+
+    std::vector<RewardPackageEntry> reward_package_entries_;
+
+    std::unordered_map<uint32_t, size_t> reward_packages_by_id_;
+
+    std::unordered_map<uint32_t, std::vector<RewardPackageEntry>> reward_package_entries_by_package_;
+
+    std::unordered_map<uint64_t, size_t> reward_package_entries_by_key_;
+
+
     // 보석 시스템 메타데이터
 
     std::vector<GemTypeMeta> gem_types_;
@@ -687,8 +715,6 @@ private:
     std::vector<GemDefinition> gem_definitions_;
 
     GemGachaMeta gem_gacha_;
-    std::vector<GemSelectGroup> gem_select_groups_;
-    std::vector<GemSelectOption> gem_select_options_;
 
     std::vector<GemSynthesisRule> gem_synthesis_rules_;
 
@@ -711,8 +737,6 @@ private:
     std::unordered_map<uint32_t, GemGradeMeta> gem_grades_by_id_;
 
     std::unordered_map<uint32_t, GemDefinition> gem_definitions_by_id_;
-    std::unordered_map<uint32_t, size_t> gem_select_groups_by_id_;
-    std::unordered_map<uint32_t, std::vector<GemSelectOption>> gem_select_options_by_group_;
 
     std::unordered_map<uint32_t, size_t> achievements_by_id_;
 

@@ -1,0 +1,35 @@
+[
+  {
+    "package_id": 10001,
+    "entry_id": 1,
+    "reward_type": "gold",
+    "amount": 1000
+  },
+  {
+    "package_id": 10002,
+    "entry_id": 1,
+    "reward_type": "crystal",
+    "amount": 30
+  },
+  {
+    "package_id": 11002,
+    "entry_id": 1,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 200
+  },
+  {
+    "package_id": 11002,
+    "entry_id": 2,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 201
+  },
+  {
+    "package_id": 11002,
+    "entry_id": 3,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 202
+  }
+]

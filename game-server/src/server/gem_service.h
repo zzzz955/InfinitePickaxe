@@ -16,6 +16,8 @@ public:
 
     // 가챠 (1회 또는 11회)
     infinitepickaxe::GemGachaResult handle_gacha_pull(const std::string& user_id, uint32_t pull_count);
+    GachaResult handle_gacha_pull_free(const std::string& user_id, uint32_t pull_count);
+    GachaResult grant_gems(const std::string& user_id, const std::vector<uint32_t>& gem_ids);
 
     // 합성 (3개 → 1개, 확률)
     infinitepickaxe::GemSynthesisResult handle_synthesis(const std::string& user_id,
@@ -53,6 +55,9 @@ public:
     // 인벤토리 확장
     infinitepickaxe::GemInventoryExpandResult handle_inventory_expand(const std::string& user_id);
 
+    // GemInstanceData -> GemInfo protobuf ??
+    void populate_gem_info(const GemInstanceData& gem, infinitepickaxe::GemInfo* gem_info);
+
 private:
     GemRepository& gem_repo_;
     SlotRepository& slot_repo_;
@@ -61,8 +66,6 @@ private:
     // 가중치 랜덤 선택 (gacha용)
     uint32_t select_random_gem_by_grade_rate(const std::vector<GemGradeRate>& grade_rates);
 
-    // GemInstanceData → GemInfo protobuf 변환
-    void populate_gem_info(const GemInstanceData& gem, infinitepickaxe::GemInfo* gem_info);
 
     // 보석 장착/해제 시 곡괭이 스탯 보너스 계산
     PickaxeSlot calculate_pickaxe_stats_with_gems(const std::string& pickaxe_slot_id);

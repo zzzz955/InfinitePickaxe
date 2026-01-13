@@ -99,6 +99,33 @@ infinitepickaxe::GemGachaResult GemService::handle_gacha_pull(const std::string&
     return result;
 }
 
+GachaResult GemService::handle_gacha_pull_free(const std::string& user_id, uint32_t pull_count) {
+    GachaResult result;
+    if (pull_count == 0) {
+        return result;
+    }
+
+    const auto& gacha_meta = meta_.gem_gacha();
+    std::vector<uint32_t> selected_gem_ids;
+    selected_gem_ids.reserve(pull_count);
+    for (uint32_t i = 0; i < pull_count; ++i) {
+        uint32_t gem_id = select_random_gem_by_grade_rate(gacha_meta.grade_rates);
+        selected_gem_ids.push_back(gem_id);
+    }
+
+    return gem_repo_.gacha_pull(user_id, 0, selected_gem_ids);
+}
+
+GachaResult GemService::grant_gems(const std::string& user_id, const std::vector<uint32_t>& gem_ids) {
+    GachaResult result;
+    if (gem_ids.empty()) {
+        result.success = true;
+        return result;
+    }
+
+    return gem_repo_.gacha_pull(user_id, 0, gem_ids);
+}
+
 infinitepickaxe::GemSynthesisResult GemService::handle_synthesis(const std::string& user_id,
                                                                   const std::vector<std::string>& gem_instance_ids) {
     infinitepickaxe::GemSynthesisResult result;
