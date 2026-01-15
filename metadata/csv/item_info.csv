@@ -1,5 +1,17 @@
 ﻿item_id,item_type,sprite_key,rarity_id,display_name,stackable,max_stack,use_action_type,use_action_ref_id
-10001,consumable,gold_bundle_t1,1,골드 꾸러미,true,99,ADD_CURRENCY,1
-10002,consumable,crystal_bundle_t1,2,크리스탈 꾸러미,true,99,ADD_CURRENCY,2
-11001,loot_box,gem_summon_box_t1,2,보석 소환 상자(T1),true,99,GEM_GACHA,1
-11002,loot_box,gem_select_box_t1,2,희귀 보석 선택 상자,true,99,GEM_SELECT,1
+1001,consumable,gold_bundle_t1,1,골드 뭉치,TRUE,9999,ADD_CURRENCY,1
+1002,consumable,gold_bundle_t2,1,작은 골드 꾸러미,TRUE,9999,ADD_CURRENCY,1
+1003,consumable,gold_bundle_t3,1,큰 골드 꾸러미,TRUE,9999,ADD_CURRENCY,1
+1004,consumable,gold_bundle_t4,1,골드 상자(소),TRUE,9999,ADD_CURRENCY,1
+1005,consumable,gold_bundle_t4,1,골드 상자(중),TRUE,9999,ADD_CURRENCY,1
+1006,consumable,gold_bundle_t4,1,골드 상자(대),TRUE,9999,ADD_CURRENCY,1
+1101,consumable,crystal_bundle_t1,1,크리스탈 뭉치,TRUE,9999,ADD_CURRENCY,2
+1102,consumable,crystal_bundle_t2,1,작은 크리스탈 꾸러미,TRUE,9999,ADD_CURRENCY,2
+1103,consumable,crystal_bundle_t3,1,큰 크리스탈 꾸러미,TRUE,9999,ADD_CURRENCY,2
+1104,consumable,crystal_bundle_t4,1,크리스탈 상자(소),TRUE,9999,ADD_CURRENCY,2
+1105,consumable,crystal_bundle_t4,1,크리스탈 상자(중),TRUE,9999,ADD_CURRENCY,2
+1106,consumable,crystal_bundle_t4,1,크리스탈 상자(대),TRUE,9999,ADD_CURRENCY,2
+100001,loot_box,gem_summon_box_t1,1,보석 소환 상자(T1),TRUE,9999,GEM_GACHA,1
+100001,loot_box,gem_summon_box_t2,2,보석 소환 상자(T2),TRUE,9999,GEM_GACHA,1
+100001,loot_box,gem_summon_box_t3,3,보석 소환 상자(T3),TRUE,9999,GEM_GACHA,1
+101001,loot_box,gem_select_box_t1,3,희귀 보석 선택 상자,TRUE,9999,GEM_SELECT,1
