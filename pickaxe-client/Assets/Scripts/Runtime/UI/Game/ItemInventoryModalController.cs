@@ -18,6 +18,14 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button expandButton;
         [SerializeField] private TextMeshProUGUI capacityText;
 
+        [Header("Expand Confirm Modal")]
+        [SerializeField] private GameObject expandConfirmModal;
+        [SerializeField] private Button expandBackgroundButton;
+        [SerializeField] private TextMeshProUGUI expandCostText;
+        [SerializeField] private TextMeshProUGUI expandCurrentCrystalText;
+        [SerializeField] private Button expandConfirmButton;
+        [SerializeField] private Button expandCancelButton;
+
         [Header("Grid")]
         [SerializeField] private RectTransform gridContent;
         [SerializeField] private ItemSlotView itemSlotPrefab;
@@ -77,6 +85,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         public void Hide()
         {
+            CloseExpandConfirmModal();
             gameObject.SetActive(false);
         }
 
@@ -112,6 +121,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 messageHandler.OnItemInventoryResponse += HandleItemInventoryResponse;
                 messageHandler.OnItemInventoryExpandResult += HandleItemInventoryExpandResult;
                 messageHandler.OnUseItemResult += HandleUseItemResult;
+                messageHandler.OnErrorNotification += HandleErrorNotification;
             }
 
             subscribed = true;
@@ -131,6 +141,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 messageHandler.OnItemInventoryResponse -= HandleItemInventoryResponse;
                 messageHandler.OnItemInventoryExpandResult -= HandleItemInventoryExpandResult;
                 messageHandler.OnUseItemResult -= HandleUseItemResult;
+                messageHandler.OnErrorNotification -= HandleErrorNotification;
             }
 
             subscribed = false;
@@ -157,6 +168,19 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             useRequestInFlight = false;
             RefreshList();
+        }
+
+        private void HandleErrorNotification(ErrorNotification error)
+        {
+            if (error == null) return;
+
+            if (!listRequestInFlight && !expandRequestInFlight && !useRequestInFlight) return;
+
+            listRequestInFlight = false;
+            expandRequestInFlight = false;
+            useRequestInFlight = false;
+            RefreshList();
+            UpdateUseButtonState();
         }
 
         private void RequestInventory()
@@ -715,7 +739,25 @@ namespace InfinitePickaxe.Client.UI.Game
             if (expandButton != null)
             {
                 expandButton.onClick.RemoveAllListeners();
-                expandButton.onClick.AddListener(RequestExpand);
+                expandButton.onClick.AddListener(OpenExpandConfirmModal);
+            }
+
+            if (expandBackgroundButton != null)
+            {
+                expandBackgroundButton.onClick.RemoveAllListeners();
+                expandBackgroundButton.onClick.AddListener(CloseExpandConfirmModal);
+            }
+
+            if (expandCancelButton != null)
+            {
+                expandCancelButton.onClick.RemoveAllListeners();
+                expandCancelButton.onClick.AddListener(CloseExpandConfirmModal);
+            }
+
+            if (expandConfirmButton != null)
+            {
+                expandConfirmButton.onClick.RemoveAllListeners();
+                expandConfirmButton.onClick.AddListener(OnConfirmExpand);
             }
 
             if (minButton != null)
@@ -791,6 +833,63 @@ namespace InfinitePickaxe.Client.UI.Game
 
             SetCountInput(parsed);
             UpdateUseButtonState();
+        }
+
+        private void OpenExpandConfirmModal()
+        {
+            if (expandConfirmModal == null) return;
+            EnsureMeta();
+
+            uint currentCrystal = UserResourceCache.Instance.Crystal ?? 0;
+            uint expandCost = itemMetaResolver != null ? itemMetaResolver.InventoryConfig.ExpandCost : 0;
+            uint capacity = itemCache != null ? itemCache.Capacity : 0;
+            if (capacity == 0 && itemMetaResolver != null)
+            {
+                capacity = itemMetaResolver.InventoryConfig.BaseCapacity;
+            }
+
+            if (expandCostText != null)
+            {
+                expandCostText.text = expandCost > 0
+                    ? $"필요 크리스탈: {expandCost}"
+                    : "필요 크리스탈: -";
+            }
+
+            if (expandCurrentCrystalText != null)
+            {
+                expandCurrentCrystalText.text = $"보유: {currentCrystal}";
+            }
+
+            if (expandConfirmButton != null)
+            {
+                expandConfirmButton.interactable = expandCost > 0
+                                                   && currentCrystal >= expandCost
+                                                   && IsInventoryExpandable(capacity)
+                                                   && !expandRequestInFlight;
+            }
+
+            expandConfirmModal.SetActive(true);
+            expandConfirmModal.transform.SetAsLastSibling();
+        }
+
+        private void CloseExpandConfirmModal()
+        {
+            if (expandConfirmModal != null)
+            {
+                expandConfirmModal.SetActive(false);
+            }
+        }
+
+        private void OnConfirmExpand()
+        {
+            RequestExpand();
+            CloseExpandConfirmModal();
+        }
+
+        private bool IsInventoryExpandable(uint capacity)
+        {
+            uint maxCapacity = itemMetaResolver != null ? itemMetaResolver.InventoryConfig.MaxCapacity : 0;
+            return maxCapacity == 0 || capacity < maxCapacity;
         }
 
         private void EnsureMeta()
