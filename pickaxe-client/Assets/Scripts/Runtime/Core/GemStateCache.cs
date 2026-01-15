@@ -321,6 +321,24 @@ namespace InfinitePickaxe.Client.Core
             RaiseChanged();
         }
 
+        public void AddGems(IEnumerable<GemInfo> gems)
+        {
+            if (gems == null) return;
+
+            bool changed = false;
+            foreach (var gem in gems)
+            {
+                if (gem == null || string.IsNullOrWhiteSpace(gem.GemInstanceId)) continue;
+                gemsByInstanceId[gem.GemInstanceId] = gem;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                RaiseChanged();
+            }
+        }
+
         private void RaiseChanged() => OnInventoryChanged?.Invoke();
     }
 }

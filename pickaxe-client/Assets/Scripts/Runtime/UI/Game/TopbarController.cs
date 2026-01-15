@@ -31,6 +31,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button menuBackgroundButton;
         [SerializeField] private Button menuSettingsButton;
         [SerializeField] private Button menuMailButton;
+        [SerializeField] private Button menuInventoryButton;
         [SerializeField] private Button menuLogoutButton;
         [SerializeField] private Button menuExitButton;
         [SerializeField] private RectTransform menuPanel;
@@ -41,6 +42,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button settingsCloseButton;
         [SerializeField] private Button settingsBackgroundButton;
         [SerializeField] private GameObject mailboxModal;
+        [SerializeField] private GameObject itemInventoryModal;
         [SerializeField] private GameObject logoutConfirmModal;
         [SerializeField] private Button logoutConfirmButton;
         [SerializeField] private Button logoutCancelButton;
@@ -270,6 +272,12 @@ namespace InfinitePickaxe.Client.UI.Game
             {
                 menuMailButton.onClick.RemoveAllListeners();
                 menuMailButton.onClick.AddListener(OpenMailboxModal);
+            }
+
+            if (menuInventoryButton != null)
+            {
+                menuInventoryButton.onClick.RemoveAllListeners();
+                menuInventoryButton.onClick.AddListener(OpenItemInventoryModal);
             }
 
             if (menuLogoutButton != null)
@@ -510,6 +518,22 @@ namespace InfinitePickaxe.Client.UI.Game
             mailboxModal.transform.SetAsLastSibling();
 
             var controller = mailboxModal.GetComponentInChildren<MailboxModalController>(true);
+            controller?.Show();
+        }
+
+        private void OpenItemInventoryModal()
+        {
+            CloseMenu();
+
+            if (itemInventoryModal == null)
+            {
+                return;
+            }
+
+            itemInventoryModal.SetActive(true);
+            itemInventoryModal.transform.SetAsLastSibling();
+
+            var controller = itemInventoryModal.GetComponentInChildren<ItemInventoryModalController>(true);
             controller?.Show();
         }
 

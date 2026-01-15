@@ -127,6 +127,9 @@ namespace InfinitePickaxe.Client.Net
         public event Action<MailDetailResponse> OnMailDetailResponse;
         public event Action<MailClaimResult> OnMailClaimResult;
         public event Action<MailClaimAllResult> OnMailClaimAllResult;
+        public event Action<ItemInventoryResponse> OnItemInventoryResponse;
+        public event Action<ItemInventoryExpandResult> OnItemInventoryExpandResult;
+        public event Action<UseItemResult> OnUseItemResult;
 
         public event Action<InfiniteMineStateResponse> OnInfiniteMineStateResponse;
         public event Action<InfiniteMineChallengeStartResult> OnInfiniteMineChallengeStartResult;
@@ -358,6 +361,15 @@ namespace InfinitePickaxe.Client.Net
                         break;
                     case MessageType.MailClaimAllResult:
                         HandleMailClaimAllResult(envelope.MailClaimAllResult);
+                        break;
+                    case MessageType.ItemInventoryResponse:
+                        HandleItemInventoryResponse(envelope.ItemInventoryResponse);
+                        break;
+                    case MessageType.ItemInventoryExpandResult:
+                        HandleItemInventoryExpandResult(envelope.ItemInventoryExpandResult);
+                        break;
+                    case MessageType.UseItemResult:
+                        HandleUseItemResult(envelope.UseItemResult);
                         break;
                     case MessageType.InfiniteMineStateResponse:
                         HandleInfiniteMineStateResponse(envelope.InfiniteMineStateResponse);
@@ -1129,6 +1141,103 @@ namespace InfinitePickaxe.Client.Net
             OnMailClaimAllResult?.Invoke(result);
         }
 
+        private void HandleItemInventoryResponse(ItemInventoryResponse response)
+        {
+            if (response == null) return;
+            ItemStateCache.Instance.UpdateFromResponse(response);
+            OnItemInventoryResponse?.Invoke(response);
+        }
+
+        private void HandleItemInventoryExpandResult(ItemInventoryExpandResult result)
+        {
+            if (result == null) return;
+            if (result.Success)
+            {
+                ItemStateCache.Instance.ApplyInventoryExpandResult(result);
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = null,
+                    Crystal = result.RemainingCrystal,
+                    Reason = "item_inventory_expand"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+            }
+            else
+            {
+                Debug.LogWarning($"아이템 인벤토리 확장 실패: {result.ErrorCode}");
+            }
+            OnItemInventoryExpandResult?.Invoke(result);
+        }
+
+        private void HandleUseItemResult(UseItemResult result)
+        {
+            if (result == null) return;
+            if (result.Success)
+            {
+                ApplyUseItemRewards(result);
+                ItemStateCache.Instance.ApplyUseItemResult(result);
+            }
+            else
+            {
+                Debug.LogWarning($"아이템 사용 실패: {result.ErrorCode}");
+            }
+            OnUseItemResult?.Invoke(result);
+        }
+
+        private void ApplyUseItemRewards(UseItemResult result)
+        {
+            if (result == null) return;
+
+            ulong goldDelta = 0;
+            ulong crystalDelta = 0;
+
+            foreach (var reward in result.Rewards)
+            {
+                if (reward == null) continue;
+                switch (reward.RewardType)
+                {
+                    case RewardType.Gold:
+                        goldDelta += reward.Amount;
+                        break;
+                    case RewardType.Crystal:
+                        crystalDelta += reward.Amount;
+                        break;
+                }
+            }
+
+            ulong? newGold = null;
+            uint? newCrystal = null;
+
+            if (goldDelta > 0 && lastGold.HasValue)
+            {
+                newGold = lastGold.Value + goldDelta;
+            }
+
+            if (crystalDelta > 0 && lastCrystal.HasValue)
+            {
+                ulong sum = lastCrystal.Value + crystalDelta;
+                newCrystal = sum > uint.MaxValue ? uint.MaxValue : (uint)sum;
+            }
+
+            if (newGold.HasValue || newCrystal.HasValue)
+            {
+                var currencyUpdate = new CurrencyUpdate
+                {
+                    Gold = newGold,
+                    Crystal = newCrystal,
+                    Reason = "use_item"
+                };
+                CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+                OnCurrencyUpdate?.Invoke(currencyUpdate);
+            }
+
+            if (result.Gems != null && result.Gems.Count > 0)
+            {
+                GemStateCache.Instance.AddGems(result.Gems);
+            }
+        }
+
         private void HandleInfiniteMineStateResponse(InfiniteMineStateResponse response)
         {
             if (response == null) return;
@@ -1680,6 +1789,46 @@ namespace InfinitePickaxe.Client.Net
             {
                 Type = MessageType.MailClaimAllRequest,
                 MailClaimAllRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestItemInventory()
+        {
+            var request = new ItemInventoryRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.ItemInventoryRequest,
+                ItemInventoryRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestItemInventoryExpand()
+        {
+            var request = new ItemInventoryExpandRequest();
+            var envelope = new Envelope
+            {
+                Type = MessageType.ItemInventoryExpandRequest,
+                ItemInventoryExpandRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestUseItem(uint itemId, uint count, string clientRequestId, uint choiceRewardEntryId = 0)
+        {
+            if (itemId == 0 || count == 0) return;
+            var request = new UseItemRequest
+            {
+                ItemId = itemId,
+                Count = count,
+                ClientRequestId = clientRequestId ?? string.Empty,
+                ChoiceRewardEntryId = choiceRewardEntryId
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.UseItemRequest,
+                UseItemRequest = request
             };
             NetworkManager.Instance.SendMessage(envelope);
         }
