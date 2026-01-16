@@ -5757,47 +5757,219 @@
   ],
   "item_info": [
     {
-      "item_id": 10001,
+      "item_id": 1001,
       "item_type": "consumable",
       "sprite_key": "gold_bundle_t1",
       "rarity_id": 1,
-      "display_name": "골드 꾸러미",
+      "display_name": "골드 뭉치",
       "stackable": true,
-      "max_stack": 99,
+      "max_stack": 9999,
       "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 100골드를 획득합니다.",
       "use_action_ref_id": 1
     },
     {
-      "item_id": 10002,
+      "item_id": 1002,
+      "item_type": "consumable",
+      "sprite_key": "gold_bundle_t2",
+      "rarity_id": 1,
+      "display_name": "작은 골드 꾸러미",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 1,000골드를 획득합니다.",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 1003,
+      "item_type": "consumable",
+      "sprite_key": "gold_bundle_t3",
+      "rarity_id": 1,
+      "display_name": "큰 골드 꾸러미",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 10,000골드를 획득합니다.",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 1004,
+      "item_type": "consumable",
+      "sprite_key": "gold_bundle_t4",
+      "rarity_id": 1,
+      "display_name": "골드 상자(소)",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 100,000골드를 획득합니다.",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 1005,
+      "item_type": "consumable",
+      "sprite_key": "gold_bundle_t4",
+      "rarity_id": 2,
+      "display_name": "골드 상자(중)",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 1,000,000골드를 획득합니다.",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 1006,
+      "item_type": "consumable",
+      "sprite_key": "gold_bundle_t4",
+      "rarity_id": 3,
+      "display_name": "골드 상자(대)",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 10,000,000골드를 획득합니다.",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 1101,
       "item_type": "consumable",
       "sprite_key": "crystal_bundle_t1",
-      "rarity_id": 2,
-      "display_name": "크리스탈 꾸러미",
+      "rarity_id": 1,
+      "display_name": "크리스탈 뭉치",
       "stackable": true,
-      "max_stack": 99,
+      "max_stack": 9999,
       "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 10크리스탈을 획득합니다.",
       "use_action_ref_id": 2
     },
     {
-      "item_id": 11001,
+      "item_id": 1102,
+      "item_type": "consumable",
+      "sprite_key": "crystal_bundle_t2",
+      "rarity_id": 1,
+      "display_name": "작은 크리스탈 꾸러미",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 50크리스탈을 획득합니다.",
+      "use_action_ref_id": 2
+    },
+    {
+      "item_id": 1103,
+      "item_type": "consumable",
+      "sprite_key": "crystal_bundle_t3",
+      "rarity_id": 1,
+      "display_name": "큰 크리스탈 꾸러미",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 100크리스탈을 획득합니다.",
+      "use_action_ref_id": 2
+    },
+    {
+      "item_id": 1104,
+      "item_type": "consumable",
+      "sprite_key": "crystal_bundle_t4",
+      "rarity_id": 1,
+      "display_name": "크리스탈 상자(소)",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 500크리스탈을 획득합니다.",
+      "use_action_ref_id": 2
+    },
+    {
+      "item_id": 1105,
+      "item_type": "consumable",
+      "sprite_key": "crystal_bundle_t4",
+      "rarity_id": 2,
+      "display_name": "크리스탈 상자(중)",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 1000크리스탈을 획득합니다.",
+      "use_action_ref_id": 2
+    },
+    {
+      "item_id": 1106,
+      "item_type": "consumable",
+      "sprite_key": "crystal_bundle_t4",
+      "rarity_id": 3,
+      "display_name": "크리스탈 상자(대)",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "ADD_CURRENCY",
+      "description": "사용 시 5000크리스탈을 획득합니다.",
+      "use_action_ref_id": 2
+    },
+    {
+      "item_id": 100001,
       "item_type": "loot_box",
       "sprite_key": "gem_summon_box_t1",
-      "rarity_id": 2,
+      "rarity_id": 1,
       "display_name": "보석 소환 상자(T1)",
       "stackable": true,
-      "max_stack": 99,
+      "max_stack": 9999,
       "use_action_type": "GEM_GACHA",
+      "description": "사용 시 랜덤한 타입의 1~5티어 보석을 확률적으로 획득합니다.",
       "use_action_ref_id": 1
     },
     {
-      "item_id": 11002,
+      "item_id": 100002,
+      "item_type": "loot_box",
+      "sprite_key": "gem_summon_box_t2",
+      "rarity_id": 2,
+      "display_name": "보석 소환 상자(T2)",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "GEM_GACHA",
+      "description": "사용 시 랜덤한 타입의 2~5티어 보석을 확률적으로 획득합니다.",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 100003,
+      "item_type": "loot_box",
+      "sprite_key": "gem_summon_box_t3",
+      "rarity_id": 3,
+      "display_name": "보석 소환 상자(T3)",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "GEM_GACHA",
+      "description": "사용 시 랜덤한 타입의 3~5티어 보석을 확률적으로 획득합니다.",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 101001,
       "item_type": "loot_box",
       "sprite_key": "gem_select_box_t1",
       "rarity_id": 2,
+      "display_name": "고급 보석 선택 상자",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "GEM_SELECT",
+      "description": "사용 시 선택한 타입의 2티어 보석을 획득합니다.",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 101002,
+      "item_type": "loot_box",
+      "sprite_key": "gem_select_box_t2",
+      "rarity_id": 3,
       "display_name": "희귀 보석 선택 상자",
       "stackable": true,
-      "max_stack": 99,
+      "max_stack": 9999,
       "use_action_type": "GEM_SELECT",
+      "description": "사용 시 선택한 타입의 3티어 보석을 획득합니다.",
+      "use_action_ref_id": 1
+    },
+    {
+      "item_id": 101003,
+      "item_type": "loot_box",
+      "sprite_key": "gem_select_box_t3",
+      "rarity_id": 4,
+      "display_name": "영웅 보석 선택 상자",
+      "stackable": true,
+      "max_stack": 9999,
+      "use_action_type": "GEM_SELECT",
+      "description": "사용 시 선택한 타입의 4티어 보석을 획득합니다.",
       "use_action_ref_id": 1
     }
   ],
@@ -5809,57 +5981,573 @@
   },
   "reward_packages": [
     {
-      "package_id": 10001,
+      "package_id": 1001,
       "mode": "FIXED",
       "roll_count": 1,
-      "description": "?? ???"
+      "description": "사용 시 100골드를 획득합니다."
     },
     {
-      "package_id": 10002,
+      "package_id": 1002,
       "mode": "FIXED",
       "roll_count": 1,
-      "description": "???? ???"
+      "description": "사용 시 1,000골드를 획득합니다."
     },
     {
-      "package_id": 11002,
+      "package_id": 1003,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용 시 10,000골드를 획득합니다."
+    },
+    {
+      "package_id": 1004,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용 시 100,000골드를 획득합니다."
+    },
+    {
+      "package_id": 1005,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용 시 1,000,000골드를 획득합니다."
+    },
+    {
+      "package_id": 1006,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용 시 10,000,000골드를 획득합니다."
+    },
+    {
+      "package_id": 1101,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용시 10크리스탈을 획득합니다."
+    },
+    {
+      "package_id": 1102,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용시 50크리스탈을 획득합니다."
+    },
+    {
+      "package_id": 1103,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용시 100크리스탈을 획득합니다."
+    },
+    {
+      "package_id": 1104,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용시 500크리스탈을 획득합니다."
+    },
+    {
+      "package_id": 1105,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용시 1,000크리스탈을 획득합니다."
+    },
+    {
+      "package_id": 1106,
+      "mode": "FIXED",
+      "roll_count": 1,
+      "description": "사용시 5,000크리스탈을 획득합니다."
+    },
+    {
+      "package_id": 100001,
+      "mode": "RANDOM",
+      "roll_count": 1,
+      "description": "1~5티어 보석 랜덤 소환"
+    },
+    {
+      "package_id": 100002,
+      "mode": "RANDOM",
+      "roll_count": 1,
+      "description": "2~5티어 보석 랜덤 소환"
+    },
+    {
+      "package_id": 100003,
+      "mode": "RANDOM",
+      "roll_count": 1,
+      "description": "3~5티어 보석 랜덤 소환"
+    },
+    {
+      "package_id": 101001,
       "mode": "SELECT",
       "roll_count": 1,
-      "description": "?? ?? ?? ??"
+      "description": "2티어 보석 선택"
+    },
+    {
+      "package_id": 101002,
+      "mode": "SELECT",
+      "roll_count": 1,
+      "description": "3티어 보석 선택"
+    },
+    {
+      "package_id": 101003,
+      "mode": "SELECT",
+      "roll_count": 1,
+      "description": "4티어 보석 선택"
     }
   ],
   "reward_package_entries": [
     {
-      "package_id": 10001,
+      "package_id": 1001,
+      "entry_id": 1,
+      "reward_type": "gold",
+      "amount": 100
+    },
+    {
+      "package_id": 1002,
       "entry_id": 1,
       "reward_type": "gold",
       "amount": 1000
     },
     {
-      "package_id": 10002,
+      "package_id": 1003,
       "entry_id": 1,
-      "reward_type": "crystal",
-      "amount": 30
+      "reward_type": "gold",
+      "amount": 10000
     },
     {
-      "package_id": 11002,
+      "package_id": 1004,
+      "entry_id": 1,
+      "reward_type": "gold",
+      "amount": 100000
+    },
+    {
+      "package_id": 1005,
+      "entry_id": 1,
+      "reward_type": "gold",
+      "amount": 1000000
+    },
+    {
+      "package_id": 1006,
+      "entry_id": 1,
+      "reward_type": "gold",
+      "amount": 10000000
+    },
+    {
+      "package_id": 1101,
+      "entry_id": 1,
+      "reward_type": "crystal",
+      "amount": 10
+    },
+    {
+      "package_id": 1102,
+      "entry_id": 1,
+      "reward_type": "crystal",
+      "amount": 50
+    },
+    {
+      "package_id": 1103,
+      "entry_id": 1,
+      "reward_type": "crystal",
+      "amount": 100
+    },
+    {
+      "package_id": 1104,
+      "entry_id": 1,
+      "reward_type": "crystal",
+      "amount": 500
+    },
+    {
+      "package_id": 1105,
+      "entry_id": 1,
+      "reward_type": "crystal",
+      "amount": 1000
+    },
+    {
+      "package_id": 1106,
+      "entry_id": 1,
+      "reward_type": "crystal",
+      "amount": 5000
+    },
+    {
+      "package_id": 100001,
       "entry_id": 1,
       "reward_type": "gem",
       "amount": 1,
-      "reward_ref_id": 200
+      "reward_ref_id": 1,
+      "weight": 7600,
+      "group_id": 100001
     },
     {
-      "package_id": 11002,
+      "package_id": 100001,
       "entry_id": 2,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 2,
+      "weight": 7600,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 3,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 3,
+      "weight": 7600,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 4,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 101,
+      "weight": 2000,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 5,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 102,
+      "weight": 2000,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 6,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 103,
+      "weight": 2000,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 7,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 201,
+      "weight": 345,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 8,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 202,
+      "weight": 345,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 9,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 203,
+      "weight": 345,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 10,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 301,
+      "weight": 50,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 11,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 302,
+      "weight": 50,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 12,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 303,
+      "weight": 50,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 13,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 401,
+      "weight": 5,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 14,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 402,
+      "weight": 5,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100001,
+      "entry_id": 15,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 403,
+      "weight": 5,
+      "group_id": 100001
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 1,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 101,
+      "weight": 7600,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 2,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 102,
+      "weight": 7600,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 3,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 103,
+      "weight": 7600,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 4,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 201,
+      "weight": 2000,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 5,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 202,
+      "weight": 2000,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 6,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 203,
+      "weight": 2000,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 7,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 301,
+      "weight": 345,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 8,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 302,
+      "weight": 345,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 9,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 303,
+      "weight": 345,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 10,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 401,
+      "weight": 50,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 11,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 402,
+      "weight": 50,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100002,
+      "entry_id": 12,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 403,
+      "weight": 50,
+      "group_id": 100002
+    },
+    {
+      "package_id": 100003,
+      "entry_id": 1,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 201,
+      "weight": 7600,
+      "group_id": 100003
+    },
+    {
+      "package_id": 100003,
+      "entry_id": 2,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 202,
+      "weight": 7600,
+      "group_id": 100003
+    },
+    {
+      "package_id": 100003,
+      "entry_id": 3,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 203,
+      "weight": 7600,
+      "group_id": 100003
+    },
+    {
+      "package_id": 100003,
+      "entry_id": 4,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 301,
+      "weight": 2000,
+      "group_id": 100003
+    },
+    {
+      "package_id": 100003,
+      "entry_id": 5,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 302,
+      "weight": 2000,
+      "group_id": 100003
+    },
+    {
+      "package_id": 100003,
+      "entry_id": 6,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 303,
+      "weight": 2000,
+      "group_id": 100003
+    },
+    {
+      "package_id": 100003,
+      "entry_id": 7,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 401,
+      "weight": 345,
+      "group_id": 100003
+    },
+    {
+      "package_id": 100003,
+      "entry_id": 8,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 402,
+      "weight": 345,
+      "group_id": 100003
+    },
+    {
+      "package_id": 100003,
+      "entry_id": 9,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 403,
+      "weight": 345,
+      "group_id": 100003
+    },
+    {
+      "package_id": 101001,
+      "entry_id": 1,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 101
+    },
+    {
+      "package_id": 101001,
+      "entry_id": 2,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 102
+    },
+    {
+      "package_id": 101001,
+      "entry_id": 3,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 103
+    },
+    {
+      "package_id": 101002,
+      "entry_id": 1,
       "reward_type": "gem",
       "amount": 1,
       "reward_ref_id": 201
     },
     {
-      "package_id": 11002,
-      "entry_id": 3,
+      "package_id": 101002,
+      "entry_id": 2,
       "reward_type": "gem",
       "amount": 1,
       "reward_ref_id": 202
+    },
+    {
+      "package_id": 101002,
+      "entry_id": 3,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 203
+    },
+    {
+      "package_id": 101003,
+      "entry_id": 1,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 301
+    },
+    {
+      "package_id": 101003,
+      "entry_id": 2,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 302
+    },
+    {
+      "package_id": 101003,
+      "entry_id": 3,
+      "reward_type": "gem",
+      "amount": 1,
+      "reward_ref_id": 303
     }
   ],
   "weekly_ranking": {
@@ -7128,21 +7816,21 @@
   },
   "gem_types": [
     {
-      "id": 0,
+      "id": 1,
       "type": "ATTACK_SPEED",
       "display_name": "공격 속도",
       "description": "곡괭이의 공격 속도를 증가시킵니다",
       "stat_key": "attack_speed_bonus_percent"
     },
     {
-      "id": 1,
+      "id": 2,
       "type": "CRIT_RATE",
       "display_name": "크리티컬 확률",
       "description": "크리티컬 히트 발생 확률을 증가시킵니다",
       "stat_key": "crit_rate_bonus_percent"
     },
     {
-      "id": 2,
+      "id": 3,
       "type": "CRIT_DMG",
       "display_name": "크리티컬 데미지",
       "description": "크리티컬 히트 시 추가 데미지를 증가시킵니다",
@@ -7151,148 +7839,148 @@
   ],
   "gem_grades": [
     {
-      "id": 0,
+      "id": 1,
       "grade": "COMMON",
       "display_name": "일반"
     },
     {
-      "id": 1,
+      "id": 2,
       "grade": "RARE",
       "display_name": "고급"
     },
     {
-      "id": 2,
+      "id": 3,
       "grade": "EPIC",
       "display_name": "희귀"
     },
     {
-      "id": 3,
+      "id": 4,
       "grade": "HERO",
       "display_name": "영웅"
     },
     {
-      "id": 4,
+      "id": 5,
       "grade": "LEGENDARY",
       "display_name": "전설"
     }
   ],
   "gem_definitions": [
     {
-      "gem_id": 0,
-      "grade_id": 0,
-      "type_id": 0,
+      "gem_id": 1,
+      "grade_id": 1,
+      "type_id": 1,
       "name": "일반 공격 속도 보석",
       "icon": "gem_common_attack_speed",
       "stat_multiplier": 250
     },
     {
-      "gem_id": 1,
-      "grade_id": 0,
-      "type_id": 1,
+      "gem_id": 2,
+      "grade_id": 1,
+      "type_id": 2,
       "name": "일반 크리티컬 확률 보석",
       "icon": "gem_common_crit_rate",
       "stat_multiplier": 300
     },
     {
-      "gem_id": 2,
-      "grade_id": 0,
-      "type_id": 2,
+      "gem_id": 3,
+      "grade_id": 1,
+      "type_id": 3,
       "name": "일반 크리티컬 데미지 보석",
       "icon": "gem_common_crit_dmg",
       "stat_multiplier": 600
     },
     {
-      "gem_id": 100,
-      "grade_id": 1,
-      "type_id": 0,
+      "gem_id": 101,
+      "grade_id": 2,
+      "type_id": 1,
       "name": "고급 공격 속도 보석",
       "icon": "gem_rare_attack_speed",
       "stat_multiplier": 600
     },
     {
-      "gem_id": 101,
-      "grade_id": 1,
-      "type_id": 1,
+      "gem_id": 102,
+      "grade_id": 2,
+      "type_id": 2,
       "name": "고급 크리티컬 확률 보석",
       "icon": "gem_rare_crit_rate",
       "stat_multiplier": 800
     },
     {
-      "gem_id": 102,
-      "grade_id": 1,
-      "type_id": 2,
+      "gem_id": 103,
+      "grade_id": 2,
+      "type_id": 3,
       "name": "고급 크리티컬 데미지 보석",
       "icon": "gem_rare_crit_dmg",
       "stat_multiplier": 1500
     },
     {
-      "gem_id": 200,
-      "grade_id": 2,
-      "type_id": 0,
+      "gem_id": 201,
+      "grade_id": 3,
+      "type_id": 1,
       "name": "희귀 공격 속도 보석",
       "icon": "gem_epic_attack_speed",
       "stat_multiplier": 1500
     },
     {
-      "gem_id": 201,
-      "grade_id": 2,
-      "type_id": 1,
+      "gem_id": 202,
+      "grade_id": 3,
+      "type_id": 2,
       "name": "희귀 크리티컬 확률 보석",
       "icon": "gem_epic_crit_rate",
       "stat_multiplier": 2000
     },
     {
-      "gem_id": 202,
-      "grade_id": 2,
-      "type_id": 2,
+      "gem_id": 203,
+      "grade_id": 3,
+      "type_id": 3,
       "name": "희귀 크리티컬 데미지 보석",
       "icon": "gem_epic_crit_dmg",
       "stat_multiplier": 3750
     },
     {
-      "gem_id": 300,
-      "grade_id": 3,
-      "type_id": 0,
+      "gem_id": 301,
+      "grade_id": 4,
+      "type_id": 1,
       "name": "영웅 공격 속도 보석",
       "icon": "gem_hero_attack_speed",
       "stat_multiplier": 4000
     },
     {
-      "gem_id": 301,
-      "grade_id": 3,
-      "type_id": 1,
+      "gem_id": 302,
+      "grade_id": 4,
+      "type_id": 2,
       "name": "영웅 크리티컬 확률 보석",
       "icon": "gem_hero_crit_rate",
       "stat_multiplier": 4500
     },
     {
-      "gem_id": 302,
-      "grade_id": 3,
-      "type_id": 2,
+      "gem_id": 303,
+      "grade_id": 4,
+      "type_id": 3,
       "name": "영웅 크리티컬 데미지 보석",
       "icon": "gem_hero_crit_dmg",
       "stat_multiplier": 10000
     },
     {
-      "gem_id": 400,
-      "grade_id": 4,
-      "type_id": 0,
+      "gem_id": 401,
+      "grade_id": 5,
+      "type_id": 1,
       "name": "전설 공격 속도 보석",
       "icon": "gem_legendary_attack_speed",
       "stat_multiplier": 10000
     },
     {
-      "gem_id": 401,
-      "grade_id": 4,
-      "type_id": 1,
+      "gem_id": 402,
+      "grade_id": 5,
+      "type_id": 2,
       "name": "전설 크리티컬 확률 보석",
       "icon": "gem_legendary_crit_rate",
       "stat_multiplier": 9000
     },
     {
-      "gem_id": 402,
-      "grade_id": 4,
-      "type_id": 2,
+      "gem_id": 403,
+      "grade_id": 5,
+      "type_id": 3,
       "name": "전설 크리티컬 데미지 보석",
       "icon": "gem_legendary_crit_dmg",
       "stat_multiplier": 25000
@@ -7304,73 +7992,73 @@
     "multi_pull_count": 11,
     "grade_rates": [
       {
-        "grade_id": 0,
+        "grade_id": 1,
         "rate_percent": 7600
       },
       {
-        "grade_id": 1,
+        "grade_id": 2,
         "rate_percent": 2000
       },
       {
-        "grade_id": 2,
+        "grade_id": 3,
         "rate_percent": 345
       },
       {
-        "grade_id": 3,
+        "grade_id": 4,
         "rate_percent": 50
       },
       {
-        "grade_id": 4,
+        "grade_id": 5,
         "rate_percent": 5
       }
     ]
   },
   "gem_conversion": [
     {
-      "grade_id": 0,
+      "grade_id": 1,
       "random_cost": 10,
       "fixed_cost": 30
     },
     {
-      "grade_id": 1,
+      "grade_id": 2,
       "random_cost": 20,
       "fixed_cost": 60
     },
     {
-      "grade_id": 2,
+      "grade_id": 3,
       "random_cost": 50,
       "fixed_cost": 150
     },
     {
-      "grade_id": 3,
+      "grade_id": 4,
       "random_cost": 200,
       "fixed_cost": 600
     },
     {
-      "grade_id": 4,
+      "grade_id": 5,
       "random_cost": 500,
       "fixed_cost": 1500
     }
   ],
   "gem_discard": [
     {
-      "grade_id": 0,
+      "grade_id": 1,
       "crystal_reward": 15
     },
     {
-      "grade_id": 1,
+      "grade_id": 2,
       "crystal_reward": 45
     },
     {
-      "grade_id": 2,
+      "grade_id": 3,
       "crystal_reward": 135
     },
     {
-      "grade_id": 3,
+      "grade_id": 4,
       "crystal_reward": 405
     },
     {
-      "grade_id": 4,
+      "grade_id": 5,
       "crystal_reward": 1215
     }
   ],

@@ -524,15 +524,12 @@ function buildItemInfo() {
       stackable: toBoolean(requireField(row.stackable, 'stackable', context), `${context} stackable`),
       max_stack: toNumber(requireField(row.max_stack, 'max_stack', context), `${context} max_stack`),
       use_action_type: requireField(row.use_action_type, 'use_action_type', context),
+      description: row.description !== undefined ? row.description : '',
     };
 
     const useActionRefId = toOptionalNumber(row.use_action_ref_id, `${context} use_action_ref_id`);
     if (useActionRefId !== null) {
       entry.use_action_ref_id = useActionRefId;
-    }
-
-    if (row.description !== undefined && row.description !== '') {
-      entry.description = row.description;
     }
 
     return entry;

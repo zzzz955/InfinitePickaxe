@@ -1,35 +1,461 @@
 [
   {
-    "package_id": 10001,
+    "package_id": 1001,
+    "entry_id": 1,
+    "reward_type": "gold",
+    "amount": 100
+  },
+  {
+    "package_id": 1002,
     "entry_id": 1,
     "reward_type": "gold",
     "amount": 1000
   },
   {
-    "package_id": 10002,
+    "package_id": 1003,
     "entry_id": 1,
-    "reward_type": "crystal",
-    "amount": 30
+    "reward_type": "gold",
+    "amount": 10000
   },
   {
-    "package_id": 11002,
+    "package_id": 1004,
+    "entry_id": 1,
+    "reward_type": "gold",
+    "amount": 100000
+  },
+  {
+    "package_id": 1005,
+    "entry_id": 1,
+    "reward_type": "gold",
+    "amount": 1000000
+  },
+  {
+    "package_id": 1006,
+    "entry_id": 1,
+    "reward_type": "gold",
+    "amount": 10000000
+  },
+  {
+    "package_id": 1101,
+    "entry_id": 1,
+    "reward_type": "crystal",
+    "amount": 10
+  },
+  {
+    "package_id": 1102,
+    "entry_id": 1,
+    "reward_type": "crystal",
+    "amount": 50
+  },
+  {
+    "package_id": 1103,
+    "entry_id": 1,
+    "reward_type": "crystal",
+    "amount": 100
+  },
+  {
+    "package_id": 1104,
+    "entry_id": 1,
+    "reward_type": "crystal",
+    "amount": 500
+  },
+  {
+    "package_id": 1105,
+    "entry_id": 1,
+    "reward_type": "crystal",
+    "amount": 1000
+  },
+  {
+    "package_id": 1106,
+    "entry_id": 1,
+    "reward_type": "crystal",
+    "amount": 5000
+  },
+  {
+    "package_id": 100001,
     "entry_id": 1,
     "reward_type": "gem",
     "amount": 1,
-    "reward_ref_id": 200
+    "reward_ref_id": 1,
+    "weight": 7600,
+    "group_id": 100001
   },
   {
-    "package_id": 11002,
+    "package_id": 100001,
     "entry_id": 2,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 2,
+    "weight": 7600,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 3,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 3,
+    "weight": 7600,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 4,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 101,
+    "weight": 2000,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 5,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 102,
+    "weight": 2000,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 6,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 103,
+    "weight": 2000,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 7,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 201,
+    "weight": 345,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 8,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 202,
+    "weight": 345,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 9,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 203,
+    "weight": 345,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 10,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 301,
+    "weight": 50,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 11,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 302,
+    "weight": 50,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 12,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 303,
+    "weight": 50,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 13,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 401,
+    "weight": 5,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 14,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 402,
+    "weight": 5,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100001,
+    "entry_id": 15,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 403,
+    "weight": 5,
+    "group_id": 100001
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 1,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 101,
+    "weight": 7600,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 2,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 102,
+    "weight": 7600,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 3,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 103,
+    "weight": 7600,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 4,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 201,
+    "weight": 2000,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 5,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 202,
+    "weight": 2000,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 6,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 203,
+    "weight": 2000,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 7,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 301,
+    "weight": 345,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 8,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 302,
+    "weight": 345,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 9,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 303,
+    "weight": 345,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 10,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 401,
+    "weight": 50,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 11,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 402,
+    "weight": 50,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100002,
+    "entry_id": 12,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 403,
+    "weight": 50,
+    "group_id": 100002
+  },
+  {
+    "package_id": 100003,
+    "entry_id": 1,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 201,
+    "weight": 7600,
+    "group_id": 100003
+  },
+  {
+    "package_id": 100003,
+    "entry_id": 2,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 202,
+    "weight": 7600,
+    "group_id": 100003
+  },
+  {
+    "package_id": 100003,
+    "entry_id": 3,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 203,
+    "weight": 7600,
+    "group_id": 100003
+  },
+  {
+    "package_id": 100003,
+    "entry_id": 4,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 301,
+    "weight": 2000,
+    "group_id": 100003
+  },
+  {
+    "package_id": 100003,
+    "entry_id": 5,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 302,
+    "weight": 2000,
+    "group_id": 100003
+  },
+  {
+    "package_id": 100003,
+    "entry_id": 6,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 303,
+    "weight": 2000,
+    "group_id": 100003
+  },
+  {
+    "package_id": 100003,
+    "entry_id": 7,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 401,
+    "weight": 345,
+    "group_id": 100003
+  },
+  {
+    "package_id": 100003,
+    "entry_id": 8,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 402,
+    "weight": 345,
+    "group_id": 100003
+  },
+  {
+    "package_id": 100003,
+    "entry_id": 9,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 403,
+    "weight": 345,
+    "group_id": 100003
+  },
+  {
+    "package_id": 101001,
+    "entry_id": 1,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 101
+  },
+  {
+    "package_id": 101001,
+    "entry_id": 2,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 102
+  },
+  {
+    "package_id": 101001,
+    "entry_id": 3,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 103
+  },
+  {
+    "package_id": 101002,
+    "entry_id": 1,
     "reward_type": "gem",
     "amount": 1,
     "reward_ref_id": 201
   },
   {
-    "package_id": 11002,
-    "entry_id": 3,
+    "package_id": 101002,
+    "entry_id": 2,
     "reward_type": "gem",
     "amount": 1,
     "reward_ref_id": 202
+  },
+  {
+    "package_id": 101002,
+    "entry_id": 3,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 203
+  },
+  {
+    "package_id": 101003,
+    "entry_id": 1,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 301
+  },
+  {
+    "package_id": 101003,
+    "entry_id": 2,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 302
+  },
+  {
+    "package_id": 101003,
+    "entry_id": 3,
+    "reward_type": "gem",
+    "amount": 1,
+    "reward_ref_id": 303
   }
 ]
