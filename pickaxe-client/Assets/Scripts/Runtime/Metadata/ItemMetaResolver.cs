@@ -75,7 +75,8 @@ namespace InfinitePickaxe.Client.Metadata
                     Stackable = TryGetBool(dict, out var stackable, "stackable") && stackable,
                     MaxStack = TryGetUInt(dict, out var maxStack, "max_stack") ? maxStack : 0,
                     UseActionType = TryGetString(dict, out var useActionType, "use_action_type") ? useActionType : string.Empty,
-                    UseActionRefId = TryGetUInt(dict, out var useActionRefId, "use_action_ref_id") ? useActionRefId : 0
+                    UseActionRefId = TryGetUInt(dict, out var useActionRefId, "use_action_ref_id") ? useActionRefId : 0,
+                    Description = TryGetString(dict, out var description, "description") ? description : string.Empty
                 };
 
                 itemsById[itemId] = meta;
@@ -215,6 +216,7 @@ namespace InfinitePickaxe.Client.Metadata
         public uint MaxStack { get; set; }
         public string UseActionType { get; set; } = string.Empty;
         public uint UseActionRefId { get; set; }
+        public string Description { get; set; } = string.Empty;
     }
 
     public sealed class ItemInventoryConfig
