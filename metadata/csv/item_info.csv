@@ -12,6 +12,8 @@
 1105,consumable,crystal_bundle_t4,1,크리스탈 상자(중),TRUE,9999,ADD_CURRENCY,2
 1106,consumable,crystal_bundle_t4,1,크리스탈 상자(대),TRUE,9999,ADD_CURRENCY,2
 100001,loot_box,gem_summon_box_t1,1,보석 소환 상자(T1),TRUE,9999,GEM_GACHA,1
-100001,loot_box,gem_summon_box_t2,2,보석 소환 상자(T2),TRUE,9999,GEM_GACHA,1
-100001,loot_box,gem_summon_box_t3,3,보석 소환 상자(T3),TRUE,9999,GEM_GACHA,1
-101001,loot_box,gem_select_box_t1,3,희귀 보석 선택 상자,TRUE,9999,GEM_SELECT,1
+100002,loot_box,gem_summon_box_t2,2,보석 소환 상자(T2),TRUE,9999,GEM_GACHA,1
+100003,loot_box,gem_summon_box_t3,3,보석 소환 상자(T3),TRUE,9999,GEM_GACHA,1
+101001,loot_box,gem_select_box_t1,2,고급 보석 선택 상자,TRUE,9999,GEM_SELECT,1
+101002,loot_box,gem_select_box_t2,3,희귀 보석 선택 상자,TRUE,9999,GEM_SELECT,1
+101003,loot_box,gem_select_box_t3,4,영웅 보석 선택 상자,TRUE,9999,GEM_SELECT,1
