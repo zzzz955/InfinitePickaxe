@@ -1076,7 +1076,10 @@ uint32_t GemService::select_random_gem_by_grade_rate(const std::vector<GemGradeR
 
     if (candidate_gem_ids.empty()) {
         spdlog::error("select_random_gem_by_grade_rate: no gems found for grade_id={}", selected_grade_id);
-        return 1; // fallback to first gem
+        for (const auto& def : meta_.gem_definitions()) {
+            return def.gem_id;
+        }
+        return 0;
     }
 
     std::uniform_int_distribution<> gem_dist(0, static_cast<int>(candidate_gem_ids.size()) - 1);

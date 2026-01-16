@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using InfinitePickaxe.Client.Metadata;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -16,6 +17,7 @@ namespace InfinitePickaxe.Client.UI.Game
 
         // Sprite 캐시 (icon_name -> Sprite)
         private static readonly Dictionary<string, Sprite> spriteByNameCache = new Dictionary<string, Sprite>();
+        private static GemMetaResolver metaResolver;
 
         /// <summary>
         /// 보석 ID로 Sprite 가져오기
@@ -95,43 +97,32 @@ namespace InfinitePickaxe.Client.UI.Game
         }
 
         /// <summary>
-        /// 보석 ID로 아이콘 이름 조회 (하드코딩된 매핑)
+        /// 메타데이터 기반 보석ID 주입
         /// </summary>
-        /// <remarks>
-        /// 메타데이터 로더가 없으므로 하드코딩으로 구현
-        /// 추후 GemMetaResolver 구현 시 교체 필요
-        /// </remarks>
         private static string GetIconNameByGemId(uint gemId)
         {
-            return gemId switch
+            EnsureMetaResolver();
+
+            if (metaResolver.TryGetDefinition(gemId, out var def) && !string.IsNullOrEmpty(def.Icon))
             {
-                // COMMON (일반)
-                0 => "gem_common_attack_speed",
-                1 => "gem_common_crit_rate",
-                2 => "gem_common_crit_dmg",
+                return def.Icon;
+            }
 
-                // RARE (고급)
-                100 => "gem_rare_attack_speed",
-                101 => "gem_rare_crit_rate",
-                102 => "gem_rare_crit_dmg",
+            return null;
+        }
 
-                // EPIC (희귀)
-                200 => "gem_epic_attack_speed",
-                201 => "gem_epic_crit_rate",
-                202 => "gem_epic_crit_dmg",
+        private static void EnsureMetaResolver()
+        {
+            if (metaResolver == null)
+            {
+                metaResolver = new GemMetaResolver();
+                return;
+            }
 
-                // HERO (영웅)
-                300 => "gem_hero_attack_speed",
-                301 => "gem_hero_crit_rate",
-                302 => "gem_hero_crit_dmg",
-
-                // LEGENDARY (전설)
-                400 => "gem_legendary_attack_speed",
-                401 => "gem_legendary_crit_rate",
-                402 => "gem_legendary_crit_dmg",
-
-                _ => null
-            };
+            if (MetaRepository.Loaded && metaResolver.AllDefinitions.Count == 0)
+            {
+                metaResolver.Reload();
+            }
         }
 
         /// <summary>

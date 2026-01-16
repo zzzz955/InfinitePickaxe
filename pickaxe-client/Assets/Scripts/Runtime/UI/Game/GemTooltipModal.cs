@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using Infinitepickaxe;
+using InfinitePickaxe.Client.Metadata;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
@@ -43,6 +44,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private RectTransform canvasRectTransform;
         private Canvas parentCanvas;
         private bool isListeningForOutsideClick;
+        private GemMetaResolver metaResolver;
 
         private void Update()
         {
@@ -125,6 +127,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             parentCanvas = GetComponentInParent<Canvas>();
             canvasRectTransform = parentCanvas != null ? parentCanvas.GetComponent<RectTransform>() : null;
+            metaResolver = new GemMetaResolver();
 
             AutoBindReferences();
 
@@ -332,37 +335,19 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private string GetGemDisplayName(GemInfo gem)
         {
-            if (gem == null) return "알 수 없음";
+            if (gem == null) return string.Empty;
 
-            return gem.GemId switch
+            if (!string.IsNullOrEmpty(gem.Name))
             {
-                // 일반 (grade_id: 0)
-                0 => "일반 공격 속도 보석",
-                1 => "일반 크리티컬 확률 보석",
-                2 => "일반 크리티컬 데미지 보석",
+                return gem.Name;
+            }
 
-                // 고급 (grade_id: 1)
-                100 => "고급 공격 속도 보석",
-                101 => "고급 크리티컬 확률 보석",
-                102 => "고급 크리티컬 데미지 보석",
+            if (metaResolver != null && metaResolver.TryGetDefinition(gem.GemId, out var def) && !string.IsNullOrEmpty(def.Name))
+            {
+                return def.Name;
+            }
 
-                // 희귀 (grade_id: 2)
-                200 => "희귀 공격 속도 보석",
-                201 => "희귀 크리티컬 확률 보석",
-                202 => "희귀 크리티컬 데미지 보석",
-
-                // 영웅 (grade_id: 3)
-                300 => "영웅 공격 속도 보석",
-                301 => "영웅 크리티컬 확률 보석",
-                302 => "영웅 크리티컬 데미지 보석",
-
-                // 전설 (grade_id: 4)
-                400 => "전설 공격 속도 보석",
-                401 => "전설 크리티컬 확률 보석",
-                402 => "전설 크리티컬 데미지 보석",
-
-                _ => $"보석 #{gem.GemId}"
-            };
+            return gem.GemId.ToString();
         }
 
         /// <summary>
@@ -370,15 +355,12 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private string GetGradeLabel(GemGrade grade)
         {
-            return grade switch
+            if (metaResolver != null && metaResolver.TryGetGrade((uint)grade, out var meta) && !string.IsNullOrEmpty(meta.DisplayName))
             {
-                GemGrade.Common => "일반",
-                GemGrade.Rare => "고급",
-                GemGrade.Epic => "희귀",
-                GemGrade.Hero => "영웅",
-                GemGrade.Legendary => "전설",
-                _ => "일반"
-            };
+                return meta.DisplayName;
+            }
+
+            return grade.ToString();
         }
 
         /// <summary>
@@ -402,13 +384,12 @@ namespace InfinitePickaxe.Client.UI.Game
         /// </summary>
         private string GetGemTypeName(GemType gemType)
         {
-            return gemType switch
+            if (metaResolver != null && metaResolver.TryGetType((uint)gemType, out var meta) && !string.IsNullOrEmpty(meta.DisplayName))
             {
-                GemType.AttackSpeed => "공격 속도",
-                GemType.CritRate => "크리티컬 확률",
-                GemType.CritDmg => "크리티컬 데미지",
-                _ => "알 수 없음"
-            };
+                return meta.DisplayName;
+            }
+
+            return gemType.ToString();
         }
 
         /// <summary>
