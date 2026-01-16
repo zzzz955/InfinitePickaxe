@@ -130,6 +130,7 @@ namespace InfinitePickaxe.Client.Net
         public event Action<ItemInventoryResponse> OnItemInventoryResponse;
         public event Action<ItemInventoryExpandResult> OnItemInventoryExpandResult;
         public event Action<UseItemResult> OnUseItemResult;
+        public event Action<ShopPurchaseResult> OnShopPurchaseResult;
 
         public event Action<InfiniteMineStateResponse> OnInfiniteMineStateResponse;
         public event Action<InfiniteMineChallengeStartResult> OnInfiniteMineChallengeStartResult;
@@ -370,6 +371,9 @@ namespace InfinitePickaxe.Client.Net
                         break;
                     case MessageType.UseItemResult:
                         HandleUseItemResult(envelope.UseItemResult);
+                        break;
+                    case MessageType.ShopPurchaseResult:
+                        HandleShopPurchaseResult(envelope.ShopPurchaseResult);
                         break;
                     case MessageType.InfiniteMineStateResponse:
                         HandleInfiniteMineStateResponse(envelope.InfiniteMineStateResponse);
@@ -1185,6 +1189,56 @@ namespace InfinitePickaxe.Client.Net
             OnUseItemResult?.Invoke(result);
         }
 
+        private void HandleShopPurchaseResult(ShopPurchaseResult result)
+        {
+            if (result == null) return;
+            if (result.Success)
+            {
+                ItemStateCache.Instance.ApplyShopPurchaseResult(result);
+                ApplyShopPurchaseCurrency(result);
+            }
+            else
+            {
+                Debug.LogWarning($"상점 구매 실패: {result.ErrorCode}");
+            }
+            OnShopPurchaseResult?.Invoke(result);
+        }
+
+        private void ApplyShopPurchaseCurrency(ShopPurchaseResult result)
+        {
+            if (result == null) return;
+
+            string currency = result.PriceCurrency ?? string.Empty;
+            ulong? gold = null;
+            uint? crystal = null;
+
+            if (string.Equals(currency, "GOLD", StringComparison.OrdinalIgnoreCase))
+            {
+                gold = result.RemainingGold;
+            }
+            else if (string.Equals(currency, "CRYSTAL", StringComparison.OrdinalIgnoreCase))
+            {
+                crystal = result.RemainingCrystal;
+            }
+            else
+            {
+                bool hasAny = result.RemainingGold > 0 || result.RemainingCrystal > 0;
+                if (!hasAny) return;
+                gold = result.RemainingGold;
+                crystal = result.RemainingCrystal;
+            }
+
+            var currencyUpdate = new CurrencyUpdate
+            {
+                Gold = gold,
+                Crystal = crystal,
+                Reason = "shop_purchase"
+            };
+
+            CacheCurrency(currencyUpdate.Gold, currencyUpdate.Crystal);
+            OnCurrencyUpdate?.Invoke(currencyUpdate);
+        }
+
         private void ApplyUseItemRewards(UseItemResult result)
         {
             if (result == null) return;
@@ -1829,6 +1883,23 @@ namespace InfinitePickaxe.Client.Net
             {
                 Type = MessageType.UseItemRequest,
                 UseItemRequest = request
+            };
+            NetworkManager.Instance.SendMessage(envelope);
+        }
+
+        public void RequestShopPurchase(uint productId, uint quantity, string clientRequestId)
+        {
+            if (productId == 0 || quantity == 0) return;
+            var request = new ShopPurchaseRequest
+            {
+                ProductId = productId,
+                Quantity = quantity,
+                ClientRequestId = clientRequestId ?? string.Empty
+            };
+            var envelope = new Envelope
+            {
+                Type = MessageType.ShopPurchaseRequest,
+                ShopPurchaseRequest = request
             };
             NetworkManager.Instance.SendMessage(envelope);
         }

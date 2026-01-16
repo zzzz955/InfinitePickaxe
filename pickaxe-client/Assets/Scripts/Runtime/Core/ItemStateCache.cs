@@ -110,6 +110,34 @@ namespace InfinitePickaxe.Client.Core
             RaiseChanged();
         }
 
+        public void ApplyShopPurchaseResult(ShopPurchaseResult result)
+        {
+            if (result == null || !result.Success) return;
+
+            foreach (var stack in result.Stacks)
+            {
+                if (stack == null || stack.ItemId == 0 || stack.Count == 0) continue;
+                if (stackCounts.TryGetValue(stack.ItemId, out var current))
+                {
+                    stackCounts[stack.ItemId] = current + stack.Count;
+                }
+                else
+                {
+                    stackCounts[stack.ItemId] = stack.Count;
+                }
+            }
+
+            foreach (var instance in result.Instances)
+            {
+                if (instance == null || string.IsNullOrEmpty(instance.ItemInstanceId) || instance.ItemId == 0) continue;
+                instancesById[instance.ItemInstanceId] = instance;
+            }
+
+            UsedSlots = CalculateUsedSlots();
+            HasData = true;
+            RaiseChanged();
+        }
+
         private void RemoveUsedItems(uint itemId, uint countUsed, ItemMetaResolver itemMetaResolver)
         {
             bool treatAsStack = false;

@@ -148,6 +148,8 @@ enum MessageType {
   ITEM_INVENTORY_RESPONSE = 233;
   ITEM_INVENTORY_EXPAND_REQUEST = 234;
   ITEM_INVENTORY_EXPAND_RESULT = 235;
+  SHOP_PURCHASE_REQUEST = 236;
+  SHOP_PURCHASE_RESULT = 237;
 
   // 무한의 갱도
   INFINITE_MINE_STATE_REQUEST = 200;
@@ -277,6 +279,8 @@ message Envelope {
     ItemInventoryResponse item_inventory_response = 233;
     ItemInventoryExpandRequest item_inventory_expand_request = 234;
     ItemInventoryExpandResult item_inventory_expand_result = 235;
+    ShopPurchaseRequest shop_purchase_request = 236;
+    ShopPurchaseResult shop_purchase_result = 237;
 
     InfiniteMineStateRequest infinite_mine_state_request = 200;
     InfiniteMineStateResponse infinite_mine_state_response = 201;
@@ -822,6 +826,27 @@ message GemDiscardResult {
   uint32 total_crystal = 3;
   uint32 total_gems = 4;
   string error_code = 5;
+}
+
+// -------------- 상점 구매 --------------
+
+message ShopPurchaseRequest {
+  uint32 product_id = 1;
+  uint32 quantity = 2;
+  string client_request_id = 3;
+}
+
+message ShopPurchaseResult {
+  bool success = 1;
+  uint32 product_id = 2;
+  uint32 quantity = 3;
+  uint64 price_amount = 4;
+  string price_currency = 5; // "CRYSTAL", "GOLD"
+  uint64 remaining_gold = 6;
+  uint32 remaining_crystal = 7;
+  repeated ItemStackEntry stacks = 8;
+  repeated ItemInstanceEntry instances = 9;
+  string error_code = 10;
 }
 
 // 장착
