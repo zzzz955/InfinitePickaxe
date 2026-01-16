@@ -56,6 +56,10 @@ bool MetadataLoader::load(const std::string &base_path)
 
         item_info_by_id_.clear();
 
+        shop_products_.clear();
+
+        shop_products_by_id_.clear();
+
         reward_packages_.clear();
         reward_package_entries_.clear();
         reward_packages_by_id_.clear();
@@ -544,6 +548,36 @@ bool MetadataLoader::load(const std::string &base_path)
                     item_info_by_id_[item.item_id] = item_infos_.size();
 
                     item_infos_.push_back(item);
+                }
+            }
+        }
+
+        if (bundle.contains("shop_products") && bundle["shop_products"].is_array())
+        {
+            const auto& j = bundle["shop_products"];
+            shop_products_.reserve(j.size());
+
+            for (auto& e : j)
+            {
+                ShopProductMeta product;
+                product.product_id = e.value("product_id", 0);
+                product.tab_key = e.value("tab_key", "");
+                product.item_id = e.value("item_id", 0);
+                product.item_count = e.value("item_count", 1);
+                product.price_currency = e.value("price_currency", "");
+                product.sort_order = e.value("sort_order", 0);
+                product.is_active = e.value("is_active", true);
+                product.display_sprite_key = e.value("display_sprite_key", "");
+
+                if (e.contains("price_amount") && !e["price_amount"].is_null())
+                {
+                    product.price_amount = e.value<uint64_t>("price_amount", 0);
+                }
+
+                if (product.product_id > 0)
+                {
+                    shop_products_by_id_[product.product_id] = shop_products_.size();
+                    shop_products_.push_back(product);
                 }
             }
         }
@@ -1309,6 +1343,17 @@ const ItemInfoMeta *MetadataLoader::item_info(uint32_t item_id) const
         return nullptr;
 
     return &item_infos_[it->second];
+}
+
+const ShopProductMeta *MetadataLoader::shop_product(uint32_t product_id) const
+{
+
+    auto it = shop_products_by_id_.find(product_id);
+
+    if (it == shop_products_by_id_.end())
+        return nullptr;
+
+    return &shop_products_[it->second];
 }
 
 const RewardPackageMeta *MetadataLoader::reward_package(uint32_t package_id) const

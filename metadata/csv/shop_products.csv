@@ -1,0 +1,7 @@
+﻿product_id,tab_key,item_id,item_count,price_currency,price_amount,sort_order,is_active,display_sprite_key
+100001,GEM,100001,1,CRYSTAL,,1,TRUE,
+100002,GEM,100002,1,CRYSTAL,,2,TRUE,
+100003,GEM,100003,1,CRYSTAL,,3,TRUE,
+101001,GEM,101001,1,CRYSTAL,,4,TRUE,
+101002,GEM,101002,1,CRYSTAL,,5,TRUE,
+101003,GEM,101003,1,CRYSTAL,,6,TRUE,

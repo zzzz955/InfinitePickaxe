@@ -557,6 +557,42 @@ function buildItemInventory() {
   };
 }
 
+function buildShopProducts() {
+  const products = readCsv('shop_products.csv').map((row, idx) => {
+    const context = `shop_products.csv row ${idx + 2}`;
+    const entry = {
+      product_id: toNumber(requireField(row.product_id, 'product_id', context), `${context} product_id`),
+      tab_key: requireField(row.tab_key, 'tab_key', context),
+      item_id: toNumber(requireField(row.item_id, 'item_id', context), `${context} item_id`),
+      item_count: toNumber(requireField(row.item_count, 'item_count', context), `${context} item_count`),
+      price_currency: requireField(row.price_currency, 'price_currency', context),
+      is_active: toBoolean(requireField(row.is_active, 'is_active', context), `${context} is_active`),
+    };
+
+    const priceAmount = toOptionalNumber(row.price_amount, `${context} price_amount`);
+    if (priceAmount !== null) {
+      entry.price_amount = priceAmount;
+    }
+
+    const sortOrder = toOptionalNumber(row.sort_order, `${context} sort_order`);
+    if (sortOrder !== null) {
+      entry.sort_order = sortOrder;
+    }
+
+    if (row.display_sprite_key !== undefined && row.display_sprite_key !== '') {
+      entry.display_sprite_key = row.display_sprite_key;
+    }
+
+    return entry;
+  });
+
+  return {
+    key: 'shop_products',
+    file: 'shop_products.json',
+    data: products,
+  };
+}
+
 function buildRewardPackages() {
   const packages = readCsv('reward_packages.csv').map((row, idx) => {
     const context = `reward_packages.csv row ${idx + 2}`;
@@ -917,6 +953,7 @@ const builders = [
   buildCurrencyInfo,
   buildItemInfo,
   buildItemInventory,
+  buildShopProducts,
   buildRewardPackages,
   buildRewardPackageEntries,
   buildWeeklyRanking,

@@ -5979,6 +5979,62 @@
     "expand_step": 4,
     "expand_cost": 200
   },
+  "shop_products": [
+    {
+      "product_id": 100001,
+      "tab_key": "GEM",
+      "item_id": 100001,
+      "item_count": 1,
+      "price_currency": "CRYSTAL",
+      "is_active": true,
+      "sort_order": 1
+    },
+    {
+      "product_id": 100002,
+      "tab_key": "GEM",
+      "item_id": 100002,
+      "item_count": 1,
+      "price_currency": "CRYSTAL",
+      "is_active": true,
+      "sort_order": 2
+    },
+    {
+      "product_id": 100003,
+      "tab_key": "GEM",
+      "item_id": 100003,
+      "item_count": 1,
+      "price_currency": "CRYSTAL",
+      "is_active": true,
+      "sort_order": 3
+    },
+    {
+      "product_id": 101001,
+      "tab_key": "GEM",
+      "item_id": 101001,
+      "item_count": 1,
+      "price_currency": "CRYSTAL",
+      "is_active": true,
+      "sort_order": 4
+    },
+    {
+      "product_id": 101002,
+      "tab_key": "GEM",
+      "item_id": 101002,
+      "item_count": 1,
+      "price_currency": "CRYSTAL",
+      "is_active": true,
+      "sort_order": 5
+    },
+    {
+      "product_id": 101003,
+      "tab_key": "GEM",
+      "item_id": 101003,
+      "item_count": 1,
+      "price_currency": "CRYSTAL",
+      "is_active": true,
+      "sort_order": 6
+    }
+  ],
   "reward_packages": [
     {
       "package_id": 1001,

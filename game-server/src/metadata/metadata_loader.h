@@ -236,6 +236,28 @@ struct ItemInfoMeta {
 
 };
 
+struct ShopProductMeta {
+
+    uint32_t product_id{0};
+
+    std::string tab_key;
+
+    uint32_t item_id{0};
+
+    uint32_t item_count{0};
+
+    std::string price_currency;
+
+    std::optional<uint64_t> price_amount;
+
+    uint32_t sort_order{0};
+
+    bool is_active{true};
+
+    std::string display_sprite_key;
+
+};
+
 struct RewardPackageMeta {
 
     uint32_t package_id{0};
@@ -594,6 +616,10 @@ public:
 
     const ItemInfoMeta* item_info(uint32_t item_id) const;
 
+    const std::vector<ShopProductMeta>& shop_products() const { return shop_products_; }
+
+    const ShopProductMeta* shop_product(uint32_t product_id) const;
+
 
 
     const RewardPackageMeta* reward_package(uint32_t package_id) const;
@@ -692,6 +718,10 @@ private:
     std::vector<ItemInfoMeta> item_infos_;
 
     std::unordered_map<uint32_t, size_t> item_info_by_id_;
+
+    std::vector<ShopProductMeta> shop_products_;
+
+    std::unordered_map<uint32_t, size_t> shop_products_by_id_;
 
 
 
