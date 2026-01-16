@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
+#include <cctype>
 
 namespace
 {
@@ -72,6 +73,15 @@ namespace
         }
         out = static_cast<uint32_t>(v);
         return true;
+    }
+
+    std::string to_upper_ascii(std::string value)
+    {
+        for (char& c : value)
+        {
+            c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+        }
+        return value;
     }
 
     constexpr int kOfflineSessionTtlSeconds = 60 * 60 * 24 * 90;
@@ -1697,6 +1707,214 @@ void Session::handle_use_item(const infinitepickaxe::Envelope &env)
     send_result();
 }
 
+void Session::handle_shop_purchase(const infinitepickaxe::Envelope &env)
+{
+    if (!authenticated_) {
+        send_error("NOT_AUTHENTICATED", "authentication required");
+        return;
+    }
+
+    if (!env.has_shop_purchase_request()) {
+        send_error("INVALID_REQUEST", "missing shop_purchase_request");
+        return;
+    }
+
+    const auto& req = env.shop_purchase_request();
+    infinitepickaxe::ShopPurchaseResult res;
+    res.set_product_id(req.product_id());
+    res.set_quantity(req.quantity());
+    res.set_success(false);
+    res.set_error_code("");
+
+    auto send_result = [&]() {
+        infinitepickaxe::Envelope response_env;
+        response_env.set_type(infinitepickaxe::SHOP_PURCHASE_RESULT);
+        *response_env.mutable_shop_purchase_result() = res;
+        send_envelope(response_env);
+    };
+
+    if (req.product_id() == 0 || req.quantity() == 0) {
+        res.set_error_code("INVALID_COUNT");
+        send_result();
+        return;
+    }
+
+    const auto* product = metadata_.shop_product(req.product_id());
+    if (!product) {
+        res.set_error_code("INVALID_PRODUCT");
+        send_result();
+        return;
+    }
+    if (!product->is_active) {
+        res.set_error_code("PRODUCT_DISABLED");
+        send_result();
+        return;
+    }
+    if (product->item_id == 0 || product->item_count == 0) {
+        res.set_error_code("INVALID_PRODUCT");
+        send_result();
+        return;
+    }
+    if (!product->price_amount.has_value()) {
+        res.set_error_code("PRICE_NOT_SET");
+        send_result();
+        return;
+    }
+
+    std::string currency = to_upper_ascii(product->price_currency);
+
+    uint64_t unit_cost = product->price_amount.value();
+    uint64_t quantity = req.quantity();
+    if (unit_cost > 0 && quantity > std::numeric_limits<uint64_t>::max() / unit_cost) {
+        res.set_error_code("INVALID_COUNT");
+        send_result();
+        return;
+    }
+    uint64_t total_cost = unit_cost * quantity;
+
+    uint64_t unit_items = product->item_count;
+    if (unit_items > 0 && quantity > std::numeric_limits<uint64_t>::max() / unit_items) {
+        res.set_error_code("INVALID_COUNT");
+        send_result();
+        return;
+    }
+    uint64_t total_items = unit_items * quantity;
+    if (total_items == 0) {
+        res.set_error_code("INVALID_COUNT");
+        send_result();
+        return;
+    }
+
+    const auto* item_meta = metadata_.item_info(product->item_id);
+    if (!item_meta) {
+        res.set_error_code("INVALID_ITEM");
+        send_result();
+        return;
+    }
+
+    auto inventory_snapshot = item_service_.handle_inventory(user_id_);
+    uint32_t capacity = inventory_snapshot.current_capacity;
+    uint32_t used_slots = inventory_snapshot.used_slots;
+    if (capacity == 0) {
+        res.set_error_code("DB_ERROR");
+        send_result();
+        return;
+    }
+
+    uint64_t current_stack_count = 0;
+    for (const auto& stack : inventory_snapshot.stacks) {
+        if (stack.item_id == product->item_id) {
+            current_stack_count = stack.count;
+            break;
+        }
+    }
+
+    if (item_meta->stackable) {
+        uint64_t new_count = current_stack_count + total_items;
+        if (item_meta->max_stack > 0 && new_count > item_meta->max_stack) {
+            res.set_error_code("STACK_LIMIT");
+            send_result();
+            return;
+        }
+        bool needs_slot = current_stack_count == 0;
+        if (needs_slot && used_slots + 1 > capacity) {
+            res.set_error_code("INVENTORY_FULL");
+            send_result();
+            return;
+        }
+    } else {
+        if (total_items > std::numeric_limits<uint32_t>::max()) {
+            res.set_error_code("INVALID_COUNT");
+            send_result();
+            return;
+        }
+        if (static_cast<uint64_t>(used_slots) + total_items > capacity) {
+            res.set_error_code("INVENTORY_FULL");
+            send_result();
+            return;
+        }
+    }
+
+    if (total_cost > 0) {
+        if (currency.empty()) {
+            res.set_error_code("INVALID_PRICE_CURRENCY");
+            send_result();
+            return;
+        }
+
+        if (currency == "CRYSTAL") {
+            if (total_cost > std::numeric_limits<uint32_t>::max()) {
+                res.set_error_code("INVALID_COUNT");
+                send_result();
+                return;
+            }
+            auto spend = game_repo_.spend_crystal(user_id_, static_cast<uint32_t>(total_cost));
+            if (!spend.success) {
+                res.set_error_code(spend.insufficient ? "INSUFFICIENT_CRYSTAL" : "DB_ERROR");
+                send_result();
+                return;
+            }
+            res.set_remaining_crystal(spend.remaining_crystal);
+        } else if (currency == "GOLD") {
+            if (total_cost > static_cast<uint64_t>(std::numeric_limits<int64_t>::max())) {
+                res.set_error_code("INVALID_COUNT");
+                send_result();
+                return;
+            }
+            auto spend = game_repo_.spend_gold(user_id_, total_cost);
+            if (!spend.success) {
+                res.set_error_code(spend.insufficient ? "INSUFFICIENT_GOLD" : "DB_ERROR");
+                send_result();
+                return;
+            }
+            res.set_remaining_gold(spend.remaining_gold);
+        } else {
+            res.set_error_code("INVALID_PRICE_CURRENCY");
+            send_result();
+            return;
+        }
+    }
+
+    auto add_result = item_service_.add_item(user_id_, product->item_id, total_items);
+    if (!add_result.success) {
+        if (currency == "CRYSTAL" && total_cost <= std::numeric_limits<uint32_t>::max()) {
+            game_repo_.add_crystal(user_id_, static_cast<uint32_t>(total_cost));
+        } else if (currency == "GOLD") {
+            game_repo_.add_gold(user_id_, total_cost);
+        }
+
+        if (add_result.inventory_full) {
+            res.set_error_code("INVENTORY_FULL");
+        } else if (add_result.stack_limit_reached) {
+            res.set_error_code("STACK_LIMIT");
+        } else {
+            res.set_error_code("DB_ERROR");
+        }
+        send_result();
+        return;
+    }
+
+    res.set_success(true);
+    res.set_error_code("");
+    res.set_price_currency(currency);
+    res.set_price_amount(total_cost);
+
+    if (item_meta->stackable) {
+        auto* entry = res.add_stacks();
+        entry->set_item_id(product->item_id);
+        entry->set_count(total_items);
+    } else {
+        for (const auto& inst : add_result.created_instances) {
+            auto* entry = res.add_instances();
+            entry->set_item_instance_id(inst.item_instance_id);
+            entry->set_item_id(inst.item_id);
+            entry->set_acquired_at_ms(inst.acquired_at);
+        }
+    }
+
+    send_result();
+}
+
 void Session::handle_slot_unlock(const infinitepickaxe::Envelope &env)
 {
     if (!env.has_slot_unlock())
@@ -1898,6 +2116,8 @@ void Session::init_router()
                              { handle_item_inventory_expand(e); });
     router_.register_handler(infinitepickaxe::USE_ITEM_REQUEST, [this](const infinitepickaxe::Envelope &e)
                              { handle_use_item(e); });
+    router_.register_handler(infinitepickaxe::SHOP_PURCHASE_REQUEST, [this](const infinitepickaxe::Envelope &e)
+                             { handle_shop_purchase(e); });
     router_.register_handler(infinitepickaxe::SLOT_UNLOCK, [this](const infinitepickaxe::Envelope &e)
                              { handle_slot_unlock(e); });
     router_.register_handler(infinitepickaxe::ALL_SLOTS_REQUEST, [this](const infinitepickaxe::Envelope &e)

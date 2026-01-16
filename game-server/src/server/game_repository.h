@@ -23,6 +23,18 @@ struct UserGameData {
     // mission_rerolls_used 제거 → user_mission_daily 테이블로 이동
 };
 
+struct SpendGoldResult {
+    bool success{false};
+    bool insufficient{false};
+    uint64_t remaining_gold{0};
+};
+
+struct SpendCrystalResult {
+    bool success{false};
+    bool insufficient{false};
+    uint32_t remaining_crystal{0};
+};
+
 struct GemInventoryInfo {
     uint32_t capacity;
     uint32_t total_gems;
@@ -40,6 +52,8 @@ public:
     UserGameData get_user_game_data(const std::string& user_id);
     std::optional<uint32_t> add_crystal(const std::string& user_id, uint32_t delta);
     std::optional<uint64_t> add_gold(const std::string& user_id, uint64_t delta);
+    SpendCrystalResult spend_crystal(const std::string& user_id, uint32_t amount);
+    SpendGoldResult spend_gold(const std::string& user_id, uint64_t amount);
     bool set_current_mineral(const std::string& user_id, uint32_t mineral_id, uint64_t mineral_hp);
 
     // 보석 인벤토리 조회

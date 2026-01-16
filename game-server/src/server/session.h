@@ -128,6 +128,7 @@ private:
     void handle_item_inventory(const infinitepickaxe::Envelope& env);
     void handle_item_inventory_expand(const infinitepickaxe::Envelope& env);
     void handle_use_item(const infinitepickaxe::Envelope& env);
+    void handle_shop_purchase(const infinitepickaxe::Envelope& env);
     void handle_slot_unlock(const infinitepickaxe::Envelope& env);
     void handle_all_slots(const infinitepickaxe::Envelope& env);
     void handle_offline_reward(const infinitepickaxe::Envelope& env);
