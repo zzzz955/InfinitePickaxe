@@ -6,6 +6,7 @@
     "item_count": 1,
     "price_currency": "CRYSTAL",
     "is_active": true,
+    "price_amount": 30,
     "sort_order": 1
   },
   {
@@ -15,6 +16,7 @@
     "item_count": 1,
     "price_currency": "CRYSTAL",
     "is_active": true,
+    "price_amount": 150,
     "sort_order": 2
   },
   {
@@ -24,6 +26,7 @@
     "item_count": 1,
     "price_currency": "CRYSTAL",
     "is_active": true,
+    "price_amount": 600,
     "sort_order": 3
   },
   {
@@ -33,6 +36,7 @@
     "item_count": 1,
     "price_currency": "CRYSTAL",
     "is_active": true,
+    "price_amount": 100,
     "sort_order": 4
   },
   {
@@ -42,6 +46,7 @@
     "item_count": 1,
     "price_currency": "CRYSTAL",
     "is_active": true,
+    "price_amount": 450,
     "sort_order": 5
   },
   {
@@ -51,6 +56,7 @@
     "item_count": 1,
     "price_currency": "CRYSTAL",
     "is_active": true,
+    "price_amount": 2000,
     "sort_order": 6
   }
 ]

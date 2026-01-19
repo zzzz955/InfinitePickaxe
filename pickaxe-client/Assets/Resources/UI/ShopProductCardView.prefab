@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 22200000}
   - component: {fileID: 11400000}
   - component: {fileID: 11400001}
+  - component: {fileID: 4074460957321166300}
   m_Layer: 5
-  m_Name: GoodsView
+  m_Name: ShopProductCardView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,6 +124,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4074460957321166300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19c41aa4861c9594e8a14192c91f2353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardButton: {fileID: 11400001}
+  nameText: {fileID: 781545140144648610}
+  rarityFrameImage: {fileID: 11400010}
+  iconImage: {fileID: 11400020}
+  priceText: {fileID: 326814857177075837}
+  insufficientPriceColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
 --- !u!1 &100010
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,7 +154,7 @@ GameObject:
   - component: {fileID: 22200010}
   - component: {fileID: 11400010}
   m_Layer: 5
-  m_Name: RarityFrame
+  m_Name: RarityFrameImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -211,7 +230,7 @@ GameObject:
   - component: {fileID: 22200020}
   - component: {fileID: 11400020}
   m_Layer: 5
-  m_Name: Icon
+  m_Name: IconImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -631,7 +650,7 @@ GameObject:
   - component: {fileID: 359278948266268860}
   - component: {fileID: 781545140144648610}
   m_Layer: 5
-  m_Name: GoodsNameText
+  m_Name: NameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

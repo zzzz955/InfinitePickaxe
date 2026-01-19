@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 22400000}
+  - component: {fileID: 4539767809066858832}
   - component: {fileID: 22200000}
   - component: {fileID: 11400000}
   - component: {fileID: 11400001}
-  - component: {fileID: 1775496630734115883}
   m_Layer: 5
-  m_Name: GoodsDetailPanel
+  m_Name: ShopProductDetailModalController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,6 +40,34 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4539767809066858832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 224f6b4e959d1b249bd32cbdb42e29d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundButton: {fileID: 11400001}
+  cancelButton: {fileID: 11400058}
+  purchaseButton: {fileID: 11400055}
+  productNameText: {fileID: 11400040}
+  productDescriptionText: {fileID: 11400042}
+  rarityFrameImage: {fileID: 11400038}
+  iconImage: {fileID: 11400039}
+  priceText: {fileID: 2806297207060763068}
+  insufficientPriceColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
+  rewardContent: {fileID: 22400042}
+  rewardItemPrefab: {fileID: 8292618446196183348, guid: b6bb35f106914814bf5ffe246064310f, type: 3}
+  minButton: {fileID: 3078197530676445351}
+  minusButton: {fileID: 5141903421720959722}
+  countInput: {fileID: 11400048}
+  plusButton: {fileID: 6420567011514006918}
+  maxButton: {fileID: 11400052}
 --- !u!222 &22200000
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -122,44 +150,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1775496630734115883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2455aa9cd6d974b4385539a08e234223, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  backgroundButton: {fileID: 11400001}
-  closeButton: {fileID: 0}
-  expandButton: {fileID: 0}
-  capacityText: {fileID: 0}
-  expandConfirmModal: {fileID: 0}
-  expandBackgroundButton: {fileID: 0}
-  expandCostText: {fileID: 0}
-  expandCurrentCrystalText: {fileID: 0}
-  expandConfirmButton: {fileID: 0}
-  expandCancelButton: {fileID: 0}
-  gridContent: {fileID: 0}
-  itemSlotPrefab: {fileID: 4589589393857473489, guid: 6172cb26c0ac4a60aea0f5bd3aca9a57, type: 3}
-  detailPanel: {fileID: 100034}
-  detailIconImage: {fileID: 11400039}
-  detailNameText: {fileID: 11400040}
-  detailDescText: {fileID: 11400042}
-  choicePanel: {fileID: 100041}
-  choiceContent: {fileID: 22400042}
-  choiceOptionPrefab: {fileID: 8292618446196183348, guid: b6bb35f106914814bf5ffe246064310f, type: 3}
-  minButton: {fileID: 3078197530676445351}
-  minusButton: {fileID: 5141903421720959722}
-  countInput: {fileID: 11400048}
-  plusButton: {fileID: 6420567011514006918}
-  maxButton: {fileID: 11400052}
-  useButton: {fileID: 11400055}
-  cancelButton: {fileID: 11400058}
 --- !u!1 &100034
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,7 +284,7 @@ GameObject:
   - component: {fileID: 22200035}
   - component: {fileID: 11400038}
   m_Layer: 5
-  m_Name: ItemIconFrame
+  m_Name: RarityFrameImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -370,7 +360,7 @@ GameObject:
   - component: {fileID: 22200036}
   - component: {fileID: 11400039}
   m_Layer: 5
-  m_Name: ItemIcon
+  m_Name: IconImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -445,7 +435,7 @@ GameObject:
   - component: {fileID: 22200037}
   - component: {fileID: 11400040}
   m_Layer: 5
-  m_Name: ItemNameText
+  m_Name: ProductNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -579,7 +569,7 @@ GameObject:
   - component: {fileID: 22200039}
   - component: {fileID: 11400042}
   m_Layer: 5
-  m_Name: ItemDescText
+  m_Name: ProductDescriptionText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -820,7 +810,7 @@ GameObject:
   - component: {fileID: 4814768558260473705}
   - component: {fileID: 11400046}
   m_Layer: 5
-  m_Name: ChoiceListContent
+  m_Name: Reward Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1642,7 +1632,7 @@ GameObject:
   - component: {fileID: 11400054}
   - component: {fileID: 11400055}
   m_Layer: 5
-  m_Name: UseButton
+  m_Name: PurchaseButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
