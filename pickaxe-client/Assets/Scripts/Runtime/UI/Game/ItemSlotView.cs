@@ -54,7 +54,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (showCount)
                 {
                     countText.text = slotData.Count.ToString("N0");
-                    countText.color = textColor;
+                    // countText.color = textColor;
                 }
             }
 
