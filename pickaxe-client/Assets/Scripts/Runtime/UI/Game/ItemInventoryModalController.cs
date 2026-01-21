@@ -58,6 +58,7 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button toastConfirmButton;
 
         [Header("Reward Modal")]
+        [SerializeField] private RewardListModalController rewardListModal;
         [SerializeField] private RewardStoveModalController rewardStoveModal;
 
         private readonly List<ItemSlotView> slotViews = new List<ItemSlotView>();
@@ -1018,6 +1019,12 @@ namespace InfinitePickaxe.Client.UI.Game
                             break;
                     }
                 }
+            }
+
+            if (rewardListModal != null)
+            {
+                rewardListModal.Show(result);
+                return;
             }
 
             if (rewardStoveModal != null)
