@@ -107,12 +107,14 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OnEnable()
         {
             Subscribe();
+            ResetUseCountInput();
             RefreshList();
         }
 
         private void OnDisable()
         {
             Unsubscribe();
+            ResetUseCountInput();
         }
 
         private void Subscribe()
@@ -558,6 +560,19 @@ namespace InfinitePickaxe.Client.UI.Game
                 suppressCountInput = false;
             }
             UpdateUseButtonState();
+        }
+
+        private void ResetUseCountInput()
+        {
+            currentMaxUseCount = Math.Max(currentMaxUseCount, 1u);
+            currentUseCount = 1;
+
+            if (countInput != null)
+            {
+                suppressCountInput = true;
+                countInput.text = "1";
+                suppressCountInput = false;
+            }
         }
 
         private void UpdateUseButtonState()

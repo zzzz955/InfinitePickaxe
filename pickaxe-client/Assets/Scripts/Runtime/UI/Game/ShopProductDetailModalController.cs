@@ -29,6 +29,14 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private RectTransform rewardContent;
         [SerializeField] private ItemChoiceOptionView rewardItemPrefab;
 
+        [Header("Reward Modal")]
+        [SerializeField] private RewardListModalController rewardListModal;
+
+        [Header("Toast")]
+        [SerializeField] private GameObject toastModal;
+        [SerializeField] private TextMeshProUGUI toastMessageText;
+        [SerializeField] private Button toastConfirmButton;
+
         [Header("Count")]
         [SerializeField] private Button minButton;
         [SerializeField] private Button minusButton;
@@ -104,6 +112,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OnEnable()
         {
             Subscribe();
+            ResetCountInputToMin();
             UpdateCurrencyAmount();
             ClampCount(false);
             UpdatePriceText();
@@ -113,6 +122,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void OnDisable()
         {
             Unsubscribe();
+            ResetCountInputToMin();
         }
 
         private void Subscribe()
@@ -173,10 +183,15 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (result.Success)
             {
+                if (rewardListModal != null)
+                {
+                    rewardListModal.Show(result, "구매 보상");
+                }
                 Hide();
                 return;
             }
 
+            ShowPurchaseError(result.ErrorCode);
             UpdateCurrencyAmount();
             ClampCount(false);
             UpdatePriceText();
@@ -618,6 +633,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 countInput.onEndEdit.RemoveAllListeners();
                 countInput.onEndEdit.AddListener(HandleCountInputChanged);
             }
+
+            if (toastConfirmButton != null)
+            {
+                toastConfirmButton.onClick.RemoveAllListeners();
+                toastConfirmButton.onClick.AddListener(HideToastMessage);
+            }
         }
 
         private void HandleCountInputChanged(string value)
@@ -636,6 +657,51 @@ namespace InfinitePickaxe.Client.UI.Game
             SetCountInput(parsed);
             UpdatePriceText();
             UpdatePurchaseButton();
+        }
+
+        private void ResetCountInputToMin()
+        {
+            currentCount = 1;
+            if (countInput != null)
+            {
+                suppressInput = true;
+                countInput.text = "1";
+                suppressInput = false;
+            }
+        }
+
+        private void ShowPurchaseError(string errorCode)
+        {
+            if (string.IsNullOrEmpty(errorCode)) return;
+
+            string message = errorCode switch
+            {
+                "INSUFFICIENT_CRYSTAL" => "크리스탈이 부족합니다.",
+                "INSUFFICIENT_GOLD" => "골드가 부족합니다.",
+                "INVALID_PRODUCT" => "상품 정보를 찾을 수 없습니다.",
+                "INVENTORY_FULL" => "인벤토리 용량이 부족합니다.",
+                "STACK_LIMIT" => "스택 최대 수량을 초과했습니다.",
+                "DB_ERROR" => "서버 오류가 발생했습니다.",
+                _ => $"구매 실패: {errorCode}"
+            };
+
+            ShowToastMessage(message);
+        }
+
+        private void ShowToastMessage(string message)
+        {
+            if (toastModal == null || toastMessageText == null) return;
+            toastMessageText.text = message ?? string.Empty;
+            toastModal.SetActive(true);
+            toastModal.transform.SetAsLastSibling();
+        }
+
+        private void HideToastMessage()
+        {
+            if (toastModal != null)
+            {
+                toastModal.SetActive(false);
+            }
         }
 
         private void EnsureMeta()

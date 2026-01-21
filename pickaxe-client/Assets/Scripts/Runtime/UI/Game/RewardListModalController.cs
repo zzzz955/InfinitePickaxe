@@ -88,6 +88,28 @@ namespace InfinitePickaxe.Client.UI.Game
             PlayOpenAnimation();
         }
 
+        public void Show(ShopPurchaseResult result, string titleOverride = null)
+        {
+            if (result == null || !result.Success) return;
+            EnsureMeta();
+
+            var rewards = BuildRewardList(result);
+            if (rewards.Count == 0) return;
+
+            if (titleText != null)
+            {
+                titleText.text = string.IsNullOrEmpty(titleOverride) ? "구매 보상" : titleOverride;
+            }
+
+            ApplyRewardViews(rewards);
+
+            gameObject.SetActive(true);
+            transform.SetAsLastSibling();
+
+            PreparePanelAnimation();
+            PlayOpenAnimation();
+        }
+
         public void Hide()
         {
             if (gameObject.activeSelf)
@@ -286,6 +308,49 @@ namespace InfinitePickaxe.Client.UI.Game
             foreach (var pair in gemCounts)
             {
                 rewards.Add(BuildGemReward(entryId++, pair.Key, pair.Value));
+            }
+
+            rewards.Sort((a, b) =>
+            {
+                int order = b.SortOrder.CompareTo(a.SortOrder);
+                if (order != 0) return order;
+                return a.EntryId.CompareTo(b.EntryId);
+            });
+
+            return rewards;
+        }
+
+        private List<RewardViewData> BuildRewardList(ShopPurchaseResult result)
+        {
+            var rewards = new List<RewardViewData>();
+            var itemCounts = new Dictionary<uint, ulong>();
+
+            if (result.Stacks != null)
+            {
+                foreach (var stack in result.Stacks)
+                {
+                    if (stack == null || stack.ItemId == 0 || stack.Count == 0) continue;
+                    itemCounts[stack.ItemId] = itemCounts.TryGetValue(stack.ItemId, out var existing)
+                        ? existing + stack.Count
+                        : stack.Count;
+                }
+            }
+
+            if (result.Instances != null)
+            {
+                foreach (var inst in result.Instances)
+                {
+                    if (inst == null || inst.ItemId == 0) continue;
+                    itemCounts[inst.ItemId] = itemCounts.TryGetValue(inst.ItemId, out var existing)
+                        ? existing + 1
+                        : 1;
+                }
+            }
+
+            uint entryId = 1;
+            foreach (var pair in itemCounts)
+            {
+                rewards.Add(BuildItemReward(entryId++, pair.Key, pair.Value));
             }
 
             rewards.Sort((a, b) =>

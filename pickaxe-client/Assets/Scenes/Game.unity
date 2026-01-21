@@ -1120,6 +1120,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -40
       objectReference: {fileID: 0}
+    - target: {fileID: 4539767809066858832, guid: c455c3c8eab2fd6499d992e2771665f0, type: 3}
+      propertyPath: toastModal
+      value: 
+      objectReference: {fileID: 485523318}
+    - target: {fileID: 4539767809066858832, guid: c455c3c8eab2fd6499d992e2771665f0, type: 3}
+      propertyPath: rewardListModal
+      value: 
+      objectReference: {fileID: 862602580}
+    - target: {fileID: 4539767809066858832, guid: c455c3c8eab2fd6499d992e2771665f0, type: 3}
+      propertyPath: toastMessageText
+      value: 
+      objectReference: {fileID: 485523317}
+    - target: {fileID: 4539767809066858832, guid: c455c3c8eab2fd6499d992e2771665f0, type: 3}
+      propertyPath: toastConfirmButton
+      value: 
+      objectReference: {fileID: 485523316}
     - target: {fileID: 5111772312962251098, guid: c455c3c8eab2fd6499d992e2771665f0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
