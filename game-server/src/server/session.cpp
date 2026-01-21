@@ -1360,121 +1360,120 @@ void Session::handle_use_item(const infinitepickaxe::Envelope &env)
         return false;
     };
 
-    bool use_gacha = (action == "GEM_GACHA");
-    uint64_t gacha_rolls = 0;
+    const auto* pkg = metadata_.reward_package(req.item_id());
+    const auto* entries = metadata_.reward_package_entries(req.item_id());
+    if (!pkg || !entries || entries->empty()) {
+        res.set_error_code("REWARD_PACKAGE_NOT_FOUND");
+        send_result();
+        return;
+    }
 
-    if (!use_gacha) {
-        const auto* pkg = metadata_.reward_package(req.item_id());
-        const auto* entries = metadata_.reward_package_entries(req.item_id());
-        if (!pkg || !entries || entries->empty()) {
-            res.set_error_code("REWARD_PACKAGE_NOT_FOUND");
+    uint32_t roll_count = pkg->roll_count > 0 ? pkg->roll_count : 1;
+    if (request_count > 0 && roll_count > 0 &&
+        request_count > std::numeric_limits<uint64_t>::max() / roll_count) {
+        res.set_error_code("INVALID_COUNT");
+        send_result();
+        return;
+    }
+    uint64_t total_rolls = request_count * roll_count;
+
+    if (action == "GEM_GACHA" && pkg->mode != "RANDOM") {
+        res.set_error_code("INVALID_PACKAGE_MODE");
+        send_result();
+        return;
+    }
+
+    if (pkg->mode == "FIXED") {
+        for (const auto& entry : *entries) {
+            if (!apply_reward_entry(entry, total_rolls)) {
+                res.set_error_code("INVALID_REWARD");
+                send_result();
+                return;
+            }
+        }
+    } else if (pkg->mode == "SELECT") {
+        uint32_t entry_id = req.choice_reward_entry_id();
+        if (entry_id == 0) {
+            res.set_error_code("INVALID_CHOICE");
+            send_result();
+            return;
+        }
+        const auto* entry = metadata_.reward_package_entry(req.item_id(), entry_id);
+        if (!entry) {
+            res.set_error_code("INVALID_CHOICE");
+            send_result();
+            return;
+        }
+        if (!apply_reward_entry(*entry, total_rolls)) {
+            res.set_error_code("INVALID_REWARD");
+            send_result();
+            return;
+        }
+    } else if (pkg->mode == "RANDOM") {
+        std::unordered_map<uint32_t, std::vector<const RewardPackageEntry*>> grouped_entries;
+        grouped_entries.reserve(entries->size());
+        for (const auto& entry : *entries) {
+            uint32_t group_id = entry.group_id;
+            grouped_entries[group_id].push_back(&entry);
+        }
+
+        if (grouped_entries.empty()) {
+            res.set_error_code("REWARD_PACKAGE_EMPTY");
             send_result();
             return;
         }
 
-        uint32_t roll_count = pkg->roll_count > 0 ? pkg->roll_count : 1;
-        if (request_count > 0 && roll_count > 0 &&
-            request_count > std::numeric_limits<uint64_t>::max() / roll_count) {
-            res.set_error_code("INVALID_COUNT");
-            send_result();
-            return;
-        }
-        uint64_t total_rolls = request_count * roll_count;
+        static thread_local std::mt19937 rng(std::random_device{}());
+        for (uint64_t roll = 0; roll < total_rolls; ++roll) {
+            for (const auto& group_pair : grouped_entries) {
+                const auto& group_entries = group_pair.second;
+                uint32_t total_weight = 0;
+                for (const auto* entry : group_entries) {
+                    uint32_t weight = entry->weight > 0 ? entry->weight : 1;
+                    if (std::numeric_limits<uint32_t>::max() - total_weight < weight) {
+                        total_weight = std::numeric_limits<uint32_t>::max();
+                        break;
+                    }
+                    total_weight += weight;
+                }
 
-        if (pkg->mode == "FIXED") {
-            for (const auto& entry : *entries) {
-                if (!apply_reward_entry(entry, total_rolls)) {
+                if (total_weight == 0) {
+                    res.set_error_code("INVALID_REWARD");
+                    send_result();
+                    return;
+                }
+
+                std::uniform_int_distribution<uint32_t> dist(1, total_weight);
+                uint32_t roll_value = dist(rng);
+                uint32_t accum = 0;
+                const RewardPackageEntry* chosen = group_entries.front();
+                for (const auto* entry : group_entries) {
+                    uint32_t weight = entry->weight > 0 ? entry->weight : 1;
+                    if (std::numeric_limits<uint32_t>::max() - accum < weight) {
+                        chosen = entry;
+                        break;
+                    }
+                    accum += weight;
+                    if (roll_value <= accum) {
+                        chosen = entry;
+                        break;
+                    }
+                }
+
+                if (!apply_reward_entry(*chosen, 1)) {
                     res.set_error_code("INVALID_REWARD");
                     send_result();
                     return;
                 }
             }
-        } else if (pkg->mode == "SELECT") {
-            uint32_t entry_id = req.choice_reward_entry_id();
-            if (entry_id == 0) {
-                res.set_error_code("INVALID_CHOICE");
-                send_result();
-                return;
-            }
-            const auto* entry = metadata_.reward_package_entry(req.item_id(), entry_id);
-            if (!entry) {
-                res.set_error_code("INVALID_CHOICE");
-                send_result();
-                return;
-            }
-            if (!apply_reward_entry(*entry, total_rolls)) {
-                res.set_error_code("INVALID_REWARD");
-                send_result();
-                return;
-            }
-        } else if (pkg->mode == "RANDOM") {
-            std::unordered_map<uint32_t, std::vector<const RewardPackageEntry*>> grouped_entries;
-            grouped_entries.reserve(entries->size());
-            for (const auto& entry : *entries) {
-                uint32_t group_id = entry.group_id;
-                grouped_entries[group_id].push_back(&entry);
-            }
-
-            if (grouped_entries.empty()) {
-                res.set_error_code("REWARD_PACKAGE_EMPTY");
-                send_result();
-                return;
-            }
-
-            static thread_local std::mt19937 rng(std::random_device{}());
-            for (uint64_t roll = 0; roll < total_rolls; ++roll) {
-                for (const auto& group_pair : grouped_entries) {
-                    const auto& group_entries = group_pair.second;
-                    uint32_t total_weight = 0;
-                    for (const auto* entry : group_entries) {
-                        uint32_t weight = entry->weight > 0 ? entry->weight : 1;
-                        if (std::numeric_limits<uint32_t>::max() - total_weight < weight) {
-                            total_weight = std::numeric_limits<uint32_t>::max();
-                            break;
-                        }
-                        total_weight += weight;
-                    }
-
-                    if (total_weight == 0) {
-                        res.set_error_code("INVALID_REWARD");
-                        send_result();
-                        return;
-                    }
-
-                    std::uniform_int_distribution<uint32_t> dist(1, total_weight);
-                    uint32_t roll_value = dist(rng);
-                    uint32_t accum = 0;
-                    const RewardPackageEntry* chosen = group_entries.front();
-                    for (const auto* entry : group_entries) {
-                        uint32_t weight = entry->weight > 0 ? entry->weight : 1;
-                        if (std::numeric_limits<uint32_t>::max() - accum < weight) {
-                            chosen = entry;
-                            break;
-                        }
-                        accum += weight;
-                        if (roll_value <= accum) {
-                            chosen = entry;
-                            break;
-                        }
-                    }
-
-                    if (!apply_reward_entry(*chosen, 1)) {
-                        res.set_error_code("INVALID_REWARD");
-                        send_result();
-                        return;
-                    }
-                }
-            }
-        } else {
-            res.set_error_code("INVALID_PACKAGE_MODE");
-            send_result();
-            return;
         }
     } else {
-        gacha_rolls = request_count;
+        res.set_error_code("INVALID_PACKAGE_MODE");
+        send_result();
+        return;
     }
 
-    uint64_t gem_reward_count = use_gacha ? gacha_rolls : gem_reward_ids.size();
+    uint64_t gem_reward_count = gem_reward_ids.size();
     if (gem_reward_count > 0) {
         auto gem_info = game_repo_.get_gem_inventory_info(user_id_);
         if (gem_info.total_gems + gem_reward_count > gem_info.capacity) {
@@ -1641,24 +1640,7 @@ void Session::handle_use_item(const infinitepickaxe::Envelope &env)
     }
 
     std::vector<GemInstanceData> created_gems;
-    if (use_gacha && gacha_rolls > 0) {
-        if (gacha_rolls > std::numeric_limits<uint32_t>::max()) {
-            res.set_error_code("INVALID_COUNT");
-            send_result();
-            return;
-        }
-        auto gacha_result = gem_service_.handle_gacha_pull_free(user_id_, static_cast<uint32_t>(gacha_rolls));
-        if (!gacha_result.success) {
-            if (gacha_result.inventory_full) {
-                res.set_error_code("INVENTORY_FULL");
-            } else {
-                res.set_error_code("DB_ERROR");
-            }
-            send_result();
-            return;
-        }
-        created_gems = std::move(gacha_result.created_gems);
-    } else if (!gem_reward_ids.empty()) {
+    if (!gem_reward_ids.empty()) {
         auto grant_result = gem_service_.grant_gems(user_id_, gem_reward_ids);
         if (!grant_result.success) {
             if (grant_result.inventory_full) {
