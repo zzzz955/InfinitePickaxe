@@ -13,21 +13,26 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private TextMeshProUGUI countText;
         [SerializeField] private GameObject selectedMark;
 
-        private uint rewardEntryId;
-        private Action<uint> clickHandler;
+        public uint RewardEntryId { get; private set; }
+        private Action<ItemChoiceOptionView> clickHandler;
 
         private void Awake()
         {
             if (optionButton != null)
             {
                 optionButton.onClick.RemoveAllListeners();
-                optionButton.onClick.AddListener(() => clickHandler?.Invoke(rewardEntryId));
+                optionButton.onClick.AddListener(() => clickHandler?.Invoke(this));
+            }
+
+            if (selectedMark != null)
+            {
+                selectedMark.SetActive(false);
             }
         }
 
-        public void Bind(uint entryId, Sprite icon, ulong amount, Color frameColor, Color textColor, bool selected, Action<uint> onClick)
+        public void Bind(uint entryId, Sprite icon, ulong amount, Color frameColor, Color textColor, bool selected, Action<ItemChoiceOptionView> onClick)
         {
-            rewardEntryId = entryId;
+            RewardEntryId = entryId;
             clickHandler = onClick;
 
             if (iconImage != null)

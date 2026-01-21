@@ -52,6 +52,14 @@ namespace InfinitePickaxe.Client.UI.Game
         [SerializeField] private Button useButton;
         [SerializeField] private Button cancelButton;
 
+        [Header("Toast")]
+        [SerializeField] private GameObject toastModal;
+        [SerializeField] private TextMeshProUGUI toastMessageText;
+        [SerializeField] private Button toastConfirmButton;
+
+        [Header("Reward Modal")]
+        [SerializeField] private RewardStoveModalController rewardStoveModal;
+
         private readonly List<ItemSlotView> slotViews = new List<ItemSlotView>();
         private readonly List<ItemChoiceOptionView> choiceViews = new List<ItemChoiceOptionView>();
 
@@ -65,6 +73,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private ItemSlotData selectedItem;
         private bool hasSelection;
         private uint selectedChoiceEntryId;
+        private ItemChoiceOptionView selectedChoiceView;
         private uint currentUseCount;
         private uint currentMaxUseCount;
         private bool suppressCountInput;
@@ -167,6 +176,20 @@ namespace InfinitePickaxe.Client.UI.Game
         private void HandleUseItemResult(UseItemResult result)
         {
             useRequestInFlight = false;
+            ClearSelection();
+
+            if (result != null)
+            {
+                if (result.Success)
+                {
+                    ShowUseItemRewards(result);
+                }
+                else
+                {
+                    ShowUseItemError(result.ErrorCode);
+                }
+            }
+
             RefreshList();
         }
 
@@ -178,6 +201,10 @@ namespace InfinitePickaxe.Client.UI.Game
 
             listRequestInFlight = false;
             expandRequestInFlight = false;
+            if (useRequestInFlight)
+            {
+                ClearSelection();
+            }
             useRequestInFlight = false;
             RefreshList();
             UpdateUseButtonState();
@@ -221,6 +248,7 @@ namespace InfinitePickaxe.Client.UI.Game
             useRequestInFlight = true;
             messageHandler ??= MessageHandler.Instance;
             messageHandler?.RequestUseItem(itemId, currentUseCount, requestId, selectedChoiceEntryId);
+            ClearSelection();
             UpdateUseButtonState();
         }
 
@@ -395,6 +423,7 @@ namespace InfinitePickaxe.Client.UI.Game
             selectedItem = view.Data;
             hasSelection = true;
             selectedChoiceEntryId = 0;
+            selectedChoiceView = null;
             UpdateSelectionHighlights();
             UpdateDetailPanel(ResolveItemMeta(selectedItem.ItemId));
         }
@@ -403,6 +432,7 @@ namespace InfinitePickaxe.Client.UI.Game
         {
             hasSelection = false;
             selectedChoiceEntryId = 0;
+            selectedChoiceView = null;
             UpdateSelectionHighlights();
             UpdateDetailPanel(null);
         }
@@ -565,6 +595,10 @@ namespace InfinitePickaxe.Client.UI.Game
                 bool selected = selectedChoiceEntryId == entry.EntryId;
 
                 option.Bind(entry.EntryId, icon, entry.Amount, frameColor, textColor, selected, HandleChoiceClicked);
+                if (selected)
+                {
+                    selectedChoiceView = option;
+                }
                 choiceViews.Add(option);
             }
         }
@@ -581,16 +615,17 @@ namespace InfinitePickaxe.Client.UI.Game
             choiceViews.Clear();
         }
 
-        private void HandleChoiceClicked(uint entryId)
+        private void HandleChoiceClicked(ItemChoiceOptionView view)
         {
-            if (entryId == 0) return;
-            selectedChoiceEntryId = entryId;
+            if (view == null || view.RewardEntryId == 0) return;
+            selectedChoiceEntryId = view.RewardEntryId;
+            selectedChoiceView = view;
 
             for (int i = 0; i < choiceViews.Count; i++)
             {
-                var view = choiceViews[i];
-                if (view == null) continue;
-                view.SetSelected(entryId == selectedChoiceEntryId);
+                var item = choiceViews[i];
+                if (item == null) continue;
+                item.SetSelected(item == selectedChoiceView);
             }
 
             UpdateUseButtonState();
@@ -804,6 +839,12 @@ namespace InfinitePickaxe.Client.UI.Game
                 cancelButton.onClick.AddListener(ClearSelection);
             }
 
+            if (toastConfirmButton != null)
+            {
+                toastConfirmButton.onClick.RemoveAllListeners();
+                toastConfirmButton.onClick.AddListener(HideToastMessage);
+            }
+
             if (countInput != null)
             {
                 countInput.onValueChanged.RemoveAllListeners();
@@ -930,6 +971,75 @@ namespace InfinitePickaxe.Client.UI.Game
                 currencyMetaResolver.Reload();
             }
 
+        }
+
+        private void ShowUseItemError(string errorCode)
+        {
+            if (string.IsNullOrEmpty(errorCode)) return;
+
+            string message = errorCode switch
+            {
+                "INVENTORY_FULL" => "인벤토리 용량이 부족합니다.",
+                "STACK_LIMIT" => "스택 최대 수량을 초과했습니다.",
+                "INSUFFICIENT_ITEM" => "아이템 수량이 부족합니다.",
+                "INVALID_CHOICE" => "선택 항목이 올바르지 않습니다.",
+                "INVALID_COUNT" => "사용 수량이 올바르지 않습니다.",
+                "INVALID_ITEM" => "존재하지 않는 아이템입니다.",
+                "REWARD_PACKAGE_NOT_FOUND" => "보상 정보를 찾을 수 없습니다.",
+                "REWARD_PACKAGE_EMPTY" => "보상 정보가 비어 있습니다.",
+                "INVALID_REWARD" => "보상 정보가 올바르지 않습니다.",
+                "DB_ERROR" => "서버 오류가 발생했습니다.",
+                _ => $"아이템 사용 실패: {errorCode}"
+            };
+
+            ShowToastMessage(message);
+        }
+
+        private void ShowUseItemRewards(UseItemResult result)
+        {
+            if (result == null) return;
+
+            uint rewardCrystal = 0;
+            ulong rewardGold = 0;
+
+            if (result.Rewards != null)
+            {
+                foreach (var reward in result.Rewards)
+                {
+                    if (reward == null) continue;
+                    switch (reward.RewardType)
+                    {
+                        case RewardType.Gold:
+                            rewardGold += reward.Amount;
+                            break;
+                        case RewardType.Crystal:
+                            ulong next = (ulong)rewardCrystal + reward.Amount;
+                            rewardCrystal = next > uint.MaxValue ? uint.MaxValue : (uint)next;
+                            break;
+                    }
+                }
+            }
+
+            if (rewardStoveModal != null)
+            {
+                rewardStoveModal.Show(rewardCrystal, rewardGold);
+            }
+        }
+
+        private void ShowToastMessage(string message)
+        {
+            if (toastModal == null || toastMessageText == null) return;
+            toastMessageText.text = message ?? string.Empty;
+            toastModal.SetActive(true);
+            toastModal.transform.SetAsLastSibling();
+        }
+
+        private void HideToastMessage()
+        {
+            if (toastModal != null)
+            {
+                toastModal.SetActive(false);
+            }
         }
     }
 }
