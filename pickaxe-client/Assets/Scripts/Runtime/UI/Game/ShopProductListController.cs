@@ -7,7 +7,7 @@ using InfinitePickaxe.Client.Metadata;
 
 namespace InfinitePickaxe.Client.UI.Game
 {
-    public sealed class ShopProductListController : MonoBehaviour
+    public sealed class ShopProductListController : MonoBehaviour, IShopTabContent
     {
         [Header("Filter")]
         [SerializeField] private string tabKey = "GEM";
@@ -30,6 +30,11 @@ namespace InfinitePickaxe.Client.UI.Game
         private bool subscribed;
 
         private readonly Color defaultFrameColor = new Color(0.2f, 0.2f, 0.2f, 0.9f);
+
+        public void OnTabSelected()
+        {
+            Refresh();
+        }
 
         private void OnEnable()
         {
@@ -71,6 +76,7 @@ namespace InfinitePickaxe.Client.UI.Game
         public void Refresh()
         {
             EnsureMeta();
+            resourceCache ??= UserResourceCache.Instance;
             var products = BuildProductList();
 
             EnsureCardPool(products.Count);
@@ -167,13 +173,15 @@ namespace InfinitePickaxe.Client.UI.Game
 
             if (string.Equals(product.PriceCurrency, "CRYSTAL", StringComparison.OrdinalIgnoreCase))
             {
-                ulong crystal = resourceCache?.Crystal ?? 0;
+                if (resourceCache == null || !resourceCache.Crystal.HasValue) return true;
+                ulong crystal = resourceCache.Crystal.Value;
                 return crystal >= product.PriceAmount.Value;
             }
 
             if (string.Equals(product.PriceCurrency, "GOLD", StringComparison.OrdinalIgnoreCase))
             {
-                ulong gold = resourceCache?.Gold ?? 0;
+                if (resourceCache == null || !resourceCache.Gold.HasValue) return true;
+                ulong gold = resourceCache.Gold.Value;
                 return gold >= product.PriceAmount.Value;
             }
 

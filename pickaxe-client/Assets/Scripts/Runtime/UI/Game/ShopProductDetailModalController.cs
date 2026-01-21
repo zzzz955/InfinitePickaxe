@@ -53,6 +53,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private ulong unitPrice;
         private bool hasPrice;
         private ulong currentCurrencyAmount;
+        private bool hasCurrencyAmount;
         private uint maxAffordableCount;
         private uint currentCount;
         private bool suppressInput;
@@ -66,6 +67,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (product == null) return;
             EnsureMeta();
 
+            resourceCache ??= UserResourceCache.Instance;
             currentProduct = product;
             currentItem = ResolveItemMeta(product.ItemId);
             requestInFlight = false;
@@ -272,6 +274,7 @@ namespace InfinitePickaxe.Client.UI.Game
         private void UpdateCurrencyAmount()
         {
             currentCurrencyAmount = 0;
+            hasCurrencyAmount = false;
             if (currentProduct == null) return;
 
             string currency = currentProduct.PriceCurrency ?? string.Empty;
@@ -280,6 +283,7 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (resourceCache != null && resourceCache.Crystal.HasValue)
                 {
                     currentCurrencyAmount = resourceCache.Crystal.Value;
+                    hasCurrencyAmount = true;
                 }
             }
             else if (string.Equals(currency, "GOLD", StringComparison.OrdinalIgnoreCase))
@@ -287,13 +291,14 @@ namespace InfinitePickaxe.Client.UI.Game
                 if (resourceCache != null && resourceCache.Gold.HasValue)
                 {
                     currentCurrencyAmount = resourceCache.Gold.Value;
+                    hasCurrencyAmount = true;
                 }
             }
         }
 
         private uint ResolveAffordableMax()
         {
-            if (!hasPrice) return 0;
+            if (!hasPrice || !hasCurrencyAmount) return 0;
             if (unitPrice == 0) return 1;
             if (currentCurrencyAmount == 0) return 0;
 
@@ -380,7 +385,9 @@ namespace InfinitePickaxe.Client.UI.Game
                 hasPriceColor = true;
             }
 
-            bool affordable = unitPrice == 0 || (maxAffordableCount > 0 && currentCount <= maxAffordableCount);
+            bool affordable = !hasCurrencyAmount
+                || unitPrice == 0
+                || (maxAffordableCount > 0 && currentCount <= maxAffordableCount);
             priceText.color = affordable ? normalPriceColor : insufficientPriceColor;
         }
 
@@ -391,7 +398,7 @@ namespace InfinitePickaxe.Client.UI.Game
             bool canBuy = hasPrice
                           && currentCount > 0
                           && !requestInFlight
-                          && (unitPrice == 0 || (maxAffordableCount > 0 && currentCount <= maxAffordableCount));
+                          && (unitPrice == 0 || (hasCurrencyAmount && maxAffordableCount > 0 && currentCount <= maxAffordableCount));
 
             purchaseButton.interactable = canBuy;
         }
@@ -402,6 +409,7 @@ namespace InfinitePickaxe.Client.UI.Game
             if (!hasPrice) return;
             if (currentCount == 0) return;
             if (requestInFlight) return;
+            if (unitPrice > 0 && !hasCurrencyAmount) return;
 
             if (unitPrice > 0 && (maxAffordableCount == 0 || currentCount > maxAffordableCount))
             {
