@@ -22,8 +22,11 @@
 
 int main() {
     try {
+        // 환경변수 로드
         ServerConfig cfg = load_config();
         DbConfig dbcfg{cfg.db_host, cfg.db_port, cfg.db_user, cfg.db_password, cfg.db_name};
+
+        // DB 초기화
         std::ostringstream conn_str;
         conn_str << "host=" << dbcfg.host
                  << " port=" << dbcfg.port
@@ -31,6 +34,8 @@ int main() {
                  << " password=" << dbcfg.password
                  << " dbname=" << dbcfg.dbname;
         ConnectionPool db_pool(conn_str.str(), cfg.db_pool_size, cfg.db_pool_max);
+
+        // 메타데이터 초기화
         MetadataLoader metadata;
         std::string meta_path = env_or("METADATA_PATH", "./metadata");
         if (!metadata.load(meta_path)) {
@@ -38,7 +43,11 @@ int main() {
             return 1;
         }
         spdlog::info("Metadata loaded from {}", meta_path);
+
+        // Redis 초기화
         RedisClient redis_client(cfg.redis_host, cfg.redis_port);
+
+        // 서비스 및 레포지토리 초기화
         AuthService auth_service(cfg.auth_host, cfg.auth_port, redis_client);
         GameRepository game_repo(db_pool, metadata);
         MiningRepository mining_repo(db_pool);
@@ -65,6 +74,7 @@ int main() {
         OfflineService offline_service(offline_repo, metadata);
         boost::asio::io_context io;
 
+        // 서버 실행
         TcpServer server(io, cfg.listen_port, auth_service, game_repo,
                          mining_service, upgrade_service, mission_service, achievement_service,
                          infinite_mine_service, mail_service, item_service, slot_service, offline_service, ad_service, gem_service,

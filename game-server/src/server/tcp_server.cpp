@@ -3,6 +3,7 @@
 #include <boost/asio.hpp>
 #include <iostream>
 
+// 서버 생성자
 TcpServer::TcpServer(boost::asio::io_context& io,
                      unsigned short port,
                      AuthService& auth_service,
@@ -46,17 +47,20 @@ void TcpServer::start() {
     start_mining_tick();  // 40ms 채굴 틱 시작
 }
 
+// listen상태 돌입
 void TcpServer::do_accept() {
     acceptor_.async_accept(
         [this](boost::system::error_code ec, boost::asio::ip::tcp::socket socket) {
             if (!ec) {
+                // 클라이언트 IP 파싱
                 std::string ip;
                 try {
                     ip = socket.remote_endpoint().address().to_string();
                 } catch (...) {
                     ip.clear();
                 }
-
+                
+                // IP식별 불가 or 레이트 리미터 검증
                 if (!ip.empty() && rate_limiter_ && !rate_limiter_->allow(ip)) {
                     std::cout << "Connection rate limit exceeded for " << ip << std::endl;
                     boost::system::error_code ignored;
@@ -71,6 +75,7 @@ void TcpServer::do_accept() {
                         std::cerr << "Failed to set TCP_NODELAY: " << ec_nodelay.message() << std::endl;
                     }
 
+                    // 세션 연결 성공, 서비스, 레포, 레지스트리, 메타데이터 주입
                     std::cout << "Accepted connection from " << socket.remote_endpoint() << std::endl;
                     auto session = std::make_shared<Session>(std::move(socket),
                                                              auth_service_,

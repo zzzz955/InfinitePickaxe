@@ -18,6 +18,7 @@
 
 namespace
 {
+    // 4바이트 배열 -> uint32 변환(리틀 엔디안)
     uint32_t decode_le(const std::array<uint8_t, 4> &buf)
     {
         return static_cast<uint32_t>(buf[0]) |
@@ -26,6 +27,7 @@ namespace
                (static_cast<uint32_t>(buf[3]) << 24);
     }
 
+    // uint32 -> 4바이트 배열 변환(리틀 엔디안)
     std::array<uint8_t, 4> encode_le(uint32_t v)
     {
         return {static_cast<uint8_t>(v & 0xFF),
@@ -33,7 +35,8 @@ namespace
                 static_cast<uint8_t>((v >> 16) & 0xFF),
                 static_cast<uint8_t>((v >> 24) & 0xFF)};
     }
-
+    
+    // 크리티컬 판정용 난수 생성
     uint32_t roll_bp_10000()
     {
         static thread_local std::mt19937 rng(std::random_device{}());
@@ -41,8 +44,10 @@ namespace
         return dist(rng);
     }
 
+    // 채굴 Redis캐싱 TTL값
     constexpr int kMiningCacheTtlSeconds = 60 * 60 * 24;
 
+    // 문자열을 uint64로 변환해주는 헬퍼 함수
     bool parse_u64(const std::string& value, uint64_t& out)
     {
         if (value.empty())
@@ -59,6 +64,7 @@ namespace
         return true;
     }
 
+    // 문자열을 uint32로 변환해주는 헬퍼 함수
     bool parse_u32(const std::string& value, uint32_t& out)
     {
         if (value.empty())
@@ -75,6 +81,7 @@ namespace
         return true;
     }
 
+    // 대문자 변환을 위한 헬퍼 함수
     std::string to_upper_ascii(std::string value)
     {
         for (char& c : value)
@@ -84,8 +91,10 @@ namespace
         return value;
     }
 
+    // 오프라인 모드 Redis캐싱 TTL값
     constexpr int kOfflineSessionTtlSeconds = 60 * 60 * 24 * 90;
 
+    // 오프라인 모드 세션 데이터 구조체
     struct OfflineSessionData
     {
         uint64_t start_ms{0};
@@ -96,6 +105,7 @@ namespace
         uint64_t total_dps{0};
     };
 
+    // 오프라인 모드 결과 구조체
     struct OfflineMiningResult
     {
         uint64_t gold_earned{0};
@@ -124,6 +134,7 @@ namespace
             tm.tm_mday);
     }
 
+    // 오프라인 모드 데이터 파싱
     bool parse_offline_session(const std::unordered_map<std::string, std::string>& fields, OfflineSessionData& out)
     {
         auto it_start = fields.find("start_ms");
@@ -150,6 +161,7 @@ namespace
         return true;
     }
 
+    // 오프라인 모드 시뮬레이션 결과 계산(리스폰 타임 + DPS기반)
     OfflineMiningResult simulate_offline_mining(const MineralMeta& mineral,
                                                 uint64_t total_dps,
                                                 uint64_t current_hp,
@@ -278,6 +290,7 @@ namespace
     }
 } // namespace
 
+// 세션 생성자
 Session::Session(boost::asio::ip::tcp::socket socket,
                  AuthService &auth_service,
                  GameRepository &game_repo,
@@ -315,6 +328,7 @@ Session::Session(boost::asio::ip::tcp::socket socket,
       registry_(std::move(registry)),
       metadata_(metadata)
 {
+    // 라우터 초기화
     init_router();
 }
 
